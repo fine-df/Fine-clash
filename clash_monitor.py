@@ -791,6 +791,17 @@ def discover_subscription_sources():
                 url,
             )
 
+    # Rehydrate previously discovered, still-plausible sources so a
+    # temporary cache replacement cannot permanently forget good sources.
+    for url in list(registry.keys()):
+
+        if (
+            isinstance(url, str)
+            and url.startswith("http")
+            and is_plausible_subscription_url(url)
+        ):
+            discovered.append(url)
+
     for repo in search_github_repos():
 
         repo_urls = set()

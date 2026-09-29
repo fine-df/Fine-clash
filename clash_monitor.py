@@ -1,13 +1,14 @@
 """
 Fine-clash monitor.
 
-Full pipeline:
-subscription sources -> fetch -> parse Clash/Base64 nodes -> deduplicate -> live_clash.yaml
+Pipeline:
+subscription sources -> fetch -> parse -> deduplicate -> health filter -> live_clash.yaml
 """
 
 import base64
 import json
 import pathlib
+import socket
 from typing import Any
 
 import requests
@@ -16,8 +17,7 @@ import yaml
 BASE_DIR = pathlib.Path(__file__).parent
 SOURCES_FILE = BASE_DIR / "subscription_sources.json"
 OUTPUT_FILE = BASE_DIR / "live_clash.yaml"
-
-USER_AGENT = "Fine-clash-monitor/2.0"
+USER_AGENT = "Fine-clash-monitor/3.0"
 
 
 class ClashMonitor:
@@ -28,15 +28,15 @@ class ClashMonitor:
         if not SOURCES_FILE.exists():
             return []
         with open(SOURCES_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+        return data if isinstance(data, list) else []
 
     def fetch(self, url):
         try:
             r = requests.get(url, headers=self.headers, timeout=20)
             r.raise_for_status()
             return r.text
-        except Exception as e:
-            print("fetch failed", url, e)
+        except Exception:
             return ""
 
     def parse_yaml(self, text):
@@ -54,10 +54,21 @@ class ClashMonitor:
             raw = base64.b64decode(text.strip() + "===").decode("utf-8")
             for line in raw.splitlines():
                 if line.startswith(("vmess://", "vless://", "trojan://", "ss://")):
-                    result.append(line)
+                    result.append({"name": f"node-{len(result)+1}", "type": "vmess", "server": ""})
         except Exception:
             pass
         return result
+
+    def health_check(self, proxy):
+        server = proxy.get("server")
+        port = proxy.get("port")
+        if not server or not port:
+            return True
+        try:
+            with socket.create_connection((server, int(port)), timeout=3):
+                return True
+        except Exception:
+            return False
 
     def collect(self):
         proxies = []
@@ -67,19 +78,13 @@ class ClashMonitor:
             if not url:
                 continue
             content = self.fetch(url)
-            items = self.parse_yaml(content)
-            if items:
-                for item in items:
-                    name = item.get("name")
-                    if name and name not in seen:
-                        seen.add(name)
-                        proxies.append(item)
-                continue
-            for index, node in enumerate(self.parse_base64(content), 1):
-                name = f"base64-{index}"
-                if name not in seen:
+            items = self.parse_yaml(content) or self.parse_base64(content)
+            for item in items:
+                name = item.get("name")
+                if name and name not in seen:
                     seen.add(name)
-                    proxies.append({"name": name, "type": "vmess", "server": ""})
+                    if self.health_check(item):
+                        proxies.append(item)
         return proxies
 
     def build(self, proxies):
@@ -102,9 +107,8 @@ class ClashMonitor:
         }
 
     def run(self):
-        config = self.build(self.collect())
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
+            yaml.safe_dump(self.build(self.collect()), f, allow_unicode=True, sort_keys=False)
 
 
 if __name__ == "__main__":

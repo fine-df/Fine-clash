@@ -6,7 +6,7 @@ import base64
 import subprocess
 import re
 from datetime import datetime, timezone, timedelta
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 import requests
 import yaml
@@ -15,26 +15,13 @@ import yaml
 # ============================================================
 # 核心规则
 # ============================================================
-# 1. 自动寻找近期活跃的新订阅源
-# 2. 台湾 / 美国优先
-# 3. 清洁 IP 优先
-# 4. 实际代理 HTTP 延迟必须 < 250ms
-# 5. Google 必须可用
-# 6. Gemini 必须可用
-# 7. Google Play 必须可用
-# 8. Gemini Android 关键 Google 主机必须大部分可达
-# 9. 记录节点寿命，长期稳定节点优先
-# 10. 记录订阅源稳定性，长期有效源优先
-# 11. 中国大陆流量 DIRECT
-# 12. 国内 DNS 优先国内解析
-# 13. Gemini 自动选择持续健康检查
-# 14. Google Play 自动选择持续健康检查
-# ============================================================
-
 
 HISTORY_FILE = "node_history.json"
 SOURCE_CACHE_FILE = "subscription_sources.json"
 SOURCE_REGISTRY_FILE = "source_registry.json"
+
+V2RAY_OUTPUT_FILE = "live_v2ray.txt"
+CLASH_OUTPUT_FILE = "live_clash.yaml"
 
 MIHOMO_BIN = "clash"
 
@@ -64,9 +51,8 @@ MIN_SURVIVAL_HOURS = 6
 # IP 清洁度
 REQUIRE_CLEAN_IP = True
 
-
 # ============================================================
-# GitHub 自动发现
+# 自动发现订阅源
 # ============================================================
 
 GITHUB_SEARCH_ENABLED = True
@@ -79,6 +65,8 @@ GITHUB_SEARCH_QUERIES = [
     "clash subscription",
     "mihomo subscription",
     "free nodes clash",
+    "free v2ray",
+    "vless subscription",
     "clash 免费 订阅",
 ]
 
@@ -105,8 +93,7 @@ PLAY_DELAY_URL = (
     "https://play.google.com/store/apps/"
 )
 
-
-# Gemini Android / Google 关键服务
+# Gemini / Android / Google 关键服务
 GEMINI_MOBILE_PROBES = [
     "https://www.googleapis.com/",
     "https://apis.google.com/",
@@ -129,7 +116,6 @@ HEADERS = {
     "User-Agent": USER_AGENT,
     "Accept": "*/*",
 }
-
 
 GITHUB_TOKEN = os.getenv(
     "GH_TOKEN",
@@ -220,7 +206,7 @@ def save_history(history):
 
 
 # ============================================================
-# URL
+# URL 工具
 # ============================================================
 
 def normalize_url(url):
@@ -256,7 +242,7 @@ def extract_subscription_urls(text):
         r'https?://raw\.githubusercontent\.com/[^\s\'"<>]+',
         r'https?://cdn\.jsdelivr\.net/gh/[^\s\'"<>]+',
         r'https?://[^\s\'"<>]+\.(?:yaml|yml)(?:\?[^\s\'"<>]*)?',
-        r'https?://[^\s\'"<>]+/(?:sub|subscribe|clash|mihomo)[^\s\'"<>]*',
+        r'https?://[^\s\'"<>]+/(?:sub|subscribe|clash|mihomo|v2ray|vless)[^\s\'"<>]*',
     ]
 
     urls = set()
@@ -339,7 +325,6 @@ def search_github_repos():
     )
 
     headers = dict(HEADERS)
-
     headers["Accept"] = (
         "application/vnd.github+json"
     )
@@ -543,6 +528,8 @@ def fetch_repo_texts(repo):
                         "subscribe",
                         "node",
                         "free",
+                        "v2ray",
+                        "vless",
                     )
                 ):
                     continue
@@ -681,39 +668,31 @@ def discover_subscription_sources():
             {},
         )
 
-        qualified_runs = int(
-            entry.get(
-                "qualified_runs",
-                0,
-            )
-        )
-
-        success_count = int(
-            entry.get(
-                "success_count",
-                0,
-            )
-        )
-
-        stars = int(
-            entry.get(
-                "stars",
-                0,
-            )
-        )
-
-        last_qualified = int(
-            entry.get(
-                "last_qualified_at",
-                0,
-            )
-        )
-
         return (
-            -qualified_runs,
-            -success_count,
-            -stars,
-            -last_qualified,
+            -int(
+                entry.get(
+                    "qualified_runs",
+                    0,
+                )
+            ),
+            -int(
+                entry.get(
+                    "success_count",
+                    0,
+                )
+            ),
+            -int(
+                entry.get(
+                    "stars",
+                    0,
+                )
+            ),
+            -int(
+                entry.get(
+                    "last_qualified_at",
+                    0,
+                )
+            ),
         )
 
     unique.sort(
@@ -771,6 +750,7 @@ def normalize_proxy(proxy):
         return None
 
     try:
+
         result["port"] = int(
             result["port"]
         )
@@ -1152,7 +1132,6 @@ def build_test_config(
         }
 
     config = {
-
         "mixed-port":
             TEST_PORT,
 
@@ -1222,7 +1201,7 @@ def write_yaml(
 
 
 # ============================================================
-# Mihomo 启动
+# Mihomo 启停
 # ============================================================
 
 def start_mihomo(
@@ -1438,10 +1417,6 @@ def build_proxy_session():
     return session
 
 
-# ============================================================
-# URL 实际连通
-# ============================================================
-
 def probe_url(
     session,
     url,
@@ -1528,7 +1503,6 @@ def test_node(
 ):
 
     result = {
-
         "passed":
             False,
 
@@ -1706,7 +1680,9 @@ def test_node(
     if not ip_info:
         result[
             "reason"
-        ] = "Exit IP information failed"
+        ] = (
+            "Exit IP information failed"
+        )
         return result
 
     result[
@@ -1787,7 +1763,7 @@ def test_node(
         )
         return result
 
-    # 5. 实际 GET
+    # 5. Google / Gemini / Play 实际 GET
     ok, _ = probe_url(
         session,
         GEMINI_DELAY_URL,
@@ -1797,7 +1773,9 @@ def test_node(
     if not ok:
         result[
             "reason"
-        ] = "Gemini GET probe failed"
+        ] = (
+            "Gemini GET probe failed"
+        )
         return result
 
     result[
@@ -1832,7 +1810,9 @@ def test_node(
     if not ok:
         result[
             "reason"
-        ] = "Google GET probe failed"
+        ] = (
+            "Google GET probe failed"
+        )
         return result
 
     result[
@@ -1862,7 +1842,8 @@ def test_node(
         int(
             len(
                 GEMINI_MOBILE_PROBES
-            ) * 0.75
+            )
+            * 0.75
             + 0.999
         ),
     )
@@ -2078,7 +2059,1017 @@ def finalize_source_registry(
 
 
 # ============================================================
-# 最终 Clash 配置
+# V2Ray URI 转换
+# ============================================================
+
+def b64_utf8(text):
+    return base64.b64encode(
+        text.encode("utf-8")
+    ).decode("ascii")
+
+
+def node_remark(node):
+    name = str(
+        node.get(
+            "name",
+            "node",
+        )
+    )
+
+    return (
+        name
+        .replace("\r", " ")
+        .replace("\n", " ")
+    )
+
+
+def get_network(proxy):
+    return (
+        proxy.get("network")
+        or "tcp"
+    )
+
+
+def get_ws_opts(proxy):
+    value = proxy.get(
+        "ws-opts"
+    )
+
+    return (
+        value
+        if isinstance(
+            value,
+            dict,
+        )
+        else {}
+    )
+
+
+def get_grpc_opts(proxy):
+    value = proxy.get(
+        "grpc-opts"
+    )
+
+    return (
+        value
+        if isinstance(
+            value,
+            dict,
+        )
+        else {}
+    )
+
+
+def get_http_opts(proxy):
+    value = proxy.get(
+        "http-opts"
+    )
+
+    return (
+        value
+        if isinstance(
+            value,
+            dict,
+        )
+        else {}
+    )
+
+
+def get_reality_opts(proxy):
+    value = proxy.get(
+        "reality-opts"
+    )
+
+    return (
+        value
+        if isinstance(
+            value,
+            dict,
+        )
+        else {}
+    )
+
+
+def build_vless_uri(
+    proxy
+):
+
+    server = str(
+        proxy.get(
+            "server",
+            "",
+        )
+    )
+
+    port = int(
+        proxy.get(
+            "port",
+            443,
+        )
+    )
+
+    uuid = str(
+        proxy.get(
+            "uuid",
+            "",
+        )
+    )
+
+    if not server or not uuid:
+        return None
+
+    params = {
+        "encryption":
+            "none",
+    }
+
+    network = get_network(
+        proxy
+    )
+
+    params[
+        "type"
+    ] = network
+
+    tls = bool(
+        proxy.get(
+            "tls",
+            False,
+        )
+    )
+
+    reality = get_reality_opts(
+        proxy
+    )
+
+    if reality:
+
+        params[
+            "security"
+        ] = "reality"
+
+        public_key = (
+            reality.get(
+                "public-key"
+            )
+        )
+
+        short_id = (
+            reality.get(
+                "short-id"
+            )
+        )
+
+        if public_key:
+            params[
+                "pbk"
+            ] = str(
+                public_key
+            )
+
+        if short_id:
+            params[
+                "sid"
+            ] = str(
+                short_id
+            )
+
+    elif tls:
+
+        params[
+            "security"
+        ] = "tls"
+
+    flow = proxy.get(
+        "flow"
+    )
+
+    if flow:
+        params[
+            "flow"
+        ] = str(flow)
+
+    sni = (
+        proxy.get(
+            "servername"
+        )
+        or proxy.get(
+            "sni"
+        )
+    )
+
+    if sni:
+        params[
+            "sni"
+        ] = str(sni)
+
+    client_fp = (
+        proxy.get(
+            "client-fingerprint"
+        )
+        or proxy.get(
+            "fingerprint"
+        )
+    )
+
+    if client_fp:
+        params[
+            "fp"
+        ] = str(
+            client_fp
+        )
+
+    if network == "ws":
+
+        ws_opts = get_ws_opts(
+            proxy
+        )
+
+        path = ws_opts.get(
+            "path"
+        )
+
+        if path:
+            params[
+                "path"
+            ] = str(path)
+
+        headers = ws_opts.get(
+            "headers",
+            {},
+        )
+
+        if isinstance(
+            headers,
+            dict,
+        ):
+
+            host = headers.get(
+                "Host"
+            ) or headers.get(
+                "host"
+            )
+
+            if host:
+                params[
+                    "host"
+                ] = str(host)
+
+    elif network == "grpc":
+
+        grpc_opts = get_grpc_opts(
+            proxy
+        )
+
+        service_name = (
+            grpc_opts.get(
+                "grpc-service-name"
+            )
+            or grpc_opts.get(
+                "service-name"
+            )
+        )
+
+        if service_name:
+            params[
+                "serviceName"
+            ] = str(
+                service_name
+            )
+
+    elif network in (
+        "http",
+        "h2",
+    ):
+
+        http_opts = get_http_opts(
+            proxy
+        )
+
+        path = http_opts.get(
+            "path"
+        )
+
+        if isinstance(
+            path,
+            list,
+        ):
+
+            path = path[0] if path else ""
+
+        if path:
+            params[
+                "path"
+            ] = str(path)
+
+        headers = http_opts.get(
+            "headers",
+            {},
+        )
+
+        if isinstance(
+            headers,
+            dict,
+        ):
+
+            host = headers.get(
+                "Host"
+            ) or headers.get(
+                "host"
+            )
+
+            if isinstance(
+                host,
+                list,
+            ):
+
+                host = (
+                    host[0]
+                    if host
+                    else ""
+                )
+
+            if host:
+                params[
+                    "host"
+                ] = str(host)
+
+    query = urlencode(
+        params,
+        doseq=True,
+    )
+
+    remark = quote(
+        node_remark(
+            proxy
+        ),
+        safe="",
+    )
+
+    return (
+        f"vless://"
+        f"{quote(uuid, safe='')}"
+        f"@"
+        f"{quote(server, safe='')}"
+        f":{port}"
+        f"?{query}"
+        f"#{remark}"
+    )
+
+
+def build_vmess_uri(
+    proxy
+):
+
+    server = str(
+        proxy.get(
+            "server",
+            "",
+        )
+    )
+
+    port = int(
+        proxy.get(
+            "port",
+            443,
+        )
+    )
+
+    uuid = str(
+        proxy.get(
+            "uuid",
+            "",
+        )
+    )
+
+    if not server or not uuid:
+        return None
+
+    network = get_network(
+        proxy
+    )
+
+    tls = (
+        "tls"
+        if proxy.get(
+            "tls",
+            False,
+        )
+        else ""
+    )
+
+    sni = (
+        proxy.get(
+            "servername"
+        )
+        or proxy.get(
+            "sni"
+        )
+        or ""
+    )
+
+    fingerprint = (
+        proxy.get(
+            "client-fingerprint"
+        )
+        or proxy.get(
+            "fingerprint"
+        )
+        or ""
+    )
+
+    ws_opts = get_ws_opts(
+        proxy
+    )
+
+    grpc_opts = get_grpc_opts(
+        proxy
+    )
+
+    http_opts = get_http_opts(
+        proxy
+    )
+
+    host = ""
+    path = ""
+
+    if network == "ws":
+
+        path = str(
+            ws_opts.get(
+                "path",
+                "",
+            )
+            or ""
+        )
+
+        headers = ws_opts.get(
+            "headers",
+            {},
+        )
+
+        if isinstance(
+            headers,
+            dict,
+        ):
+
+            host = str(
+                headers.get(
+                    "Host"
+                )
+                or headers.get(
+                    "host"
+                )
+                or ""
+            )
+
+    elif network == "grpc":
+
+        path = str(
+            grpc_opts.get(
+                "grpc-service-name",
+                "",
+            )
+            or ""
+        )
+
+    elif network in (
+        "http",
+        "h2",
+    ):
+
+        p = http_opts.get(
+            "path",
+            "",
+        )
+
+        if isinstance(
+            p,
+            list,
+        ):
+            p = (
+                p[0]
+                if p
+                else ""
+            )
+
+        path = str(
+            p or ""
+        )
+
+        headers = http_opts.get(
+            "headers",
+            {},
+        )
+
+        if isinstance(
+            headers,
+            dict,
+        ):
+
+            h = (
+                headers.get(
+                    "Host"
+                )
+                or headers.get(
+                    "host"
+                )
+                or ""
+            )
+
+            if isinstance(
+                h,
+                list,
+            ):
+                h = (
+                    h[0]
+                    if h
+                    else ""
+                )
+
+            host = str(h)
+
+    config = {
+
+        "v":
+            "2",
+
+        "ps":
+            node_remark(
+                proxy
+            ),
+
+        "add":
+            server,
+
+        "port":
+            str(port),
+
+        "id":
+            uuid,
+
+        "aid":
+            str(
+                proxy.get(
+                    "alterId",
+                    0,
+                )
+            ),
+
+        "scy":
+            str(
+                proxy.get(
+                    "cipher",
+                    proxy.get(
+                        "security",
+                        "auto",
+                    ),
+                )
+            ),
+
+        "net":
+            network,
+
+        "type":
+            str(
+                proxy.get(
+                    "type",
+                    "none",
+                )
+            ),
+
+        "host":
+            host,
+
+        "path":
+            path,
+
+        "tls":
+            tls,
+
+        "sni":
+            sni,
+
+        "fp":
+            fingerprint,
+
+        "insecure":
+            "1"
+            if proxy.get(
+                "skip-cert-verify",
+                False,
+            )
+            else "0",
+    }
+
+    return (
+        "vmess://"
+        + b64_utf8(
+            json.dumps(
+                config,
+                ensure_ascii=False,
+                separators=(
+                    ",",
+                    ":",
+                ),
+            )
+        )
+    )
+
+
+def build_trojan_uri(
+    proxy
+):
+
+    server = str(
+        proxy.get(
+            "server",
+            "",
+        )
+    )
+
+    port = int(
+        proxy.get(
+            "port",
+            443,
+        )
+    )
+
+    password = str(
+        proxy.get(
+            "password",
+            "",
+        )
+    )
+
+    if not server or not password:
+        return None
+
+    params = {}
+
+    sni = (
+        proxy.get(
+            "servername"
+        )
+        or proxy.get(
+            "sni"
+        )
+    )
+
+    if sni:
+        params[
+            "sni"
+        ] = str(sni)
+
+    alpn = proxy.get(
+        "alpn"
+    )
+
+    if isinstance(
+        alpn,
+        list,
+    ) and alpn:
+
+        params[
+            "alpn"
+        ] = ",".join(
+            str(x)
+            for x in alpn
+        )
+
+    network = get_network(
+        proxy
+    )
+
+    if network != "tcp":
+
+        params[
+            "type"
+        ] = network
+
+    if network == "ws":
+
+        ws_opts = get_ws_opts(
+            proxy
+        )
+
+        path = ws_opts.get(
+            "path"
+        )
+
+        if path:
+            params[
+                "path"
+            ] = str(path)
+
+        headers = ws_opts.get(
+            "headers",
+            {},
+        )
+
+        if isinstance(
+            headers,
+            dict,
+        ):
+
+            host = (
+                headers.get(
+                    "Host"
+                )
+                or headers.get(
+                    "host"
+                )
+            )
+
+            if host:
+                params[
+                    "host"
+                ] = str(host)
+
+    elif network == "grpc":
+
+        grpc_opts = get_grpc_opts(
+            proxy
+        )
+
+        service_name = (
+            grpc_opts.get(
+                "grpc-service-name"
+            )
+            or grpc_opts.get(
+                "service-name"
+            )
+        )
+
+        if service_name:
+            params[
+                "serviceName"
+            ] = str(
+                service_name
+            )
+
+    reality = get_reality_opts(
+        proxy
+    )
+
+    if reality:
+        # Trojan + Reality 在部分客户端上支持情况不同。
+        # 仍保留标准参数，无法处理的客户端会忽略。
+        params[
+            "security"
+        ] = "reality"
+
+        public_key = (
+            reality.get(
+                "public-key"
+            )
+        )
+
+        short_id = (
+            reality.get(
+                "short-id"
+            )
+        )
+
+        if public_key:
+            params[
+                "pbk"
+            ] = str(
+                public_key
+            )
+
+        if short_id:
+            params[
+                "sid"
+            ] = str(
+                short_id
+            )
+
+    elif proxy.get(
+        "tls",
+        False,
+    ):
+
+        params[
+            "security"
+        ] = "tls"
+
+    fingerprint = (
+        proxy.get(
+            "client-fingerprint"
+        )
+        or proxy.get(
+            "fingerprint"
+        )
+    )
+
+    if fingerprint:
+        params[
+            "fp"
+        ] = str(
+            fingerprint
+        )
+
+    query = urlencode(
+        params,
+        doseq=True,
+    )
+
+    remark = quote(
+        node_remark(
+            proxy
+        ),
+        safe="",
+    )
+
+    return (
+        "trojan://"
+        f"{quote(password, safe='')}"
+        "@"
+        f"{quote(server, safe='')}"
+        f":{port}"
+        f"?{query}"
+        f"#{remark}"
+    )
+
+
+def build_ss_uri(
+    proxy
+):
+
+    server = str(
+        proxy.get(
+            "server",
+            "",
+        )
+    )
+
+    port = int(
+        proxy.get(
+            "port",
+            443,
+        )
+    )
+
+    cipher = str(
+        proxy.get(
+            "cipher",
+            "",
+        )
+    )
+
+    password = str(
+        proxy.get(
+            "password",
+            "",
+        )
+    )
+
+    if (
+        not server
+        or not cipher
+        or not password
+    ):
+        return None
+
+    userinfo = (
+        f"{cipher}:{password}"
+    )
+
+    encoded_userinfo = (
+        base64.urlsafe_b64encode(
+            userinfo.encode(
+                "utf-8"
+            )
+        )
+        .decode(
+            "ascii"
+        )
+        .rstrip("=")
+    )
+
+    remark = quote(
+        node_remark(
+            proxy
+        ),
+        safe="",
+    )
+
+    return (
+        f"ss://"
+        f"{encoded_userinfo}"
+        f"@"
+        f"{server}:{port}"
+        f"#{remark}"
+    )
+
+
+def node_to_v2ray_uri(
+    proxy
+):
+
+    proxy_type = str(
+        proxy.get(
+            "type",
+            ""
+        )
+    ).lower()
+
+    try:
+
+        if proxy_type == "vmess":
+            return build_vmess_uri(
+                proxy
+            )
+
+        if proxy_type == "vless":
+            return build_vless_uri(
+                proxy
+            )
+
+        if proxy_type == "trojan":
+            return build_trojan_uri(
+                proxy
+            )
+
+        if proxy_type == "ss":
+            return build_ss_uri(
+                proxy
+            )
+
+    except Exception as exc:
+
+        print(
+            f"V2Ray conversion failed "
+            f"for {proxy_type}: {exc}"
+        )
+
+    return None
+
+
+def write_v2ray_subscription(
+    passed_nodes
+):
+
+    uris = []
+
+    for node in passed_nodes:
+
+        uri = node_to_v2ray_uri(
+            node["proxy"]
+        )
+
+        if not uri:
+            continue
+
+        uris.append(uri)
+
+    # 去重
+    unique_uris = []
+    seen = set()
+
+    for uri in uris:
+
+        if uri in seen:
+            continue
+
+        seen.add(uri)
+        unique_uris.append(uri)
+
+    # V2RayN / v2rayNG 常见订阅形式：
+    # 每行一个分享链接，整体 Base64。
+    content = "\n".join(
+        unique_uris
+    )
+
+    encoded = base64.b64encode(
+        content.encode(
+            "utf-8"
+        )
+    ).decode(
+        "ascii"
+    )
+
+    with open(
+        V2RAY_OUTPUT_FILE,
+        "w",
+        encoding="utf-8",
+    ) as f:
+
+        f.write(
+            encoded
+        )
+
+    print(
+        f"V2Ray URI nodes: "
+        f"{len(unique_uris)}"
+    )
+
+    return unique_uris
+
+
+# ============================================================
+# Clash/Mihomo 最终配置
 # ============================================================
 
 def build_final_config(
@@ -2136,10 +3127,6 @@ def build_final_config(
 
     return {
 
-        # ====================================================
-        # 基础
-        # ====================================================
-
         "mixed-port":
             7890,
 
@@ -2166,16 +3153,6 @@ def build_final_config(
 
         # ====================================================
         # DNS
-        # ====================================================
-        # 国内：
-        #   国内域名优先走国内 DoH
-        #   DIRECT 再由系统 DNS 解析
-        #
-        # 海外：
-        #   使用默认 nameserver
-        #
-        # IPv6 DNS 关闭，避免部分国内网络
-        # 因 AAAA 路径异常产生额外等待。
         # ====================================================
 
         "dns": {
@@ -2225,7 +3202,6 @@ def build_final_config(
                 "223.6.6.6",
             ],
 
-            # 国内域名优先国内 DoH
             "nameserver-policy": {
 
                 "geosite:cn": [
@@ -2254,20 +3230,17 @@ def build_final_config(
                 ],
             },
 
-            # 默认 DNS
             "nameserver": [
                 "https://doh.pub/dns-query",
                 "https://dns.alidns.com/dns-query",
             ],
 
-            # DIRECT 出口重新使用系统 DNS
             "direct-nameserver": [
                 "system",
             ],
 
             "direct-nameserver-follow-policy":
                 False,
-
         },
 
         # ====================================================
@@ -2293,7 +3266,6 @@ def build_final_config(
                 ],
             },
 
-            # Gemini 自动选择
             {
                 "name":
                     "♻️ 自动选择",
@@ -2320,7 +3292,6 @@ def build_final_config(
                     auto_nodes,
             },
 
-            # Google Play 自动选择
             {
                 "name":
                     "🛍 Play自动选择",
@@ -2395,7 +3366,7 @@ def build_final_config(
 
         "rules": [
 
-            # 私有网络
+            # 私有地址直连
             "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
             "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
             "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
@@ -2411,7 +3382,7 @@ def build_final_config(
             "DOMAIN-SUFFIX,net.cn,DIRECT",
             "DOMAIN-SUFFIX,gov.cn,DIRECT",
 
-            # 常用国内站点
+            # 国内常用服务
             "DOMAIN-SUFFIX,qq.com,DIRECT",
             "DOMAIN-SUFFIX,baidu.com,DIRECT",
             "DOMAIN-SUFFIX,taobao.com,DIRECT",
@@ -2494,10 +3465,14 @@ def run_agent():
     if not candidates:
 
         write_yaml(
-            "live_clash.yaml",
+            CLASH_OUTPUT_FILE,
             build_final_config(
                 []
             ),
+        )
+
+        write_v2ray_subscription(
+            []
         )
 
         save_history(
@@ -2507,7 +3482,7 @@ def run_agent():
         return
 
     # --------------------------------------------------------
-    # 3. 启动 Mihomo 测试实例
+    # 3. 启动 Mihomo
     # --------------------------------------------------------
 
     test_config, metadata = (
@@ -2572,11 +3547,9 @@ def run_agent():
 
                 continue
 
-            fingerprint = (
-                meta[
-                    "fingerprint"
-                ]
-            )
+            fingerprint = meta[
+                "fingerprint"
+            ]
 
             proxy = meta[
                 "proxy"
@@ -2594,7 +3567,7 @@ def run_agent():
             )
 
             # ------------------------------------------------
-            # 5. 节点历史
+            # 5. 更新历史
             # ------------------------------------------------
 
             history_item = (
@@ -2623,6 +3596,7 @@ def run_agent():
                 / 3600
             )
 
+            # 首次成功只记录，不输出
             if (
                 pass_count
                 < STABLE_PASS_COUNT
@@ -2718,7 +3692,8 @@ def run_agent():
                 f"Play={test['play_delay_ms']} | "
                 f"Mobile={test['mobile_probe_passed']}/"
                 f"{test['mobile_probe_total']} | "
-                f"life={survival_hours}h"
+                f"life={survival_hours}h | "
+                f"type={proxy.get('type', '')}"
             )
 
     finally:
@@ -2771,7 +3746,6 @@ def run_agent():
             )
         )
 
-        # 清洁优先
         clean_rank = (
             0
             if node[
@@ -2780,7 +3754,6 @@ def run_agent():
             else 1
         )
 
-        # 长寿命优先
         long_life_rank = (
             0
             if (
@@ -2816,7 +3789,7 @@ def run_agent():
     ]
 
     # --------------------------------------------------------
-    # 7. 输出
+    # 7. 输出 Clash
     # --------------------------------------------------------
 
     final_config = (
@@ -2826,8 +3799,16 @@ def run_agent():
     )
 
     write_yaml(
-        "live_clash.yaml",
+        CLASH_OUTPUT_FILE,
         final_config,
+    )
+
+    # --------------------------------------------------------
+    # 8. 输出 V2Ray
+    # --------------------------------------------------------
+
+    write_v2ray_subscription(
+        passed
     )
 
     print(
@@ -2840,17 +3821,18 @@ def run_agent():
     )
 
     print(
-        "=" * 70
+        f"Generated: "
+        f"{CLASH_OUTPUT_FILE}"
     )
 
-    for node in passed:
+    print(
+        f"Generated: "
+        f"{V2RAY_OUTPUT_FILE}"
+    )
 
-        print(
-            f"{node['display_name']} | "
-            f"{node['countryCode']} | "
-            f"{node['test']['exit_ip']} | "
-            f"{node['source_url']}"
-        )
+    print(
+        "=" * 70
+    )
 
 
 if __name__ == "__main__":

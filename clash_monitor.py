@@ -40,6 +40,8 @@ MAX_SOURCES_PER_REPO = 6
 REQUEST_TIMEOUT = 6
 DELAY_TIMEOUT_MS = 5000
 SWITCH_WAIT_SECONDS = 0.8
+MIHOMO_CONFIG_TEST_TIMEOUT = 20
+MIHOMO_CONFIG_BATCH_SIZE = 40
 
 # 最终真实代理延迟硬门槛
 # 正式发布节点必须同时满足 Google / Gemini / Google Play 全部 <250ms。
@@ -2235,6 +2237,186 @@ def write_yaml(
 
 
 # ============================================================
+# Mihomo 配置预检
+# ============================================================
+
+def validate_mihomo_config(
+    config_path,
+):
+
+    try:
+
+        completed = subprocess.run(
+            [
+                MIHOMO_BIN,
+                "-t",
+                "-f",
+                config_path,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=MIHOMO_CONFIG_TEST_TIMEOUT,
+        )
+
+        if completed.returncode == 0:
+            return True
+
+        detail = (
+            completed.stderr
+            or completed.stdout
+            or ""
+        ).strip()
+
+        if len(detail) > 2000:
+            detail = detail[-2000:]
+
+        print(
+            "Mihomo config validation failed:"
+        )
+        print(
+            detail
+            or "no diagnostic output"
+        )
+
+        return False
+
+    except subprocess.TimeoutExpired:
+        print(
+            "Mihomo config validation timed out"
+        )
+        return False
+
+    except Exception as exc:
+        print(
+            f"Mihomo config validation error: "
+            f"{type(exc).__name__}: {exc}"
+        )
+        return False
+
+
+def filter_valid_candidates(
+    candidates,
+):
+
+    if not candidates:
+        return []
+
+    full_config, _ = build_test_config(
+        candidates
+    )
+
+    full_path = (
+        "temp_mihomo_validate_full.yaml"
+    )
+
+    write_yaml(
+        full_path,
+        full_config,
+    )
+
+    try:
+        if validate_mihomo_config(
+            full_path
+        ):
+            return candidates
+    finally:
+        try:
+            os.remove(
+                full_path
+            )
+        except OSError:
+            pass
+
+    valid_fingerprints = set()
+
+    queue = [
+        candidates[index:index + MIHOMO_CONFIG_BATCH_SIZE]
+        for index in range(
+            0,
+            len(candidates),
+            MIHOMO_CONFIG_BATCH_SIZE,
+        )
+    ]
+
+    while queue:
+
+        batch = queue.pop(0)
+
+        if not batch:
+            continue
+
+        config, _ = build_test_config(
+            batch
+        )
+
+        batch_path = (
+            "temp_mihomo_validate_batch.yaml"
+        )
+
+        write_yaml(
+            batch_path,
+            config,
+        )
+
+        try:
+            ok = validate_mihomo_config(
+                batch_path
+            )
+        finally:
+            try:
+                os.remove(
+                    batch_path
+                )
+            except OSError:
+                pass
+
+        if ok:
+            valid_fingerprints.update(
+                item["fingerprint"]
+                for item in batch
+            )
+            continue
+
+        if len(batch) == 1:
+            item = batch[0]
+            print(
+                "DROP invalid Mihomo candidate: "
+                f"{item['proxy'].get('name', 'unnamed')} | "
+                f"source={item.get('source_url', '')}"
+            )
+            continue
+
+        midpoint = max(
+            1,
+            len(batch) // 2,
+        )
+
+        queue.insert(
+            0,
+            batch[:midpoint],
+        )
+
+        queue.insert(
+            1,
+            batch[midpoint:],
+        )
+
+    filtered = [
+        item
+        for item in candidates
+        if item["fingerprint"]
+        in valid_fingerprints
+    ]
+
+    print(
+        "Mihomo config-valid candidates: "
+        f"{len(filtered)}/{len(candidates)}"
+    )
+
+    return filtered
+
+
+# ============================================================
 # Mihomo 启停
 # ============================================================
 
@@ -2249,7 +2431,8 @@ def start_mihomo(
             config_path,
         ],
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True,
     )
 
     deadline = (
@@ -2261,6 +2444,27 @@ def start_mihomo(
         time.time()
         < deadline
     ):
+
+        if proc.poll() is not None:
+
+            try:
+                error_text = (
+                    proc.stderr.read()
+                    if proc.stderr
+                    else ""
+                )
+            except Exception:
+                error_text = ""
+
+            print(
+                "Mihomo exited before controller became ready:"
+            )
+            print(
+                (error_text or "").strip()[-3000:]
+                or "no stderr output"
+            )
+
+            return None
 
         try:
 
@@ -2284,10 +2488,25 @@ def start_mihomo(
 
     try:
 
-        proc.terminate()
+        if proc.poll() is None:
+            proc.terminate()
 
-        proc.wait(
-            timeout=3
+            proc.wait(
+                timeout=3
+            )
+
+        error_text = (
+            proc.stderr.read()
+            if proc.stderr
+            else ""
+        )
+
+        print(
+            "Mihomo controller did not become ready:"
+        )
+        print(
+            (error_text or "").strip()[-3000:]
+            or "no stderr output"
         )
 
     except Exception:
@@ -4526,6 +4745,36 @@ def run_agent():
     # --------------------------------------------------------
     # 3. 启动 Mihomo
     # --------------------------------------------------------
+
+    candidates = filter_valid_candidates(
+        candidates
+    )
+
+    if not candidates:
+
+        print(
+            "No Mihomo-config-valid candidates remain; "
+            "publishing safe DNS/routing config."
+        )
+
+        save_history(
+            history
+        )
+
+        final_config = build_final_config(
+            []
+        )
+
+        write_yaml(
+            CLASH_OUTPUT_FILE,
+            final_config,
+        )
+
+        write_v2ray_subscription(
+            []
+        )
+
+        return
 
     test_config, metadata = (
         build_test_config(

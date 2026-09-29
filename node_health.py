@@ -1,18 +1,21 @@
 """
 Node health checker for Fine-clash.
-
-Checks proxy candidates before publishing generated configuration.
 """
 
+import logging
 import socket
 from typing import Any
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("fine-clash-health")
 
 
 def check_server(host: str, port: int, timeout: float = 3.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True
-    except Exception:
+    except Exception as exc:
+        logger.debug("health check failed %s:%s %s", host, port, exc)
         return False
 
 
@@ -21,6 +24,9 @@ def filter_alive_nodes(proxies: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for proxy in proxies:
         host = proxy.get("server")
         port = proxy.get("port")
-        if host and port and check_server(host, int(port)):
+        if not host or not port:
+            continue
+        if check_server(host, int(port)):
             alive.append(proxy)
+    logger.info("health check: %s/%s nodes alive", len(alive), len(proxies))
     return alive

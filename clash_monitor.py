@@ -1,83 +1,72 @@
 import os
+import re
 import json
 import time
-import hashlib
 import base64
+import hashlib
 import subprocess
-import re
-from datetime import datetime, timezone, timedelta
-from urllib.parse import quote, urlencode, urlparse, parse_qs, unquote
+from datetime import datetime, timedelta, timezone
+from urllib.parse import quote, urlparse
 
 import requests
 import yaml
 
 
-# ============================================================
-# 核心规则
-# ============================================================
+# =========================================================
+# 基础配置
+# =========================================================
 
 HISTORY_FILE = "node_history.json"
-SOURCE_CACHE_FILE = "subscription_sources.json"
 SOURCE_REGISTRY_FILE = "source_registry.json"
-
-V2RAY_OUTPUT_FILE = "live_v2ray.txt"
-CLASH_OUTPUT_FILE = "live_clash.yaml"
 
 MIHOMO_BIN = "clash"
 
-TEST_PORT = 9050
+MIXED_PORT = 9050
 CONTROLLER_PORT = 9090
-CONTROLLER_URL = (
-    f"http://127.0.0.1:{CONTROLLER_PORT}"
-)
+CONTROLLER_URL = f"http://127.0.0.1:{CONTROLLER_PORT}"
 
-MAX_CANDIDATES = 240
-MAX_PER_SOURCE = 30
-MAX_OUTPUT_NODES = 40
-MAX_SUBSCRIPTION_SOURCES = 60
-MAX_SOURCES_PER_REPO = 6
+MAX_CANDIDATES = 80
+MAX_PER_SOURCE = 20
 
-REQUEST_TIMEOUT = 6
-DELAY_TIMEOUT_MS = 5000
-SWITCH_WAIT_SECONDS = 0.8
-MIHOMO_CONFIG_TEST_TIMEOUT = 20
-MIHOMO_CONFIG_BATCH_SIZE = 40
+REQUEST_TIMEOUT = 8
+SWITCH_WAIT_SECONDS = 1.0
 
-# 最终真实代理延迟硬门槛
-# 正式发布节点必须同时满足 Google / Gemini / Google Play 全部 <250ms。
-MAX_PROXY_DELAY_MS = 250
-
-# 节点历史
-STABLE_PASS_COUNT = 2
 HISTORY_RESET_HOURS = 48
-MIN_SURVIVAL_HOURS = 6
 
-# IP 清洁度
-REQUIRE_CLEAN_IP = True
+# ---------------------------------------------------------
+# GitHub 动态发现
+# ---------------------------------------------------------
 
-# ============================================================
-# 自动发现订阅源
-# ============================================================
+GITHUB_API = "https://api.github.com"
+GITHUB_API_VERSION = "2026-03-10"
 
-GITHUB_SEARCH_ENABLED = True
-GITHUB_MAX_REPOS = 20
-GITHUB_MIN_STARS = 10
-GITHUB_MAX_DAYS = 30
+RECENT_DAYS = 180
+MIN_REPO_STARS = 100
+FALLBACK_MIN_REPO_STARS = 20
+
+TOP_REPOS_PER_QUERY = 5
+MAX_DISCOVERED_REPOS = 15
+MAX_DISCOVERED_URLS = 30
 
 GITHUB_SEARCH_QUERIES = [
-    "free clash",
-    "clash subscription",
+    "clash proxy subscription",
+    "clash free nodes",
     "mihomo subscription",
-    "free nodes clash",
-    "free v2ray",
-    "vless subscription",
-    "clash 免费 订阅",
+    "clash yaml nodes",
+    "free proxy clash",
 ]
 
+# 固定保底源
+PINNED_SUBSCRIPTION_URLS = [
+    "https://raw.githubusercontent.com/mfuu/v2ray/master/clash.yaml",
+    "https://raw.githubusercontent.com/er26/free/main/clash.yaml",
+    "https://raw.githubusercontent.com/nodefree/nodefree.github.io/main/clash/clash.yaml",
+    "https://raw.githubusercontent.com/Pawroid/Free-Node/main/clash.yaml",
+]
 
-# ============================================================
-# 测试目标
-# ============================================================
+# ---------------------------------------------------------
+# 网络检测
+# ---------------------------------------------------------
 
 IP_CHECK_URL = (
     "http://ip-api.com/json/"
@@ -85,35 +74,16 @@ IP_CHECK_URL = (
     "hosting,proxy,org,isp,query"
 )
 
-GOOGLE_DELAY_URL = (
-    "https://www.google.com/generate_204"
+GOOGLE_TEST_URL = "https://www.google.com/generate_204"
+GEMINI_TEST_URL = "https://gemini.google.com/"
+GEMINI_API_TEST_URL = (
+    "https://generativelanguage.googleapis.com/v1beta/models"
 )
-
-GEMINI_DELAY_URL = (
-    "https://gemini.google.com/"
-)
-
-PLAY_DELAY_URL = (
-    "https://play.google.com/store/apps/"
-)
-
-# Gemini / Android / Google 关键服务
-GEMINI_MOBILE_PROBES = [
-    "https://www.googleapis.com/",
-    "https://apis.google.com/",
-    "https://jnn-pa.googleapis.com/",
-    "https://waa-pa.clients6.google.com/",
-    "https://www.gstatic.com/",
-    "https://ssl.gstatic.com/",
-    "https://optimizationguide-pa.googleapis.com/",
-    "https://play.googleapis.com/",
-]
-
 
 USER_AGENT = (
-    "Mozilla/5.0 (Linux; Android 14) "
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/128.0.0.0 Mobile Safari/537.36"
+    "Chrome/154.0.0.0 Safari/537.36"
 )
 
 HEADERS = {
@@ -121,1064 +91,591 @@ HEADERS = {
     "Accept": "*/*",
 }
 
-GITHUB_TOKEN = os.getenv(
-    "GH_TOKEN",
-    ""
-)
+GITHUB_TOKEN = os.getenv("GH_TOKEN", "")
 
 if GITHUB_TOKEN:
-    HEADERS["Authorization"] = (
-        f"Bearer {GITHUB_TOKEN}"
-    )
+    HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
-# Never forward the GitHub credential to arbitrary subscription hosts.
-PUBLIC_HEADERS = dict(HEADERS)
-PUBLIC_HEADERS.pop("Authorization", None)
+GITHUB_HEADERS = {
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": GITHUB_API_VERSION,
+    "User-Agent": USER_AGENT,
+}
 
-
-# ============================================================
-# 兜底订阅源
-# ============================================================
-
-FALLBACK_SUBSCRIPTION_URLS = [
-    "https://raw.githubusercontent.com/freefq/free/master/clash",
-    "https://raw.githubusercontent.com/mfuu/v2ray/master/clash.yaml",
-    "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
-    "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
-    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml",
-    "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/clashmeta.yaml",
-    "https://raw.githubusercontent.com/anaer/Sub/main/clash.yaml",
-    "https://raw.githubusercontent.com/free18/v2ray/main/c.yaml",
-    "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash",
-    "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml",
-]
+if GITHUB_TOKEN:
+    GITHUB_HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
 
 
-# ============================================================
-# JSON
-# ============================================================
+# =========================================================
+# 通用工具
+# =========================================================
 
-def load_json(path, default):
+def now_ts():
+    return int(time.time())
+
+
+def safe_json_load(path, default):
+    if not os.path.exists(path):
+        return default
+
     try:
-        with open(
-            path,
-            "r",
-            encoding="utf-8",
-        ) as f:
-            return json.load(f)
-    except Exception:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        return data
+
+    except Exception as e:
+        print(f"⚠️ JSON 读取失败 {path}: {e}")
         return default
 
 
-def save_json(path, data):
-    with open(
-        path,
-        "w",
-        encoding="utf-8",
-    ) as f:
-        json.dump(
-            data,
-            f,
-            ensure_ascii=False,
-            indent=2,
-        )
-
-
-# ============================================================
-# 节点历史
-# ============================================================
-
-def migrate_history(data):
-    if not isinstance(data, dict):
-        return {}
-
-    changed = 0
-
-    for _, item in data.items():
-        if not isinstance(item, dict):
-            continue
-
-        last_seen = int(
-            item.get("last_seen", 0) or 0
-        )
-
-        if "pass_count" not in item:
-            streak = int(
-                item.get(
-                    "success_streak",
-                    0,
-                ) or 0
-            )
-            item["pass_count"] = max(
-                0,
-                streak,
-            )
-            changed += 1
-
-        if "first_seen" not in item:
-            # 旧格式没有可靠的首次成功时间，不虚构寿命。
-            item["first_seen"] = (
-                last_seen
-                if last_seen
-                else int(time.time())
-            )
-            changed += 1
-
-        if (
-            "last_max_delay_ms" not in item
-            and "last_latency_ms" in item
-        ):
-            item["last_max_delay_ms"] = item.get(
-                "last_latency_ms"
-            )
-            changed += 1
-
-    if changed:
-        print(
-            f"History migration fields updated: {changed}"
-        )
-
-    return data
-
-
-def load_history():
-    data = load_json(
-        HISTORY_FILE,
-        {},
-    )
-
-    return migrate_history(data)
-
-
-def save_history(history):
+def safe_json_save(path, data):
     try:
-        save_json(
-            HISTORY_FILE,
-            history,
-        )
-    except Exception as exc:
-        print(
-            f"history save failed: {exc}"
-        )
-
-
-# ============================================================
-# URL 工具
-# ============================================================
-
-def normalize_url(url):
-    if not url:
-        return ""
-
-    url = url.strip()
-
-    # 清理 README/Markdown 残片。
-    if "](" in url:
-        url = url.split("](", 1)[0]
-
-    url = url.replace(chr(96), "")
-    url = url.replace("**", "")
-    url = url.rstrip(
-        " ).,;'\">]}"
-    )
-
-    if url.startswith(
-        "https://github.com/"
-    ):
-        github_path = url[len(
-            "https://github.com/"
-        ):]
-
-        if "/blob/" in github_path:
-            owner_repo, file_path = github_path.split(
-                "/blob/",
-                1,
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(
+                data,
+                f,
+                ensure_ascii=False,
+                indent=2,
             )
-
-            branch, sep, rest = file_path.partition(
-                "/"
-            )
-
-            if (
-                sep
-                and branch
-                and rest
-            ):
-                url = (
-                    "https://raw.githubusercontent.com/"
-                    f"{owner_repo}/{branch}/{rest}"
-                )
-
-        elif "/raw/" in github_path:
-            owner_repo, file_path = github_path.split(
-                "/raw/",
-                1,
-            )
-
-            branch, sep, rest = file_path.partition(
-                "/"
-            )
-
-            if (
-                sep
-                and branch
-                and rest
-            ):
-                url = (
-                    "https://raw.githubusercontent.com/"
-                    f"{owner_repo}/{branch}/{rest}"
-                )
-
-    return url
+    except Exception as e:
+        print(f"⚠️ JSON 保存失败 {path}: {e}")
 
 
-def is_plausible_subscription_url(url):
-    if not url or len(url) > 500:
-        return False
+def sha1_text(text):
+    return hashlib.sha1(
+        text.encode("utf-8")
+    ).hexdigest()[:20]
 
-    lower = url.lower()
 
-    blocked_hosts = (
-        "api.star-history.com",
-        "star-history.com",
-        "vercel.com",
-        "deploy.workers.cloudflare.com",
-        "t.me",
-        "telegram.me",
-        "apps.apple.com",
-        "play.google.com",
-        "dns.google",
-        "dns.quad9.net",
-        "cloudflare-dns.com",
-        "doh.opendns.com",
-        "dns.adguard-dns.com",
-        "freedns.controld.com",
-    )
+# =========================================================
+# GitHub 动态仓库发现
+# =========================================================
 
-    blocked_markers = (
-        "star-history",
-        "repository-url=",
-        "releases/download/",
-        "clash-verge-rev/releases/",
-        "/releases",
-        "mobileconfig",
-        ".dae",
-        "tor-bridges",
-        "white-sni",
-        "white-cidr",
-        "mirrors_links",
-    )
-
-    blocked_extensions = (
-        ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
-        ".bmp", ".ico", ".exe", ".msi", ".apk", ".dmg",
-        ".zip", ".gz", ".tar", ".7z", ".deb", ".rpm",
-        ".mobileconfig", ".dae", ".html", ".htm",
-    )
+def github_get(path, params=None):
+    url = f"{GITHUB_API}{path}"
 
     try:
-        parsed = urlparse(url)
-    except Exception:
-        return False
-
-    host = (parsed.netloc or "").lower()
-    path = (parsed.path or "").lower()
-
-    if parsed.scheme not in ("http", "https"):
-        return False
-    if any(token in lower for token in blocked_markers):
-        return False
-    if host in blocked_hosts:
-        return False
-    if path.endswith(blocked_extensions):
-        return False
-    if host in ("github.com", "www.github.com"):
-        return False
-    if "," in url or "](" in url:
-        return False
-    if not host:
-        return False
-
-    raw_hosts = (
-        "raw.githubusercontent.com",
-        "raw.githack.com",
-        "cdn.jsdelivr.net",
-    )
-
-    if host in raw_hosts:
-        markers = (
-            "/sub", "/subscribe", "/subscription",
-            "/clash", "/mihomo", "/v2ray", "/vless",
-            "/vmess", "/trojan", "/ss", "/nodes",
-            "/export", "base64", "oneclash",
-            "clashmeta", "freeclash",
+        response = requests.get(
+            url,
+            headers=GITHUB_HEADERS,
+            params=params,
+            timeout=15,
         )
 
-        filename = path.rsplit(
-            "/",
-            1,
-        )[-1].split(
-            "?",
-            1,
-        )[0].lower()
-
-        if filename.endswith(
-            (
-                ".md",
-                ".mdx",
-                ".markdown",
+        if response.status_code != 200:
+            print(
+                f"⚠️ GitHub API {response.status_code}: "
+                f"{path}"
             )
-        ):
-            return False
+            return None
 
-        blocked_names = (
-            "pubspec.yaml",
-            "analysis_options.yaml",
-            "package.json",
-            "podspec",
-            "cargo.toml",
-            "gemfile",
-            "dockerfile",
-        )
+        return response.json()
 
-        if filename in blocked_names:
-            return False
-
-        return any(
-            token in path
-            for token in markers
-        )
-
-    if "bitbucket.org" in host:
-        return (
-            "/raw/" in path
-            and any(
-                token in path
-                for token in (
-                    "vless", "vmess", "trojan", "clash",
-                    "mihomo", "v2ray", "nodes", "proxy",
-                )
-            )
-        )
-
-    return (
-        any(
-            token in path
-            for token in (
-                "/sub", "/subscribe", "/subscription",
-                "/clash", "/mihomo", "/v2ray", "/vless",
-                "/vmess", "/trojan", "/ss", "/nodes",
-                "/proxy", "/proxies", "/free",
-            )
-        )
-        and path.endswith(
-            (
-                ".yaml", ".yml", ".json", ".txt", ".conf",
-                "/sub", "/subscribe", "/subscription",
-            )
-        )
-    )
+    except Exception as e:
+        print(f"⚠️ GitHub API 请求失败: {e}")
+        return None
 
 
-def extract_subscription_urls(text):
-    if not text:
-        return []
+def discover_github_repositories():
+    """
+    自动发现：
+    - 高 Star
+    - 最近持续更新
+    - 与 Clash / Mihomo / Proxy / Subscription 有关
 
-    urls = set()
-
-    for item in re.findall(
-        r'https?://[^\s\'"<>\\]\}]+',
-        text,
-        re.I,
-    ):
-        item = normalize_url(item)
-
-        if (
-            len(item) > 20
-            and item.startswith("http")
-            and is_plausible_subscription_url(item)
-        ):
-            urls.add(item)
-
-    return sorted(urls)
-
-
-def ensure_source_entry(
-    registry,
-    url,
-    repo="",
-    stars=0,
-):
-    now = int(time.time())
-
-    entry = registry.setdefault(
-        url,
-        {
-            "url": url,
-            "repo": repo,
-            "stars": int(stars or 0),
-            "first_seen": now,
-            "last_seen": now,
-            "success_count": 0,
-            "failure_count": 0,
-            "qualified_runs": 0,
-            "qualified_nodes_total": 0,
-            "last_status": "",
-            "last_nodes": 0,
-            "last_qualified_nodes": 0,
-            "last_qualified_at": 0,
-        },
-    )
-
-    entry["last_seen"] = now
-
-    if repo:
-        entry["repo"] = repo
-
-    if stars:
-        entry["stars"] = int(stars)
-
-    return entry
-
-
-# ============================================================
-# GitHub 自动搜索
-# ============================================================
-
-def search_github_repos():
-
-    if not GITHUB_SEARCH_ENABLED:
-        return []
-
-    repos = {}
+    不是一次性抓固定仓库。
+    每次运行都会重新搜索。
+    """
 
     cutoff = (
         datetime.now(timezone.utc)
-        - timedelta(
-            days=GITHUB_MAX_DAYS
-        )
-    )
+        - timedelta(days=RECENT_DAYS)
+    ).strftime("%Y-%m-%d")
 
-    headers = dict(HEADERS)
-    headers["Accept"] = (
-        "application/vnd.github+json"
-    )
+    repositories = {}
 
-    for base_query in GITHUB_SEARCH_QUERIES:
+    print("\n🔎 开始扫描 GitHub 高质量候选仓库...")
 
+    for keyword in GITHUB_SEARCH_QUERIES:
         query = (
-            f"{base_query} "
-            f"stars:>={GITHUB_MIN_STARS} "
-            f"pushed:>="
-            f"{cutoff.date().isoformat()}"
+            f"{keyword} "
+            f"stars:>={MIN_REPO_STARS} "
+            f"pushed:>={cutoff}"
         )
 
-        try:
+        data = github_get(
+            "/search/repositories",
+            params={
+                "q": query,
+                "sort": "stars",
+                "order": "desc",
+                "per_page": TOP_REPOS_PER_QUERY,
+            },
+        )
 
-            response = requests.get(
-                "https://api.github.com/search/repositories",
-                headers=headers,
+        items = []
+
+        if data:
+            items = data.get("items", [])
+
+        # 如果严格条件没有结果，降低 Star 门槛
+        if not items:
+            query = (
+                f"{keyword} "
+                f"stars:>={FALLBACK_MIN_REPO_STARS} "
+                f"pushed:>={cutoff}"
+            )
+
+            data = github_get(
+                "/search/repositories",
                 params={
                     "q": query,
-                    "sort": "updated",
+                    "sort": "stars",
                     "order": "desc",
-                    "per_page": 10,
+                    "per_page": TOP_REPOS_PER_QUERY,
                 },
-                timeout=12,
             )
 
-            if response.status_code != 200:
-                print(
-                    f"GitHub search HTTP "
-                    f"{response.status_code}: "
-                    f"{base_query}"
-                )
+            if data:
+                items = data.get("items", [])
+
+        print(
+            f"  └─ {keyword}: "
+            f"{len(items)} 个候选仓库"
+        )
+
+        for repo in items:
+            full_name = repo.get("full_name")
+
+            if not full_name:
                 continue
 
-            for item in response.json().get(
-                "items",
-                [],
-            ):
+            repositories[full_name] = {
+                "full_name": full_name,
+                "html_url": repo.get("html_url"),
+                "default_branch": (
+                    repo.get("default_branch")
+                    or "main"
+                ),
+                "stars": int(
+                    repo.get("stargazers_count") or 0
+                ),
+                "forks": int(
+                    repo.get("forks_count") or 0
+                ),
+                "pushed_at": repo.get("pushed_at"),
+                "description": (
+                    repo.get("description") or ""
+                ),
+            }
 
-                full_name = item.get(
-                    "full_name"
-                )
+    # 高 Star + 最近更新时间
+    repo_list = list(repositories.values())
 
-                stars = int(
-                    item.get(
-                        "stargazers_count",
-                        0,
-                    )
-                )
-
-                updated_at = item.get(
-                    "updated_at",
-                    "",
-                )
-
-                if not full_name:
-                    continue
-
-                if (
-                    stars
-                    < GITHUB_MIN_STARS
-                ):
-                    continue
-
-                try:
-                    updated_dt = (
-                        datetime.fromisoformat(
-                            updated_at.replace(
-                                "Z",
-                                "+00:00",
-                            )
-                        )
-                    )
-
-                    if updated_dt < cutoff:
-                        continue
-
-                except Exception:
-                    continue
-
-                repos[full_name] = {
-                    "full_name": full_name,
-                    "stars": stars,
-                    "default_branch":
-                        item.get(
-                            "default_branch",
-                            "main",
-                        ),
-                    "updated_at":
-                        updated_at,
-                }
-
-            time.sleep(0.6)
-
-        except Exception as exc:
-            print(
-                f"GitHub search error: {exc}"
-            )
-
-    result = sorted(
-        repos.values(),
-        key=lambda x: (
-            -x["stars"],
-            x["updated_at"],
-        ),
+    repo_list.sort(
+        key=lambda r: (
+            -r["stars"],
+            r["pushed_at"] or "",
+        )
     )
 
-    result = result[
-        :GITHUB_MAX_REPOS
-    ]
+    repo_list = repo_list[:MAX_DISCOVERED_REPOS]
 
     print(
-        f"GitHub dynamic repositories: "
-        f"{len(result)}"
+        f"\n✅ 最终纳入 GitHub 监控仓库: "
+        f"{len(repo_list)}"
     )
 
-    return result
-
-
-def fetch_text(
-    url,
-    timeout=10,
-):
-
-    try:
-
-        response = requests.get(
-            url,
-            headers=PUBLIC_HEADERS,
-            timeout=timeout,
+    for repo in repo_list:
+        print(
+            f"  ⭐ {repo['stars']:>6} "
+            f"{repo['full_name']} "
+            f"| {repo['pushed_at']}"
         )
 
-        if response.status_code == 200:
-            return response.text
-
-    except Exception:
-        pass
-
-    return ""
+    return repo_list
 
 
-def fetch_repo_texts(repo):
+def score_subscription_path(path):
+    """
+    对仓库文件路径进行订阅候选评分。
+    """
 
-    full_name = repo[
-        "full_name"
+    lower = path.lower()
+
+    # 明显不是节点文件
+    bad_words = [
+        ".github/",
+        "workflow",
+        "test/",
+        "tests/",
+        "docs/",
+        "example/",
+        "examples/",
+        "readme",
+        "license",
     ]
 
-    branch = repo.get(
-        "default_branch",
-        "main",
+    for word in bad_words:
+        if word in lower:
+            return -999
+
+    ext_score = 0
+
+    if lower.endswith(".yaml"):
+        ext_score = 10
+    elif lower.endswith(".yml"):
+        ext_score = 10
+    elif lower.endswith(".txt"):
+        ext_score = 6
+    elif lower.endswith(".conf"):
+        ext_score = 3
+    else:
+        return -999
+
+    score = ext_score
+
+    keywords = [
+        ("clash", 12),
+        ("mihomo", 12),
+        ("subscribe", 10),
+        ("subscription", 10),
+        ("sub", 5),
+        ("proxy", 8),
+        ("proxies", 8),
+        ("node", 7),
+        ("nodes", 7),
+        ("free", 5),
+        ("merge", 4),
+        ("all", 2),
+    ]
+
+    for word, weight in keywords:
+        if word in lower:
+            score += weight
+
+    return score
+
+
+def repo_tree(repo):
+    full_name = repo["full_name"]
+    branch = repo["default_branch"]
+
+    encoded_branch = quote(
+        branch,
+        safe=""
     )
 
-    texts = []
+    path = (
+        f"/repos/{full_name}/git/trees/"
+        f"{encoded_branch}"
+    )
 
-    for filename in (
-        "README.md",
-        "readme.md",
-    ):
+    return github_get(
+        path,
+        params={"recursive": "1"},
+    )
 
-        text = fetch_text(
-            f"https://raw.githubusercontent.com/"
-            f"{full_name}/"
-            f"{branch}/"
-            f"{filename}"
+
+def discover_subscription_urls(repo):
+    """
+    从仓库 Git Tree 自动寻找：
+    Clash / Mihomo / proxy / subscription 文件。
+    """
+
+    tree_data = repo_tree(repo)
+
+    if not tree_data:
+        return []
+
+    tree = tree_data.get("tree", [])
+
+    candidates = []
+
+    for item in tree:
+        if item.get("type") != "blob":
+            continue
+
+        path = item.get("path", "")
+        size = item.get("size")
+
+        if size is not None and size > 3_000_000:
+            continue
+
+        score = score_subscription_path(path)
+
+        if score < 15:
+            continue
+
+        candidates.append(
+            {
+                "path": path,
+                "score": score,
+                "size": size,
+            }
         )
 
-        if text:
-            texts.append(text)
-            break
+    candidates.sort(
+        key=lambda x: (
+            -x["score"],
+            x["path"],
+        )
+    )
 
-    try:
+    urls = []
 
-        response = requests.get(
-            f"https://api.github.com/repos/"
-            f"{full_name}/contents/",
-            headers=HEADERS,
-            timeout=10,
+    for item in candidates[:8]:
+        raw_url = (
+            "https://raw.githubusercontent.com/"
+            f"{repo['full_name']}/"
+            f"{quote(repo['default_branch'], safe='')}/"
+            f"{quote(item['path'], safe='/')}"
         )
 
-        if response.status_code == 200:
+        urls.append(
+            {
+                "url": raw_url,
+                "repo": repo["full_name"],
+                "stars": repo["stars"],
+                "path": item["path"],
+                "score": item["score"],
+            }
+        )
 
-            for item in response.json():
-
-                if item.get(
-                    "type"
-                ) != "file":
-                    continue
-
-                name = item.get(
-                    "name",
-                    "",
-                ).lower()
-
-                if not any(
-                    key in name
-                    for key in (
-                        "clash",
-                        "mihomo",
-                        "sub",
-                        "subscribe",
-                        "node",
-                        "free",
-                        "v2ray",
-                        "vless",
-                    )
-                ):
-                    continue
-
-                if not name.endswith(
-                    (
-                        ".yaml",
-                        ".yml",
-                        ".txt",
-                        ".json",
-                        ".conf",
-                    )
-                ):
-                    continue
-
-                download_url = item.get(
-                    "download_url"
-                )
-
-                if not download_url:
-                    continue
-
-                text = fetch_text(
-                    download_url
-                )
-
-                if text:
-                    texts.append(text)
-
-    except Exception:
-        pass
-
-    return texts
+    return urls
 
 
-def discover_subscription_sources():
+def discover_sources():
+    """
+    动态发现 + 固定保底源。
+    """
 
-    cache = load_json(
-        SOURCE_CACHE_FILE,
-        [],
-    )
-
-    if not isinstance(
-        cache,
-        list,
-    ):
-        cache = []
-
-    registry = load_json(
-        SOURCE_REGISTRY_FILE,
-        {},
-    )
-
-    if not isinstance(
-        registry,
-        dict,
-    ):
-        registry = {}
+    repos = discover_github_repositories()
 
     discovered = []
 
-    for url in cache:
+    for repo in repos:
+        urls = discover_subscription_urls(repo)
 
-        url = normalize_url(url)
-
-        if url:
-            discovered.append(url)
-
-            ensure_source_entry(
-                registry,
-                url,
-            )
-
-    # Rehydrate previously discovered, still-plausible sources so a
-    # temporary cache replacement cannot permanently forget good sources.
-    for url in list(registry.keys()):
-
-        if not (
-            isinstance(url, str)
-            and url.startswith("http")
-        ):
-            continue
-
-        normalized = normalize_url(url)
-
-        if not normalized:
-            continue
-
-        if not is_plausible_subscription_url(
-            normalized
-        ):
-            continue
-
-        if (
-            normalized != url
-            and normalized not in registry
-        ):
-            registry[normalized] = registry[url]
-            registry[normalized]["url"] = normalized
-            del registry[url]
-
-        discovered.append(
-            normalized
-        )
-
-        ensure_source_entry(
-            registry,
-            normalized,
-        )
-
-    for repo in search_github_repos():
-
-        repo_urls = set()
-
-        for text in fetch_repo_texts(
-            repo
-        ):
-            repo_urls.update(
-                extract_subscription_urls(
-                    text
-                )
-            )
-
-        if repo_urls:
+        if urls:
             print(
-                f"{repo['full_name']} "
-                f"Star={repo['stars']} "
-                f"sources={len(repo_urls)}"
+                f"  📂 {repo['full_name']} "
+                f"发现 {len(urls)} 个订阅文件"
             )
 
-        for url in repo_urls:
+        discovered.extend(urls)
 
-            discovered.append(url)
+    # 按仓库 Star + 文件评分排序
+    discovered.sort(
+        key=lambda x: (
+            -x["stars"],
+            -x["score"],
+        )
+    )
 
-            ensure_source_entry(
-                registry,
-                url,
-                repo["full_name"],
-                repo["stars"],
-            )
+    discovered = discovered[
+        :MAX_DISCOVERED_URLS
+    ]
 
-    for url in FALLBACK_SUBSCRIPTION_URLS:
+    # 固定保底源
+    final_sources = []
 
-        discovered.append(url)
-
-        ensure_source_entry(
-            registry,
-            url,
-            "fallback",
-            0,
+    for url in PINNED_SUBSCRIPTION_URLS:
+        final_sources.append(
+            {
+                "url": url,
+                "repo": "PINNED",
+                "stars": 0,
+                "path": "",
+                "score": 0,
+            }
         )
 
-    unique = []
+    # 动态源在前
+    for item in discovered:
+        final_sources.insert(
+            0,
+            item,
+        )
+
+    # URL 去重
     seen = set()
+    unique_sources = []
 
-    for url in discovered:
+    for source in final_sources:
+        url = source["url"]
 
-        url = normalize_url(url)
-
-        if (
-            not url
-            or url in seen
-                or not is_plausible_subscription_url(url)
-        ):
+        if url in seen:
             continue
 
         seen.add(url)
-        unique.append(url)
+        unique_sources.append(source)
 
-    def source_priority(url):
+    registry = {
+        "updated_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
+        "repositories": repos,
+        "sources": unique_sources,
+    }
 
-        entry = registry.get(
-            url,
-            {},
-        )
-
-        last_nodes = int(
-            entry.get(
-                "last_nodes",
-                0,
-            )
-            or 0
-        )
-
-        last_qualified = int(
-            entry.get(
-                "last_qualified_nodes",
-                0,
-            )
-            or 0
-        )
-
-        qualified_runs = int(
-            entry.get(
-                "qualified_runs",
-                0,
-            )
-            or 0
-        )
-
-        success_count = int(
-            entry.get(
-                "success_count",
-                0,
-            )
-            or 0
-        )
-
-        return (
-            0 if last_qualified > 0 else 1,
-            0 if last_nodes > 0 else 1,
-            -qualified_runs,
-            -success_count,
-            -last_qualified,
-            -last_nodes,
-            -int(
-                entry.get(
-                    "last_qualified_at",
-                    0,
-                )
-                or 0
-            ),
-            -int(
-                entry.get(
-                    "stars",
-                    0,
-                )
-                or 0
-            ),
-        )
-
-    unique.sort(
-        key=source_priority
-    )
-
-    selected = []
-    repo_counts = {}
-
-    for url in unique:
-        entry = registry.get(
-            url,
-            {},
-        )
-
-        repo = (
-            entry.get("repo")
-            or "unknown"
-        )
-
-        if repo_counts.get(
-            repo,
-            0,
-        ) >= MAX_SOURCES_PER_REPO:
-            continue
-
-        selected.append(
-            url
-        )
-
-        repo_counts[repo] = (
-            repo_counts.get(
-                repo,
-                0,
-            )
-            + 1
-        )
-
-        if len(selected) >= MAX_SUBSCRIPTION_SOURCES:
-            break
-
-    unique = selected
-
-    save_json(
-        SOURCE_CACHE_FILE,
-        unique,
-    )
-
-    save_json(
+    safe_json_save(
         SOURCE_REGISTRY_FILE,
         registry,
     )
 
     print(
-        f"Subscription sources selected: "
-        f"{len(unique)}"
+        f"\n🌐 最终监控订阅源: "
+        f"{len(unique_sources)}"
     )
 
-    return unique
+    return unique_sources
 
 
-# ============================================================
-# 节点解析
-# ============================================================
+# =========================================================
+# 订阅解析
+# =========================================================
 
-def normalize_proxy(proxy):
-
-    if not isinstance(
-        proxy,
-        dict,
-    ):
-        return None
-
-    result = {
-        key: value
-        for key, value in proxy.items()
-        if value is not None
-    }
-
-    # Normalize common sing-box Shadowsocks fields found in YAML
-    # subscriptions before handing the node to Mihomo.
-    proxy_type = str(
-        result.get(
-            "type",
-            "",
-        )
-    ).lower()
-
-    if proxy_type in (
-        "shadowsocks",
-        "ss",
-    ):
-
-        result[
-            "type"
-        ] = "ss"
-
-        if not result.get(
-            "cipher"
-        ):
-            result[
-                "cipher"
-            ] = (
-                result.get(
-                    "method"
-                )
-                or result.get(
-                    "method-name"
-                )
-            )
-
-    if not result.get(
-        "server"
-    ):
-        result[
-            "server"
-        ] = (
-            result.get("address")
-            or result.get("add")
-            or result.get("host")
-        )
-
-    if not result.get(
-        "port"
-    ):
-        result[
-            "port"
-        ] = (
-            result.get("server_port")
-            or result.get("serverPort")
-        )
-
-    if not result.get(
-        "server"
-    ):
-        return None
-
-    if not result.get(
-        "port"
-    ):
-        return None
-
+def try_yaml_parse(text):
     try:
+        data = yaml.safe_load(text)
 
-        result["port"] = int(
-            result["port"]
+        if isinstance(data, dict):
+            proxies = data.get("proxies")
+
+            if isinstance(proxies, list):
+                return proxies
+
+        if isinstance(data, list):
+            return data
+
+    except Exception:
+        pass
+
+    return []
+
+
+def try_base64_yaml_parse(text):
+    try:
+        compact = "".join(
+            text.split()
+        )
+
+        decoded = base64.b64decode(
+            compact + "=" * (
+                -len(compact) % 4
+            ),
+            validate=False,
+        )
+
+        decoded_text = decoded.decode(
+            "utf-8",
+            errors="ignore",
+        )
+
+        return try_yaml_parse(
+            decoded_text
         )
 
     except Exception:
+        return []
+
+
+def fetch_proxies_from_url(url):
+    print(f"\n📥 获取: {url}")
+
+    try:
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=15,
+        )
+
+        if response.status_code != 200:
+            print(
+                f"⚠️ HTTP {response.status_code}"
+            )
+            return []
+
+        text = response.text.strip()
+
+        # 标准 YAML
+        proxies = try_yaml_parse(text)
+
+        if proxies:
+            return proxies
+
+        # Base64 YAML
+        proxies = try_base64_yaml_parse(text)
+
+        if proxies:
+            return proxies
+
+        print(
+            "⚠️ 无法识别为 Clash/Mihomo YAML"
+        )
+
+    except Exception as e:
+        print(
+            f"⚠️ 订阅获取失败: {e}"
+        )
+
+    return []
+
+
+# =========================================================
+# 节点标准化 / 去重
+# =========================================================
+
+def normalize_proxy(proxy):
+    if not isinstance(proxy, dict):
         return None
 
-    result.setdefault(
-        "name",
-        (
+    result = {}
+
+    for key, value in proxy.items():
+        if value is not None:
+            result[key] = value
+
+    server = result.get("server")
+    port = result.get("port")
+
+    if not server or not port:
+        return None
+
+    try:
+        result["port"] = int(port)
+    except Exception:
+        return None
+
+    if not result.get("name"):
+        result["name"] = (
             f"{result.get('type', 'proxy')}-"
-            f"{result['server']}:"
-            f"{result['port']}"
-        ),
-    )
+            f"{server}:{result['port']}"
+        )
 
     return result
 
 
 def proxy_fingerprint(proxy):
-
     identity = {
-        key: proxy.get(key)
-        for key in (
-            "type",
-            "server",
-            "port",
-            "uuid",
-            "password",
-            "username",
-            "cipher",
-            "tls",
-            "servername",
-            "sni",
-            "network",
-            "ws-opts",
-            "grpc-opts",
-            "reality-opts",
-            "http-opts",
-            "h2-opts",
-        )
+        "type": proxy.get("type"),
+        "server": proxy.get("server"),
+        "port": proxy.get("port"),
+        "uuid": proxy.get("uuid"),
+        "password": proxy.get("password"),
+        "username": proxy.get("username"),
+        "cipher": proxy.get("cipher"),
+        "tls": proxy.get("tls"),
+        "servername": proxy.get("servername"),
+        "sni": proxy.get("sni"),
+        "network": proxy.get("network"),
+        "ws-opts": proxy.get("ws-opts"),
+        "grpc-opts": proxy.get("grpc-opts"),
+        "reality-opts": proxy.get("reality-opts"),
+        "http-opts": proxy.get("http-opts"),
+        "h2-opts": proxy.get("h2-opts"),
     }
 
     raw = json.dumps(
@@ -1188,1055 +685,72 @@ def proxy_fingerprint(proxy):
         default=str,
     )
 
-    return hashlib.sha256(
-        raw.encode("utf-8")
-    ).hexdigest()[:20]
+    return sha1_text(raw)
 
 
-# ============================================================
-# 订阅获取
-# ============================================================
+# =========================================================
+# 候选节点池
+# =========================================================
 
-def safe_int(value):
-    try:
-        return int(value)
-    except Exception:
-        return None
-
-
-def decode_b64_text(value):
-    if not value:
-        return ""
-
-    compact = "".join(
-        str(value).split()
-    )
-
-    if len(compact) < 8:
-        return ""
-
-    try:
-        raw = base64.b64decode(
-            compact
-            + "=" * (-len(compact) % 4),
-            validate=False,
-        )
-        return raw.decode(
-            "utf-8",
-            errors="ignore",
-        ).strip()
-    except Exception:
-        return ""
-
-
-def query_value(query, *keys):
-    for key in keys:
-        value = query.get(key)
-        if value:
-            return unquote(
-                value[0]
-            )
-    return ""
-
-
-def parse_vmess_uri(uri):
-    try:
-        payload = uri.split(
-            "://",
-            1,
-        )[1].split(
-            "#",
-            1,
-        )[0]
-
-        decoded = decode_b64_text(
-            payload
-        )
-        data = json.loads(decoded)
-
-        server = (
-            data.get("add")
-            or data.get("server")
-            or data.get("host")
-        )
-        port = safe_int(
-            data.get("port")
-        )
-        uuid = (
-            data.get("id")
-            or data.get("uuid")
-        )
-
-        if not server or not port or not uuid:
-            return None
-
-        proxy = {
-            "name":
-                data.get("ps")
-                or server,
-            "type":
-                "vmess",
-            "server":
-                server,
-            "port":
-                port,
-            "uuid":
-                uuid,
-            "alterId":
-                safe_int(
-                    data.get(
-                        "aid",
-                        data.get(
-                            "alterId",
-                            0,
-                        ),
-                    )
-                ) or 0,
-            "cipher":
-                data.get(
-                    "scy",
-                    "auto",
-                ),
-            "tls":
-                str(
-                    data.get(
-                        "tls",
-                        "",
-                    )
-                ).lower()
-                in (
-                    "tls",
-                    "true",
-                ),
-            "network":
-                data.get(
-                    "net",
-                    "tcp",
-                ),
-        }
-
-        sni = (
-            data.get("sni")
-            or data.get("host")
-        )
-        if sni:
-            proxy["servername"] = sni
-
-        network = str(
-            proxy.get(
-                "network",
-                "",
-            )
-        ).lower()
-
-        if network == "ws":
-            ws_opts = {
-                "path":
-                    data.get(
-                        "path",
-                        "/",
-                    )
-            }
-            host = data.get("host")
-            if host:
-                ws_opts["headers"] = {
-                    "Host": host
-                }
-            proxy["ws-opts"] = ws_opts
-
-        return proxy
-
-    except Exception:
-        return None
-
-
-def parse_ss_uri(uri):
-    try:
-        parsed = urlparse(uri)
-        name = (
-            unquote(
-                parsed.fragment
-            )
-            if parsed.fragment
-            else (
-                parsed.hostname
-                or "ss"
-            )
-        )
-
-        server = parsed.hostname
-        port = parsed.port
-
-        if server and port:
-            username = unquote(
-                parsed.username or ""
-            )
-            password = unquote(
-                parsed.password or ""
-            )
-
-            if username and password:
-                method = username
-                secret = password
-            else:
-                decoded = decode_b64_text(
-                    username
-                )
-                if ":" in decoded:
-                    method, secret = decoded.split(
-                        ":",
-                        1,
-                    )
-                else:
-                    method = username
-                    secret = password
-
-            if method and secret:
-                return {
-                    "name": name,
-                    "type": "ss",
-                    "server": server,
-                    "port": port,
-                    "cipher": method,
-                    "password": secret,
-                    "udp": True,
-                }
-
-        payload = (
-            parsed.path
-            or ""
-        ).lstrip("/")
-
-        decoded = decode_b64_text(
-            payload
-        )
-
-        if "@" not in decoded:
-            return None
-
-        userinfo, address = decoded.rsplit(
-            "@",
-            1,
-        )
-
-        if ":" not in userinfo or ":" not in address:
-            return None
-
-        method, secret = userinfo.split(
-            ":",
-            1,
-        )
-        server, port_text = address.rsplit(
-            ":",
-            1,
-        )
-        port = safe_int(port_text)
-
-        if not server or not port:
-            return None
-
-        return {
-            "name": name,
-            "type": "ss",
-            "server": server,
-            "port": port,
-            "cipher": method,
-            "password": secret,
-            "udp": True,
-        }
-
-    except Exception:
-        return None
-
-
-def parse_uri_node(uri):
-    uri = normalize_url(uri)
-
-    if uri.lower().startswith("vmess://"):
-        return parse_vmess_uri(uri)
-
-    try:
-        parsed = urlparse(uri)
-        scheme = (
-            parsed.scheme or ""
-        ).lower()
-
-        if scheme == "ss":
-            return parse_ss_uri(uri)
-
-        if scheme not in (
-            "vless",
-            "trojan",
-        ):
-            return None
-
-        server = parsed.hostname
-        port = parsed.port
-        user = unquote(
-            parsed.username or ""
-        )
-        query = parse_qs(
-            parsed.query,
-            keep_blank_values=True,
-        )
-
-        if not server or not port or not user:
-            return None
-
-        name = (
-            unquote(
-                parsed.fragment
-            )
-            if parsed.fragment
-            else server
-        )
-
-        if scheme == "vless":
-            proxy = {
-                "name": name,
-                "type": "vless",
-                "server": server,
-                "port": port,
-                "uuid": user,
-                "network":
-                    query_value(
-                        query,
-                        "type",
-                    )
-                    or "tcp",
-            }
-
-            flow = query_value(
-                query,
-                "flow",
-            )
-            if flow:
-                proxy["flow"] = flow
-
-            encryption = query_value(
-                query,
-                "encryption",
-            )
-            if encryption:
-                proxy["encryption"] = encryption
-
-            security = query_value(
-                query,
-                "security",
-            ).lower()
-
-            sni = query_value(
-                query,
-                "sni",
-                "servername",
-            )
-            if sni:
-                proxy["servername"] = sni
-
-            if security in (
-                "tls",
-                "reality",
-            ):
-                proxy["tls"] = True
-
-            if security == "reality":
-                reality_opts = {}
-
-                pbk = query_value(
-                    query,
-                    "pbk",
-                )
-                sid = query_value(
-                    query,
-                    "sid",
-                )
-
-                if pbk:
-                    reality_opts["public-key"] = pbk
-                if sid:
-                    reality_opts["short-id"] = sid
-
-                if reality_opts:
-                    proxy[
-                        "reality-opts"
-                    ] = reality_opts
-
-                fp = query_value(
-                    query,
-                    "fp",
-                )
-                if fp:
-                    proxy[
-                        "client-fingerprint"
-                    ] = fp
-
-            network = str(
-                proxy.get(
-                    "network",
-                    "tcp",
-                )
-            ).lower()
-
-            if network == "ws":
-                ws_opts = {
-                    "path":
-                        query_value(
-                            query,
-                            "path",
-                        )
-                        or "/"
-                }
-                host = query_value(
-                    query,
-                    "host",
-                )
-                if host:
-                    ws_opts["headers"] = {
-                        "Host": host
-                    }
-                proxy["ws-opts"] = ws_opts
-
-            elif network == "grpc":
-                service = query_value(
-                    query,
-                    "serviceName",
-                )
-                if service:
-                    proxy["grpc-opts"] = {
-                        "grpc-service-name":
-                            service
-                    }
-
-            return proxy
-
-        proxy = {
-            "name": name,
-            "type": "trojan",
-            "server": server,
-            "port": port,
-            "password": user,
-            "tls": True,
-        }
-
-        sni = query_value(
-            query,
-            "sni",
-            "servername",
-        )
-        if sni:
-            proxy["sni"] = sni
-            proxy["servername"] = sni
-
-        network = (
-            query_value(
-                query,
-                "type",
-            )
-            or "tcp"
-        ).lower()
-
-        proxy["network"] = network
-
-        if network == "ws":
-            ws_opts = {
-                "path":
-                    query_value(
-                        query,
-                        "path",
-                    )
-                    or "/"
-            }
-            host = query_value(
-                query,
-                "host",
-            )
-            if host:
-                ws_opts["headers"] = {
-                    "Host": host
-                }
-            proxy["ws-opts"] = ws_opts
-
-        elif network == "grpc":
-            service = query_value(
-                query,
-                "serviceName",
-            )
-            if service:
-                proxy["grpc-opts"] = {
-                    "grpc-service-name":
-                        service
-                }
-
-        return proxy
-
-    except Exception:
-        return None
-
-
-def parse_uri_subscription(text):
-    if not text:
-        return []
-
-    uris = re.findall(
-        r'(?:vless|vmess|trojan|ss)://[^\s\'"<>\\]\}]+',
-        text,
-        re.I,
-    )
-
-    nodes = []
-
-    for uri in uris:
-        node = parse_uri_node(
-            uri
-        )
-        if node:
-            nodes.append(node)
-
-    return nodes
-
-
-def parse_base64_uri_subscription(text):
-    decoded = decode_b64_text(
-        text
-    )
-
-    if not decoded:
-        return []
-
-    return parse_uri_subscription(
-        decoded
-    )
-
-
-def normalize_json_node(data):
-    if not isinstance(data, dict):
-        return None
-
-    proxy_type = str(
-        data.get("type")
-        or data.get("protocol")
-        or ""
-    ).lower()
-
-    if proxy_type == "shadowsocks":
-        proxy_type = "ss"
-
-    if proxy_type not in (
-        "vless",
-        "vmess",
-        "trojan",
-        "ss",
-    ):
-        if (
-            data.get("alterId") is not None
-            or data.get("aid") is not None
-        ):
-            proxy_type = "vmess"
-        elif (
-            data.get("cipher")
-            and (
-                data.get("password")
-                or data.get("passwd")
-            )
-        ):
-            proxy_type = "ss"
-        elif data.get("uuid"):
-            proxy_type = "vless"
-        elif (
-            data.get("password")
-            or data.get("passwd")
-        ):
-            proxy_type = "trojan"
-        else:
-            return None
-
-    server = (
-        data.get("server")
-        or data.get("address")
-        or data.get("add")
-        or data.get("host")
-    )
-
-    port = safe_int(
-        data.get("port")
-        or data.get("server_port")
-        or data.get("serverPort")
-    )
-
-    if not server or not port:
-        return None
-
-    proxy = {
-        "name":
-            data.get("name")
-            or data.get("remarks")
-            or data.get("ps")
-            or data.get("tag")
-            or server,
-        "type":
-            proxy_type,
-        "server":
-            server,
-        "port":
-            port,
-    }
-
-    if proxy_type in (
-        "vless",
-        "vmess",
-    ):
-        uuid = (
-            data.get("uuid")
-            or data.get("id")
-        )
-        if not uuid:
-            return None
-
-        proxy["uuid"] = uuid
-
-    if proxy_type == "vmess":
-        proxy["alterId"] = safe_int(
-            data.get(
-                "alterId",
-                data.get(
-                    "aid",
-                    0,
-                ),
-            )
-        ) or 0
-        proxy["cipher"] = data.get(
-            "cipher",
-            data.get(
-                "scy",
-                "auto",
-            ),
-        )
-
-    elif proxy_type == "vless":
-        for key in (
-            "flow",
-            "encryption",
-        ):
-            if data.get(key):
-                proxy[key] = data.get(key)
-
-    else:
-        secret = (
-            data.get("password")
-            or data.get("passwd")
-        )
-        if secret:
-            proxy["password"] = secret
-
-    if data.get("udp") is not None:
-        proxy["udp"] = bool(
-            data.get("udp")
-        )
-
-    tls = data.get("tls")
-
-    if isinstance(tls, dict):
-        if tls.get("enabled"):
-            proxy["tls"] = True
-
-        sni = tls.get("server_name")
-        if sni:
-            proxy["servername"] = sni
-
-        reality = tls.get("reality")
-        if isinstance(reality, dict):
-            reality_opts = {}
-
-            public_key = (
-                reality.get("public_key")
-                or reality.get("public-key")
-            )
-            short_id = (
-                reality.get("short_id")
-                or reality.get("short-id")
-            )
-
-            if public_key:
-                reality_opts["public-key"] = public_key
-            if short_id:
-                reality_opts["short-id"] = short_id
-
-            if reality_opts:
-                proxy["tls"] = True
-                proxy["reality-opts"] = reality_opts
-
-    elif tls:
-        proxy["tls"] = True
-
-    sni = (
-        data.get("sni")
-        or data.get("servername")
-    )
-    if sni:
-        proxy["servername"] = sni
-
-    network = (
-        data.get("network")
-        or data.get("net")
-    )
-    transport = data.get(
-        "transport"
-    )
-    if isinstance(transport, dict):
-        network = network or transport.get(
-            "type"
-        )
-
-    if network:
-        proxy["network"] = network
-
-    if str(network).lower() == "ws":
-        ws = data.get("ws-opts")
-        if not isinstance(ws, dict):
-            ws = {}
-
-        if isinstance(transport, dict):
-            path = transport.get("path")
-            if path and not ws.get("path"):
-                ws["path"] = path
-            headers = transport.get("headers")
-            if headers and not ws.get("headers"):
-                ws["headers"] = headers
-
-        ws.setdefault(
-            "path",
-            data.get(
-                "path",
-                "/",
-            ),
-        )
-
-        if data.get("host"):
-            ws.setdefault(
-                "headers",
-                {},
-            )
-            ws["headers"].setdefault(
-                "Host",
-                data.get("host"),
-            )
-
-        proxy["ws-opts"] = ws
-
-    elif str(network).lower() == "grpc":
-        service = (
-            data.get("service-name")
-            or data.get("serviceName")
-        )
-
-        if isinstance(transport, dict):
-            service = service or transport.get(
-                "service_name"
-            )
-
-        if service:
-            proxy["grpc-opts"] = {
-                "grpc-service-name":
-                    service
-            }
-
-    return proxy
-
-
-def parse_json_nodes(text):
-    try:
-        data = json.loads(
-            text
-        )
-    except Exception:
-        return []
-
-    nodes = []
-    seen = set()
-
-    def walk(obj):
-        if isinstance(obj, dict):
-            for key in (
-                "proxies",
-                "nodes",
-                "outbounds",
-                "servers",
-            ):
-                value = obj.get(key)
-                if isinstance(value, list):
-                    for item in value:
-                        walk(item)
-
-            node = normalize_json_node(
-                obj
-            )
-            if node:
-                fingerprint = proxy_fingerprint(
-                    node
-                )
-                if fingerprint not in seen:
-                    seen.add(fingerprint)
-                    nodes.append(node)
-
-        elif isinstance(obj, list):
-            for item in obj:
-                walk(item)
-
-    walk(data)
-
-    return nodes
-
-
-def parse_yaml(text):
-    try:
-        data = yaml.safe_load(
-            text
-        )
-
-        if (
-            isinstance(data, dict)
-            and isinstance(
-                data.get("proxies"),
-                list,
-            )
-        ):
-            return data["proxies"]
-
-        if isinstance(
-            data,
-            list,
-        ):
-            return data
-
-    except Exception:
-        pass
-
-    return []
-
-
-def parse_base64_yaml(text):
-    decoded = decode_b64_text(
-        text
-    )
-
-    if not decoded:
-        return []
-
-    return parse_yaml(
-        decoded
-    )
-
-
-def fetch_source(url):
-    try:
-        response = requests.get(
-            url,
-            headers=PUBLIC_HEADERS,
-            timeout=12,
-        )
-
-        if response.status_code != 200:
-            return (
-                [],
-                f"HTTP {response.status_code}",
-            )
-
-        text = response.text.strip()
-
-        parsers = (
-            (parse_yaml, "YAML"),
-            (parse_json_nodes, "JSON"),
-            (parse_uri_subscription, "URI"),
-            (parse_base64_yaml, "Base64 YAML"),
-            (parse_base64_uri_subscription, "Base64 URI"),
-        )
-
-        for parser, label in parsers:
-            nodes = parser(text)
-            if nodes:
-                return (
-                    nodes,
-                    label,
-                )
-
-        return (
-            [],
-            "unparsed",
-        )
-
-    except Exception as exc:
-        return (
-            [],
-            str(exc),
-        )
-
-
-# ============================================================
-# 候选节点
-# ============================================================
-
-def collect_candidates(
-    source_urls
-):
-
-    registry = load_json(
-        SOURCE_REGISTRY_FILE,
-        {},
-    )
-
-    if not isinstance(
-        registry,
-        dict,
-    ):
-        registry = {}
-
-    history = load_history()
-
+def collect_candidates(sources):
     source_lists = []
 
-    for source_url in source_urls:
-
-        raw, status = fetch_source(
-            source_url
+    for source in sources:
+        raw = fetch_proxies_from_url(
+            source["url"]
         )
-
-        entry = ensure_source_entry(
-            registry,
-            source_url,
-        )
-
-        entry[
-            "last_status"
-        ] = status
-
-        entry[
-            "last_nodes"
-        ] = len(raw)
-
-        # This field means the result of the latest completed source scan.
-        # Reset stale success state before recording this run's qualified nodes.
-        entry[
-            "last_qualified_nodes"
-        ] = 0
-
-        if raw:
-
-            entry[
-                "success_count"
-            ] += 1
-
-        else:
-
-            entry[
-                "failure_count"
-            ] += 1
 
         normalized = []
 
-        for node in raw:
+        for proxy in raw:
+            proxy = normalize_proxy(proxy)
 
-            item = normalize_proxy(
-                node
-            )
+            if proxy:
+                normalized.append(proxy)
 
-            if item:
-                normalized.append(
-                    item
-                )
+        # 单源限额
+        normalized = normalized[
+            :MAX_PER_SOURCE
+        ]
 
-        if normalized:
+        print(
+            f"  └─ 候选节点: "
+            f"{len(normalized)}"
+        )
 
-            def history_key(node):
-                fp = proxy_fingerprint(node)
-                item = history.get(fp, {})
-                return (
-                    -int(item.get("pass_count", 0)),
-                    -int(item.get("last_seen", 0)),
-                    -int(item.get("first_seen", 0)),
-                )
+        source_lists.append(
+            normalized
+        )
 
-            normalized.sort(key=history_key)
-
-            source_lists.append(
-                {
-                    "source_url":
-                        source_url,
-                    "nodes":
-                        normalized[
-                            :MAX_PER_SOURCE
-                        ],
-                }
-            )
-
-    save_json(
-        SOURCE_REGISTRY_FILE,
-        registry,
-    )
-
+    # 轮询多个来源
     candidates = []
     seen = set()
+
     index = 0
 
-    while (
-        len(candidates)
-        < MAX_CANDIDATES
-    ):
-
+    while len(candidates) < MAX_CANDIDATES:
         added = False
 
-        for source in source_lists:
-
-            nodes = source[
-                "nodes"
-            ]
-
-            if (
-                index
-                >= len(nodes)
-            ):
+        for source_list in source_lists:
+            if index >= len(source_list):
                 continue
 
-            node = nodes[
-                index
-            ]
+            proxy = source_list[index]
 
-            fingerprint = (
-                proxy_fingerprint(
-                    node
-                )
+            fingerprint = proxy_fingerprint(
+                proxy
             )
 
-            if (
-                fingerprint
-                in seen
-            ):
+            if fingerprint in seen:
                 continue
 
-            seen.add(
-                fingerprint
-            )
+            seen.add(fingerprint)
 
-            candidates.append(
-                {
-                    "proxy":
-                        node,
-
-                    "fingerprint":
-                        fingerprint,
-
-                    "source_url":
-                        source[
-                            "source_url"
-                        ],
-                }
-            )
+            candidates.append(proxy)
 
             added = True
 
-            if (
-                len(candidates)
-                >= MAX_CANDIDATES
-            ):
+            if len(candidates) >= MAX_CANDIDATES:
                 break
 
         if not added:
@@ -2245,308 +759,96 @@ def collect_candidates(
         index += 1
 
     print(
-        f"Candidates for deep test: "
-        f"{len(candidates)}"
+        f"\n📊 进入深度测试: "
+        f"{len(candidates)} 个"
     )
 
     return candidates
 
 
-# ============================================================
-# Mihomo 测试配置
-# ============================================================
+# =========================================================
+# Mihomo
+# =========================================================
 
-def build_test_config(
-    candidates
-):
-
-    proxies = []
+def build_mihomo_config(candidates):
+    internal_proxies = []
     metadata = {}
 
-    for index, candidate in enumerate(
+    for index, proxy in enumerate(
         candidates,
         start=1,
     ):
-
-        name = (
+        internal_name = (
             f"TEST-{index:03d}"
         )
 
-        proxy = dict(
-            candidate["proxy"]
-        )
+        item = dict(proxy)
+        item["name"] = internal_name
 
-        proxy["name"] = name
+        internal_proxies.append(item)
 
-        proxies.append(proxy)
-
-        metadata[name] = {
-            "proxy":
-                candidate["proxy"],
-
-            "fingerprint":
-                candidate["fingerprint"],
-
-            "source_url":
-                candidate["source_url"],
+        metadata[internal_name] = {
+            "proxy": proxy,
+            "fingerprint": proxy_fingerprint(
+                proxy
+            ),
         }
 
+    names = [
+        x["name"]
+        for x in internal_proxies
+    ]
+
     config = {
-        "mixed-port":
-            TEST_PORT,
-
-        "allow-lan":
-            False,
-
-        "mode":
-            "rule",
-
-        "log-level":
-            "silent",
+        "mixed-port": MIXED_PORT,
+        "allow-lan": False,
+        "mode": "rule",
+        "log-level": "silent",
 
         "external-controller":
-            (
-                f"127.0.0.1:"
-                f"{CONTROLLER_PORT}"
-            ),
+            f"127.0.0.1:{CONTROLLER_PORT}",
 
         "proxies":
-            proxies,
+            internal_proxies,
 
         "proxy-groups": [
             {
-                "name":
-                    "TEST",
-
-                "type":
-                    "select",
-
-                "proxies":
-                    [
-                        p["name"]
-                        for p in proxies
-                    ],
+                "name": "TEST",
+                "type": "select",
+                "proxies": names,
             }
         ],
 
-        "rules":
-            [
-                "MATCH,TEST"
-            ],
+        "rules": [
+            "MATCH,TEST",
+        ],
     }
 
-    return (
-        config,
-        metadata,
-    )
+    return config, metadata
 
 
-def write_yaml(
-    path,
-    data,
-):
+def write_temp_config(config):
+    path = "temp_mihomo.yaml"
 
     with open(
         path,
         "w",
         encoding="utf-8",
     ) as f:
-
         yaml.safe_dump(
-            data,
+            config,
             f,
             allow_unicode=True,
             sort_keys=False,
         )
 
-
-# ============================================================
-# Mihomo 配置预检
-# ============================================================
-
-def validate_mihomo_config(
-    config_path,
-):
-
-    try:
-
-        completed = subprocess.run(
-            [
-                MIHOMO_BIN,
-                "-t",
-                "-f",
-                config_path,
-            ],
-            capture_output=True,
-            text=True,
-            timeout=MIHOMO_CONFIG_TEST_TIMEOUT,
-        )
-
-        if completed.returncode == 0:
-            return True
-
-        detail = (
-            completed.stderr
-            or completed.stdout
-            or ""
-        ).strip()
-
-        if len(detail) > 2000:
-            detail = detail[-2000:]
-
-        print(
-            "Mihomo config validation failed:"
-        )
-        print(
-            detail
-            or "no diagnostic output"
-        )
-
-        return False
-
-    except subprocess.TimeoutExpired:
-        print(
-            "Mihomo config validation timed out"
-        )
-        return False
-
-    except Exception as exc:
-        print(
-            f"Mihomo config validation error: "
-            f"{type(exc).__name__}: {exc}"
-        )
-        return False
+    return path
 
 
-def filter_valid_candidates(
-    candidates,
-):
-
-    if not candidates:
-        return []
-
-    full_config, _ = build_test_config(
-        candidates
-    )
-
-    full_path = (
-        "temp_mihomo_validate_full.yaml"
-    )
-
-    write_yaml(
-        full_path,
-        full_config,
-    )
-
-    try:
-        if validate_mihomo_config(
-            full_path
-        ):
-            return candidates
-    finally:
-        try:
-            os.remove(
-                full_path
-            )
-        except OSError:
-            pass
-
-    valid_fingerprints = set()
-
-    queue = [
-        candidates[index:index + MIHOMO_CONFIG_BATCH_SIZE]
-        for index in range(
-            0,
-            len(candidates),
-            MIHOMO_CONFIG_BATCH_SIZE,
-        )
-    ]
-
-    while queue:
-
-        batch = queue.pop(0)
-
-        if not batch:
-            continue
-
-        config, _ = build_test_config(
-            batch
-        )
-
-        batch_path = (
-            "temp_mihomo_validate_batch.yaml"
-        )
-
-        write_yaml(
-            batch_path,
-            config,
-        )
-
-        try:
-            ok = validate_mihomo_config(
-                batch_path
-            )
-        finally:
-            try:
-                os.remove(
-                    batch_path
-                )
-            except OSError:
-                pass
-
-        if ok:
-            valid_fingerprints.update(
-                item["fingerprint"]
-                for item in batch
-            )
-            continue
-
-        if len(batch) == 1:
-            item = batch[0]
-            print(
-                "DROP invalid Mihomo candidate: "
-                f"{item['proxy'].get('name', 'unnamed')} | "
-                f"source={item.get('source_url', '')}"
-            )
-            continue
-
-        midpoint = max(
-            1,
-            len(batch) // 2,
-        )
-
-        queue.insert(
-            0,
-            batch[:midpoint],
-        )
-
-        queue.insert(
-            1,
-            batch[midpoint:],
-        )
-
-    filtered = [
-        item
-        for item in candidates
-        if item["fingerprint"]
-        in valid_fingerprints
-    ]
-
+def start_mihomo(config_path):
     print(
-        "Mihomo config-valid candidates: "
-        f"{len(filtered)}/{len(candidates)}"
+        "\n🚀 启动 Mihomo..."
     )
-
-    return filtered
-
-
-# ============================================================
-# Mihomo 启停
-# ============================================================
-
-def start_mihomo(
-    config_path
-):
 
     proc = subprocess.Popen(
         [
@@ -2555,86 +857,37 @@ def start_mihomo(
             config_path,
         ],
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE,
-        text=True,
+        stderr=subprocess.DEVNULL,
     )
 
-    deadline = (
-        time.time()
-        + 12
-    )
+    deadline = time.time() + 12
 
-    while (
-        time.time()
-        < deadline
-    ):
-
-        if proc.poll() is not None:
-
-            try:
-                error_text = (
-                    proc.stderr.read()
-                    if proc.stderr
-                    else ""
-                )
-            except Exception:
-                error_text = ""
-
-            print(
-                "Mihomo exited before controller became ready:"
-            )
-            print(
-                (error_text or "").strip()[-3000:]
-                or "no stderr output"
-            )
-
-            return None
-
+    while time.time() < deadline:
         try:
-
             response = requests.get(
-                (
-                    f"{CONTROLLER_URL}"
-                    f"/version"
-                ),
+                f"{CONTROLLER_URL}/version",
                 timeout=1,
             )
 
             if response.status_code == 200:
+                print(
+                    "✅ Mihomo Controller 已启动"
+                )
                 return proc
 
         except Exception:
             pass
 
-        time.sleep(
-            0.5
-        )
+        time.sleep(0.5)
+
+    print(
+        "❌ Mihomo Controller 启动失败"
+    )
 
     try:
-
-        if proc.poll() is None:
-            proc.terminate()
-
-            proc.wait(
-                timeout=3
-            )
-
-        error_text = (
-            proc.stderr.read()
-            if proc.stderr
-            else ""
-        )
-
-        print(
-            "Mihomo controller did not become ready:"
-        )
-        print(
-            (error_text or "").strip()[-3000:]
-            or "no stderr output"
-        )
-
+        proc.terminate()
+        proc.wait(timeout=3)
     except Exception:
-
         try:
             proc.kill()
         except Exception:
@@ -2644,49 +897,33 @@ def start_mihomo(
 
 
 def stop_mihomo(proc):
-
-    if not proc:
+    if proc is None:
         return
 
     try:
-
         proc.terminate()
-
-        proc.wait(
-            timeout=5
-        )
+        proc.wait(timeout=5)
 
     except Exception:
-
         try:
             proc.kill()
         except Exception:
             pass
 
 
-def select_proxy(
-    name
-):
-
+def select_proxy(proxy_name):
     try:
-
         response = requests.put(
-            (
-                f"{CONTROLLER_URL}"
-                f"/proxies/TEST"
-            ),
+            f"{CONTROLLER_URL}/proxies/TEST",
             json={
-                "name": name
+                "name": proxy_name
             },
             timeout=3,
         )
 
-        if (
-            response.status_code
-            not in (
-                200,
-                204,
-            )
+        if response.status_code not in (
+            200,
+            204,
         ):
             return False
 
@@ -2700,2632 +937,772 @@ def select_proxy(
         return False
 
 
-# ============================================================
-# Mihomo 原生真实延迟
-# ============================================================
+# =========================================================
+# 节点深度验证
+# =========================================================
 
-def proxy_delay(
-    proxy_name,
-    url,
-    expected=None,
-):
-
-    encoded_name = quote(
-        proxy_name,
-        safe="",
-    )
-
-    params = {
-        "url":
-            url,
-
-        "timeout":
-            DELAY_TIMEOUT_MS,
-    }
-
-    if expected:
-        params[
-            "expected"
-        ] = expected
-
-    try:
-
-        response = requests.get(
-            (
-                f"{CONTROLLER_URL}"
-                f"/proxies/"
-                f"{encoded_name}"
-                f"/delay"
-            ),
-            params=params,
-            timeout=(
-                DELAY_TIMEOUT_MS
-                / 1000
-                + 2
-            ),
-        )
-
-        if response.status_code != 200:
-            detail = (
-                response.text
-                or ""
-            ).replace(
-                "\n",
-                " ",
-            )[:180]
-
-            return (
-                None,
-                f"controller HTTP {response.status_code}"
-                + (f": {detail}" if detail else ""),
-            )
-
-        try:
-            data = response.json()
-        except Exception as exc:
-            return (
-                None,
-                f"invalid controller JSON: {type(exc).__name__}: {exc}",
-            )
-
-        delay = data.get(
-            "delay"
-        )
-
-        if delay is None:
-            detail = (
-                json.dumps(
-                    data,
-                    ensure_ascii=False,
-                    sort_keys=True,
-                )[:180]
-            )
-
-            return (
-                None,
-                f"controller returned no delay: {detail}",
-            )
-
-        return (
-            int(delay),
-            "",
-        )
-
-    except Exception as exc:
-        return (
-            None,
-            f"{type(exc).__name__}: {exc}",
-        )
-
-
-# ============================================================
-# 代理 Session
-# ============================================================
-
-def build_proxy_session():
-
+def test_current_proxy():
     session = requests.Session()
 
     session.headers.update(
-        HEADERS
+        {
+            "User-Agent": USER_AGENT,
+            "Accept": "*/*",
+        }
+    )
+
+    proxy_url = (
+        f"http://127.0.0.1:"
+        f"{MIXED_PORT}"
     )
 
     session.proxies.update(
         {
-            "http":
-                (
-                    f"http://127.0.0.1:"
-                    f"{TEST_PORT}"
-                ),
-
-            "https":
-                (
-                    f"http://127.0.0.1:"
-                    f"{TEST_PORT}"
-                ),
+            "http": proxy_url,
+            "https": proxy_url,
         }
     )
 
-    return session
+    result = {
+        "passed": False,
 
+        "exit_ip": "",
+        "country": "",
+        "city": "",
+        "org": "",
+        "isp": "",
 
-def probe_url(
-    session,
-    url,
-    timeout=4,
-):
+        "hosting": False,
+        "proxy": False,
 
-    try:
+        "google_access": False,
+        "gemini_access": False,
+        "gemini_api_reachable": False,
 
-        response = session.get(
-            url,
-            timeout=timeout,
-            allow_redirects=True,
-        )
+        "ip_latency_ms": None,
+        "gemini_latency_ms": None,
 
-        if (
-            200
-            <= response.status_code
-            < 400
-        ):
-            return (
-                True,
-                response.status_code,
-            )
+        "reason": "",
+    }
 
-        if response.status_code in (
-            400,
-            404,
-            405,
-            408,
-            409,
-            429,
-        ):
-            return (
-                True,
-                response.status_code,
-            )
-
-        return (
-            False,
-            response.status_code,
-        )
-
-    except Exception as exc:
-
-        return (
-            False,
-            str(exc),
-        )
-
-
-def get_exit_ip_info(
-    session
-):
+    # -----------------------------------------------------
+    # 1. 实际出口 IP
+    # -----------------------------------------------------
 
     try:
+        start = time.time()
 
         response = session.get(
             IP_CHECK_URL,
             timeout=REQUEST_TIMEOUT,
         )
 
+        result["ip_latency_ms"] = int(
+            (time.time() - start) * 1000
+        )
+
         if response.status_code != 200:
-            return None
+            result["reason"] = (
+                "IP API HTTP "
+                f"{response.status_code}"
+            )
+            return result
 
         data = response.json()
 
+        if data.get("status") != "success":
+            result["reason"] = (
+                "IP API 返回失败"
+            )
+            return result
+
+        result["exit_ip"] = (
+            data.get("query", "")
+        )
+
+        result["country"] = (
+            data.get("country", "")
+        )
+
+        result["city"] = (
+            data.get("city", "")
+        )
+
+        result["org"] = (
+            data.get("org", "")
+        )
+
+        result["isp"] = (
+            data.get("isp", "")
+        )
+
+        result["hosting"] = bool(
+            data.get("hosting", False)
+        )
+
+        result["proxy"] = bool(
+            data.get("proxy", False)
+        )
+
         if data.get(
-            "status"
-        ) != "success":
-            return None
-
-        return data
-
-    except Exception:
-        return None
-
-
-# ============================================================
-# 单节点深度测试
-# ============================================================
-
-def test_node(
-    proxy_name
-):
-
-    result = {
-        "passed":
-            False,
-
-        "google_delay_ms":
-            None,
-
-        "gemini_delay_ms":
-            None,
-
-        "play_delay_ms":
-            None,
-
-        "max_delay_ms":
-            None,
-
-        "strict_delay_pass":
-            False,
-
-        "exit_ip":
-            "",
-
-        "country":
-            "",
-
-        "countryCode":
-            "",
-
-        "city":
-            "",
-
-        "org":
-            "",
-
-        "isp":
-            "",
-
-        "hosting":
-            False,
-
-        "proxy":
-            False,
-
-        "is_clean":
-            False,
-
-        "google_access":
-            False,
-
-        "gemini_access":
-            False,
-
-        "play_access":
-            False,
-
-        "mobile_probe_passed":
-            0,
-
-        "mobile_probe_total":
-            len(
-                GEMINI_MOBILE_PROBES
-            ),
-
-        "reason":
-            "",
-    }
-
-    # 1. Google
-    google_delay, google_delay_error = proxy_delay(
-        proxy_name,
-        GOOGLE_DELAY_URL,
-        "204",
-    )
-
-    result[
-        "google_delay_ms"
-    ] = google_delay
-
-    if google_delay is None:
-        result[
-            "reason"
-        ] = (
-            "Google delay failed"
-            + (
-                f": {google_delay_error}"
-                if google_delay_error
-                else ""
+            "countryCode"
+        ) != "US":
+            result["reason"] = (
+                "出口不是美国: "
+                f"{data.get('countryCode')}"
             )
-        )
-        return result
+            return result
 
-    if google_delay >= MAX_PROXY_DELAY_MS:
+        if result["proxy"]:
+            result["reason"] = (
+                "IP API 判定 proxy=true"
+            )
+            return result
+
+        if not result["hosting"]:
+            result["reason"] = (
+                "不是 hosting/datacenter IP"
+            )
+            return result
+
+    except Exception as e:
         result["reason"] = (
-            f"Google proxy delay {google_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+            f"出口 IP 检测失败: {e}"
         )
         return result
 
-    # 2. Gemini
-    gemini_delay, gemini_delay_error = proxy_delay(
-        proxy_name,
-        GEMINI_DELAY_URL,
-        "200-399",
-    )
+    # -----------------------------------------------------
+    # 2. Google
+    # -----------------------------------------------------
 
-    result[
-        "gemini_delay_ms"
-    ] = gemini_delay
+    try:
+        response = session.get(
+            GOOGLE_TEST_URL,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+        )
 
-    if gemini_delay is None:
-        result[
-            "reason"
-        ] = (
-            "Gemini delay/HTTP "
-            "check failed"
-            + (
-                f": {gemini_delay_error}"
-                if gemini_delay_error
-                else ""
+        if response.status_code in (
+            200,
+            204,
+        ):
+            result["google_access"] = True
+        else:
+            result["reason"] = (
+                "Google HTTP "
+                f"{response.status_code}"
             )
-        )
-        return result
+            return result
 
-    if gemini_delay >= MAX_PROXY_DELAY_MS:
+    except Exception as e:
         result["reason"] = (
-            f"Gemini delay {gemini_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+            f"Google 请求失败: {e}"
         )
         return result
 
-    # 3. Google Play
-    play_delay, play_delay_error = proxy_delay(
-        proxy_name,
-        PLAY_DELAY_URL,
-        "200-399",
-    )
+    # -----------------------------------------------------
+    # 3. Gemini Web
+    # -----------------------------------------------------
 
-    result[
-        "play_delay_ms"
-    ] = play_delay
+    try:
+        start = time.time()
 
-    if play_delay is None:
-        result[
-            "reason"
-        ] = (
-            "Google Play delay/"
-            "HTTP check failed"
-            + (
-                f": {play_delay_error}"
-                if play_delay_error
-                else ""
+        response = session.get(
+            GEMINI_TEST_URL,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+        )
+
+        result["gemini_latency_ms"] = int(
+            (time.time() - start) * 1000
+        )
+
+        final_host = (
+            urlparse(response.url).hostname
+            or ""
+        )
+
+        google_domain = (
+            final_host == "google.com"
+            or final_host.endswith(
+                ".google.com"
             )
         )
-        return result
 
-    if play_delay >= MAX_PROXY_DELAY_MS:
+        if (
+            response.status_code in range(
+                200,
+                400,
+            )
+            and google_domain
+        ):
+            result["gemini_access"] = True
+
+        else:
+            result["reason"] = (
+                "Gemini Web 不满足条件: "
+                f"HTTP {response.status_code}, "
+                f"host={final_host}"
+            )
+            return result
+
+    except Exception as e:
         result["reason"] = (
-            f"Google Play delay {play_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+            f"Gemini Web 请求失败: {e}"
         )
         return result
 
-    result["max_delay_ms"] = max(
-        google_delay,
-        gemini_delay,
-        play_delay,
-    )
+    # -----------------------------------------------------
+    # 4. Gemini API 网络层
+    # -----------------------------------------------------
 
-    result["strict_delay_pass"] = (
-        google_delay < MAX_PROXY_DELAY_MS
-        and gemini_delay < MAX_PROXY_DELAY_MS
-        and play_delay < MAX_PROXY_DELAY_MS
-    )
-
-    # 4. IP 清洁度
-    session = build_proxy_session()
-
-    ip_info = get_exit_ip_info(
-        session
-    )
-
-    if not ip_info:
-        result[
-            "reason"
-        ] = (
-            "Exit IP information failed"
-        )
-        return result
-
-    result[
-        "exit_ip"
-    ] = ip_info.get(
-        "query",
-        "",
-    )
-
-    result[
-        "country"
-    ] = ip_info.get(
-        "country",
-        "",
-    )
-
-    result[
-        "countryCode"
-    ] = ip_info.get(
-        "countryCode",
-        "",
-    )
-
-    result[
-        "city"
-    ] = ip_info.get(
-        "city",
-        "",
-    )
-
-    result[
-        "org"
-    ] = ip_info.get(
-        "org",
-        "",
-    )
-
-    result[
-        "isp"
-    ] = ip_info.get(
-        "isp",
-        "",
-    )
-
-    result[
-        "hosting"
-    ] = bool(
-        ip_info.get(
-            "hosting",
-            False,
-        )
-    )
-
-    result[
-        "proxy"
-    ] = bool(
-        ip_info.get(
-            "proxy",
-            False,
-        )
-    )
-
-    result[
-        "is_clean"
-    ] = (
-        not result["hosting"]
-        and not result["proxy"]
-    )
-
-    if (
-        REQUIRE_CLEAN_IP
-        and not result["is_clean"]
-    ):
-        result[
-            "reason"
-        ] = (
-            "IP marked as hosting/proxy"
-        )
-        return result
-
-    # 5. Google / Gemini / Play 实际 GET
-    ok, _ = probe_url(
-        session,
-        GEMINI_DELAY_URL,
-        5,
-    )
-
-    if not ok:
-        result[
-            "reason"
-        ] = (
-            "Gemini GET probe failed"
-        )
-        return result
-
-    result[
-        "gemini_access"
-    ] = True
-
-    ok, _ = probe_url(
-        session,
-        PLAY_DELAY_URL,
-        5,
-    )
-
-    if not ok:
-        result[
-            "reason"
-        ] = (
-            "Google Play GET "
-            "probe failed"
-        )
-        return result
-
-    result[
-        "play_access"
-    ] = True
-
-    ok, _ = probe_url(
-        session,
-        "https://www.google.com/",
-        5,
-    )
-
-    if not ok:
-        result[
-            "reason"
-        ] = (
-            "Google GET probe failed"
-        )
-        return result
-
-    result[
-        "google_access"
-    ] = True
-
-    # 6. Gemini Android / Google 关键主机
-    passed = 0
-
-    for url in GEMINI_MOBILE_PROBES:
-
-        ok, _ = probe_url(
-            session,
-            url,
-            4,
+    try:
+        response = session.get(
+            GEMINI_API_TEST_URL,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
         )
 
-        if ok:
-            passed += 1
-
-    result[
-        "mobile_probe_passed"
-    ] = passed
-
-    required_mobile = max(
-        5,
-        int(
-            len(
-                GEMINI_MOBILE_PROBES
+        # 重点：
+        # 这里不是把 401 当作“API 可调用”
+        # 而是只判断 Google Gemini API
+        # 的 HTTPS 网络层是否可达。
+        if response.status_code in (
+            200,
+            400,
+            401,
+            403,
+            404,
+        ):
+            result[
+                "gemini_api_reachable"
+            ] = True
+        else:
+            result["reason"] = (
+                "Gemini API 网络层失败: "
+                f"HTTP {response.status_code}"
             )
-            * 0.75
-            + 0.999
-        ),
-    )
+            return result
 
-    if (
-        passed
-        < required_mobile
-    ):
-        result[
-            "reason"
-        ] = (
-            f"Gemini mobile host probes "
-            f"{passed}/"
-            f"{len(GEMINI_MOBILE_PROBES)}"
+    except Exception as e:
+        result["reason"] = (
+            f"Gemini API 请求失败: {e}"
         )
         return result
 
-    result[
-        "passed"
-    ] = True
+    result["passed"] = True
 
     return result
 
 
-# ============================================================
-# 节点历史
-# ============================================================
+# =========================================================
+# 历史记录
+# =========================================================
 
 def update_history(
     history,
     fingerprint,
-    now,
-    test,
+    current_time,
+    test_result,
     original_name,
 ):
-
     old = history.get(
         fingerprint,
-        {},
+        {}
     )
 
-    last_seen = old.get(
-        "last_seen",
-        0,
+    last_seen = int(
+        old.get("last_seen", 0)
+    )
+
+    old_success_streak = int(
+        old.get(
+            "success_streak",
+            0,
+        )
+    )
+
+    old_pass_count = int(
+        old.get(
+            "pass_count",
+            0,
+        )
+    )
+
+    old_fail_count = int(
+        old.get(
+            "fail_count",
+            0,
+        )
     )
 
     if (
         last_seen
-        and now - last_seen
+        and current_time - last_seen
         > HISTORY_RESET_HOURS * 3600
     ):
-
-        first_seen = now
+        first_seen = current_time
         pass_count = 1
+        success_streak = 1
 
     else:
-
         first_seen = old.get(
             "first_seen",
-            now,
+            current_time,
         )
 
-        pass_count = (
-            int(
-                old.get(
-                    "pass_count",
-                    0,
-                )
-            )
-            + 1
+        pass_count = old_pass_count + 1
+        success_streak = (
+            old_success_streak + 1
         )
 
-    history[
-        fingerprint
-    ] = {
+    item = {
+        "first_seen": first_seen,
+        "last_seen": current_time,
+        "last_success": current_time,
 
-        "first_seen":
-            first_seen,
+        "pass_count": pass_count,
+        "fail_count": old_fail_count,
+        "success_streak": success_streak,
 
-        "last_seen":
-            now,
-
-        "pass_count":
-            pass_count,
-
-        "last_max_delay_ms":
-            test[
-                "max_delay_ms"
+        "last_ip_latency_ms":
+            test_result[
+                "ip_latency_ms"
             ],
 
-        "last_google_delay_ms":
-            test[
-                "google_delay_ms"
-            ],
-
-        "last_gemini_delay_ms":
-            test[
-                "gemini_delay_ms"
-            ],
-
-        "last_play_delay_ms":
-            test[
-                "play_delay_ms"
+        "last_gemini_latency_ms":
+            test_result[
+                "gemini_latency_ms"
             ],
 
         "last_exit_ip":
-            test[
-                "exit_ip"
-            ],
+            test_result["exit_ip"],
 
         "country":
-            test[
-                "country"
-            ],
-
-        "countryCode":
-            test[
-                "countryCode"
-            ],
+            test_result["country"],
 
         "city":
-            test[
-                "city"
-            ],
+            test_result["city"],
 
         "org":
-            test[
-                "org"
-            ],
+            test_result["org"],
 
         "isp":
-            test[
-                "isp"
-            ],
+            test_result["isp"],
 
         "hosting":
-            test[
-                "hosting"
-            ],
+            test_result["hosting"],
 
         "proxy":
-            test[
-                "proxy"
-            ],
-
-        "mobile_probe_passed":
-            test[
-                "mobile_probe_passed"
-            ],
+            test_result["proxy"],
 
         "name":
             original_name,
     }
 
-    return history[
-        fingerprint
-    ]
+    history[fingerprint] = item
+
+    return item
 
 
-# ============================================================
-# 来源历史
-# ============================================================
-
-def finalize_source_registry(
-    registry,
-    qualified_by_source,
+def record_failure(
+    history,
+    fingerprint,
+    current_time,
+    original_name,
 ):
-
-    for (
-        url,
-        count
-    ) in qualified_by_source.items():
-
-        entry = ensure_source_entry(
-            registry,
-            url,
-        )
-
-        if count <= 0:
-            continue
-
-        entry[
-            "last_qualified_at"
-        ] = int(time.time())
-
-        entry[
-            "last_qualified_nodes"
-        ] = count
-
-        entry[
-            "qualified_runs"
-        ] = (
-            int(
-                entry.get(
-                    "qualified_runs",
-                    0,
-                )
-            )
-            + 1
-        )
-
-        entry[
-            "qualified_nodes_total"
-        ] = (
-            int(
-                entry.get(
-                    "qualified_nodes_total",
-                    0,
-                )
-            )
-            + count
-        )
-
-
-# ============================================================
-# V2Ray URI 转换
-# ============================================================
-
-def b64_utf8(text):
-    return base64.b64encode(
-        text.encode("utf-8")
-    ).decode("ascii")
-
-
-def node_remark(node):
-    name = str(
-        node.get(
-            "name",
-            "node",
-        )
+    old = history.get(
+        fingerprint,
+        {}
     )
 
-    return (
-        name
-        .replace("\r", " ")
-        .replace("\n", " ")
-    )
+    old["last_seen"] = current_time
 
-
-def get_network(proxy):
-    return (
-        proxy.get("network")
-        or "tcp"
-    )
-
-
-def get_ws_opts(proxy):
-    value = proxy.get(
-        "ws-opts"
-    )
-
-    return (
-        value
-        if isinstance(
-            value,
-            dict,
-        )
-        else {}
-    )
-
-
-def get_grpc_opts(proxy):
-    value = proxy.get(
-        "grpc-opts"
-    )
-
-    return (
-        value
-        if isinstance(
-            value,
-            dict,
-        )
-        else {}
-    )
-
-
-def get_http_opts(proxy):
-    value = proxy.get(
-        "http-opts"
-    )
-
-    return (
-        value
-        if isinstance(
-            value,
-            dict,
-        )
-        else {}
-    )
-
-
-def get_reality_opts(proxy):
-    value = proxy.get(
-        "reality-opts"
-    )
-
-    return (
-        value
-        if isinstance(
-            value,
-            dict,
-        )
-        else {}
-    )
-
-
-def build_vless_uri(
-    proxy
-):
-
-    server = str(
-        proxy.get(
-            "server",
-            "",
-        )
-    )
-
-    port = int(
-        proxy.get(
-            "port",
-            443,
-        )
-    )
-
-    uuid = str(
-        proxy.get(
-            "uuid",
-            "",
-        )
-    )
-
-    if not server or not uuid:
-        return None
-
-    params = {
-        "encryption":
-            "none",
-    }
-
-    network = get_network(
-        proxy
-    )
-
-    params[
-        "type"
-    ] = network
-
-    tls = bool(
-        proxy.get(
-            "tls",
-            False,
-        )
-    )
-
-    reality = get_reality_opts(
-        proxy
-    )
-
-    if reality:
-
-        params[
-            "security"
-        ] = "reality"
-
-        public_key = (
-            reality.get(
-                "public-key"
+    old["fail_count"] = (
+        int(
+            old.get(
+                "fail_count",
+                0,
             )
         )
-
-        short_id = (
-            reality.get(
-                "short-id"
-            )
-        )
-
-        if public_key:
-            params[
-                "pbk"
-            ] = str(
-                public_key
-            )
-
-        if short_id:
-            params[
-                "sid"
-            ] = str(
-                short_id
-            )
-
-    elif tls:
-
-        params[
-            "security"
-        ] = "tls"
-
-    flow = proxy.get(
-        "flow"
+        + 1
     )
 
-    if flow:
-        params[
-            "flow"
-        ] = str(flow)
+    old["success_streak"] = 0
+    old["name"] = original_name
 
-    sni = (
-        proxy.get(
-            "servername"
-        )
-        or proxy.get(
-            "sni"
-        )
-    )
+    history[fingerprint] = old
 
-    if sni:
-        params[
-            "sni"
-        ] = str(sni)
 
-    client_fp = (
-        proxy.get(
-            "client-fingerprint"
-        )
-        or proxy.get(
-            "fingerprint"
-        )
-    )
-
-    if client_fp:
-        params[
-            "fp"
-        ] = str(
-            client_fp
-        )
-
-    if network == "ws":
-
-        ws_opts = get_ws_opts(
-            proxy
-        )
-
-        path = ws_opts.get(
-            "path"
-        )
-
-        if path:
-            params[
-                "path"
-            ] = str(path)
-
-        headers = ws_opts.get(
-            "headers",
-            {},
-        )
-
-        if isinstance(
-            headers,
-            dict,
-        ):
-
-            host = headers.get(
-                "Host"
-            ) or headers.get(
-                "host"
-            )
-
-            if host:
-                params[
-                    "host"
-                ] = str(host)
-
-    elif network == "grpc":
-
-        grpc_opts = get_grpc_opts(
-            proxy
-        )
-
-        service_name = (
-            grpc_opts.get(
-                "grpc-service-name"
-            )
-            or grpc_opts.get(
-                "service-name"
-            )
-        )
-
-        if service_name:
-            params[
-                "serviceName"
-            ] = str(
-                service_name
-            )
-
-    elif network in (
-        "http",
-        "h2",
-    ):
-
-        http_opts = get_http_opts(
-            proxy
-        )
-
-        path = http_opts.get(
-            "path"
-        )
-
-        if isinstance(
-            path,
-            list,
-        ):
-
-            path = path[0] if path else ""
-
-        if path:
-            params[
-                "path"
-            ] = str(path)
-
-        headers = http_opts.get(
-            "headers",
-            {},
-        )
-
-        if isinstance(
-            headers,
-            dict,
-        ):
-
-            host = headers.get(
-                "Host"
-            ) or headers.get(
-                "host"
-            )
-
-            if isinstance(
-                host,
-                list,
-            ):
-
-                host = (
-                    host[0]
-                    if host
-                    else ""
-                )
-
-            if host:
-                params[
-                    "host"
-                ] = str(host)
-
-    query = urlencode(
-        params,
-        doseq=True,
-    )
-
-    remark = quote(
-        node_remark(
-            proxy
-        ),
-        safe="",
-    )
-
-    return (
-        f"vless://"
-        f"{quote(uuid, safe='')}"
-        f"@"
-        f"{quote(server, safe='')}"
-        f":{port}"
-        f"?{query}"
-        f"#{remark}"
-    )
-
-
-def build_vmess_uri(
-    proxy
-):
-
-    server = str(
-        proxy.get(
-            "server",
-            "",
-        )
-    )
-
-    port = int(
-        proxy.get(
-            "port",
-            443,
-        )
-    )
-
-    uuid = str(
-        proxy.get(
-            "uuid",
-            "",
-        )
-    )
-
-    if not server or not uuid:
-        return None
-
-    network = get_network(
-        proxy
-    )
-
-    tls = (
-        "tls"
-        if proxy.get(
-            "tls",
-            False,
-        )
-        else ""
-    )
-
-    sni = (
-        proxy.get(
-            "servername"
-        )
-        or proxy.get(
-            "sni"
-        )
-        or ""
-    )
-
-    fingerprint = (
-        proxy.get(
-            "client-fingerprint"
-        )
-        or proxy.get(
-            "fingerprint"
-        )
-        or ""
-    )
-
-    ws_opts = get_ws_opts(
-        proxy
-    )
-
-    grpc_opts = get_grpc_opts(
-        proxy
-    )
-
-    http_opts = get_http_opts(
-        proxy
-    )
-
-    host = ""
-    path = ""
-
-    if network == "ws":
-
-        path = str(
-            ws_opts.get(
-                "path",
-                "",
-            )
-            or ""
-        )
-
-        headers = ws_opts.get(
-            "headers",
-            {},
-        )
-
-        if isinstance(
-            headers,
-            dict,
-        ):
-
-            host = str(
-                headers.get(
-                    "Host"
-                )
-                or headers.get(
-                    "host"
-                )
-                or ""
-            )
-
-    elif network == "grpc":
-
-        path = str(
-            grpc_opts.get(
-                "grpc-service-name",
-                "",
-            )
-            or ""
-        )
-
-    elif network in (
-        "http",
-        "h2",
-    ):
-
-        p = http_opts.get(
-            "path",
-            "",
-        )
-
-        if isinstance(
-            p,
-            list,
-        ):
-            p = (
-                p[0]
-                if p
-                else ""
-            )
-
-        path = str(
-            p or ""
-        )
-
-        headers = http_opts.get(
-            "headers",
-            {},
-        )
-
-        if isinstance(
-            headers,
-            dict,
-        ):
-
-            h = (
-                headers.get(
-                    "Host"
-                )
-                or headers.get(
-                    "host"
-                )
-                or ""
-            )
-
-            if isinstance(
-                h,
-                list,
-            ):
-                h = (
-                    h[0]
-                    if h
-                    else ""
-                )
-
-            host = str(h)
-
-    config = {
-
-        "v":
-            "2",
-
-        "ps":
-            node_remark(
-                proxy
-            ),
-
-        "add":
-            server,
-
-        "port":
-            str(port),
-
-        "id":
-            uuid,
-
-        "aid":
-            str(
-                proxy.get(
-                    "alterId",
-                    0,
-                )
-            ),
-
-        "scy":
-            str(
-                proxy.get(
-                    "cipher",
-                    proxy.get(
-                        "security",
-                        "auto",
-                    ),
-                )
-            ),
-
-        "net":
-            network,
-
-        "type":
-            str(
-                proxy.get(
-                    "type",
-                    "none",
-                )
-            ),
-
-        "host":
-            host,
-
-        "path":
-            path,
-
-        "tls":
-            tls,
-
-        "sni":
-            sni,
-
-        "fp":
-            fingerprint,
-
-        "insecure":
-            "1"
-            if proxy.get(
-                "skip-cert-verify",
-                False,
-            )
-            else "0",
-    }
-
-    return (
-        "vmess://"
-        + b64_utf8(
-            json.dumps(
-                config,
-                ensure_ascii=False,
-                separators=(
-                    ",",
-                    ":",
-                ),
-            )
-        )
-    )
-
-
-def build_trojan_uri(
-    proxy
-):
-
-    server = str(
-        proxy.get(
-            "server",
-            "",
-        )
-    )
-
-    port = int(
-        proxy.get(
-            "port",
-            443,
-        )
-    )
-
-    password = str(
-        proxy.get(
-            "password",
-            "",
-        )
-    )
-
-    if not server or not password:
-        return None
-
-    params = {}
-
-    sni = (
-        proxy.get(
-            "servername"
-        )
-        or proxy.get(
-            "sni"
-        )
-    )
-
-    if sni:
-        params[
-            "sni"
-        ] = str(sni)
-
-    alpn = proxy.get(
-        "alpn"
-    )
-
-    if isinstance(
-        alpn,
-        list,
-    ) and alpn:
-
-        params[
-            "alpn"
-        ] = ",".join(
-            str(x)
-            for x in alpn
-        )
-
-    network = get_network(
-        proxy
-    )
-
-    if network != "tcp":
-
-        params[
-            "type"
-        ] = network
-
-    if network == "ws":
-
-        ws_opts = get_ws_opts(
-            proxy
-        )
-
-        path = ws_opts.get(
-            "path"
-        )
-
-        if path:
-            params[
-                "path"
-            ] = str(path)
-
-        headers = ws_opts.get(
-            "headers",
-            {},
-        )
-
-        if isinstance(
-            headers,
-            dict,
-        ):
-
-            host = (
-                headers.get(
-                    "Host"
-                )
-                or headers.get(
-                    "host"
-                )
-            )
-
-            if host:
-                params[
-                    "host"
-                ] = str(host)
-
-    elif network == "grpc":
-
-        grpc_opts = get_grpc_opts(
-            proxy
-        )
-
-        service_name = (
-            grpc_opts.get(
-                "grpc-service-name"
-            )
-            or grpc_opts.get(
-                "service-name"
-            )
-        )
-
-        if service_name:
-            params[
-                "serviceName"
-            ] = str(
-                service_name
-            )
-
-    reality = get_reality_opts(
-        proxy
-    )
-
-    if reality:
-        # Trojan + Reality 在部分客户端上支持情况不同。
-        # 仍保留标准参数，无法处理的客户端会忽略。
-        params[
-            "security"
-        ] = "reality"
-
-        public_key = (
-            reality.get(
-                "public-key"
-            )
-        )
-
-        short_id = (
-            reality.get(
-                "short-id"
-            )
-        )
-
-        if public_key:
-            params[
-                "pbk"
-            ] = str(
-                public_key
-            )
-
-        if short_id:
-            params[
-                "sid"
-            ] = str(
-                short_id
-            )
-
-    elif proxy.get(
-        "tls",
-        False,
-    ):
-
-        params[
-            "security"
-        ] = "tls"
-
-    fingerprint = (
-        proxy.get(
-            "client-fingerprint"
-        )
-        or proxy.get(
-            "fingerprint"
-        )
-    )
-
-    if fingerprint:
-        params[
-            "fp"
-        ] = str(
-            fingerprint
-        )
-
-    query = urlencode(
-        params,
-        doseq=True,
-    )
-
-    remark = quote(
-        node_remark(
-            proxy
-        ),
-        safe="",
-    )
-
-    return (
-        "trojan://"
-        f"{quote(password, safe='')}"
-        "@"
-        f"{quote(server, safe='')}"
-        f":{port}"
-        f"?{query}"
-        f"#{remark}"
-    )
-
-
-def build_ss_uri(
-    proxy
-):
-
-    server = str(
-        proxy.get(
-            "server",
-            "",
-        )
-    )
-
-    port = int(
-        proxy.get(
-            "port",
-            443,
-        )
-    )
-
-    cipher = str(
-        proxy.get(
-            "cipher",
-            "",
-        )
-    )
-
-    password = str(
-        proxy.get(
-            "password",
-            "",
-        )
-    )
-
-    if (
-        not server
-        or not cipher
-        or not password
-    ):
-        return None
-
-    userinfo = (
-        f"{cipher}:{password}"
-    )
-
-    encoded_userinfo = (
-        base64.urlsafe_b64encode(
-            userinfo.encode(
-                "utf-8"
-            )
-        )
-        .decode(
-            "ascii"
-        )
-        .rstrip("=")
-    )
-
-    remark = quote(
-        node_remark(
-            proxy
-        ),
-        safe="",
-    )
-
-    return (
-        f"ss://"
-        f"{encoded_userinfo}"
-        f"@"
-        f"{server}:{port}"
-        f"#{remark}"
-    )
-
-
-def node_to_v2ray_uri(
-    proxy
-):
-
-    proxy_type = str(
-        proxy.get(
-            "type",
-            ""
-        )
-    ).lower()
-
-    try:
-
-        if proxy_type == "vmess":
-            return build_vmess_uri(
-                proxy
-            )
-
-        if proxy_type == "vless":
-            return build_vless_uri(
-                proxy
-            )
-
-        if proxy_type == "trojan":
-            return build_trojan_uri(
-                proxy
-            )
-
-        if proxy_type == "ss":
-            return build_ss_uri(
-                proxy
-            )
-
-    except Exception as exc:
-
-        print(
-            f"V2Ray conversion failed "
-            f"for {proxy_type}: {exc}"
-        )
-
-    return None
-
-
-def write_v2ray_subscription(
-    passed_nodes
-):
-
-    uris = []
-
-    for node in passed_nodes:
-
-        uri = node_to_v2ray_uri(
-            node["proxy"]
-        )
-
-        if not uri:
-            continue
-
-        uris.append(uri)
-
-    # 去重
-    unique_uris = []
-    seen = set()
-
-    for uri in uris:
-
-        if uri in seen:
-            continue
-
-        seen.add(uri)
-        unique_uris.append(uri)
-
-    # V2RayN / v2rayNG 常见订阅形式：
-    # 每行一个分享链接，整体 Base64。
-    content = "\n".join(
-        unique_uris
-    )
-
-    encoded = base64.b64encode(
-        content.encode(
-            "utf-8"
-        )
-    ).decode(
-        "ascii"
-    )
-
-    with open(
-        V2RAY_OUTPUT_FILE,
-        "w",
-        encoding="utf-8",
-    ) as f:
-
-        f.write(
-            encoded
-        )
-
-    print(
-        f"V2Ray URI nodes: "
-        f"{len(unique_uris)}"
-    )
-
-    return unique_uris
-
-
-def load_published_proxies():
-    try:
-        with open(
-            CLASH_OUTPUT_FILE,
-            "r",
-            encoding="utf-8",
-        ) as f:
-            data = yaml.safe_load(f)
-
-        if (
-            isinstance(data, dict)
-            and isinstance(
-                data.get("proxies"),
-                list,
-            )
-        ):
-            result = []
-
-            for proxy in data["proxies"]:
-                if (
-                    isinstance(proxy, dict)
-                    and proxy.get("server")
-                    and proxy.get("port")
-                ):
-                    result.append(proxy)
-
-            return result
-
-    except Exception:
-        pass
-
-    return []
-
-
-# ============================================================
-# Clash/Mihomo 最终配置
-# ============================================================
+# =========================================================
+# 最终配置
+# =========================================================
 
 def build_final_config(
     passed_nodes
 ):
-
     proxies = []
 
     for node in passed_nodes:
-
         proxy = dict(
-            node[
-                "proxy"
-            ]
+            node["proxy"]
         )
 
-        proxy[
-            "name"
-        ] = node[
-            "display_name"
-        ]
-
-        proxies.append(
-            proxy
+        proxy["name"] = (
+            node["display_name"]
         )
 
-    names = [
-        p["name"]
-        for p in proxies
+        proxies.append(proxy)
+
+    proxy_names = [
+        proxy["name"]
+        for proxy in proxies
     ]
 
-    auto_nodes = (
-        names
-        if names
-        else ["DIRECT"]
-    )
-
-    manual_nodes = (
-        names
-        if names
-        else ["DIRECT"]
-    )
-
     return {
+        "mixed-port": 7890,
+        "socks-port": 7891,
+        "allow-lan": True,
 
-        "mixed-port":
-            7890,
+        "mode": "rule",
+        "log-level": "info",
 
-        "socks-port":
-            7891,
-
-        "allow-lan":
-            True,
-
-        "mode":
-            "rule",
-
-        "log-level":
-            "info",
-
-        "unified-delay":
-            True,
-
-        "tcp-concurrent":
-            True,
-
-        "proxies":
-            proxies,
-
-        # ====================================================
-        # DNS
-        # ====================================================
-
-        "dns": {
-
-            "enable":
-                True,
-
-            "cache-algorithm":
-                "arc",
-
-            "prefer-h3":
-                False,
-
-            "use-hosts":
-                True,
-
-            "use-system-hosts":
-                True,
-
-            "respect-rules":
-                False,
-
-            "listen":
-                "0.0.0.0:1053",
-
-            "ipv6":
-                False,
-
-            "enhanced-mode":
-                "fake-ip",
-
-            "fake-ip-range":
-                "198.18.0.1/16",
-
-            "fake-ip-filter-mode":
-                "blacklist",
-
-            "fake-ip-filter": [
-                "*.lan",
-                "*.local",
-                "+.local",
-                "+.localhost",
-            ],
-
-            "default-nameserver": [
-                "223.5.5.5",
-                "223.6.6.6",
-            ],
-
-            "nameserver-policy": {
-
-                "geosite:cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
-                ],
-
-                "+.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
-                ],
-
-                "+.com.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
-                ],
-
-                "+.org.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
-                ],
-
-                "+.net.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
-                ],
-            },
-
-            "nameserver": [
-                "https://doh.pub/dns-query",
-                "https://dns.alidns.com/dns-query",
-            ],
-
-            "direct-nameserver": [
-                "system",
-            ],
-
-            "direct-nameserver-follow-policy":
-                False,
-
-        },
-
-        # ====================================================
-        # Proxy Groups
-        # ====================================================
+        "proxies": proxies,
 
         "proxy-groups": [
-
             {
-                "name":
-                    "🚀 节点选择",
-
-                "type":
-                    "select",
-
-                "proxies": [
-                    "♻️ 自动选择",
-                    "🛍 Play自动选择",
-                    "🌐 手动选择",
-                    "DIRECT",
-                ],
-            },
-
-            {
-                "name":
-                    "♻️ 自动选择",
-
-                "type":
-                    "url-test",
-
-                "url":
-                    GEMINI_DELAY_URL,
-
-                "expected-status":
-                    "200-399",
-
-                "interval":
-                    180,
-
-                "tolerance":
-                    30,
-
-                "lazy":
-                    False,
-
-                "proxies":
-                    auto_nodes,
-            },
-
-            {
-                "name":
-                    "🛍 Play自动选择",
-
-                "type":
-                    "url-test",
-
-                "url":
-                    PLAY_DELAY_URL,
-
-                "expected-status":
-                    "200-399",
-
-                "interval":
-                    180,
-
-                "tolerance":
-                    30,
-
-                "lazy":
-                    False,
-
-                "proxies":
-                    auto_nodes,
-            },
-
-            {
-                "name":
-                    "🌐 手动选择",
-
-                "type":
-                    "select",
-
-                "proxies":
-                    manual_nodes,
-            },
-
+                "name": "GEMINI-US",
+                "type": "select",
+                "proxies": proxy_names,
+            }
         ],
 
-        # ====================================================
-        # Rules
-        # ====================================================
-
         "rules": [
-
-            # 私有地址直连
-            "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
-            "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
-            "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
-            "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
-
-            # 中国大陆
-            "GEOSITE,CN,DIRECT",
-            "GEOIP,CN,DIRECT",
-
-            "DOMAIN-SUFFIX,cn,DIRECT",
-            "DOMAIN-SUFFIX,com.cn,DIRECT",
-            "DOMAIN-SUFFIX,org.cn,DIRECT",
-            "DOMAIN-SUFFIX,net.cn,DIRECT",
-            "DOMAIN-SUFFIX,gov.cn,DIRECT",
-
-            # 国内常用服务
-            "DOMAIN-SUFFIX,qq.com,DIRECT",
-            "DOMAIN-SUFFIX,baidu.com,DIRECT",
-            "DOMAIN-SUFFIX,taobao.com,DIRECT",
-            "DOMAIN-SUFFIX,tmall.com,DIRECT",
-            "DOMAIN-SUFFIX,jd.com,DIRECT",
-            "DOMAIN-SUFFIX,bilibili.com,DIRECT",
-            "DOMAIN-SUFFIX,wechat.com,DIRECT",
-            "DOMAIN-SUFFIX,weixin.qq.com,DIRECT",
-            "DOMAIN-SUFFIX,163.com,DIRECT",
-            "DOMAIN-SUFFIX,alibaba.com,DIRECT",
-
-            # Google Play
-            "DOMAIN-SUFFIX,play.google.com,🛍 Play自动选择",
-            "DOMAIN-SUFFIX,play.googleapis.com,🛍 Play自动选择",
-
-            # Gemini / Google
-            "DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,jnn-pa.googleapis.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,waa-pa.clients6.google.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,apis.google.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,googleapis.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,gstatic.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,googleusercontent.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,ggpht.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,gvt1.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,google.com,♻️ 自动选择",
-
-            # YouTube
-            "DOMAIN-SUFFIX,youtube.com,🚀 节点选择",
-            "DOMAIN-SUFFIX,youtubei.googleapis.com,🚀 节点选择",
-            "DOMAIN-SUFFIX,googlevideo.com,🚀 节点选择",
-
-            # 其他海外
-            "MATCH,🚀 节点选择",
+            "DOMAIN-SUFFIX,gemini.google.com,GEMINI-US",
+            "DOMAIN-SUFFIX,google.com,GEMINI-US",
+            "DOMAIN-SUFFIX,googleapis.com,GEMINI-US",
+            "DOMAIN-SUFFIX,generativelanguage.googleapis.com,GEMINI-US",
+            "MATCH,GEMINI-US",
         ],
     }
 
 
-# ============================================================
+def write_final_config(
+    config
+):
+    with open(
+        "live_clash.yaml",
+        "w",
+        encoding="utf-8",
+    ) as f:
+        yaml.safe_dump(
+            config,
+            f,
+            allow_unicode=True,
+            sort_keys=False,
+        )
+
+
+# =========================================================
 # 主流程
-# ============================================================
+# =========================================================
 
 def run_agent():
+    current_time = now_ts()
 
-    now = int(
-        time.time()
+    history = safe_json_load(
+        HISTORY_FILE,
+        {},
     )
 
-    history = load_history()
+    # -----------------------------------------------------
+    # A. 动态发现 GitHub 高质量仓库
+    # -----------------------------------------------------
 
-    # --------------------------------------------------------
-    # 1. 自动发现订阅源
-    # --------------------------------------------------------
+    sources = discover_sources()
 
-    source_urls = (
-        discover_subscription_sources()
-    )
+    # -----------------------------------------------------
+    # B. 拉取候选节点
+    # -----------------------------------------------------
 
-    # --------------------------------------------------------
-    # 2. 获取候选节点
-    # --------------------------------------------------------
-
-    candidates = (
-        collect_candidates(
-            source_urls
-        )
+    candidates = collect_candidates(
+        sources
     )
 
     if not candidates:
-        # 本轮没有候选节点时，不覆盖上一版已发布订阅。
-        save_history(history)
-        return
-
-    # --------------------------------------------------------
-    # 3. 启动 Mihomo
-    # --------------------------------------------------------
-
-    candidates = filter_valid_candidates(
-        candidates
-    )
-
-    if not candidates:
-
         print(
-            "No Mihomo-config-valid candidates remain; "
-            "publishing safe DNS/routing config."
+            "\n❌ 没有获得候选节点"
         )
 
-        save_history(
-            history
+        write_final_config(
+            {
+                "mixed-port": 7890,
+                "socks-port": 7891,
+                "allow-lan": True,
+                "mode": "rule",
+                "log-level": "info",
+                "proxies": [],
+            }
         )
 
-        final_config = build_final_config(
-            []
-        )
-
-        write_yaml(
-            CLASH_OUTPUT_FILE,
-            final_config,
-        )
-
-        write_v2ray_subscription(
-            []
+        safe_json_save(
+            HISTORY_FILE,
+            history,
         )
 
         return
 
-    test_config, metadata = (
-        build_test_config(
+    # -----------------------------------------------------
+    # C. 启动 Mihomo
+    # -----------------------------------------------------
+
+    config, metadata = (
+        build_mihomo_config(
             candidates
         )
     )
 
-    config_path = (
-        "temp_mihomo.yaml"
-    )
-
-    write_yaml(
-        config_path,
-        test_config,
+    config_path = write_temp_config(
+        config
     )
 
     proc = None
-
-    passed = []
-
-    qualified_by_source = {}
+    passed_nodes = []
 
     try:
-
         proc = start_mihomo(
             config_path
         )
 
-        if not proc:
-            raise RuntimeError(
-                "Mihomo failed to start"
-            )
+        if proc is None:
+            return
 
-        # ----------------------------------------------------
-        # 4. 逐节点深度测试
-        # ----------------------------------------------------
+        print(
+            "\n🔎 开始逐节点深度测试\n"
+        )
 
         for (
             internal_name,
-            meta
+            meta,
         ) in metadata.items():
 
-            if not select_proxy(
-                internal_name
-            ):
-                continue
-
-            test = test_node(
-                internal_name
-            )
-
-            if not test[
-                "passed"
-            ]:
-
-                print(
-                    f"REJECT "
-                    f"{internal_name}: "
-                    f"{test['reason']}"
-                )
-
-                continue
-
+            proxy = meta["proxy"]
             fingerprint = meta[
                 "fingerprint"
             ]
 
-            proxy = meta[
-                "proxy"
-            ]
-
-            source_url = meta[
-                "source_url"
-            ]
-
-            original_name = (
-                proxy.get(
-                    "name",
-                    internal_name,
-                )
+            original_name = proxy.get(
+                "name",
+                internal_name,
             )
 
-            # ------------------------------------------------
-            # 5. 更新历史
-            # ------------------------------------------------
+            print(
+                f"\n▶ {internal_name} | "
+                f"{original_name}"
+            )
+
+            if not select_proxy(
+                internal_name
+            ):
+                print(
+                    "  ❌ Mihomo 切换失败"
+                )
+
+                record_failure(
+                    history,
+                    fingerprint,
+                    current_time,
+                    original_name,
+                )
+
+                continue
+
+            result = test_current_proxy()
+
+            if not result["passed"]:
+                print(
+                    f"  ❌ 淘汰: "
+                    f"{result['reason']}"
+                )
+
+                record_failure(
+                    history,
+                    fingerprint,
+                    current_time,
+                    original_name,
+                )
+
+                continue
 
             history_item = (
                 update_history(
                     history,
                     fingerprint,
-                    now,
-                    test,
+                    current_time,
+                    result,
                     original_name,
                 )
             )
 
-            pass_count = (
-                history_item[
-                    "pass_count"
-                ]
-            )
+            first_seen = history_item[
+                "first_seen"
+            ]
 
             survival_hours = int(
                 (
-                    now
-                    - history_item[
-                        "first_seen"
-                    ]
+                    current_time
+                    - first_seen
                 )
                 / 3600
             )
 
-            # 稳定池硬门槛：至少成功2次，且首次成功距本次至少6小时。
-            if (
-                pass_count
-                < STABLE_PASS_COUNT
-                or survival_hours
-                < MIN_SURVIVAL_HOURS
-            ):
-                print(
-                    f"OBSERVE {internal_name} | "
-                    f"{test['countryCode'] or '??'} | "
-                    f"life={survival_hours}h | "
-                    f"pass={pass_count} | "
-                    f"need={MIN_SURVIVAL_HOURS}h/{STABLE_PASS_COUNT}次"
-                )
-                continue
+            streak = history_item[
+                "success_streak"
+            ]
 
-            country_code = (
-                test[
-                    "countryCode"
-                ]
-            )
+            pass_count = history_item[
+                "pass_count"
+            ]
 
-            if country_code == "TW":
-                flag = "🇹🇼"
-
-            elif country_code == "US":
-                flag = "🇺🇸"
-
-            else:
-                flag = "🌐"
-
-            clean_tag = (
-                "洁"
-                if test[
-                    "is_clean"
-                ]
-                else "机"
-            )
+            gemini_latency = result[
+                "gemini_latency_ms"
+            ]
 
             display_name = (
-                f"{flag}{clean_tag} "
-                f"[{test['max_delay_ms']}ms|"
-                f"{survival_hours}h|"
-                f"{pass_count}次] "
+                f"🇺🇸 "
+                f"[S{streak}|"
+                f"{pass_count}次|"
+                f"{gemini_latency}ms|"
+                f"{survival_hours}h] "
                 f"{original_name}"
             )
 
-            passed.append(
+            passed_nodes.append(
                 {
-                    "proxy":
-                        proxy,
-
+                    "proxy": proxy,
                     "display_name":
                         display_name,
 
                     "fingerprint":
                         fingerprint,
 
-                    "source_url":
-                        source_url,
-
                     "test":
-                        test,
+                        result,
+
+                    "success_streak":
+                        streak,
 
                     "pass_count":
                         pass_count,
-
-                    "survival_hours":
-                        survival_hours,
-
-                    "latency":
-                        test[
-                            "max_delay_ms"
-                        ],
-
-                    "countryCode":
-                        country_code,
-
-                    "is_clean":
-                        test[
-                            "is_clean"
-                        ],
                 }
             )
 
-            qualified_by_source[
-                source_url
-            ] = (
-                qualified_by_source.get(
-                    source_url,
-                    0,
-                )
-                + 1
-            )
-
             print(
-                f"PASS "
-                f"{internal_name} | "
-                f"{country_code} | "
-                f"max={test['max_delay_ms']}ms | "
-                f"Google={test['google_delay_ms']} | "
-                f"Gemini={test['gemini_delay_ms']} | "
-                f"Play={test['play_delay_ms']} | "
-                f"Mobile={test['mobile_probe_passed']}/"
-                f"{test['mobile_probe_total']} | "
-                f"life={survival_hours}h | "
-                f"type={proxy.get('type', '')}"
+                f"  ✅ 通过 | "
+                f"IP={result['exit_ip']} | "
+                f"{result['city']} | "
+                f"{result['org']} | "
+                f"Gemini={gemini_latency}ms | "
+                f"连续={streak} | "
+                f"累计={pass_count}"
             )
 
     finally:
-
-        save_history(
-            history
+        safe_json_save(
+            HISTORY_FILE,
+            history,
         )
 
-        # discover_subscription_sources() / collect_candidates() each persist
-        # the latest registry. Reload it here instead of overwriting those
-        # updates with the stale snapshot loaded before discovery.
-        latest_registry = load_json(
-            SOURCE_REGISTRY_FILE,
-            {},
-        )
+        stop_mihomo(proc)
 
-        if not isinstance(
-            latest_registry,
-            dict,
+        if os.path.exists(
+            config_path
         ):
-            latest_registry = {}
+            try:
+                os.remove(
+                    config_path
+                )
+            except Exception:
+                pass
 
-        finalize_source_registry(
-            latest_registry,
-            qualified_by_source,
+    # -----------------------------------------------------
+    # D. 正确排序
+    #
+    # 第一优先：连续稳定次数
+    # 第二优先：历史累计通过次数
+    # 第三优先：Gemini 实测延迟
+    # -----------------------------------------------------
+
+    passed_nodes.sort(
+        key=lambda x: (
+            -x["success_streak"],
+            -x["pass_count"],
+            (
+                x["test"]
+                ["gemini_latency_ms"]
+                if x["test"]
+                ["gemini_latency_ms"]
+                is not None
+                else 999999
+            ),
         )
-
-        save_json(
-            SOURCE_REGISTRY_FILE,
-            latest_registry,
-        )
-
-        stop_mihomo(
-            proc
-        )
-
-        try:
-            os.remove(
-                config_path
-            )
-        except OSError:
-            pass
-
-    # --------------------------------------------------------
-    # 6. 最终排序
-    # --------------------------------------------------------
-
-    def sort_key(node):
-
-        country_code = (
-            node[
-                "countryCode"
-            ]
-        )
-
-        # 台湾 > 美国 > 其他
-        region_rank = (
-            0
-            if country_code == "TW"
-            else (
-                1
-                if country_code == "US"
-                else 2
-            )
-        )
-
-        clean_rank = (
-            0
-            if node[
-                "is_clean"
-            ]
-            else 1
-        )
-
-        long_life_rank = (
-            0
-            if (
-                node[
-                    "survival_hours"
-                ]
-                >= MIN_SURVIVAL_HOURS
-            )
-            else 1
-        )
-
-        strict_rank = (
-            0
-            if node["test"].get("strict_delay_pass", False)
-            else 1
-        )
-
-        return (
-            strict_rank,
-            region_rank,
-            clean_rank,
-            long_life_rank,
-            -node[
-                "survival_hours"
-            ],
-            -node[
-                "pass_count"
-            ],
-            node[
-                "latency"
-            ] or 999999,
-        )
-
-    passed.sort(
-        key=sort_key
     )
 
-    # 不建立台湾/美国独立策略组，但最终节点池中：
-    # 只要存在合格节点，就优先各保留至少 1 个台湾和 1 个美国节点。
-    reserved = []
+    # -----------------------------------------------------
+    # E. 输出
+    # -----------------------------------------------------
 
-    for required_country in ("TW", "US"):
-        for node in passed:
-            if node["countryCode"] == required_country:
-                reserved.append(node)
-                break
-
-    reserved_ids = {
-        node["fingerprint"]
-        for node in reserved
-    }
-
-    selected = (
-        reserved
-        + [
-            node
-            for node in passed
-            if node["fingerprint"] not in reserved_ids
-        ]
+    final_config = (
+        build_final_config(
+            passed_nodes
+        )
     )
 
-    passed = selected[
-        :MAX_OUTPUT_NODES
-    ]
-
-    # --------------------------------------------------------
-    # 7. 输出 Clash
-    # --------------------------------------------------------
-
-    # 本轮没有新合格节点时，保留上一版已发布节点，
-    # 但重新生成 DNS / 分流配置，避免瞬时测试失败导致订阅被清空。
-    if not passed:
-        previous_proxies = load_published_proxies()
-
-        if previous_proxies:
-            passed = [
-                {
-                    "proxy": proxy,
-                    "display_name":
-                        proxy.get(
-                            "name",
-                            "previous",
-                        ),
-                }
-                for proxy in previous_proxies
-            ]
-
-            print(
-                f"No new qualified nodes; "
-                f"keeping {len(passed)} previously published nodes "
-                f"and refreshing DNS/routing config."
-            )
-
-        else:
-            print(
-                "No qualified nodes and no previous published nodes; "
-                "publishing safe DNS/routing config."
-            )
-
-    final_config = build_final_config(passed)
-
-    write_yaml(
-        CLASH_OUTPUT_FILE,
-        final_config,
+    write_final_config(
+        final_config
     )
 
-    # --------------------------------------------------------
-    # 8. 输出 V2Ray
-    # --------------------------------------------------------
-
-    write_v2ray_subscription(passed)
-
-    print(
-        "=" * 70
+    safe_json_save(
+        HISTORY_FILE,
+        history,
     )
 
     print(
-        f"Final qualified nodes: "
-        f"{len(passed)}"
+        "\n"
+        + "=" * 65
     )
 
     print(
-        f"Generated: "
-        f"{CLASH_OUTPUT_FILE}"
+        "✅ 最终通过节点: "
+        f"{len(passed_nodes)}"
     )
 
     print(
-        f"Generated: "
-        f"{V2RAY_OUTPUT_FILE}"
+        "🌐 动态订阅源: "
+        f"{len(sources)}"
     )
 
     print(
-        "=" * 70
+        "📦 候选节点: "
+        f"{len(candidates)}"
     )
+
+    print(
+        "=" * 65
+    )
+
+    for index, node in enumerate(
+        passed_nodes,
+        start=1,
+    ):
+        result = node["test"]
+
+        print(
+            f"{index:02d}. "
+            f"{node['display_name']} | "
+            f"{result['exit_ip']} | "
+            f"{result['org']}"
+        )
 
 
 if __name__ == "__main__":

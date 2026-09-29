@@ -18,6 +18,7 @@ jobs:
 
     permissions:
       contents: write
+      issues: write
 
     steps:
       - name: Checkout Code
@@ -62,3 +63,12 @@ jobs:
           git add live_clash.yaml node_history.json source_registry.json
           git diff --cached --quiet || git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
           git push
+
+      - name: Failure Notification
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Fine-clash monitor workflow failed" \
+            --body "Workflow failed. Check GitHub Actions logs for details.\n\nRun: ${{ github.run_id }}\nCommit: ${{ github.sha }}" || true

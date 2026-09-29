@@ -60,11 +60,12 @@ jobs:
 
           git add \
             live_clash.yaml \
+            live_v2ray.txt \
             node_history.json \
             subscription_sources.json \
             source_registry.json
 
           git diff --cached --quiet || \
-            git commit -m "Auto update: dynamic sources and Gemini-verified nodes"
+            git commit -m "Auto update: verified Clash and V2Ray subscriptions"
 
           git push

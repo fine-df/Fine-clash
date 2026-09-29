@@ -3,17 +3,17 @@ name: Clash Gemini Monitor Agent
 on:
   schedule:
     - cron: '0 */6 * * *' # 每 6 小时自动运行
-  workflow_dispatch: # 支持在 GitHub 页面手动点击触发
+  workflow_dispatch: # 支持手动点击触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -21,13 +21,13 @@ jobs:
         run: |
           pip install requests pyyaml
 
-      - name: Install Clash Core on Runner
+      - name: Install Mihomo (Clash Meta) Core
         run: |
-          # 下载并配置轻量级 Clash 核心，供 Python 脚本在后台启动测试
-          wget https://github.com/Dreamacro/clash/releases/download/v1.18.0/clash-linux-amd64-v1.18.0.gz
-          gunzip clash-linux-amd64-v1.18.0.gz
-          mv clash-linux-amd64-v1.18.0 /usr/local/bin/clash
-          chmod +x /usr/local/bin/clash
+          # 使用更稳定、仍在活跃维护的 Mihomo (Clash Meta) 核心
+          curl -sSL -o mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz" || wget -O mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz"
+          gunzip mihomo.gz
+          sudo mv mihomo /usr/local/bin/clash
+          sudo chmod +x /usr/local/bin/clash
           clash -v
 
       - name: Run Gemini Proxy Monitor Script

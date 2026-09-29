@@ -3223,7 +3223,7 @@ def build_final_config(
                 True,
 
             "respect-rules":
-                True,
+                False,
 
             "listen":
                 "0.0.0.0:1053",
@@ -3232,7 +3232,7 @@ def build_final_config(
                 False,
 
             "enhanced-mode":
-                "redir-host",
+                "fake-ip",
 
             "fake-ip-range":
                 "198.18.0.1/16",
@@ -3255,38 +3255,34 @@ def build_final_config(
             "nameserver-policy": {
 
                 "geosite:cn": [
-                    "223.5.5.5",
-                    "223.6.6.6",
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
                 ],
 
                 "+.cn": [
-                    "223.5.5.5",
-                    "223.6.6.6",
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
                 ],
 
                 "+.com.cn": [
-                    "223.5.5.5",
-                    "223.6.6.6",
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
                 ],
 
                 "+.org.cn": [
-                    "223.5.5.5",
-                    "223.6.6.6",
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
                 ],
 
                 "+.net.cn": [
-                    "223.5.5.5",
-                    "223.6.6.6",
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
                 ],
             },
 
             "nameserver": [
-                "https://dns.google/dns-query#RULES",
-                "https://1.1.1.1/dns-query#RULES",
-            ],
-
-            "proxy-server-nameserver": [
                 "https://doh.pub/dns-query",
+                "https://dns.alidns.com/dns-query",
             ],
 
             "direct-nameserver": [
@@ -3294,7 +3290,8 @@ def build_final_config(
             ],
 
             "direct-nameserver-follow-policy":
-                True,
+                False,
+
         },
 
         # ====================================================

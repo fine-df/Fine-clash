@@ -3,7 +3,51 @@ socks-port: 7891
 allow-lan: true
 mode: rule
 log-level: info
+unified-delay: true
+tcp-concurrent: true
 proxies: []
+dns:
+  enable: true
+  cache-algorithm: arc
+  prefer-h3: false
+  use-hosts: true
+  use-system-hosts: true
+  respect-rules: false
+  listen: 0.0.0.0:1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+  - '*.lan'
+  - '*.local'
+  - +.local
+  - +.localhost
+  default-nameserver:
+  - 223.5.5.5
+  - 223.6.6.6
+  nameserver-policy:
+    geosite:cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    +.cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    +.com.cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    +.org.cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+    +.net.cn:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  nameserver:
+  - https://doh.pub/dns-query
+  - https://dns.alidns.com/dns-query
+  direct-nameserver:
+  - system
+  direct-nameserver-follow-policy: false
 proxy-groups:
 - name: 🚀 节点选择
   type: select

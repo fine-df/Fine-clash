@@ -3,6 +3,7 @@ name: Clash Gemini Monitor Agent
 on:
   schedule:
     - cron: '0 */6 * * *'
+
   workflow_dispatch:
 
 concurrency:
@@ -12,38 +13,38 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
 
     permissions:
       contents: write
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.10'
-          # 如果仓库里有 requirements.txt，可以打开下面这行
-          # cache: 'pip'
+          cache: 'pip'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests PyYAML
-          # 如果有 requirements.txt，改用下面这行：
-          # pip install -r requirements.txt
+          pip install -r requirements.txt
 
       - name: Install Mihomo
         run: |
           VERSION="v1.19.31"
+
           wget -q \
             "https://github.com/MetaCubeX/mihomo/releases/download/${VERSION}/mihomo-linux-amd64-${VERSION}.gz" \
             -O mihomo.gz
+
           gunzip -f mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/clash
+
           clash -v
 
       - name: Run Monitor Script
@@ -57,7 +58,10 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add live_clash.yaml node_history.json subscription_sources.json
+          git add \
+            live_clash.yaml \
+            node_history.json \
+            source_registry.json
 
           git diff --cached --quiet || \
             git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"

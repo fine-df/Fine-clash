@@ -31,12 +31,14 @@ jobs:
           clash -v || true
 
       - name: Run Monitor Script
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python clash_monitor.py
 
       - name: Commit & Push Changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add live_clash.yaml || true
+          git add live_clash.yaml node_history.json || true
           git commit -m "Auto update: Verified Gemini-accessible Clash nodes" || echo "No changes to commit"
           git push

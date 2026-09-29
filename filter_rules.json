@@ -1,0 +1,19 @@
+{
+  "source_rules": {
+    "require_recent_update": true,
+    "require_supported_format": true,
+    "minimum_score": 60
+  },
+  "node_rules": {
+    "remove_duplicate": true,
+    "require_server": true,
+    "require_port": true,
+    "supported_protocols": [
+      "vmess",
+      "vless",
+      "trojan",
+      "ss"
+    ],
+    "remove_unknown": true
+  }
+}

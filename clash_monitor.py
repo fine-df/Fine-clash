@@ -6,7 +6,7 @@ import base64
 import subprocess
 import re
 from datetime import datetime, timezone, timedelta
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlparse
 
 import requests
 import yaml
@@ -31,7 +31,7 @@ CONTROLLER_URL = (
     f"http://127.0.0.1:{CONTROLLER_PORT}"
 )
 
-MAX_CANDIDATES = 100
+MAX_CANDIDATES = 240
 MAX_PER_SOURCE = 30
 MAX_OUTPUT_NODES = 40
 MAX_SUBSCRIPTION_SOURCES = 60
@@ -41,10 +41,8 @@ DELAY_TIMEOUT_MS = 5000
 SWITCH_WAIT_SECONDS = 0.8
 
 # 最终真实代理延迟硬门槛
-# 严格目标：优先发布 <250ms 节点；若本轮不存在任何严格节点，
-# 使用 <=900ms 且完整通过 Gemini/Google Play/Google 测试的节点兜底，避免空订阅。
+# 正式发布节点必须同时满足 Google / Gemini / Google Play 全部 <250ms。
 MAX_PROXY_DELAY_MS = 250
-FALLBACK_PUBLISH_DELAY_MS = 900
 
 # 节点历史
 STABLE_PASS_COUNT = 2
@@ -237,6 +235,72 @@ def normalize_url(url):
     return url
 
 
+def is_plausible_subscription_url(url):
+    if not url or len(url) > 500:
+        return False
+
+    lower = url.lower()
+
+    blocked_hosts = (
+        "api.star-history.com",
+        "star-history.com",
+        "vercel.com",
+        "deploy.workers.cloudflare.com",
+        "t.me",
+        "telegram.me",
+    )
+
+    blocked_markers = (
+        "star-history",
+        "repository-url=",
+        "releases/download/",
+        "github.com/2dust/",
+        "clash-verge-rev/releases/",
+    )
+
+    blocked_extensions = (
+        ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
+        ".bmp", ".ico", ".exe", ".msi", ".apk", ".dmg",
+        ".zip", ".gz", ".tar", ".7z", ".deb", ".rpm",
+    )
+
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+
+    host = (parsed.netloc or "").lower()
+    path = (parsed.path or "").lower()
+
+    if parsed.scheme not in ("http", "https"):
+        return False
+    if any(token in lower for token in blocked_markers):
+        return False
+    if host in blocked_hosts:
+        return False
+    if path.endswith(blocked_extensions):
+        return False
+    if host in ("github.com", "www.github.com"):
+        return False
+
+    if host in (
+        "raw.githubusercontent.com",
+        "raw.githack.com",
+        "cdn.jsdelivr.net",
+    ):
+        return True
+
+    return (
+        any(token in path for token in (
+            "/sub", "/subscribe", "/subscription",
+            "/clash", "/mihomo", "/v2ray", "/vless",
+            "/vmess", "/trojan", "/ss", "/nodes",
+            "/proxy", "/proxies", "/free",
+        ))
+        or path.endswith((".yaml", ".yml", ".json", ".txt", ".conf"))
+    )
+
+
 def extract_subscription_urls(text):
     if not text:
         return []
@@ -244,32 +308,24 @@ def extract_subscription_urls(text):
     patterns = [
         r'https?://raw\.githubusercontent\.com/[^\s\'"<>]+',
         r'https?://cdn\.jsdelivr\.net/gh/[^\s\'"<>]+',
-        r'https?://[^\s\'"<>]+\.(?:yaml|yml)(?:\?[^\s\'"<>]*)?',
-        r'https?://[^\s\'"<>]+/(?:sub|subscribe|clash|mihomo|v2ray|vless)[^\s\'"<>]*',
+        r'https?://[^\s\'"<>]+\.(?:yaml|yml|json|txt|conf)(?:\?[^\s\'"<>]*)?',
+        r'https?://[^\s\'"<>]+/(?:sub|subscribe|subscription|clash|mihomo|v2ray|vless|vmess|trojan|ss|nodes|proxy|proxies|free)[^\s\'"<>]*',
     ]
 
     urls = set()
 
     for pattern in patterns:
-        for item in re.findall(
-            pattern,
-            text,
-            re.I,
-        ):
+        for item in re.findall(pattern, text, re.I):
             item = normalize_url(item)
-
             if (
                 len(item) > 20
                 and item.startswith("http")
+                and is_plausible_subscription_url(item)
             ):
                 urls.add(item)
 
     return sorted(urls)
 
-
-# ============================================================
-# 订阅源注册表
-# ============================================================
 
 def ensure_source_entry(
     registry,
@@ -658,6 +714,7 @@ def discover_subscription_sources():
         if (
             not url
             or url in seen
+                or not is_plausible_subscription_url(url)
         ):
             continue
 
@@ -952,6 +1009,8 @@ def collect_candidates(
     ):
         registry = {}
 
+    history = load_history()
+
     source_lists = []
 
     for source_url in source_urls:
@@ -999,6 +1058,17 @@ def collect_candidates(
                 )
 
         if normalized:
+
+            def history_key(node):
+                fp = proxy_fingerprint(node)
+                item = history.get(fp, {})
+                return (
+                    -int(item.get("pass_count", 0)),
+                    -int(item.get("last_seen", 0)),
+                    -int(item.get("first_seen", 0)),
+                )
+
+            normalized.sort(key=history_key)
 
             source_lists.append(
                 {
@@ -1589,10 +1659,10 @@ def test_node(
         ] = "Google delay failed"
         return result
 
-    if google_delay >= FALLBACK_PUBLISH_DELAY_MS:
+    if google_delay >= MAX_PROXY_DELAY_MS:
         result["reason"] = (
             f"Google proxy delay {google_delay}ms >= "
-            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
+            f"{MAX_PROXY_DELAY_MS}ms"
         )
         return result
 
@@ -1616,10 +1686,10 @@ def test_node(
         )
         return result
 
-    if gemini_delay >= FALLBACK_PUBLISH_DELAY_MS:
+    if gemini_delay >= MAX_PROXY_DELAY_MS:
         result["reason"] = (
             f"Gemini delay {gemini_delay}ms >= "
-            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
+            f"{MAX_PROXY_DELAY_MS}ms"
         )
         return result
 
@@ -1643,10 +1713,10 @@ def test_node(
         )
         return result
 
-    if play_delay >= FALLBACK_PUBLISH_DELAY_MS:
+    if play_delay >= MAX_PROXY_DELAY_MS:
         result["reason"] = (
             f"Google Play delay {play_delay}ms >= "
-            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
+            f"{MAX_PROXY_DELAY_MS}ms"
         )
         return result
 
@@ -3535,11 +3605,20 @@ def run_agent():
                 / 3600
             )
 
-            # 首次成功只记录，不输出
+            # 稳定池硬门槛：至少成功2次，且首次成功距本次至少6小时。
             if (
                 pass_count
                 < STABLE_PASS_COUNT
+                or survival_hours
+                < MIN_SURVIVAL_HOURS
             ):
+                print(
+                    f"OBSERVE {internal_name} | "
+                    f"{test['countryCode'] or '??'} | "
+                    f"life={survival_hours}h | "
+                    f"pass={pass_count} | "
+                    f"need={MIN_SURVIVAL_HOURS}h/{STABLE_PASS_COUNT}次"
+                )
                 continue
 
             country_code = (

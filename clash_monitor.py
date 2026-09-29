@@ -1,7 +1,8 @@
 """
 Fine-clash monitor.
 
-Generates live_clash.yaml from subscription sources.
+Full pipeline:
+subscription sources -> fetch -> parse Clash/Base64 nodes -> deduplicate -> live_clash.yaml
 """
 
 import base64
@@ -16,91 +17,94 @@ BASE_DIR = pathlib.Path(__file__).parent
 SOURCES_FILE = BASE_DIR / "subscription_sources.json"
 OUTPUT_FILE = BASE_DIR / "live_clash.yaml"
 
-USER_AGENT = "Fine-clash-monitor/1.1"
+USER_AGENT = "Fine-clash-monitor/2.0"
 
 
 class ClashMonitor:
     def __init__(self):
         self.headers = {"User-Agent": USER_AGENT}
 
-    def load_sources(self) -> list[dict[str, Any]]:
+    def load_sources(self):
         if not SOURCES_FILE.exists():
             return []
         with open(SOURCES_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return data if isinstance(data, list) else []
+            return json.load(f)
 
-    def fetch_subscription(self, url: str) -> str | None:
+    def fetch(self, url):
         try:
             r = requests.get(url, headers=self.headers, timeout=20)
             r.raise_for_status()
             return r.text
-        except Exception as exc:
-            print(f"fetch failed: {exc}")
-            return None
+        except Exception as e:
+            print("fetch failed", url, e)
+            return ""
 
-    def decode_base64_nodes(self, text: str) -> list[str]:
+    def parse_yaml(self, text):
         try:
-            decoded = base64.b64decode(text.strip()).decode("utf-8")
-            return [x for x in decoded.splitlines() if x.strip()]
+            data = yaml.safe_load(text)
+            if isinstance(data, dict) and isinstance(data.get("proxies"), list):
+                return data["proxies"]
         except Exception:
-            return []
+            pass
+        return []
 
-    def collect_proxies(self) -> list[dict[str, Any]]:
+    def parse_base64(self, text):
+        result = []
+        try:
+            raw = base64.b64decode(text.strip() + "===").decode("utf-8")
+            for line in raw.splitlines():
+                if line.startswith(("vmess://", "vless://", "trojan://", "ss://")):
+                    result.append(line)
+        except Exception:
+            pass
+        return result
+
+    def collect(self):
         proxies = []
+        seen = set()
         for source in self.load_sources():
-            url = source.get("url")
+            url = source if isinstance(source, str) else source.get("url")
             if not url:
                 continue
-            content = self.fetch_subscription(url)
-            if not content:
+            content = self.fetch(url)
+            items = self.parse_yaml(content)
+            if items:
+                for item in items:
+                    name = item.get("name")
+                    if name and name not in seen:
+                        seen.add(name)
+                        proxies.append(item)
                 continue
-            for index, node in enumerate(self.decode_base64_nodes(content), start=1):
-                proxies.append({
-                    "name": f"node-{index}",
-                    "type": "vmess" if node.startswith("vmess://") else "unknown",
-                    "server": "",
-                })
+            for index, node in enumerate(self.parse_base64(content), 1):
+                name = f"base64-{index}"
+                if name not in seen:
+                    seen.add(name)
+                    proxies.append({"name": name, "type": "vmess", "server": ""})
         return proxies
 
-    def build_config(self, proxies: list[dict[str, Any]]) -> dict[str, Any]:
+    def build(self, proxies):
         names = [p["name"] for p in proxies]
         return {
             "mixed-port": 7890,
             "allow-lan": True,
             "mode": "rule",
-            "log-level": "info",
             "dns": {
                 "enable": True,
                 "enhanced-mode": "fake-ip",
                 "respect-rules": True,
                 "fake-ip-filter": ["*.lan", "*.local", "localhost", "*.cn"],
                 "nameserver": ["https://doh.pub/dns-query", "https://dns.alidns.com/dns-query"],
-                "direct-nameserver": ["223.5.5.5", "223.6.6.6"],
+                "direct-nameserver": ["223.5.5.5", "223.6.6.6"]
             },
             "proxies": proxies,
-            "proxy-groups": [
-                {
-                    "name": "PROXY",
-                    "type": "select",
-                    "proxies": names + ["DIRECT"],
-                }
-            ],
-            "rules": [
-                "GEOSITE,CN,DIRECT",
-                "GEOIP,CN,DIRECT",
-                "MATCH,PROXY",
-            ],
+            "proxy-groups": [{"name": "PROXY", "type": "select", "proxies": names + ["DIRECT"]}],
+            "rules": ["GEOSITE,CN,DIRECT", "GEOIP,CN,DIRECT", "MATCH,PROXY"]
         }
 
-    def save_config(self, config: dict[str, Any]):
+    def run(self):
+        config = self.build(self.collect())
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
-
-    def run(self):
-        proxies = self.collect_proxies()
-        self.save_config(self.build_config(proxies))
-        print(f"Generated {OUTPUT_FILE} with {len(proxies)} proxies")
 
 
 if __name__ == "__main__":

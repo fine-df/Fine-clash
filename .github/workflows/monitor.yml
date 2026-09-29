@@ -61,9 +61,10 @@ jobs:
           git add \
             live_clash.yaml \
             node_history.json \
+            subscription_sources.json \
             source_registry.json
 
           git diff --cached --quiet || \
-            git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
+            git commit -m "Auto update: dynamic sources and Gemini-verified nodes"
 
           git push

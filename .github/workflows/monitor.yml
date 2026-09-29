@@ -6,6 +6,14 @@ on:
 
   workflow_dispatch:
 
+  push:
+    branches:
+      - main
+    paths:
+      - clash_monitor.py
+      - .github/workflows/monitor.yml
+      - requirements.txt
+
 concurrency:
   group: clash-gemini-monitor
   cancel-in-progress: false

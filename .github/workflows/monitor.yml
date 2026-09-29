@@ -8,11 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          sparse-checkout: .
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,15 +28,15 @@ jobs:
           gunzip -f mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/clash
+          clash -v || true
 
       - name: Run Monitor Script
         run: python clash_monitor.py
 
-      - name: Commit Changes
+      - name: Commit & Push Changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          touch live_clash.yaml
-          git add live_clash.yaml
-          git commit -m "Auto update live clash config" || true
-          git push || true
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add live_clash.yaml || true
+          git commit -m "Auto update: Verified Gemini-accessible Clash nodes" || echo "No changes to commit"
+          git push

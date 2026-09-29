@@ -1,44 +1,25 @@
-name: Clash Gemini Monitor Agent
+import os
+import requests
+import yaml
 
-on:
-  schedule:
-    - cron: '0 */6 * * *' # 每 6 小时自动运行
-  workflow_dispatch: # 支持手动点击触发
+print("Starting Clash Gemini Monitor Agent...")
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+# 示例：抓取/处理 Clash 订阅，过滤可用节点并输出 live_clash.yaml
+# 请在此处写你的 Python 逻辑，或者使用下方的基础结构
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+out_file = "live_clash.yaml"
 
-      - name: Install Dependencies
-        run: |
-          pip install requests pyyaml
+data = {
+    "port": 7890,
+    "socks-port": 7891,
+    "allow-lan": True,
+    "mode": "rule",
+    "log-level": "info",
+    "proxies": []
+}
 
-      - name: Install Mihomo (Clash Meta) Core
-        run: |
-          # 使用更稳定、仍在活跃维护的 Mihomo (Clash Meta) 核心
-          curl -sSL -o mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz" || wget -O mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz"
-          gunzip mihomo.gz
-          sudo mv mihomo /usr/local/bin/clash
-          sudo chmod +x /usr/local/bin/clash
-          clash -v
+# 写入验证后的节点到 live_clash.yaml
+with open(out_file, "w", encoding="utf-8") as f:
+    yaml.dump(data, f, allow_unicode=True)
 
-      - name: Run Gemini Proxy Monitor Script
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python clash_monitor.py
-
-      - name: Commit & Push Verified Subscription
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add live_clash.yaml
-          git commit -m "Auto update: Verified Gemini-accessible Clash nodes" || exit 0
-          git push
+print(f"Successfully generated {out_file}!")

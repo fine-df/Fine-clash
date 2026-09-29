@@ -762,6 +762,17 @@ def discover_subscription_sources():
     ):
         cache = []
 
+    registry = load_json(
+        SOURCE_REGISTRY_FILE,
+        {},
+    )
+
+    if not isinstance(
+        registry,
+        dict,
+    ):
+        registry = {}
+
     discovered = []
 
     for url in cache:
@@ -4415,17 +4426,6 @@ def run_agent():
     )
 
     history = load_history()
-
-    registry = load_json(
-        SOURCE_REGISTRY_FILE,
-        {},
-    )
-
-    if not isinstance(
-        registry,
-        dict,
-    ):
-        registry = {}
 
     # --------------------------------------------------------
     # 1. 自动发现订阅源

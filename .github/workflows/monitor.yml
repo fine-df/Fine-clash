@@ -2,8 +2,8 @@ name: Clash Gemini Monitor Agent
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # 每 6 小时自动运行
-  workflow_dispatch: # 支持手动点击触发
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,7 +23,6 @@ jobs:
 
       - name: Install Mihomo (Clash Meta) Core
         run: |
-          # 使用更稳定、仍在活跃维护的 Mihomo (Clash Meta) 核心
           curl -sSL -o mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz" || wget -O mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz"
           gunzip mihomo.gz
           sudo mv mihomo /usr/local/bin/clash

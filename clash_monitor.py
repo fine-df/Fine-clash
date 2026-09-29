@@ -6,60 +6,72 @@ import base64
 import subprocess
 import re
 from datetime import datetime, timezone, timedelta
-from urllib.parse import urlparse
+from urllib.parse import quote
 
 import requests
 import yaml
 
 
 # ============================================================
-# 基础配置
+# 核心规则
 # ============================================================
+# 1. 自动寻找近期活跃的新订阅源
+# 2. 台湾 / 美国优先
+# 3. 清洁 IP 优先
+# 4. 实际代理 HTTP 延迟必须 < 250ms
+# 5. Google 必须可用
+# 6. Gemini 必须可用
+# 7. Google Play 必须可用
+# 8. Gemini Android 关键 Google 主机必须大部分可达
+# 9. 记录节点寿命，长期稳定节点优先
+# 10. 记录订阅源稳定性，长期有效源优先
+# 11. 中国大陆流量 DIRECT
+# 12. Gemini 自动选择持续健康检查
+# 13. Google Play 自动选择持续健康检查
+# ============================================================
+
 
 HISTORY_FILE = "node_history.json"
 SOURCE_CACHE_FILE = "subscription_sources.json"
 SOURCE_REGISTRY_FILE = "source_registry.json"
 
 MIHOMO_BIN = "clash"
+
 TEST_PORT = 9050
 CONTROLLER_PORT = 9090
-CONTROLLER_URL = f"http://127.0.0.1:{CONTROLLER_PORT}"
+CONTROLLER_URL = (
+    f"http://127.0.0.1:{CONTROLLER_PORT}"
+)
 
 MAX_CANDIDATES = 100
 MAX_PER_SOURCE = 30
 MAX_OUTPUT_NODES = 40
 MAX_SUBSCRIPTION_SOURCES = 60
 
-REQUEST_TIMEOUT = 8
-SWITCH_WAIT_SECONDS = 1.0
+REQUEST_TIMEOUT = 6
+DELAY_TIMEOUT_MS = 5000
+SWITCH_WAIT_SECONDS = 0.8
 
-# 节点稳定性
+# 最终真实代理延迟硬门槛
+MAX_PROXY_DELAY_MS = 250
+
+# 节点历史
 STABLE_PASS_COUNT = 2
 HISTORY_RESET_HOURS = 48
 MIN_SURVIVAL_HOURS = 6
 
-# 台湾 / 美国节点要求
-TW_MAX_LATENCY_MS = 100
-US_MAX_LATENCY_MS = 250
-GLOBAL_MAX_LATENCY_MS = 400
-
-TW_REQUIRE_CLEAN = True
-US_REQUIRE_CLEAN = True
-
-# 连通性要求
-REQUIRE_GOOGLE = True
-REQUIRE_GEMINI_WEB = True
-REQUIRE_GEMINI_API = False
+# IP 清洁度
+REQUIRE_CLEAN_IP = True
 
 
 # ============================================================
-# GitHub 自动发现配置
+# GitHub 自动发现
 # ============================================================
 
 GITHUB_SEARCH_ENABLED = True
 GITHUB_MAX_REPOS = 20
-GITHUB_MIN_STARS = 30
-GITHUB_MAX_DAYS = 45
+GITHUB_MIN_STARS = 10
+GITHUB_MAX_DAYS = 30
 
 GITHUB_SEARCH_QUERIES = [
     "free clash",
@@ -71,7 +83,7 @@ GITHUB_SEARCH_QUERIES = [
 
 
 # ============================================================
-# 测试地址
+# 测试目标
 # ============================================================
 
 IP_CHECK_URL = (
@@ -80,16 +92,36 @@ IP_CHECK_URL = (
     "hosting,proxy,org,isp,query"
 )
 
-GOOGLE_TEST_URL = "https://www.google.com/generate_204"
-GEMINI_TEST_URL = "https://gemini.google.com/"
-GEMINI_API_TEST_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models"
+GOOGLE_DELAY_URL = (
+    "https://www.google.com/generate_204"
 )
 
+GEMINI_DELAY_URL = (
+    "https://gemini.google.com/"
+)
+
+PLAY_DELAY_URL = (
+    "https://play.google.com/store/apps/"
+)
+
+
+# Gemini Android / Google 关键服务
+GEMINI_MOBILE_PROBES = [
+    "https://www.googleapis.com/",
+    "https://apis.google.com/",
+    "https://jnn-pa.googleapis.com/",
+    "https://waa-pa.clients6.google.com/",
+    "https://www.gstatic.com/",
+    "https://ssl.gstatic.com/",
+    "https://optimizationguide-pa.googleapis.com/",
+    "https://play.googleapis.com/",
+]
+
+
 USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "Mozilla/5.0 (Linux; Android 14) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/128.0.0.0 Safari/537.36"
+    "Chrome/128.0.0.0 Mobile Safari/537.36"
 )
 
 HEADERS = {
@@ -97,10 +129,16 @@ HEADERS = {
     "Accept": "*/*",
 }
 
-GITHUB_TOKEN = os.getenv("GH_TOKEN", "")
+
+GITHUB_TOKEN = os.getenv(
+    "GH_TOKEN",
+    ""
+)
 
 if GITHUB_TOKEN:
-    HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
+    HEADERS["Authorization"] = (
+        f"Bearer {GITHUB_TOKEN}"
+    )
 
 
 # ============================================================
@@ -114,7 +152,6 @@ FALLBACK_SUBSCRIPTION_URLS = [
     "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
     "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml",
     "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/clashmeta.yaml",
-    "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/yudou66.yaml",
     "https://raw.githubusercontent.com/anaer/Sub/main/clash.yaml",
     "https://raw.githubusercontent.com/free18/v2ray/main/c.yaml",
     "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash",
@@ -123,22 +160,29 @@ FALLBACK_SUBSCRIPTION_URLS = [
 
 
 # ============================================================
-# JSON 工具
+# JSON
 # ============================================================
 
 def load_json(path, default):
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            value = json.load(f)
-        return value
+        with open(
+            path,
+            "r",
+            encoding="utf-8",
+        ) as f:
+            return json.load(f)
     except Exception:
         return default
 
 
-def save_json(path, value):
-    with open(path, "w", encoding="utf-8") as f:
+def save_json(path, data):
+    with open(
+        path,
+        "w",
+        encoding="utf-8",
+    ) as f:
         json.dump(
-            value,
+            data,
             f,
             ensure_ascii=False,
             indent=2,
@@ -146,37 +190,59 @@ def save_json(path, value):
 
 
 # ============================================================
-# 历史记录
+# 节点历史
 # ============================================================
 
 def load_history():
-    value = load_json(HISTORY_FILE, {})
-    return value if isinstance(value, dict) else {}
+    data = load_json(
+        HISTORY_FILE,
+        {},
+    )
+
+    return (
+        data
+        if isinstance(data, dict)
+        else {}
+    )
 
 
 def save_history(history):
     try:
-        save_json(HISTORY_FILE, history)
-    except Exception as e:
-        print(f"history save failed: {e}")
+        save_json(
+            HISTORY_FILE,
+            history,
+        )
+    except Exception as exc:
+        print(
+            f"history save failed: {exc}"
+        )
 
 
 # ============================================================
-# URL 处理
+# URL
 # ============================================================
 
 def normalize_url(url):
     if not url:
         return ""
 
-    url = url.strip().rstrip(").,;'\"")
+    url = url.strip().rstrip(
+        ").,;'\""
+    )
 
-    if "github.com" in url and "/blob/" in url:
+    if (
+        "github.com" in url
+        and "/blob/" in url
+    ):
         url = url.replace(
             "https://github.com/",
             "https://raw.githubusercontent.com/",
         )
-        url = url.replace("/blob/", "/")
+
+        url = url.replace(
+            "/blob/",
+            "/",
+        )
 
     return url
 
@@ -192,16 +258,65 @@ def extract_subscription_urls(text):
         r'https?://[^\s\'"<>]+/(?:sub|subscribe|clash|mihomo)[^\s\'"<>]*',
     ]
 
-    out = set()
+    urls = set()
 
     for pattern in patterns:
-        for item in re.findall(pattern, text, re.I):
+        for item in re.findall(
+            pattern,
+            text,
+            re.I,
+        ):
             item = normalize_url(item)
 
-            if len(item) > 20 and item.startswith("http"):
-                out.add(item)
+            if (
+                len(item) > 20
+                and item.startswith("http")
+            ):
+                urls.add(item)
 
-    return sorted(out)
+    return sorted(urls)
+
+
+# ============================================================
+# 订阅源注册表
+# ============================================================
+
+def ensure_source_entry(
+    registry,
+    url,
+    repo="",
+    stars=0,
+):
+    now = int(time.time())
+
+    entry = registry.setdefault(
+        url,
+        {
+            "url": url,
+            "repo": repo,
+            "stars": int(stars or 0),
+            "first_seen": now,
+            "last_seen": now,
+            "success_count": 0,
+            "failure_count": 0,
+            "qualified_runs": 0,
+            "qualified_nodes_total": 0,
+            "last_status": "",
+            "last_nodes": 0,
+            "last_qualified_nodes": 0,
+            "last_qualified_at": 0,
+        },
+    )
+
+    entry["last_seen"] = now
+
+    if repo:
+        entry["repo"] = repo
+
+    if stars:
+        entry["stars"] = int(stars)
+
+    return entry
 
 
 # ============================================================
@@ -209,28 +324,36 @@ def extract_subscription_urls(text):
 # ============================================================
 
 def search_github_repos():
+
     if not GITHUB_SEARCH_ENABLED:
         return []
 
-    cutoff = (
-        datetime.now(timezone.utc)
-        - timedelta(days=GITHUB_MAX_DAYS)
-    ).date().isoformat()
-
     repos = {}
 
+    cutoff = (
+        datetime.now(timezone.utc)
+        - timedelta(
+            days=GITHUB_MAX_DAYS
+        )
+    )
+
     headers = dict(HEADERS)
-    headers["Accept"] = "application/vnd.github+json"
+
+    headers["Accept"] = (
+        "application/vnd.github+json"
+    )
 
     for base_query in GITHUB_SEARCH_QUERIES:
 
         query = (
             f"{base_query} "
             f"stars:>={GITHUB_MIN_STARS} "
-            f"pushed:>={cutoff}"
+            f"pushed:>="
+            f"{cutoff.date().isoformat()}"
         )
 
         try:
+
             response = requests.get(
                 "https://api.github.com/search/repositories",
                 headers=headers,
@@ -240,39 +363,58 @@ def search_github_repos():
                     "order": "desc",
                     "per_page": 10,
                 },
-                timeout=15,
+                timeout=12,
             )
 
             if response.status_code != 200:
                 print(
                     f"GitHub search HTTP "
-                    f"{response.status_code}: {base_query}"
+                    f"{response.status_code}: "
+                    f"{base_query}"
                 )
                 continue
 
-            for item in response.json().get("items", []):
+            for item in response.json().get(
+                "items",
+                [],
+            ):
 
-                full_name = item.get("full_name")
-                stars = int(
-                    item.get("stargazers_count", 0)
+                full_name = item.get(
+                    "full_name"
                 )
-                updated_at = item.get("updated_at", "")
+
+                stars = int(
+                    item.get(
+                        "stargazers_count",
+                        0,
+                    )
+                )
+
+                updated_at = item.get(
+                    "updated_at",
+                    "",
+                )
 
                 if not full_name:
                     continue
 
-                if stars < GITHUB_MIN_STARS:
+                if (
+                    stars
+                    < GITHUB_MIN_STARS
+                ):
                     continue
 
                 try:
-                    updated_dt = datetime.fromisoformat(
-                        updated_at.replace("Z", "+00:00")
+                    updated_dt = (
+                        datetime.fromisoformat(
+                            updated_at.replace(
+                                "Z",
+                                "+00:00",
+                            )
+                        )
                     )
 
-                    if updated_dt < (
-                        datetime.now(timezone.utc)
-                        - timedelta(days=GITHUB_MAX_DAYS)
-                    ):
+                    if updated_dt < cutoff:
                         continue
 
                 except Exception:
@@ -281,17 +423,21 @@ def search_github_repos():
                 repos[full_name] = {
                     "full_name": full_name,
                     "stars": stars,
-                    "default_branch": item.get(
-                        "default_branch",
-                        "main",
-                    ),
-                    "updated_at": updated_at,
+                    "default_branch":
+                        item.get(
+                            "default_branch",
+                            "main",
+                        ),
+                    "updated_at":
+                        updated_at,
                 }
 
-            time.sleep(0.7)
+            time.sleep(0.6)
 
-        except Exception as e:
-            print(f"GitHub search error: {e}")
+        except Exception as exc:
+            print(
+                f"GitHub search error: {exc}"
+            )
 
     result = sorted(
         repos.values(),
@@ -301,7 +447,9 @@ def search_github_repos():
         ),
     )
 
-    result = result[:GITHUB_MAX_REPOS]
+    result = result[
+        :GITHUB_MAX_REPOS
+    ]
 
     print(
         f"GitHub dynamic repositories: "
@@ -311,8 +459,13 @@ def search_github_repos():
     return result
 
 
-def fetch_text(url, timeout=12):
+def fetch_text(
+    url,
+    timeout=10,
+):
+
     try:
+
         response = requests.get(
             url,
             headers=HEADERS,
@@ -329,7 +482,11 @@ def fetch_text(url, timeout=12):
 
 
 def fetch_repo_texts(repo):
-    full_name = repo["full_name"]
+
+    full_name = repo[
+        "full_name"
+    ]
+
     branch = repo.get(
         "default_branch",
         "main",
@@ -337,34 +494,38 @@ def fetch_repo_texts(repo):
 
     texts = []
 
-    # README
-    for path in (
+    for filename in (
         "README.md",
         "readme.md",
     ):
+
         text = fetch_text(
             f"https://raw.githubusercontent.com/"
-            f"{full_name}/{branch}/{path}"
+            f"{full_name}/"
+            f"{branch}/"
+            f"{filename}"
         )
 
         if text:
             texts.append(text)
             break
 
-    # 根目录候选文件
     try:
+
         response = requests.get(
             f"https://api.github.com/repos/"
             f"{full_name}/contents/",
             headers=HEADERS,
-            timeout=12,
+            timeout=10,
         )
 
         if response.status_code == 200:
 
             for item in response.json():
 
-                if item.get("type") != "file":
+                if item.get(
+                    "type"
+                ) != "file":
                     continue
 
                 name = item.get(
@@ -373,8 +534,8 @@ def fetch_repo_texts(repo):
                 ).lower()
 
                 if not any(
-                    keyword in name
-                    for keyword in (
+                    key in name
+                    for key in (
                         "clash",
                         "mihomo",
                         "sub",
@@ -416,44 +577,6 @@ def fetch_repo_texts(repo):
     return texts
 
 
-# ============================================================
-# 订阅源注册表
-# ============================================================
-
-def ensure_source_entry(
-    registry,
-    url,
-    repo="",
-    stars=0,
-):
-    now = int(time.time())
-
-    entry = registry.setdefault(
-        url,
-        {
-            "url": url,
-            "repo": repo,
-            "stars": stars,
-            "first_seen": now,
-            "last_seen": now,
-            "success_count": 0,
-            "failure_count": 0,
-            "last_status": "",
-            "last_nodes": 0,
-        },
-    )
-
-    entry["last_seen"] = now
-
-    if repo:
-        entry["repo"] = repo
-
-    if stars:
-        entry["stars"] = stars
-
-    return entry
-
-
 def discover_subscription_sources():
 
     cache = load_json(
@@ -461,7 +584,10 @@ def discover_subscription_sources():
         [],
     )
 
-    if not isinstance(cache, list):
+    if not isinstance(
+        cache,
+        list,
+    ):
         cache = []
 
     registry = load_json(
@@ -469,7 +595,10 @@ def discover_subscription_sources():
         {},
     )
 
-    if not isinstance(registry, dict):
+    if not isinstance(
+        registry,
+        dict,
+    ):
         registry = {}
 
     discovered = []
@@ -487,26 +616,29 @@ def discover_subscription_sources():
                 url,
             )
 
-    # GitHub 动态搜索
-    repos = search_github_repos()
+    # 最新 GitHub 源
+    for repo in search_github_repos():
 
-    for repo in repos:
+        repo_urls = set()
 
-        urls = set()
-
-        for text in fetch_repo_texts(repo):
-            urls.update(
-                extract_subscription_urls(text)
+        for text in fetch_repo_texts(
+            repo
+        ):
+            repo_urls.update(
+                extract_subscription_urls(
+                    text
+                )
             )
 
-        if urls:
+        if repo_urls:
+
             print(
                 f"{repo['full_name']} "
                 f"Star={repo['stars']} "
-                f"new sources={len(urls)}"
+                f"sources={len(repo_urls)}"
             )
 
-        for url in urls:
+        for url in repo_urls:
 
             discovered.append(url)
 
@@ -517,9 +649,7 @@ def discover_subscription_sources():
                 repo["stars"],
             )
 
-        time.sleep(0.4)
-
-    # 兜底源
+    # 兜底
     for url in FALLBACK_SUBSCRIPTION_URLS:
 
         discovered.append(url)
@@ -539,37 +669,60 @@ def discover_subscription_sources():
 
         url = normalize_url(url)
 
-        if not url:
-            continue
-
-        if url in seen:
+        if (
+            not url
+            or url in seen
+        ):
             continue
 
         seen.add(url)
         unique.append(url)
 
-    # 历史成功源优先
-    unique.sort(
-        key=lambda u: (
-            -int(
-                registry.get(
-                    u,
-                    {},
-                ).get(
-                    "success_count",
-                    0,
-                )
-            ),
-            -int(
-                registry.get(
-                    u,
-                    {},
-                ).get(
-                    "stars",
-                    0,
-                )
-            ),
+    # 长期稳定源优先
+    def source_priority(url):
+
+        entry = registry.get(
+            url,
+            {},
         )
+
+        qualified_runs = int(
+            entry.get(
+                "qualified_runs",
+                0,
+            )
+        )
+
+        success_count = int(
+            entry.get(
+                "success_count",
+                0,
+            )
+        )
+
+        stars = int(
+            entry.get(
+                "stars",
+                0,
+            )
+        )
+
+        last_qualified = int(
+            entry.get(
+                "last_qualified_at",
+                0,
+            )
+        )
+
+        return (
+            -qualified_runs,
+            -success_count,
+            -stars,
+            -last_qualified,
+        )
+
+    unique.sort(
+        key=source_priority
     )
 
     unique = unique[
@@ -587,7 +740,7 @@ def discover_subscription_sources():
     )
 
     print(
-        f"Subscription sources: "
+        f"Subscription sources selected: "
         f"{len(unique)}"
     )
 
@@ -595,12 +748,15 @@ def discover_subscription_sources():
 
 
 # ============================================================
-# 节点标准化
+# 节点解析
 # ============================================================
 
 def normalize_proxy(proxy):
 
-    if not isinstance(proxy, dict):
+    if not isinstance(
+        proxy,
+        dict,
+    ):
         return None
 
     result = {
@@ -609,16 +765,22 @@ def normalize_proxy(proxy):
         if value is not None
     }
 
-    if not result.get("server"):
+    if not result.get(
+        "server"
+    ):
         return None
 
-    if not result.get("port"):
+    if not result.get(
+        "port"
+    ):
         return None
 
     try:
+
         result["port"] = int(
             result["port"]
         )
+
     except Exception:
         return None
 
@@ -666,29 +828,40 @@ def proxy_fingerprint(proxy):
     )
 
     return hashlib.sha256(
-        raw.encode()
+        raw.encode("utf-8")
     ).hexdigest()[:20]
 
 
 # ============================================================
-# 订阅解析
+# 订阅获取
 # ============================================================
 
 def parse_yaml(text):
 
     try:
-        data = yaml.safe_load(text)
+
+        data = yaml.safe_load(
+            text
+        )
 
         if (
-            isinstance(data, dict)
+            isinstance(
+                data,
+                dict,
+            )
             and isinstance(
                 data.get("proxies"),
                 list,
             )
         ):
-            return data["proxies"]
+            return data[
+                "proxies"
+            ]
 
-        if isinstance(data, list):
+        if isinstance(
+            data,
+            list,
+        ):
             return data
 
     except Exception:
@@ -705,20 +878,23 @@ def parse_base64_yaml(text):
             text.split()
         )
 
-        decoded = base64.b64decode(
-            compact
-            + "="
-            * (-len(compact) % 4),
-            validate=False,
-        )
-
-        decoded_text = decoded.decode(
-            "utf-8",
-            errors="ignore",
+        decoded = (
+            base64.b64decode(
+                compact
+                + "="
+                * (
+                    -len(compact)
+                    % 4
+                ),
+                validate=False,
+            )
         )
 
         return parse_yaml(
-            decoded_text
+            decoded.decode(
+                "utf-8",
+                errors="ignore",
+            )
         )
 
     except Exception:
@@ -732,21 +908,30 @@ def fetch_source(url):
         response = requests.get(
             url,
             headers=HEADERS,
-            timeout=15,
+            timeout=12,
         )
 
         if response.status_code != 200:
+
             return (
                 [],
-                f"HTTP {response.status_code}",
+                f"HTTP "
+                f"{response.status_code}",
             )
 
-        text = response.text.strip()
+        text = (
+            response.text.strip()
+        )
 
-        nodes = parse_yaml(text)
+        nodes = parse_yaml(
+            text
+        )
 
         if nodes:
-            return nodes, "YAML"
+            return (
+                nodes,
+                "YAML",
+            )
 
         nodes = parse_base64_yaml(
             text
@@ -758,10 +943,17 @@ def fetch_source(url):
                 "Base64 YAML",
             )
 
-        return [], "unparsed"
+        return (
+            [],
+            "unparsed",
+        )
 
-    except Exception as e:
-        return [], str(e)
+    except Exception as exc:
+
+        return (
+            [],
+            str(exc),
+        )
 
 
 # ============================================================
@@ -777,29 +969,44 @@ def collect_candidates(
         {},
     )
 
-    if not isinstance(registry, dict):
+    if not isinstance(
+        registry,
+        dict,
+    ):
         registry = {}
 
     source_lists = []
 
-    for url in source_urls:
+    for source_url in source_urls:
 
         raw, status = fetch_source(
-            url
+            source_url
         )
 
         entry = ensure_source_entry(
             registry,
-            url,
+            source_url,
         )
 
-        entry["last_status"] = status
-        entry["last_nodes"] = len(raw)
+        entry[
+            "last_status"
+        ] = status
+
+        entry[
+            "last_nodes"
+        ] = len(raw)
 
         if raw:
-            entry["success_count"] += 1
+
+            entry[
+                "success_count"
+            ] += 1
+
         else:
-            entry["failure_count"] += 1
+
+            entry[
+                "failure_count"
+            ] += 1
 
         normalized = []
 
@@ -810,13 +1017,21 @@ def collect_candidates(
             )
 
             if item:
-                normalized.append(item)
+                normalized.append(
+                    item
+                )
 
         if normalized:
+
             source_lists.append(
-                normalized[
-                    :MAX_PER_SOURCE
-                ]
+                {
+                    "source_url":
+                        source_url,
+                    "nodes":
+                        normalized[
+                            :MAX_PER_SOURCE
+                        ],
+                }
             )
 
     save_json(
@@ -828,28 +1043,60 @@ def collect_candidates(
     seen = set()
     index = 0
 
-    while len(candidates) < MAX_CANDIDATES:
+    while (
+        len(candidates)
+        < MAX_CANDIDATES
+    ):
 
         added = False
 
-        for source_list in source_lists:
+        for source in source_lists:
 
-            if index >= len(
-                source_list
+            nodes = source[
+                "nodes"
+            ]
+
+            if (
+                index
+                >= len(nodes)
             ):
                 continue
 
-            node = source_list[index]
+            node = nodes[
+                index
+            ]
 
             fingerprint = (
-                proxy_fingerprint(node)
+                proxy_fingerprint(
+                    node
+                )
             )
 
-            if fingerprint in seen:
+            if (
+                fingerprint
+                in seen
+            ):
                 continue
 
-            seen.add(fingerprint)
-            candidates.append(node)
+            seen.add(
+                fingerprint
+            )
+
+            candidates.append(
+                {
+                    "proxy":
+                        node,
+
+                    "fingerprint":
+                        fingerprint,
+
+                    "source_url":
+                        source[
+                            "source_url"
+                        ],
+                }
+            )
+
             added = True
 
             if (
@@ -882,53 +1129,83 @@ def build_test_config(
     proxies = []
     metadata = {}
 
-    for index, proxy in enumerate(
+    for index, candidate in enumerate(
         candidates,
-        1,
+        start=1,
     ):
 
         name = (
             f"TEST-{index:03d}"
         )
 
-        item = dict(proxy)
-        item["name"] = name
+        proxy = dict(
+            candidate["proxy"]
+        )
 
-        proxies.append(item)
+        proxy["name"] = name
+
+        proxies.append(proxy)
 
         metadata[name] = {
-            "proxy": proxy,
+            "proxy":
+                candidate["proxy"],
+
             "fingerprint":
-                proxy_fingerprint(
-                    proxy
-                ),
+                candidate["fingerprint"],
+
+            "source_url":
+                candidate["source_url"],
         }
 
     config = {
-        "mixed-port": TEST_PORT,
-        "allow-lan": False,
-        "mode": "rule",
-        "log-level": "silent",
+
+        "mixed-port":
+            TEST_PORT,
+
+        "allow-lan":
+            False,
+
+        "mode":
+            "rule",
+
+        "log-level":
+            "silent",
+
         "external-controller":
-            f"127.0.0.1:"
-            f"{CONTROLLER_PORT}",
-        "proxies": proxies,
+            (
+                f"127.0.0.1:"
+                f"{CONTROLLER_PORT}"
+            ),
+
+        "proxies":
+            proxies,
+
         "proxy-groups": [
             {
-                "name": "TEST",
-                "type": "select",
-                "proxies": [
-                    p["name"]
-                    for p in proxies
-                ],
+                "name":
+                    "TEST",
+
+                "type":
+                    "select",
+
+                "proxies":
+                    [
+                        p["name"]
+                        for p in proxies
+                    ],
             }
         ],
-        "rules": [
-            "MATCH,TEST"
-        ],
+
+        "rules":
+            [
+                "MATCH,TEST"
+            ],
     }
 
-    return config, metadata
+    return (
+        config,
+        metadata,
+    )
 
 
 def write_yaml(
@@ -951,7 +1228,7 @@ def write_yaml(
 
 
 # ============================================================
-# Mihomo 启停
+# Mihomo 启动
 # ============================================================
 
 def start_mihomo(
@@ -969,15 +1246,22 @@ def start_mihomo(
     )
 
     deadline = (
-        time.time() + 12
+        time.time()
+        + 12
     )
 
-    while time.time() < deadline:
+    while (
+        time.time()
+        < deadline
+    ):
 
         try:
 
             response = requests.get(
-                f"{CONTROLLER_URL}/version",
+                (
+                    f"{CONTROLLER_URL}"
+                    f"/version"
+                ),
                 timeout=1,
             )
 
@@ -987,12 +1271,17 @@ def start_mihomo(
         except Exception:
             pass
 
-        time.sleep(0.5)
+        time.sleep(
+            0.5
+        )
 
     try:
 
         proc.terminate()
-        proc.wait(timeout=3)
+
+        proc.wait(
+            timeout=3
+        )
 
     except Exception:
 
@@ -1006,13 +1295,16 @@ def start_mihomo(
 
 def stop_mihomo(proc):
 
-    if proc is None:
+    if not proc:
         return
 
     try:
 
         proc.terminate()
-        proc.wait(timeout=5)
+
+        proc.wait(
+            timeout=5
+        )
 
     except Exception:
 
@@ -1022,21 +1314,29 @@ def stop_mihomo(proc):
             pass
 
 
-def select_proxy(name):
+def select_proxy(
+    name
+):
 
     try:
 
         response = requests.put(
-            f"{CONTROLLER_URL}/proxies/TEST",
+            (
+                f"{CONTROLLER_URL}"
+                f"/proxies/TEST"
+            ),
             json={
                 "name": name
             },
             timeout=3,
         )
 
-        if response.status_code not in (
-            200,
-            204,
+        if (
+            response.status_code
+            not in (
+                200,
+                204,
+            )
         ):
             return False
 
@@ -1051,362 +1351,617 @@ def select_proxy(name):
 
 
 # ============================================================
-# 节点实际检测
+# Mihomo 原生真实延迟
 # ============================================================
 
-def test_current_proxy():
+def proxy_delay(
+    proxy_name,
+    url,
+    expected=None,
+):
 
-    session = requests.Session()
+    encoded_name = quote(
+        proxy_name,
+        safe="",
+    )
 
-    session.headers.update({
-        "User-Agent":
-            USER_AGENT,
-        "Accept":
-            "*/*",
-    })
+    params = {
+        "url":
+            url,
 
-    session.proxies.update({
-        "http":
-            f"http://127.0.0.1:"
-            f"{TEST_PORT}",
-        "https":
-            f"http://127.0.0.1:"
-            f"{TEST_PORT}",
-    })
-
-    result = {
-        "passed":
-            False,
-        "exit_ip":
-            "",
-        "country":
-            "",
-        "countryCode":
-            "",
-        "city":
-            "",
-        "org":
-            "",
-        "isp":
-            "",
-        "hosting":
-            False,
-        "proxy":
-            False,
-        "google_access":
-            False,
-        "gemini_access":
-            False,
-        "gemini_api_reachable":
-            False,
-        "latency_ms":
-            None,
-        "is_clean":
-            False,
-        "reason":
-            "",
+        "timeout":
+            DELAY_TIMEOUT_MS,
     }
 
-    # --------------------------------------------------------
-    # 1. 出口 IP
-    # --------------------------------------------------------
+    if expected:
+        params[
+            "expected"
+        ] = expected
 
     try:
 
-        start = time.time()
+        response = requests.get(
+            (
+                f"{CONTROLLER_URL}"
+                f"/proxies/"
+                f"{encoded_name}"
+                f"/delay"
+            ),
+            params=params,
+            timeout=(
+                DELAY_TIMEOUT_MS
+                / 1000
+                + 2
+            ),
+        )
+
+        if response.status_code != 200:
+            return None
+
+        data = response.json()
+
+        delay = data.get(
+            "delay"
+        )
+
+        if delay is None:
+            return None
+
+        return int(delay)
+
+    except Exception:
+        return None
+
+
+# ============================================================
+# 代理 Session
+# ============================================================
+
+def build_proxy_session():
+
+    session = requests.Session()
+
+    session.headers.update(
+        HEADERS
+    )
+
+    session.proxies.update(
+        {
+            "http":
+                (
+                    f"http://127.0.0.1:"
+                    f"{TEST_PORT}"
+                ),
+
+            "https":
+                (
+                    f"http://127.0.0.1:"
+                    f"{TEST_PORT}"
+                ),
+        }
+    )
+
+    return session
+
+
+# ============================================================
+# URL 实际连通
+# ============================================================
+
+def probe_url(
+    session,
+    url,
+    timeout=4,
+):
+
+    try:
+
+        response = session.get(
+            url,
+            timeout=timeout,
+            allow_redirects=True,
+        )
+
+        if (
+            200
+            <= response.status_code
+            < 400
+        ):
+            return (
+                True,
+                response.status_code,
+            )
+
+        # Google 内部服务根路径可能
+        # 返回 400/404/405，但网络已经成功到达服务端。
+        if response.status_code in (
+            400,
+            404,
+            405,
+            408,
+            409,
+            429,
+        ):
+            return (
+                True,
+                response.status_code,
+            )
+
+        # 403 / 451 等直接视为被拒绝
+        return (
+            False,
+            response.status_code,
+        )
+
+    except Exception as exc:
+
+        return (
+            False,
+            str(exc),
+        )
+
+
+def get_exit_ip_info(
+    session
+):
+
+    try:
 
         response = session.get(
             IP_CHECK_URL,
             timeout=REQUEST_TIMEOUT,
         )
 
-        result["latency_ms"] = int(
-            (
-                time.time()
-                - start
-            )
-            * 1000
-        )
-
         if response.status_code != 200:
-            result["reason"] = (
-                f"IP API HTTP "
-                f"{response.status_code}"
-            )
-            return result
+            return None
 
         data = response.json()
 
-        if data.get("status") != "success":
-            result["reason"] = (
-                "IP API failed"
-            )
-            return result
+        if data.get(
+            "status"
+        ) != "success":
+            return None
 
-        result["exit_ip"] = (
-            data.get(
-                "query",
-                "",
-            )
+        return data
+
+    except Exception:
+        return None
+
+
+# ============================================================
+# 单节点深度测试
+# ============================================================
+
+def test_node(
+    proxy_name
+):
+
+    result = {
+
+        "passed":
+            False,
+
+        "google_delay_ms":
+            None,
+
+        "gemini_delay_ms":
+            None,
+
+        "play_delay_ms":
+            None,
+
+        "max_delay_ms":
+            None,
+
+        "exit_ip":
+            "",
+
+        "country":
+            "",
+
+        "countryCode":
+            "",
+
+        "city":
+            "",
+
+        "org":
+            "",
+
+        "isp":
+            "",
+
+        "hosting":
+            False,
+
+        "proxy":
+            False,
+
+        "is_clean":
+            False,
+
+        "google_access":
+            False,
+
+        "gemini_access":
+            False,
+
+        "play_access":
+            False,
+
+        "mobile_probe_passed":
+            0,
+
+        "mobile_probe_total":
+            len(
+                GEMINI_MOBILE_PROBES
+            ),
+
+        "reason":
+            "",
+    }
+
+    # --------------------------------------------------------
+    # 1. Google 实际代理延迟
+    # --------------------------------------------------------
+
+    google_delay = proxy_delay(
+        proxy_name,
+        GOOGLE_DELAY_URL,
+        "204",
+    )
+
+    result[
+        "google_delay_ms"
+    ] = google_delay
+
+    if google_delay is None:
+
+        result[
+            "reason"
+        ] = (
+            "Google delay failed"
         )
 
-        result["country"] = (
-            data.get(
-                "country",
-                "",
-            )
-        )
+        return result
 
-        result["countryCode"] = (
-            data.get(
-                "countryCode",
-                "",
-            )
-        )
+    if (
+        google_delay
+        >= MAX_PROXY_DELAY_MS
+    ):
 
-        result["city"] = (
-            data.get(
-                "city",
-                "",
-            )
-        )
-
-        result["org"] = (
-            data.get(
-                "org",
-                "",
-            )
-        )
-
-        result["isp"] = (
-            data.get(
-                "isp",
-                "",
-            )
-        )
-
-        result["hosting"] = bool(
-            data.get(
-                "hosting",
-                False,
-            )
-        )
-
-        result["proxy"] = bool(
-            data.get(
-                "proxy",
-                False,
-            )
-        )
-
-        result["is_clean"] = (
-            not result["hosting"]
-            and not result["proxy"]
-        )
-
-        # 总延迟闸门
-        if (
-            result["latency_ms"]
-            > GLOBAL_MAX_LATENCY_MS
-        ):
-
-            result["reason"] = (
-                f"latency "
-                f"{result['latency_ms']}ms "
-                f"> "
-                f"{GLOBAL_MAX_LATENCY_MS}ms"
-            )
-
-            return result
-
-        cc = result["countryCode"]
-
-        # 台湾
-        if cc == "TW":
-
-            if (
-                result["latency_ms"]
-                > TW_MAX_LATENCY_MS
-            ):
-                result["reason"] = (
-                    "TW latency too high"
-                )
-                return result
-
-            if (
-                TW_REQUIRE_CLEAN
-                and not result["is_clean"]
-            ):
-                result["reason"] = (
-                    "TW IP not clean"
-                )
-                return result
-
-        # 美国
-        if cc == "US":
-
-            if (
-                result["latency_ms"]
-                > US_MAX_LATENCY_MS
-            ):
-                result["reason"] = (
-                    "US latency too high"
-                )
-                return result
-
-            if (
-                US_REQUIRE_CLEAN
-                and not result["is_clean"]
-            ):
-                result["reason"] = (
-                    "US IP not clean"
-                )
-                return result
-
-    except Exception as e:
-
-        result["reason"] = (
-            f"IP test failed: {e}"
+        result[
+            "reason"
+        ] = (
+            f"Google proxy delay "
+            f"{google_delay}ms >= "
+            f"{MAX_PROXY_DELAY_MS}ms"
         )
 
         return result
 
     # --------------------------------------------------------
-    # 2. Google
+    # 2. Gemini 实际代理延迟
     # --------------------------------------------------------
 
-    if REQUIRE_GOOGLE:
+    gemini_delay = proxy_delay(
+        proxy_name,
+        GEMINI_DELAY_URL,
+        "200-399",
+    )
 
-        try:
+    result[
+        "gemini_delay_ms"
+    ] = gemini_delay
 
-            response = session.get(
-                GOOGLE_TEST_URL,
-                timeout=REQUEST_TIMEOUT,
-                allow_redirects=True,
-            )
+    if gemini_delay is None:
 
-            if response.status_code not in (
-                200,
-                204,
-            ):
+        result[
+            "reason"
+        ] = (
+            "Gemini delay/HTTP "
+            "check failed"
+        )
 
-                result["reason"] = (
-                    f"Google HTTP "
-                    f"{response.status_code}"
-                )
+        return result
 
-                return result
+    if (
+        gemini_delay
+        >= MAX_PROXY_DELAY_MS
+    ):
 
-            result["google_access"] = True
+        result[
+            "reason"
+        ] = (
+            f"Gemini delay "
+            f"{gemini_delay}ms >= "
+            f"{MAX_PROXY_DELAY_MS}ms"
+        )
 
-        except Exception as e:
-
-            result["reason"] = (
-                f"Google failed: {e}"
-            )
-
-            return result
-
-    # --------------------------------------------------------
-    # 3. Gemini Web
-    # --------------------------------------------------------
-
-    if REQUIRE_GEMINI_WEB:
-
-        try:
-
-            response = session.get(
-                GEMINI_TEST_URL,
-                timeout=REQUEST_TIMEOUT,
-                allow_redirects=True,
-            )
-
-            final_host = (
-                urlparse(
-                    response.url
-                ).hostname
-                or ""
-            )
-
-            google_domain = (
-                final_host == "google.com"
-                or final_host.endswith(
-                    ".google.com"
-                )
-            )
-
-            if (
-                response.status_code
-                not in range(200, 400)
-                or not google_domain
-            ):
-
-                result["reason"] = (
-                    f"Gemini HTTP "
-                    f"{response.status_code}, "
-                    f"host={final_host}"
-                )
-
-                return result
-
-            result["gemini_access"] = True
-
-        except Exception as e:
-
-            result["reason"] = (
-                f"Gemini failed: {e}"
-            )
-
-            return result
+        return result
 
     # --------------------------------------------------------
-    # 4. Gemini API（可选）
+    # 3. Google Play 实际代理延迟
     # --------------------------------------------------------
 
-    if REQUIRE_GEMINI_API:
+    play_delay = proxy_delay(
+        proxy_name,
+        PLAY_DELAY_URL,
+        "200-399",
+    )
 
-        try:
+    result[
+        "play_delay_ms"
+    ] = play_delay
 
-            response = session.get(
-                GEMINI_API_TEST_URL,
-                timeout=REQUEST_TIMEOUT,
-                allow_redirects=True,
+    if play_delay is None:
+
+        result[
+            "reason"
+        ] = (
+            "Google Play delay/"
+            "HTTP check failed"
+        )
+
+        return result
+
+    if (
+        play_delay
+        >= MAX_PROXY_DELAY_MS
+    ):
+
+        result[
+            "reason"
+        ] = (
+            f"Google Play delay "
+            f"{play_delay}ms >= "
+            f"{MAX_PROXY_DELAY_MS}ms"
+        )
+
+        return result
+
+    # --------------------------------------------------------
+    # 4. 三项最大延迟
+    # --------------------------------------------------------
+
+    result[
+        "max_delay_ms"
+    ] = max(
+        google_delay,
+        gemini_delay,
+        play_delay,
+    )
+
+    # --------------------------------------------------------
+    # 5. 获取出口 IP / 清洁度
+    # --------------------------------------------------------
+
+    session = (
+        build_proxy_session()
+    )
+
+    ip_info = (
+        get_exit_ip_info(
+            session
+        )
+    )
+
+    if not ip_info:
+
+        result[
+            "reason"
+        ] = (
+            "Exit IP information "
+            "failed"
+        )
+
+        return result
+
+    result[
+        "exit_ip"
+    ] = ip_info.get(
+        "query",
+        "",
+    )
+
+    result[
+        "country"
+    ] = ip_info.get(
+        "country",
+        "",
+    )
+
+    result[
+        "countryCode"
+    ] = ip_info.get(
+        "countryCode",
+        "",
+    )
+
+    result[
+        "city"
+    ] = ip_info.get(
+        "city",
+        "",
+    )
+
+    result[
+        "org"
+    ] = ip_info.get(
+        "org",
+        "",
+    )
+
+    result[
+        "isp"
+    ] = ip_info.get(
+        "isp",
+        "",
+    )
+
+    result[
+        "hosting"
+    ] = bool(
+        ip_info.get(
+            "hosting",
+            False,
+        )
+    )
+
+    result[
+        "proxy"
+    ] = bool(
+        ip_info.get(
+            "proxy",
+            False,
+        )
+    )
+
+    result[
+        "is_clean"
+    ] = (
+        not result["hosting"]
+        and not result["proxy"]
+    )
+
+    if (
+        REQUIRE_CLEAN_IP
+        and not result["is_clean"]
+    ):
+
+        result[
+            "reason"
+        ] = (
+            "IP marked as hosting/"
+            "proxy"
+        )
+
+        return result
+
+    # --------------------------------------------------------
+    # 6. Google / Gemini / Play 实际 GET
+    # --------------------------------------------------------
+
+    ok, _ = probe_url(
+        session,
+        GEMINI_DELAY_URL,
+        5,
+    )
+
+    if not ok:
+
+        result[
+            "reason"
+        ] = (
+            "Gemini GET probe failed"
+        )
+
+        return result
+
+    result[
+        "gemini_access"
+    ] = True
+
+    ok, _ = probe_url(
+        session,
+        PLAY_DELAY_URL,
+        5,
+    )
+
+    if not ok:
+
+        result[
+            "reason"
+        ] = (
+            "Google Play GET "
+            "probe failed"
+        )
+
+        return result
+
+    result[
+        "play_access"
+    ] = True
+
+    ok, _ = probe_url(
+        session,
+        "https://www.google.com/",
+        5,
+    )
+
+    if not ok:
+
+        result[
+            "reason"
+        ] = (
+            "Google GET probe failed"
+        )
+
+        return result
+
+    result[
+        "google_access"
+    ] = True
+
+    # --------------------------------------------------------
+    # 7. Gemini Android / Google 关键主机
+    # --------------------------------------------------------
+
+    passed = 0
+
+    for url in (
+        GEMINI_MOBILE_PROBES
+    ):
+
+        ok, _ = probe_url(
+            session,
+            url,
+            4,
+        )
+
+        if ok:
+            passed += 1
+
+    result[
+        "mobile_probe_passed"
+    ] = passed
+
+    required_mobile = max(
+        5,
+        int(
+            len(
+                GEMINI_MOBILE_PROBES
             )
+            * 0.75
+            + 0.999
+        ),
+    )
 
-            if response.status_code not in (
-                200,
-                400,
-                401,
-                403,
-                404,
-            ):
+    if (
+        passed
+        < required_mobile
+    ):
 
-                result["reason"] = (
-                    f"Gemini API HTTP "
-                    f"{response.status_code}"
-                )
+        result[
+            "reason"
+        ] = (
+            f"Gemini mobile "
+            f"host probes "
+            f"{passed}/"
+            f"{len(GEMINI_MOBILE_PROBES)}"
+        )
 
-                return result
+        return result
 
-            result[
-                "gemini_api_reachable"
-            ] = True
-
-        except Exception as e:
-
-            result["reason"] = (
-                f"Gemini API failed: {e}"
-            )
-
-            return result
-
-    result["passed"] = True
+    result[
+        "passed"
+    ] = True
 
     return result
 
 
 # ============================================================
-# 历史状态
+# 节点历史
 # ============================================================
 
 def update_history(
@@ -1423,7 +1978,8 @@ def update_history(
     )
 
     last_seen = old.get(
-        "last_seen"
+        "last_seen",
+        0,
     )
 
     if (
@@ -1442,14 +1998,19 @@ def update_history(
             now,
         )
 
-        pass_count = int(
-            old.get(
-                "pass_count",
-                0,
+        pass_count = (
+            int(
+                old.get(
+                    "pass_count",
+                    0,
+                )
             )
-        ) + 1
+            + 1
+        )
 
-    history[fingerprint] = {
+    history[
+        fingerprint
+    ] = {
 
         "first_seen":
             first_seen,
@@ -1460,35 +2021,133 @@ def update_history(
         "pass_count":
             pass_count,
 
-        "last_latency_ms":
-            test["latency_ms"],
+        "last_max_delay_ms":
+            test[
+                "max_delay_ms"
+            ],
+
+        "last_google_delay_ms":
+            test[
+                "google_delay_ms"
+            ],
+
+        "last_gemini_delay_ms":
+            test[
+                "gemini_delay_ms"
+            ],
+
+        "last_play_delay_ms":
+            test[
+                "play_delay_ms"
+            ],
 
         "last_exit_ip":
-            test["exit_ip"],
+            test[
+                "exit_ip"
+            ],
 
         "country":
-            test["country"],
+            test[
+                "country"
+            ],
+
+        "countryCode":
+            test[
+                "countryCode"
+            ],
 
         "city":
-            test["city"],
+            test[
+                "city"
+            ],
 
         "org":
-            test["org"],
+            test[
+                "org"
+            ],
 
         "isp":
-            test["isp"],
+            test[
+                "isp"
+            ],
 
         "hosting":
-            test["hosting"],
+            test[
+                "hosting"
+            ],
 
         "proxy":
-            test["proxy"],
+            test[
+                "proxy"
+            ],
+
+        "mobile_probe_passed":
+            test[
+                "mobile_probe_passed"
+            ],
 
         "name":
             original_name,
     }
 
-    return history[fingerprint]
+    return history[
+        fingerprint
+    ]
+
+
+# ============================================================
+# 来源历史
+# ============================================================
+
+def finalize_source_registry(
+    registry,
+    qualified_by_source,
+):
+
+    for (
+        url,
+        count
+    ) in qualified_by_source.items():
+
+        entry = ensure_source_entry(
+            registry,
+            url,
+        )
+
+        if count <= 0:
+            continue
+
+        entry[
+            "last_qualified_at"
+        ] = int(time.time())
+
+        entry[
+            "last_qualified_nodes"
+        ] = count
+
+        entry[
+            "qualified_runs"
+        ] = (
+            int(
+                entry.get(
+                    "qualified_runs",
+                    0,
+                )
+            )
+            + 1
+        )
+
+        entry[
+            "qualified_nodes_total"
+        ] = (
+            int(
+                entry.get(
+                    "qualified_nodes_total",
+                    0,
+                )
+            )
+            + count
+        )
 
 
 # ============================================================
@@ -1504,14 +2163,20 @@ def build_final_config(
     for node in passed_nodes:
 
         proxy = dict(
-            node["proxy"]
+            node[
+                "proxy"
+            ]
         )
 
-        proxy["name"] = (
-            node["display_name"]
-        )
+        proxy[
+            "name"
+        ] = node[
+            "display_name"
+        ]
 
-        proxies.append(proxy)
+        proxies.append(
+            proxy
+        )
 
     names = [
         p["name"]
@@ -1530,25 +2195,19 @@ def build_final_config(
         if "🇺🇸" in n
     ]
 
-    # 自动选择：
-    # 只有通过初始 Gemini 测试的节点
-    # 才能进入该组。
-    #
-    # 0 节点时使用 REJECT，
-    # 防止 Gemini 自动组意外回落 DIRECT。
-    auto_candidates = (
+    auto_nodes = (
         names
         if names
         else ["REJECT"]
     )
 
-    manual_candidates = (
+    manual_nodes = (
         names
         if names
         else ["DIRECT"]
     )
 
-    final_config = {
+    return {
 
         "mixed-port":
             7890,
@@ -1570,7 +2229,6 @@ def build_final_config(
 
         "proxy-groups": [
 
-            # 主节点选择
             {
                 "name":
                     "🚀 节点选择",
@@ -1580,6 +2238,7 @@ def build_final_config(
 
                 "proxies": [
                     "♻️ 自动选择",
+                    "🛍 Play自动选择",
                     "🌐 手动选择",
                     "🇹🇼 台湾",
                     "🇺🇸 美国",
@@ -1587,7 +2246,9 @@ def build_final_config(
                 ],
             },
 
-            # Gemini 健康检查自动选择
+            # Gemini 自动选择
+            # 节点必须先通过离线 Gemini 验证
+            # 运行后每180秒重新健康检查
             {
                 "name":
                     "♻️ 自动选择",
@@ -1596,29 +2257,51 @@ def build_final_config(
                     "url-test",
 
                 "url":
-                    GEMINI_TEST_URL,
+                    GEMINI_DELAY_URL,
 
-                # Gemini 当前允许正常成功响应
-                # 与跳转响应
                 "expected-status":
                     "200-399",
 
-                # 每 180 秒重新验证
                 "interval":
                     180,
 
                 "tolerance":
-                    50,
+                    30,
 
-                # 不等第一次实际请求才检测
                 "lazy":
                     False,
 
                 "proxies":
-                    auto_candidates,
+                    auto_nodes,
             },
 
-            # 人工节点选择
+            # Google Play 自动选择
+            {
+                "name":
+                    "🛍 Play自动选择",
+
+                "type":
+                    "url-test",
+
+                "url":
+                    PLAY_DELAY_URL,
+
+                "expected-status":
+                    "200-399",
+
+                "interval":
+                    180,
+
+                "tolerance":
+                    30,
+
+                "lazy":
+                    False,
+
+                "proxies":
+                    auto_nodes,
+            },
+
             {
                 "name":
                     "🌐 手动选择",
@@ -1627,10 +2310,9 @@ def build_final_config(
                     "select",
 
                 "proxies":
-                    manual_candidates,
+                    manual_nodes,
             },
 
-            # 台湾节点
             {
                 "name":
                     "🇹🇼 台湾",
@@ -1646,7 +2328,6 @@ def build_final_config(
                     ),
             },
 
-            # 美国节点
             {
                 "name":
                     "🇺🇸 美国",
@@ -1666,26 +2347,27 @@ def build_final_config(
         "rules": [
 
             # =================================================
-            # 中国大陆目的地：直连
+            # 私有网络
             # =================================================
 
-            "GEOSITE,CN,DIRECT",
-            "GEOIP,CN,DIRECT",
-
-            # 私有地址直连
             "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
             "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
             "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
             "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
 
-            # 中国域名
+            # =================================================
+            # 中国大陆直连
+            # =================================================
+
+            "GEOSITE,CN,DIRECT",
+            "GEOIP,CN,DIRECT",
+
             "DOMAIN-SUFFIX,cn,DIRECT",
             "DOMAIN-SUFFIX,com.cn,DIRECT",
             "DOMAIN-SUFFIX,org.cn,DIRECT",
             "DOMAIN-SUFFIX,net.cn,DIRECT",
             "DOMAIN-SUFFIX,gov.cn,DIRECT",
 
-            # 常用国内服务
             "DOMAIN-SUFFIX,qq.com,DIRECT",
             "DOMAIN-SUFFIX,baidu.com,DIRECT",
             "DOMAIN-SUFFIX,taobao.com,DIRECT",
@@ -1698,24 +2380,42 @@ def build_final_config(
             "DOMAIN-SUFFIX,alibaba.com,DIRECT",
 
             # =================================================
-            # Google / Gemini
-            # 必须走 Gemini 自动检测节点
+            # Google Play
+            # =================================================
+
+            "DOMAIN-SUFFIX,play.google.com,🛍 Play自动选择",
+            "DOMAIN-SUFFIX,play.googleapis.com,🛍 Play自动选择",
+
+            # =================================================
+            # Gemini Android / Google 后端
             # =================================================
 
             "DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,jnn-pa.googleapis.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,waa-pa.clients6.google.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,apis.google.com,♻️ 自动选择",
             "DOMAIN-SUFFIX,googleapis.com,♻️ 自动选择",
-            "DOMAIN-SUFFIX,generativelanguage.googleapis.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,gstatic.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,googleusercontent.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,ggpht.com,♻️ 自动选择",
+            "DOMAIN-SUFFIX,gvt1.com,♻️ 自动选择",
             "DOMAIN-SUFFIX,google.com,♻️ 自动选择",
 
             # =================================================
-            # 其他海外流量
+            # YouTube
+            # =================================================
+
+            "DOMAIN-SUFFIX,youtube.com,🚀 节点选择",
+            "DOMAIN-SUFFIX,youtubei.googleapis.com,🚀 节点选择",
+            "DOMAIN-SUFFIX,googlevideo.com,🚀 节点选择",
+
+            # =================================================
+            # 其他海外
             # =================================================
 
             "MATCH,🚀 节点选择",
         ],
     }
-
-    return final_config
 
 
 # ============================================================
@@ -1724,32 +2424,48 @@ def build_final_config(
 
 def run_agent():
 
-    now = int(time.time())
+    now = int(
+        time.time()
+    )
 
     history = load_history()
 
-    # 1. 动态发现订阅源
+    registry = load_json(
+        SOURCE_REGISTRY_FILE,
+        {},
+    )
+
+    if not isinstance(
+        registry,
+        dict,
+    ):
+        registry = {}
+
+    # --------------------------------------------------------
+    # 1. 自动发现源
+    # --------------------------------------------------------
+
     source_urls = (
         discover_subscription_sources()
     )
 
-    # 2. 获取节点
+    # --------------------------------------------------------
+    # 2. 拉取候选节点
+    # --------------------------------------------------------
+
     candidates = (
         collect_candidates(
             source_urls
         )
     )
 
-    # 没有候选
     if not candidates:
-
-        print(
-            "No candidates"
-        )
 
         write_yaml(
             "live_clash.yaml",
-            build_final_config([]),
+            build_final_config(
+                []
+            ),
         )
 
         save_history(
@@ -1758,7 +2474,10 @@ def run_agent():
 
         return
 
-    # 3. 构造测试配置
+    # --------------------------------------------------------
+    # 3. 建立 Mihomo 测试实例
+    # --------------------------------------------------------
+
     test_config, metadata = (
         build_test_config(
             candidates
@@ -1775,11 +2494,13 @@ def run_agent():
     )
 
     proc = None
+
     passed = []
+
+    qualified_by_source = {}
 
     try:
 
-        # 4. 启动 Mihomo
         proc = start_mihomo(
             config_path
         )
@@ -1789,46 +2510,75 @@ def run_agent():
                 "Mihomo failed to start"
             )
 
-        # 5. 逐节点检测
+        # ----------------------------------------------------
+        # 4. 逐节点深度测试
+        # ----------------------------------------------------
+
         for (
             internal_name,
             meta
         ) in metadata.items():
 
-            # 切换测试节点
             if not select_proxy(
                 internal_name
             ):
                 continue
 
-            # 实际检测
-            result = (
-                test_current_proxy()
+            test = test_node(
+                internal_name
             )
 
-            # 任何一项失败直接淘汰
-            if not result["passed"]:
+            if not test[
+                "passed"
+            ]:
 
                 print(
                     f"REJECT "
                     f"{internal_name}: "
-                    f"{result['reason']}"
+                    f"{test['reason']}"
                 )
 
                 continue
 
-            # 6. 更新历史
+            fingerprint = (
+                meta[
+                    "fingerprint"
+                ]
+            )
+
+            proxy = meta[
+                "proxy"
+            ]
+
+            source_url = meta[
+                "source_url"
+            ]
+
+            original_name = (
+                proxy.get(
+                    "name",
+                    internal_name,
+                )
+            )
+
+            # ------------------------------------------------
+            # 5. 更新节点历史
+            # ------------------------------------------------
+
             history_item = (
                 update_history(
                     history,
-                    meta["fingerprint"],
+                    fingerprint,
                     now,
-                    result,
-                    meta["proxy"].get(
-                        "name",
-                        internal_name,
-                    ),
+                    test,
+                    original_name,
                 )
+            )
+
+            pass_count = (
+                history_item[
+                    "pass_count"
+                ]
             )
 
             survival_hours = int(
@@ -1841,17 +2591,17 @@ def run_agent():
                 / 3600
             )
 
-            # 7. 稳定次数闸门
+            # 至少两次成功后才输出
             if (
-                history_item[
-                    "pass_count"
-                ]
+                pass_count
                 < STABLE_PASS_COUNT
             ):
                 continue
 
             country_code = (
-                result["countryCode"]
+                test[
+                    "countryCode"
+                ]
             )
 
             if country_code == "TW":
@@ -1865,58 +2615,93 @@ def run_agent():
 
             clean_tag = (
                 "洁"
-                if result["is_clean"]
+                if test[
+                    "is_clean"
+                ]
                 else "机"
             )
 
             display_name = (
                 f"{flag}{clean_tag} "
-                f"[{result['latency_ms']}ms|"
+                f"[{test['max_delay_ms']}ms|"
                 f"{survival_hours}h|"
-                f"{history_item['pass_count']}次] "
-                f"{meta['proxy'].get('name', internal_name)}"
+                f"{pass_count}次] "
+                f"{original_name}"
             )
 
-            passed.append({
+            passed.append(
+                {
+                    "proxy":
+                        proxy,
 
-                "proxy":
-                    meta["proxy"],
+                    "display_name":
+                        display_name,
 
-                "display_name":
-                    display_name,
+                    "fingerprint":
+                        fingerprint,
 
-                "fingerprint":
-                    meta["fingerprint"],
+                    "source_url":
+                        source_url,
 
-                "test":
-                    result,
+                    "test":
+                        test,
 
-                "pass_count":
-                    history_item[
-                        "pass_count"
-                    ],
+                    "pass_count":
+                        pass_count,
 
-                "survival_hours":
-                    survival_hours,
+                    "survival_hours":
+                        survival_hours,
 
-                "latency":
-                    result[
-                        "latency_ms"
-                    ],
+                    "latency":
+                        test[
+                            "max_delay_ms"
+                        ],
 
-                "countryCode":
-                    country_code,
+                    "countryCode":
+                        country_code,
 
-                "is_clean":
-                    result[
-                        "is_clean"
-                    ],
-            })
+                    "is_clean":
+                        test[
+                            "is_clean"
+                        ],
+                }
+            )
+
+            qualified_by_source[
+                source_url
+            ] = (
+                qualified_by_source.get(
+                    source_url,
+                    0,
+                )
+                + 1
+            )
+
+            print(
+                f"PASS "
+                f"{internal_name} | "
+                f"{country_code} | "
+                f"max={test['max_delay_ms']}ms | "
+                f"Google={test['google_delay_ms']} | "
+                f"Gemini={test['gemini_delay_ms']} | "
+                f"Play={test['play_delay_ms']} | "
+                f"life={survival_hours}h"
+            )
 
     finally:
 
         save_history(
             history
+        )
+
+        finalize_source_registry(
+            registry,
+            qualified_by_source,
+        )
+
+        save_json(
+            SOURCE_REGISTRY_FILE,
+            registry,
         )
 
         stop_mihomo(
@@ -1930,49 +2715,80 @@ def run_agent():
         except OSError:
             pass
 
-    # 8. 最终排序
-    passed.sort(
-        key=lambda x: (
+    # --------------------------------------------------------
+    # 6. 最终排序
+    # --------------------------------------------------------
 
-            # 台湾优先
-            (
-                0
-                if x["countryCode"]
-                == "TW"
-                else 1
-            ),
+    def sort_key(node):
 
-            # 美国清洁优先
-            (
-                0
-                if (
-                    x["countryCode"]
-                    == "US"
-                    and x["is_clean"]
-                )
-                else 1
-            ),
+        country_code = (
+            node[
+                "countryCode"
+            ]
+        )
 
-            # 存活时间优先
-            (
-                0
-                if x["survival_hours"]
+        # 台湾第一
+        # 美国第二
+        # 其他第三
+        region_rank = (
+            0
+            if country_code == "TW"
+            else (
+                1
+                if country_code == "US"
+                else 2
+            )
+        )
+
+        # 清洁 IP 第一
+        clean_rank = (
+            0
+            if node[
+                "is_clean"
+            ]
+            else 1
+        )
+
+        # 存活时间优先
+        long_life_rank = (
+            0
+            if (
+                node[
+                    "survival_hours"
+                ]
                 >= MIN_SURVIVAL_HOURS
-                else 1
-            ),
+            )
+            else 1
+        )
 
-            -x["survival_hours"],
-            -x["pass_count"],
-            x["latency"]
+        return (
+            region_rank,
+            clean_rank,
+            long_life_rank,
+            -node[
+                "survival_hours"
+            ],
+            -node[
+                "pass_count"
+            ],
+            node[
+                "latency"
+            ]
             or 999999,
         )
+
+    passed.sort(
+        key=sort_key
     )
 
     passed = passed[
         :MAX_OUTPUT_NODES
     ]
 
-    # 9. 生成最终配置
+    # --------------------------------------------------------
+    # 7. 输出最终配置
+    # --------------------------------------------------------
+
     final_config = (
         build_final_config(
             passed
@@ -1985,9 +2801,26 @@ def run_agent():
     )
 
     print(
-        f"Output nodes: "
+        "=" * 70
+    )
+
+    print(
+        f"Final qualified nodes: "
         f"{len(passed)}"
     )
+
+    print(
+        "=" * 70
+    )
+
+    for node in passed:
+
+        print(
+            f"{node['display_name']} | "
+            f"{node['countryCode']} | "
+            f"{node['test']['exit_ip']} | "
+            f"{node['source_url']}"
+        )
 
 
 if __name__ == "__main__":

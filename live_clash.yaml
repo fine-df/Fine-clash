@@ -9,6 +9,7 @@ proxy-groups:
   type: select
   proxies:
   - ♻️ 自动选择
+  - 🛍 Play自动选择
   - 🌐 手动选择
   - 🇹🇼 台湾
   - 🇺🇸 美国
@@ -18,10 +19,18 @@ proxy-groups:
   url: https://gemini.google.com/
   expected-status: 200-399
   interval: 180
-  tolerance: 50
+  tolerance: 30
   lazy: false
-  proxies:
+  proxies: &id001
   - REJECT
+- name: 🛍 Play自动选择
+  type: url-test
+  url: https://play.google.com/store/apps/
+  expected-status: 200-399
+  interval: 180
+  tolerance: 30
+  lazy: false
+  proxies: *id001
 - name: 🌐 手动选择
   type: select
   proxies:
@@ -35,12 +44,12 @@ proxy-groups:
   proxies:
   - DIRECT
 rules:
-- GEOSITE,CN,DIRECT
-- GEOIP,CN,DIRECT
 - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
 - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
 - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
 - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- GEOSITE,CN,DIRECT
+- GEOIP,CN,DIRECT
 - DOMAIN-SUFFIX,cn,DIRECT
 - DOMAIN-SUFFIX,com.cn,DIRECT
 - DOMAIN-SUFFIX,org.cn,DIRECT
@@ -56,8 +65,19 @@ rules:
 - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
 - DOMAIN-SUFFIX,163.com,DIRECT
 - DOMAIN-SUFFIX,alibaba.com,DIRECT
+- DOMAIN-SUFFIX,play.google.com,🛍 Play自动选择
+- DOMAIN-SUFFIX,play.googleapis.com,🛍 Play自动选择
 - DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择
+- DOMAIN-SUFFIX,jnn-pa.googleapis.com,♻️ 自动选择
+- DOMAIN-SUFFIX,waa-pa.clients6.google.com,♻️ 自动选择
+- DOMAIN-SUFFIX,apis.google.com,♻️ 自动选择
 - DOMAIN-SUFFIX,googleapis.com,♻️ 自动选择
-- DOMAIN-SUFFIX,generativelanguage.googleapis.com,♻️ 自动选择
+- DOMAIN-SUFFIX,gstatic.com,♻️ 自动选择
+- DOMAIN-SUFFIX,googleusercontent.com,♻️ 自动选择
+- DOMAIN-SUFFIX,ggpht.com,♻️ 自动选择
+- DOMAIN-SUFFIX,gvt1.com,♻️ 自动选择
 - DOMAIN-SUFFIX,google.com,♻️ 自动选择
+- DOMAIN-SUFFIX,youtube.com,🚀 节点选择
+- DOMAIN-SUFFIX,youtubei.googleapis.com,🚀 节点选择
+- DOMAIN-SUFFIX,googlevideo.com,🚀 节点选择
 - MATCH,🚀 节点选择

@@ -1,6 +1,0 @@
-allow-lan: true
-log-level: info
-mode: rule
-port: 7890
-proxies: []
-socks-port: 7891

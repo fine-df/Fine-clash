@@ -2,7 +2,7 @@ name: Clash Gemini Monitor Agent
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * 0'
 
   workflow_dispatch:
 
@@ -32,20 +32,21 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests PyYAML
+          pip install requests PyYAML pytest
+
+      - name: Run Tests
+        run: |
+          pytest tests -v
 
       - name: Install Mihomo
         run: |
           VERSION="v1.19.31"
-
           wget -q \
             "https://github.com/MetaCubeX/mihomo/releases/download/${VERSION}/mihomo-linux-amd64-${VERSION}.gz" \
             -O mihomo.gz
-
           gunzip -f mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/clash
-
           clash -v
 
       - name: Run Monitor Script
@@ -58,13 +59,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
-          git add \
-            live_clash.yaml \
-            node_history.json \
-            source_registry.json
-
-          git diff --cached --quiet || \
-            git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
-
+          git add live_clash.yaml node_history.json source_registry.json
+          git diff --cached --quiet || git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
           git push

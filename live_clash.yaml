@@ -1,6 +1,16 @@
-allow-lan: true
-log-level: info
-mode: rule
-port: 7890
-proxies: []
+mixed-port: 7890
 socks-port: 7891
+allow-lan: true
+mode: rule
+log-level: info
+proxies: []
+proxy-groups:
+- name: GEMINI-US
+  type: select
+  proxies: []
+rules:
+- DOMAIN-SUFFIX,gemini.google.com,GEMINI-US
+- DOMAIN-SUFFIX,google.com,GEMINI-US
+- DOMAIN-SUFFIX,googleapis.com,GEMINI-US
+- DOMAIN-SUFFIX,generativelanguage.googleapis.com,GEMINI-US
+- MATCH,GEMINI-US

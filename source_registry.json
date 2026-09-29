@@ -1,0 +1,282 @@
+{
+  "updated_at": "2026-09-29T02:22:13.089139+00:00",
+  "repositories": [
+    {
+      "full_name": "chen08209/FlClash",
+      "html_url": "https://github.com/chen08209/FlClash",
+      "default_branch": "main",
+      "stars": 53751,
+      "forks": 3396,
+      "pushed_at": "2026-09-27T10:18:21Z",
+      "description": "A multi-platform proxy client based on ClashMeta,simple and easy to use, open-source and ad-free."
+    },
+    {
+      "full_name": "hiddify/hiddify-app",
+      "html_url": "https://github.com/hiddify/hiddify-app",
+      "default_branch": "main",
+      "stars": 32957,
+      "forks": 3057,
+      "pushed_at": "2026-08-10T17:43:24Z",
+      "description": "Multi-platform auto-proxy client, supporting Sing-box, X-ray, TUIC, Hysteria, Reality, Trojan, SSH etc. It’s an open-source, secure and ad-free."
+    },
+    {
+      "full_name": "Pawdroid/Free-servers",
+      "html_url": "https://github.com/Pawdroid/Free-servers",
+      "default_branch": "main",
+      "stars": 19258,
+      "forks": 1222,
+      "pushed_at": "2026-09-29T02:00:37Z",
+      "description": "🚀 免费订阅地址，🚀 免费节点，🚀 6小时更新一次，共享节点，节点质量高可用，完全免费。免费clash订阅地址，免费翻墙、免费科学上网、免费梯子、免费ss/v2ray/trojan节点、谷歌商店、翻墙梯子。🚀 Free subscription address, 🚀 Free node, 🚀 Updated every 6 hours, shared node, high-quality node availability, completely free. Free clash subscription address, free ss/v2ray/trojan node."
+    },
+    {
+      "full_name": "bia-pain-bache/BPB-Worker-Panel",
+      "html_url": "https://github.com/bia-pain-bache/BPB-Worker-Panel",
+      "default_branch": "main",
+      "stars": 13546,
+      "forks": 31599,
+      "pushed_at": "2026-07-20T13:07:08Z",
+      "description": "A GUI Panel providing Worker subscriptions for VLESS, Trojan and Warp configs alongside a private DoH server and chain proxies, offering full DNS, clean IP,  Fragment, Warp, Warp pro and routing settings for cross-platform clients using Amnezia, Wireguard, Sing-box, Clash/Mihomo and Xray cores."
+    },
+    {
+      "full_name": "awesome-vpn/awesome-vpn",
+      "html_url": "https://github.com/awesome-vpn/awesome-vpn",
+      "default_branch": "master",
+      "stars": 6497,
+      "forks": 569,
+      "pushed_at": "2026-09-28T02:52:15Z",
+      "description": "Free proxy node aggregator. Daily updated vmess/vless/trojan/ss. 免费 代理节点 翻墙 梯子 科学上网 机场订阅 网络加速 VPN 免翻墙每日更新 一键导入"
+    },
+    {
+      "full_name": "OpenRunner/clash-freenode",
+      "html_url": "https://github.com/OpenRunner/clash-freenode",
+      "default_branch": "main",
+      "stars": 6460,
+      "forks": 447,
+      "pushed_at": "2026-09-29T00:13:36Z",
+      "description": "订阅地址🚀 免费共享♻️ 定期更新✨ 科学上网🌈 请勿滥用🚫一键订阅📪SSR/CLASH/V2RAY"
+    },
+    {
+      "full_name": "7Sageer/sublink-worker",
+      "html_url": "https://github.com/7Sageer/sublink-worker",
+      "default_branch": "main",
+      "stars": 5439,
+      "forks": 9648,
+      "pushed_at": "2026-09-24T16:09:56Z",
+      "description": "One Worker, All Subscriptions"
+    },
+    {
+      "full_name": "dongyubin/Free-AppleId-Serve",
+      "html_url": "https://github.com/dongyubin/Free-AppleId-Serve",
+      "default_branch": "main",
+      "stars": 3512,
+      "forks": 207,
+      "pushed_at": "2026-09-27T02:10:53Z",
+      "description": "2026年9月每日更新🚀苹果美区账号 APPLE ID🚀免费Shadowrocket（小火箭）共享账号,Quantumult X，圈x，stash，小火箭节点，🚀 免费订阅地址，🚀 免费节点，🚀 每天更新一次，共享节点，节点质量高可用，完全免费。免费clash订阅地址，免费翻墙，免费科学上网，免费梯子，免费ss/v2ray/trojan/clash节点,翻墙梯子，Openai ChatGPT,代理,proxy代理科学上网,TG代理,电报代理,Telegram代理,免费共享苹果外区ID,clashx Pro客户端下载,Free subscription address,使用教程"
+    },
+    {
+      "full_name": "Barabama/FreeNodes",
+      "html_url": "https://github.com/Barabama/FreeNodes",
+      "default_branch": "feat/ai-crawler-v2",
+      "stars": 3201,
+      "forks": 396,
+      "pushed_at": "2026-09-28T10:24:40Z",
+      "description": "v2ray、clash免费节点爬虫，自动更新"
+    },
+    {
+      "full_name": "shuaidaoya/FreeNodes",
+      "html_url": "https://github.com/shuaidaoya/FreeNodes",
+      "default_branch": "main",
+      "stars": 2310,
+      "forks": 362,
+      "pushed_at": "2026-08-16T19:53:07Z",
+      "description": "因调整需要，项目暂时停更1-2个月，休整完毕后会如期回归，感谢理解与等待。过渡节点订阅已更新至下方链接！！！每4小时自动更新🤖，支持v2ray、clash等各种代理软件，利用SubsCheck-Win-GUI自动从节点池爬取免费节点分享"
+    },
+    {
+      "full_name": "snakem982/proxypool",
+      "html_url": "https://github.com/snakem982/proxypool",
+      "default_branch": "main",
+      "stars": 2123,
+      "forks": 148,
+      "pushed_at": "2026-09-29T00:15:05Z",
+      "description": "Free Proxies，Free Nodes，免费节点，白嫖节点，免费vpn，免费v2ray，免费订阅，免费clash，Free VPN，Free v2ray，Free Sub，Free Clash"
+    },
+    {
+      "full_name": "crossxx-labs/free-proxy",
+      "html_url": "https://github.com/crossxx-labs/free-proxy",
+      "default_branch": "main",
+      "stars": 1770,
+      "forks": 78,
+      "pushed_at": "2026-09-29T00:00:07Z",
+      "description": "Provide free clash subscriptions of ssr / vmess / hysteria2 proxy servers 提供免费clash订阅，免费ssr节点，免费trojan节点，免费vmess节点，免费hysteria2节点服务器"
+    },
+    {
+      "full_name": "mapleafgo/singcast",
+      "html_url": "https://github.com/mapleafgo/singcast",
+      "default_branch": "singcast",
+      "stars": 1020,
+      "forks": 145,
+      "pushed_at": "2026-08-28T00:35:34Z",
+      "description": "Multi-platform proxy client powered by sing-box, with full Clash, sing-box & v2ray subscription support"
+    },
+    {
+      "full_name": "SubBoost/subboost",
+      "html_url": "https://github.com/SubBoost/subboost",
+      "default_branch": "main",
+      "stars": 889,
+      "forks": 160,
+      "pushed_at": "2026-09-24T13:19:15Z",
+      "description": "Clash/Mihomo subscription conversion, enhancement, and management tool. Clash/Mihomo 订阅转换、增强和管理工具。通过 UI 可视化，一键实现链式代理、精确分流、防 DNS 泄露和多订阅聚合等高级功能。"
+    },
+    {
+      "full_name": "realchendahuang/sub-store-cloudflare",
+      "html_url": "https://github.com/realchendahuang/sub-store-cloudflare",
+      "default_branch": "main",
+      "stars": 299,
+      "forks": 68,
+      "pushed_at": "2026-07-11T12:38:02Z",
+      "description": "部署在 Cloudflare Workers 上的节点处理、订阅聚合与分流规则模板 / Subscription manager on Cloudflare Workers"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/snakem982/proxypool/main/source/clash-meta-2.yaml",
+      "repo": "snakem982/proxypool",
+      "stars": 2123,
+      "path": "source/clash-meta-2.yaml",
+      "score": 22
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shuaidaoya/FreeNodes/main/nodes/base64.txt",
+      "repo": "shuaidaoya/FreeNodes",
+      "stars": 2310,
+      "path": "nodes/base64.txt",
+      "score": 20
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shuaidaoya/FreeNodes/main/nodes/history.yaml",
+      "repo": "shuaidaoya/FreeNodes",
+      "stars": 2310,
+      "path": "nodes/history.yaml",
+      "score": 24
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shuaidaoya/FreeNodes/main/nodes/all.yaml",
+      "repo": "shuaidaoya/FreeNodes",
+      "stars": 2310,
+      "path": "nodes/all.yaml",
+      "score": 26
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shuaidaoya/FreeNodes/main/nodes/mihomo.yaml",
+      "repo": "shuaidaoya/FreeNodes",
+      "stars": 2310,
+      "path": "nodes/mihomo.yaml",
+      "score": 36
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/clashnode.txt",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/clashnode.txt",
+      "score": 32
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/clashmeta.txt",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/clashmeta.txt",
+      "score": 32
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/oneclash.yaml",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/oneclash.yaml",
+      "score": 36
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/clashstair.yaml",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/clashstair.yaml",
+      "score": 36
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/clashnode.yaml",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/clashnode.yaml",
+      "score": 36
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/clashmeta.yaml",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/clashmeta.yaml",
+      "score": 36
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/freeclashnode.txt",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/freeclashnode.txt",
+      "score": 37
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/freeclashnode.yaml",
+      "repo": "Barabama/FreeNodes",
+      "stars": 3201,
+      "path": "nodes/freeclashnode.yaml",
+      "score": 41
+    },
+    {
+      "url": "https://raw.githubusercontent.com/awesome-vpn/awesome-vpn/master/clash.yaml",
+      "repo": "awesome-vpn/awesome-vpn",
+      "stars": 6497,
+      "path": "clash.yaml",
+      "score": 22
+    },
+    {
+      "url": "https://raw.githubusercontent.com/chen08209/FlClash/main/plugins/proxy/pubspec.yaml",
+      "repo": "chen08209/FlClash",
+      "stars": 53751,
+      "path": "plugins/proxy/pubspec.yaml",
+      "score": 18
+    },
+    {
+      "url": "https://raw.githubusercontent.com/chen08209/FlClash/main/plugins/proxy/analysis_options.yaml",
+      "repo": "chen08209/FlClash",
+      "stars": 53751,
+      "path": "plugins/proxy/analysis_options.yaml",
+      "score": 18
+    },
+    {
+      "url": "https://raw.githubusercontent.com/mfuu/v2ray/master/clash.yaml",
+      "repo": "PINNED",
+      "stars": 0,
+      "path": "",
+      "score": 0
+    },
+    {
+      "url": "https://raw.githubusercontent.com/er26/free/main/clash.yaml",
+      "repo": "PINNED",
+      "stars": 0,
+      "path": "",
+      "score": 0
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodefree/nodefree.github.io/main/clash/clash.yaml",
+      "repo": "PINNED",
+      "stars": 0,
+      "path": "",
+      "score": 0
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Pawroid/Free-Node/main/clash.yaml",
+      "repo": "PINNED",
+      "stars": 0,
+      "path": "",
+      "score": 0
+    }
+  ]
+}

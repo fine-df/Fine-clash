@@ -3,265 +3,61 @@ socks-port: 7891
 allow-lan: true
 mode: rule
 log-level: info
-proxies:
-- name: 🇺🇸 [9ms|0h|1次] рџ‡ғрџ‡ё_US_зңҺе›Ң_1
-  type: ss
-  server: 54.90.169.61
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [255ms|0h|1次] 日期：09-28
-  type: vless
-  server: 178.79.149.80
-  port: 22117
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: Vqwhml0SG253PsBtx9xi3GJY-hhyA6sgGUJ_wVI7Q1g
-    short-id: c7994be0
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [257ms|0h|1次] 🇬🇧_英国_9
-  type: vless
-  server: 178.79.129.203
-  port: 54865
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: frK9LTk4kF7lh4-ZVCuHCQm87Oy6uboRtoS-o6Fb6WE
-    short-id: '7436'
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [283ms|0h|1次] 🇫🇷_法国_6
-  type: vless
-  server: 172.239.19.53
-  port: 56890
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: rLwUhSlO07MqPfOOvNjRfmFSHrByCO7r4NpgTt2YkCE
-    short-id: '13500590'
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [309ms|0h|1次] 每天更新，请加电报群防止失联
-  type: vless
-  server: 172.104.237.173
-  port: 20855
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: c6Pu0_yAYxIrnYjbwIYLsKB_xhcLsk17BgojLeaIvE8
-    short-id: efe9
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [420ms|0h|1次] рџ‡ёрџ‡Ғ_SE_з‘һе…ё
-  type: ss
-  server: 51.20.86.152
-  port: 443
-  cipher: aes-256-cfb
-  password: amazonskr05
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [527ms|0h|1次] 🇫🇮_芬兰_13
-  type: vless
-  server: 31.76.245.63
-  port: 443
-  uuid: d72f05b0-b182-4783-a6f2-21cecc7d841a
-  servername: dzen.ru
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: SibLV5WBGdljTiUCmKx77KhHQfErCwjDMD_ZLoha3js
-    short-id: a1b2c3d4e5f67890
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [630ms|0h|1次] 🇯🇵_日本_7
-  type: vless
-  server: 13.230.30.102
-  port: 38830
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 5E5p5boHrgCyBlt5qZPX1XozU9I90JoBgS4zmXngllI
-    short-id: ac12ed79
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [635ms|0h|1次] 🇯🇵_日本_12
-  type: vless
-  server: 13.158.67.183
-  port: 33561
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 158SMilJQo8T-Fi8-T1354xZsVFCYxA8dXQstKbIdVs
-    short-id: 6b9e61372a82002c
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [680ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ_1
-  type: vless
-  server: onhit.shalana.xyz
-  port: 443
-  uuid: 408fbae6-a40b-4f0b-9723-0b4ce8e3d035
-  tls: true
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [698ms|0h|1次] 电报群：https://t.me/vvkj11
-  type: vless
-  server: 18.136.119.69
-  port: 20975
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: GVg6RWWCJfXATSmArzQD69rXqs9-804Ot-_uX3WrJE4
-    short-id: 2bb0dc48
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [938ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ
-  type: vless
-  server: free-server.techsonic.dev
-  port: 2096
-  uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
-  network: ws
-  servername: free-server.techsonic.dev
-  tls: true
-  client-fingerprint: firefox
-  ws-opts:
-    path: /free-server.techsonic.dev
-    headers:
-      Host: free-server.techsonic.dev
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [1050ms|0h|1次] рџ‡·рџ‡ғ_RU_дү„зҢ—ж–Ү
-  type: vless
-  server: fbsv6.guardora.pro
-  port: 443
-  uuid: bc5ec86c-3e65-4272-994c-59a924c72a68
-  network: ws
-  servername: fbsv6.guardora.pro
-  tls: true
-  client-fingerprint: firefox
-  ws-opts:
-    path: /ws
-    headers:
-      Host: fbsv6.guardora.pro
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [1291ms|0h|1次] 🇸🇬_新加坡_5
-  type: vless
-  server: 18.139.227.162
-  port: 28243
-  uuid: d00d9d18-20cf-4191-be76-6f73d43a27ec
-  servername: www.cloudflare.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: IXxfPvq2OkbSuA-ZTBFpMzkDU1uO8dEI1e7s9VfHh1Y
-    short-id: 7996bf4dcf194d18
-  skip-cert-verify: true
-  udp: true
-- name: 🇺🇸 [1623ms|0h|1次] 🇺🇸_美国_8
-  type: vless
-  server: 72.56.41.33
-  port: 40443
-  uuid: 5be7fb02-b6a5-450f-b041-3243b98e8420
-  servername: deepl.com
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: Uvj5H9pDJP0HX2bN7NN7sCQwVCrC5N2NbKf-yuy1ikE
-    short-id: ee33
-  skip-cert-verify: true
-  udp: true
-- name: 🌐 [1655ms|0h|1次] 免费VPN：https://tt.vg/FJOE2Mm
-  type: vless
-  server: 31.77.13.19
-  port: 2063
-  uuid: b18d5990-96eb-4587-a386-7f8ef7591e6a
-  servername: rusbid.de
-  tls: true
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: MMpt_jWc4J3oySBdf5sPDVRkiWlZmOObth6A1scM9BM
-  skip-cert-verify: true
-  udp: true
+proxies: []
 proxy-groups:
 - name: 🚀 节点选择
   type: select
   proxies:
-  - 🇺🇸 [9ms|0h|1次] рџ‡ғрџ‡ё_US_зңҺе›Ң_1
-  - 🌐 [255ms|0h|1次] 日期：09-28
-  - 🌐 [257ms|0h|1次] 🇬🇧_英国_9
-  - 🌐 [283ms|0h|1次] 🇫🇷_法国_6
-  - 🌐 [309ms|0h|1次] 每天更新，请加电报群防止失联
-  - 🌐 [420ms|0h|1次] рџ‡ёрџ‡Ғ_SE_з‘һе…ё
-  - 🌐 [527ms|0h|1次] 🇫🇮_芬兰_13
-  - 🌐 [630ms|0h|1次] 🇯🇵_日本_7
-  - 🌐 [635ms|0h|1次] 🇯🇵_日本_12
-  - 🌐 [680ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ_1
-  - 🌐 [698ms|0h|1次] 电报群：https://t.me/vvkj11
-  - 🌐 [938ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ
-  - 🌐 [1050ms|0h|1次] рџ‡·рџ‡ғ_RU_дү„зҢ—ж–Ү
-  - 🌐 [1291ms|0h|1次] 🇸🇬_新加坡_5
-  - 🇺🇸 [1623ms|0h|1次] 🇺🇸_美国_8
-  - 🌐 [1655ms|0h|1次] 免费VPN：https://tt.vg/FJOE2Mm
+  - ♻️ 自动选择
+  - 🌐 手动选择
+  - 🇹🇼 台湾
+  - 🇺🇸 美国
   - DIRECT
 - name: ♻️ 自动选择
   type: url-test
-  url: http://www.gstatic.com/generate_204
-  interval: 300
+  url: https://gemini.google.com/
+  expected-status: 200-399
+  interval: 180
   tolerance: 50
+  lazy: false
   proxies:
-  - 🇺🇸 [9ms|0h|1次] рџ‡ғрџ‡ё_US_зңҺе›Ң_1
-  - 🌐 [255ms|0h|1次] 日期：09-28
-  - 🌐 [257ms|0h|1次] 🇬🇧_英国_9
-  - 🌐 [283ms|0h|1次] 🇫🇷_法国_6
-  - 🌐 [309ms|0h|1次] 每天更新，请加电报群防止失联
-  - 🌐 [420ms|0h|1次] рџ‡ёрџ‡Ғ_SE_з‘һе…ё
-  - 🌐 [527ms|0h|1次] 🇫🇮_芬兰_13
-  - 🌐 [630ms|0h|1次] 🇯🇵_日本_7
-  - 🌐 [635ms|0h|1次] 🇯🇵_日本_12
-  - 🌐 [680ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ_1
-  - 🌐 [698ms|0h|1次] 电报群：https://t.me/vvkj11
-  - 🌐 [938ms|0h|1次] рџ‡ёрџ‡¬_SG_ж–°еЉ еқҰ
-  - 🌐 [1050ms|0h|1次] рџ‡·рџ‡ғ_RU_дү„зҢ—ж–Ү
-  - 🌐 [1291ms|0h|1次] 🇸🇬_新加坡_5
-  - 🇺🇸 [1623ms|0h|1次] 🇺🇸_美国_8
-  - 🌐 [1655ms|0h|1次] 免费VPN：https://tt.vg/FJOE2Mm
-- name: 🤖 Gemini
+  - REJECT
+- name: 🌐 手动选择
   type: select
   proxies:
-  - ♻️ 自动选择
-  - 🚀 节点选择
+  - DIRECT
+- name: 🇹🇼 台湾
+  type: select
+  proxies:
+  - DIRECT
+- name: 🇺🇸 美国
+  type: select
+  proxies:
+  - DIRECT
 rules:
-- DOMAIN-SUFFIX,gemini.google.com,🤖 Gemini
-- DOMAIN-SUFFIX,googleapis.com,🤖 Gemini
-- DOMAIN-SUFFIX,generativelanguage.googleapis.com,🤖 Gemini
-- DOMAIN-SUFFIX,google.com,🤖 Gemini
+- GEOSITE,CN,DIRECT
+- GEOIP,CN,DIRECT
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- DOMAIN-SUFFIX,cn,DIRECT
+- DOMAIN-SUFFIX,com.cn,DIRECT
+- DOMAIN-SUFFIX,org.cn,DIRECT
+- DOMAIN-SUFFIX,net.cn,DIRECT
+- DOMAIN-SUFFIX,gov.cn,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,baidu.com,DIRECT
+- DOMAIN-SUFFIX,taobao.com,DIRECT
+- DOMAIN-SUFFIX,tmall.com,DIRECT
+- DOMAIN-SUFFIX,jd.com,DIRECT
+- DOMAIN-SUFFIX,bilibili.com,DIRECT
+- DOMAIN-SUFFIX,wechat.com,DIRECT
+- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+- DOMAIN-SUFFIX,163.com,DIRECT
+- DOMAIN-SUFFIX,alibaba.com,DIRECT
+- DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择
+- DOMAIN-SUFFIX,googleapis.com,♻️ 自动选择
+- DOMAIN-SUFFIX,generativelanguage.googleapis.com,♻️ 自动选择
+- DOMAIN-SUFFIX,google.com,♻️ 自动选择
 - MATCH,🚀 节点选择

@@ -6,21 +6,14 @@ on:
 
   workflow_dispatch:
 
-  push:
-    branches:
-      - main
-    paths:
-      - clash_monitor.py
-      - .github/workflows/monitor.yml
-      - requirements.txt
-
 concurrency:
   group: clash-gemini-monitor
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     timeout-minutes: 30
 
     permissions:
@@ -39,7 +32,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests PyYAML
 
       - name: Install Mihomo
         run: |
@@ -66,30 +59,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          # The monitor generates a local commit while another change may land on main.
-          # Rebase can conflict on generated files, so preserve the generated worktree,
-          # move HEAD to the latest remote main, then create a fresh output commit.
           git add \
             live_clash.yaml \
-            live_v2ray.txt \
             node_history.json \
-            subscription_sources.json \
             source_registry.json
 
           git diff --cached --quiet || \
-            git commit -m "Auto update: verified Clash and V2Ray subscriptions"
+            git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
 
-          git fetch origin main
-          git reset --soft origin/main
-
-          git add \
-            live_clash.yaml \
-            live_v2ray.txt \
-            node_history.json \
-            subscription_sources.json \
-            source_registry.json
-
-          git diff --cached --quiet || \
-            git commit -m "Auto update: verified Clash and V2Ray subscriptions"
-
-          git push origin HEAD:main
+          git push

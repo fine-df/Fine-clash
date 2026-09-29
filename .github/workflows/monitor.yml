@@ -2,12 +2,10 @@ name: Clash Gemini Monitor Agent
 
 on:
   schedule:
-    # 每 6 小时运行一次
     - cron: '0 */6 * * *'
 
   workflow_dispatch:
 
-# 防止定时任务和手动运行同时 push
 concurrency:
   group: clash-gemini-monitor
   cancel-in-progress: false
@@ -45,9 +43,7 @@ jobs:
             -O mihomo.gz
 
           gunzip -f mihomo.gz
-
           chmod +x mihomo
-
           sudo mv mihomo /usr/local/bin/clash
 
           clash -v
@@ -63,9 +59,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          git add live_clash.yaml node_history.json
+          git add \
+            live_clash.yaml \
+            node_history.json \
+            source_registry.json
 
           git diff --cached --quiet || \
-            git commit -m "Auto update: Verified Gemini-accessible Clash nodes"
+            git commit -m "Auto update: Dynamic GitHub sources and verified Gemini nodes"
 
           git push

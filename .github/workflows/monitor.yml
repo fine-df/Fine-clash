@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: .
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -18,27 +20,23 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: |
-          pip install requests pyyaml
+        run: pip install requests pyyaml
 
-      - name: Install Mihomo (Clash Meta) Core
+      - name: Install Mihomo Core
         run: |
-          curl -sSL -o mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz"
-          gunzip mihomo.gz
+          wget -q https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz -O mihomo.gz
+          gunzip -f mihomo.gz
+          chmod +x mihomo
           sudo mv mihomo /usr/local/bin/clash
-          sudo chmod +x /usr/local/bin/clash
-          clash -v
 
-      - name: Run Gemini Proxy Monitor Script
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Monitor Script
         run: python clash_monitor.py
 
-      - name: Commit & Push Verified Subscription
+      - name: Commit Changes
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           touch live_clash.yaml
           git add live_clash.yaml
-          git commit -m "Auto update: Verified Gemini-accessible Clash nodes" || exit 0
-          git push
+          git commit -m "Auto update live clash config" || true
+          git push || true

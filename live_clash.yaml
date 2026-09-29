@@ -6,112 +6,24 @@ log-level: info
 unified-delay: true
 tcp-concurrent: true
 proxies: []
-dns:
-  enable: true
-  cache-algorithm: arc
-  prefer-h3: false
-  use-hosts: true
-  use-system-hosts: true
-  respect-rules: false
-  listen: 0.0.0.0:1053
-  ipv6: false
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
-  fake-ip-filter:
-  - '*.lan'
-  - '*.local'
-  - +.local
-  - +.localhost
-  default-nameserver:
-  - 223.5.5.5
-  - 223.6.6.6
-  nameserver-policy:
-    geosite:cn:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-    +.cn:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-    +.com.cn:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-    +.org.cn:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-    +.net.cn:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-  nameserver:
-  - https://doh.pub/dns-query
-  - https://dns.alidns.com/dns-query
-  direct-nameserver:
-  - system
-  direct-nameserver-follow-policy: false
 proxy-groups:
-- name: 🚀 节点选择
-  type: select
-  proxies:
-  - ♻️ 自动选择
-  - 🛍 Play自动选择
-  - 🌐 手动选择
-  - DIRECT
-- name: ♻️ 自动选择
-  type: url-test
-  url: https://gemini.google.com/
-  expected-status: 200-399
-  interval: 180
-  tolerance: 30
-  lazy: false
-  proxies: &id001
-  - REJECT
-- name: 🛍 Play自动选择
-  type: url-test
-  url: https://play.google.com/store/apps/
-  expected-status: 200-399
-  interval: 180
-  tolerance: 30
-  lazy: false
-  proxies: *id001
-- name: 🌐 手动选择
-  type: select
-  proxies:
-  - DIRECT
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - DIRECT
+  - name: "🌐 手动选择"
+    type: select
+    proxies:
+      - DIRECT
 rules:
-- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
-- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
-- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
-- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
-- GEOSITE,CN,DIRECT
-- GEOIP,CN,DIRECT
-- DOMAIN-SUFFIX,cn,DIRECT
-- DOMAIN-SUFFIX,com.cn,DIRECT
-- DOMAIN-SUFFIX,org.cn,DIRECT
-- DOMAIN-SUFFIX,net.cn,DIRECT
-- DOMAIN-SUFFIX,gov.cn,DIRECT
-- DOMAIN-SUFFIX,qq.com,DIRECT
-- DOMAIN-SUFFIX,baidu.com,DIRECT
-- DOMAIN-SUFFIX,taobao.com,DIRECT
-- DOMAIN-SUFFIX,tmall.com,DIRECT
-- DOMAIN-SUFFIX,jd.com,DIRECT
-- DOMAIN-SUFFIX,bilibili.com,DIRECT
-- DOMAIN-SUFFIX,wechat.com,DIRECT
-- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
-- DOMAIN-SUFFIX,163.com,DIRECT
-- DOMAIN-SUFFIX,alibaba.com,DIRECT
-- DOMAIN-SUFFIX,play.google.com,🛍 Play自动选择
-- DOMAIN-SUFFIX,play.googleapis.com,🛍 Play自动选择
-- DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择
-- DOMAIN-SUFFIX,jnn-pa.googleapis.com,♻️ 自动选择
-- DOMAIN-SUFFIX,waa-pa.clients6.google.com,♻️ 自动选择
-- DOMAIN-SUFFIX,apis.google.com,♻️ 自动选择
-- DOMAIN-SUFFIX,googleapis.com,♻️ 自动选择
-- DOMAIN-SUFFIX,gstatic.com,♻️ 自动选择
-- DOMAIN-SUFFIX,googleusercontent.com,♻️ 自动选择
-- DOMAIN-SUFFIX,ggpht.com,♻️ 自动选择
-- DOMAIN-SUFFIX,gvt1.com,♻️ 自动选择
-- DOMAIN-SUFFIX,google.com,♻️ 自动选择
-- DOMAIN-SUFFIX,youtube.com,🚀 节点选择
-- DOMAIN-SUFFIX,youtubei.googleapis.com,🚀 节点选择
-- DOMAIN-SUFFIX,googlevideo.com,🚀 节点选择
-- MATCH,🚀 节点选择
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT
+  - GEOSITE,CN,DIRECT
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - DOMAIN-SUFFIX,com.cn,DIRECT
+  - DOMAIN-SUFFIX,org.cn,DIRECT
+  - DOMAIN-SUFFIX,net.cn,DIRECT
+  - MATCH,DIRECT

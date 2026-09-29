@@ -282,19 +282,52 @@ def normalize_url(url):
         " ).,;'\">]}"
     )
 
-    if (
-        "github.com" in url
-        and "/blob/" in url
+    if url.startswith(
+        "https://github.com/"
     ):
-        url = url.replace(
-            "https://github.com/",
-            "https://raw.githubusercontent.com/",
-        )
+        github_path = url[len(
+            "https://github.com/"
+        ):]
 
-        url = url.replace(
-            "/blob/",
-            "/",
-        )
+        if "/blob/" in github_path:
+            owner_repo, file_path = github_path.split(
+                "/blob/",
+                1,
+            )
+
+            branch, sep, rest = file_path.partition(
+                "/"
+            )
+
+            if (
+                sep
+                and branch
+                and rest
+            ):
+                url = (
+                    "https://raw.githubusercontent.com/"
+                    f"{owner_repo}/{branch}/{rest}"
+                )
+
+        elif "/raw/" in github_path:
+            owner_repo, file_path = github_path.split(
+                "/raw/",
+                1,
+            )
+
+            branch, sep, rest = file_path.partition(
+                "/"
+            )
+
+            if (
+                sep
+                and branch
+                and rest
+            ):
+                url = (
+                    "https://raw.githubusercontent.com/"
+                    f"{owner_repo}/{branch}/{rest}"
+                )
 
     return url
 
@@ -384,7 +417,19 @@ def is_plausible_subscription_url(url):
         filename = path.rsplit(
             "/",
             1,
-        )[-1]
+        )[-1].split(
+            "?",
+            1,
+        )[0].lower()
+
+        if filename.endswith(
+            (
+                ".md",
+                ".mdx",
+                ".markdown",
+            )
+        ):
+            return False
 
         blocked_names = (
             "pubspec.yaml",
@@ -797,12 +842,38 @@ def discover_subscription_sources():
     # temporary cache replacement cannot permanently forget good sources.
     for url in list(registry.keys()):
 
-        if (
+        if not (
             isinstance(url, str)
             and url.startswith("http")
-            and is_plausible_subscription_url(url)
         ):
-            discovered.append(url)
+            continue
+
+        normalized = normalize_url(url)
+
+        if not normalized:
+            continue
+
+        if not is_plausible_subscription_url(
+            normalized
+        ):
+            continue
+
+        if (
+            normalized != url
+            and normalized not in registry
+        ):
+            registry[normalized] = registry[url]
+            registry[normalized]["url"] = normalized
+            del registry[url]
+
+        discovered.append(
+            normalized
+        )
+
+        ensure_source_entry(
+            registry,
+            normalized,
+        )
 
     for repo in search_github_repos():
 
@@ -1004,12 +1075,17 @@ def normalize_proxy(proxy):
 
     # Normalize common sing-box Shadowsocks fields found in YAML
     # subscriptions before handing the node to Mihomo.
-    if str(
+    proxy_type = str(
         result.get(
             "type",
             "",
         )
-    ).lower() == "shadowsocks":
+    ).lower()
+
+    if proxy_type in (
+        "shadowsocks",
+        "ss",
+    ):
 
         result[
             "type"
@@ -1020,8 +1096,13 @@ def normalize_proxy(proxy):
         ):
             result[
                 "cipher"
-            ] = result.get(
-                "method"
+            ] = (
+                result.get(
+                    "method"
+                )
+                or result.get(
+                    "method-name"
+                )
             )
 
     if not result.get(

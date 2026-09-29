@@ -1002,6 +1002,49 @@ def normalize_proxy(proxy):
         if value is not None
     }
 
+    # Normalize common sing-box Shadowsocks fields found in YAML
+    # subscriptions before handing the node to Mihomo.
+    if str(
+        result.get(
+            "type",
+            "",
+        )
+    ).lower() == "shadowsocks":
+
+        result[
+            "type"
+        ] = "ss"
+
+        if not result.get(
+            "cipher"
+        ):
+            result[
+                "cipher"
+            ] = result.get(
+                "method"
+            )
+
+    if not result.get(
+        "server"
+    ):
+        result[
+            "server"
+        ] = (
+            result.get("address")
+            or result.get("add")
+            or result.get("host")
+        )
+
+    if not result.get(
+        "port"
+    ):
+        result[
+            "port"
+        ] = (
+            result.get("server_port")
+            or result.get("serverPort")
+        )
+
     if not result.get(
         "server"
     ):

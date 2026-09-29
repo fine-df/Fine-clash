@@ -1,8 +1,9 @@
-"""GitHub subscription source discovery module.
+"""GitHub subscription source discovery.
 
-Collect candidate Clash/Mihomo/V2Ray subscription sources for later filtering.
+Collect candidate Clash/Mihomo/V2Ray subscription sources.
 """
 
+import re
 import requests
 
 KEYWORDS = [
@@ -12,13 +13,24 @@ KEYWORDS = [
     "proxy provider",
 ]
 
+RAW_PATTERN = r"https://raw\.githubusercontent\.com/[\w./_-]+"
+
+
+def discover_sources_from_text(text):
+    return list(set(re.findall(RAW_PATTERN, text)))
+
 
 def discover_sources():
-    """Placeholder for GitHub search integration.
-
-    The returned structure is designed for scoring and filtering.
-    """
+    """Reserved for GitHub API search integration."""
     return []
+
+
+def validate_source(url):
+    try:
+        response = requests.get(url, timeout=10)
+        return bool(response.text.strip())
+    except Exception:
+        return False
 
 
 def score_source(source):

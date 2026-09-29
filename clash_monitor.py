@@ -371,10 +371,32 @@ def is_plausible_subscription_url(url):
             "/sub", "/subscribe", "/subscription",
             "/clash", "/mihomo", "/v2ray", "/vless",
             "/vmess", "/trojan", "/ss", "/nodes",
-            "/proxy", "/proxies", "/free", "/export",
-            "base64", "oneclash", "clashmeta", "freeclash",
+            "/export", "base64", "oneclash",
+            "clashmeta", "freeclash",
         )
-        return any(token in path for token in markers)
+
+        filename = path.rsplit(
+            "/",
+            1,
+        )[-1]
+
+        blocked_names = (
+            "pubspec.yaml",
+            "analysis_options.yaml",
+            "package.json",
+            "podspec",
+            "cargo.toml",
+            "gemfile",
+            "dockerfile",
+        )
+
+        if filename in blocked_names:
+            return False
+
+        return any(
+            token in path
+            for token in markers
+        )
 
     if "bitbucket.org" in host:
         return (
@@ -4048,6 +4070,40 @@ def write_v2ray_subscription(
     return unique_uris
 
 
+def load_published_proxies():
+    try:
+        with open(
+            CLASH_OUTPUT_FILE,
+            "r",
+            encoding="utf-8",
+        ) as f:
+            data = yaml.safe_load(f)
+
+        if (
+            isinstance(data, dict)
+            and isinstance(
+                data.get("proxies"),
+                list,
+            )
+        ):
+            result = []
+
+            for proxy in data["proxies"]:
+                if (
+                    isinstance(proxy, dict)
+                    and proxy.get("server")
+                    and proxy.get("port")
+                ):
+                    result.append(proxy)
+
+            return result
+
+    except Exception:
+        pass
+
+    return []
+
+
 # ============================================================
 # Clash/Mihomo 最终配置
 # ============================================================
@@ -4756,37 +4812,35 @@ def run_agent():
     # 7. 输出 Clash
     # --------------------------------------------------------
 
-    # 本轮没有合格节点时，仍然发布完整的 DNS/分流安全配置。
-    # 不再因为空节点直接 return，避免 DNS 修复无法落盘。
+    # 本轮没有新合格节点时，保留上一版已发布节点，
+    # 但重新生成 DNS / 分流配置，避免瞬时测试失败导致订阅被清空。
     if not passed:
-        print(
-            "No qualified nodes; publishing safe DNS/routing config."
-        )
+        previous_proxies = load_published_proxies()
 
-        final_config = build_final_config(
-            []
-        )
+        if previous_proxies:
+            passed = [
+                {
+                    "proxy": proxy,
+                    "display_name":
+                        proxy.get(
+                            "name",
+                            "previous",
+                        ),
+                }
+                for proxy in previous_proxies
+            ]
 
-        write_yaml(
-            CLASH_OUTPUT_FILE,
-            final_config,
-        )
+            print(
+                f"No new qualified nodes; "
+                f"keeping {len(passed)} previously published nodes "
+                f"and refreshing DNS/routing config."
+            )
 
-        write_v2ray_subscription(
-            []
-        )
-
-        print(
-            f"Generated: "
-            f"{CLASH_OUTPUT_FILE}"
-        )
-
-        print(
-            f"Generated: "
-            f"{V2RAY_OUTPUT_FILE}"
-        )
-
-        return
+        else:
+            print(
+                "No qualified nodes and no previous published nodes; "
+                "publishing safe DNS/routing config."
+            )
 
     final_config = build_final_config(passed)
 

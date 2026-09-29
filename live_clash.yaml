@@ -55,8 +55,6 @@ proxy-groups:
   - ♻️ 自动选择
   - 🛍 Play自动选择
   - 🌐 手动选择
-  - 🇹🇼 台湾
-  - 🇺🇸 美国
   - DIRECT
 - name: ♻️ 自动选择
   type: url-test
@@ -76,14 +74,6 @@ proxy-groups:
   lazy: false
   proxies: *id001
 - name: 🌐 手动选择
-  type: select
-  proxies:
-  - DIRECT
-- name: 🇹🇼 台湾
-  type: select
-  proxies:
-  - DIRECT
-- name: 🇺🇸 美国
   type: select
   proxies:
   - DIRECT

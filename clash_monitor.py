@@ -3178,29 +3178,35 @@ def build_final_config(
             ],
 
             "default-nameserver": [
-                "system",
+                "223.5.5.5",
+                "223.6.6.6",
             ],
 
             "nameserver-policy": {
 
                 "geosite:cn": [
-                    "system",
+                    "223.5.5.5",
+                    "223.6.6.6",
                 ],
 
                 "+.cn": [
-                    "system",
+                    "223.5.5.5",
+                    "223.6.6.6",
                 ],
 
                 "+.com.cn": [
-                    "system",
+                    "223.5.5.5",
+                    "223.6.6.6",
                 ],
 
                 "+.org.cn": [
-                    "system",
+                    "223.5.5.5",
+                    "223.6.6.6",
                 ],
 
                 "+.net.cn": [
-                    "system",
+                    "223.5.5.5",
+                    "223.6.6.6",
                 ],
             },
 
@@ -3210,7 +3216,7 @@ def build_final_config(
             ],
 
             "proxy-server-nameserver": [
-                "system",
+                "https://doh.pub/dns-query",
             ],
 
             "direct-nameserver": [

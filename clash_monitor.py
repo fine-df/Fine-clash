@@ -41,7 +41,10 @@ DELAY_TIMEOUT_MS = 5000
 SWITCH_WAIT_SECONDS = 0.8
 
 # 最终真实代理延迟硬门槛
+# 严格目标：优先发布 <250ms 节点；若本轮不存在任何严格节点，
+# 使用 <=900ms 且完整通过 Gemini/Google Play/Google 测试的节点兜底，避免空订阅。
 MAX_PROXY_DELAY_MS = 250
+FALLBACK_PUBLISH_DELAY_MS = 900
 
 # 节点历史
 STABLE_PASS_COUNT = 2
@@ -1518,6 +1521,9 @@ def test_node(
         "max_delay_ms":
             None,
 
+        "strict_delay_pass":
+            False,
+
         "exit_ip":
             "",
 
@@ -1583,16 +1589,10 @@ def test_node(
         ] = "Google delay failed"
         return result
 
-    if (
-        google_delay
-        >= MAX_PROXY_DELAY_MS
-    ):
-        result[
-            "reason"
-        ] = (
-            f"Google proxy delay "
-            f"{google_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+    if google_delay >= FALLBACK_PUBLISH_DELAY_MS:
+        result["reason"] = (
+            f"Google proxy delay {google_delay}ms >= "
+            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
         )
         return result
 
@@ -1616,16 +1616,10 @@ def test_node(
         )
         return result
 
-    if (
-        gemini_delay
-        >= MAX_PROXY_DELAY_MS
-    ):
-        result[
-            "reason"
-        ] = (
-            f"Gemini delay "
-            f"{gemini_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+    if gemini_delay >= FALLBACK_PUBLISH_DELAY_MS:
+        result["reason"] = (
+            f"Gemini delay {gemini_delay}ms >= "
+            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
         )
         return result
 
@@ -1649,25 +1643,23 @@ def test_node(
         )
         return result
 
-    if (
-        play_delay
-        >= MAX_PROXY_DELAY_MS
-    ):
-        result[
-            "reason"
-        ] = (
-            f"Google Play delay "
-            f"{play_delay}ms >= "
-            f"{MAX_PROXY_DELAY_MS}ms"
+    if play_delay >= FALLBACK_PUBLISH_DELAY_MS:
+        result["reason"] = (
+            f"Google Play delay {play_delay}ms >= "
+            f"{FALLBACK_PUBLISH_DELAY_MS}ms"
         )
         return result
 
-    result[
-        "max_delay_ms"
-    ] = max(
+    result["max_delay_ms"] = max(
         google_delay,
         gemini_delay,
         play_delay,
+    )
+
+    result["strict_delay_pass"] = (
+        google_delay < MAX_PROXY_DELAY_MS
+        and gemini_delay < MAX_PROXY_DELAY_MS
+        and play_delay < MAX_PROXY_DELAY_MS
     )
 
     # 4. IP 清洁度
@@ -3161,7 +3153,7 @@ def build_final_config(
                 True,
 
             "respect-rules":
-                False,
+                True,
 
             "listen":
                 "0.0.0.0:1053",
@@ -3170,7 +3162,7 @@ def build_final_config(
                 False,
 
             "enhanced-mode":
-                "fake-ip",
+                "redir-host",
 
             "fake-ip-range":
                 "198.18.0.1/16",
@@ -3186,41 +3178,39 @@ def build_final_config(
             ],
 
             "default-nameserver": [
-                "223.5.5.5",
-                "223.6.6.6",
+                "system",
             ],
 
             "nameserver-policy": {
 
                 "geosite:cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
+                    "system",
                 ],
 
                 "+.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
+                    "system",
                 ],
 
                 "+.com.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
+                    "system",
                 ],
 
                 "+.org.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
+                    "system",
                 ],
 
                 "+.net.cn": [
-                    "https://doh.pub/dns-query",
-                    "https://dns.alidns.com/dns-query",
+                    "system",
                 ],
             },
 
             "nameserver": [
-                "https://doh.pub/dns-query",
-                "https://dns.alidns.com/dns-query",
+                "https://dns.google/dns-query#RULES",
+                "https://1.1.1.1/dns-query#RULES",
+            ],
+
+            "proxy-server-nameserver": [
+                "system",
             ],
 
             "direct-nameserver": [
@@ -3228,7 +3218,7 @@ def build_final_config(
             ],
 
             "direct-nameserver-follow-policy":
-                False,
+                True,
         },
 
         # ====================================================
@@ -3420,22 +3410,8 @@ def run_agent():
     )
 
     if not candidates:
-
-        write_yaml(
-            CLASH_OUTPUT_FILE,
-            build_final_config(
-                []
-            ),
-        )
-
-        write_v2ray_subscription(
-            []
-        )
-
-        save_history(
-            history
-        )
-
+        # 本轮没有候选节点时，不覆盖上一版已发布订阅。
+        save_history(history)
         return
 
     # --------------------------------------------------------
@@ -3722,7 +3698,14 @@ def run_agent():
             else 1
         )
 
+        strict_rank = (
+            0
+            if node["test"].get("strict_delay_pass", False)
+            else 1
+        )
+
         return (
+            strict_rank,
             region_rank,
             clean_rank,
             long_life_rank,
@@ -3773,11 +3756,12 @@ def run_agent():
     # 7. 输出 Clash
     # --------------------------------------------------------
 
-    final_config = (
-        build_final_config(
-            passed
-        )
-    )
+    # 本轮没有合格节点时，禁止把客户端覆盖成空配置。
+    if not passed:
+        print("No qualified nodes; keeping previous published subscriptions.")
+        return
+
+    final_config = build_final_config(passed)
 
     write_yaml(
         CLASH_OUTPUT_FILE,
@@ -3788,9 +3772,7 @@ def run_agent():
     # 8. 输出 V2Ray
     # --------------------------------------------------------
 
-    write_v2ray_subscription(
-        passed
-    )
+    write_v2ray_subscription(passed)
 
     print(
         "=" * 70

@@ -26,8 +26,9 @@ import yaml
 # 9. 记录节点寿命，长期稳定节点优先
 # 10. 记录订阅源稳定性，长期有效源优先
 # 11. 中国大陆流量 DIRECT
-# 12. Gemini 自动选择持续健康检查
-# 13. Google Play 自动选择持续健康检查
+# 12. 国内 DNS 优先国内解析
+# 13. Gemini 自动选择持续健康检查
+# 14. Google Play 自动选择持续健康检查
 # ============================================================
 
 
@@ -603,7 +604,6 @@ def discover_subscription_sources():
 
     discovered = []
 
-    # 历史源
     for url in cache:
 
         url = normalize_url(url)
@@ -616,7 +616,6 @@ def discover_subscription_sources():
                 url,
             )
 
-    # 最新 GitHub 源
     for repo in search_github_repos():
 
         repo_urls = set()
@@ -631,7 +630,6 @@ def discover_subscription_sources():
             )
 
         if repo_urls:
-
             print(
                 f"{repo['full_name']} "
                 f"Star={repo['stars']} "
@@ -649,7 +647,6 @@ def discover_subscription_sources():
                 repo["stars"],
             )
 
-    # 兜底
     for url in FALLBACK_SUBSCRIPTION_URLS:
 
         discovered.append(url)
@@ -661,7 +658,6 @@ def discover_subscription_sources():
             0,
         )
 
-    # 去重
     unique = []
     seen = set()
 
@@ -678,7 +674,6 @@ def discover_subscription_sources():
         seen.add(url)
         unique.append(url)
 
-    # 长期稳定源优先
     def source_priority(url):
 
         entry = registry.get(
@@ -776,7 +771,6 @@ def normalize_proxy(proxy):
         return None
 
     try:
-
         result["port"] = int(
             result["port"]
         )
@@ -1472,8 +1466,6 @@ def probe_url(
                 response.status_code,
             )
 
-        # Google 内部服务根路径可能
-        # 返回 400/404/405，但网络已经成功到达服务端。
         if response.status_code in (
             400,
             404,
@@ -1487,7 +1479,6 @@ def probe_url(
                 response.status_code,
             )
 
-        # 403 / 451 等直接视为被拒绝
         return (
             False,
             response.status_code,
@@ -1601,10 +1592,7 @@ def test_node(
             "",
     }
 
-    # --------------------------------------------------------
-    # 1. Google 实际代理延迟
-    # --------------------------------------------------------
-
+    # 1. Google
     google_delay = proxy_delay(
         proxy_name,
         GOOGLE_DELAY_URL,
@@ -1616,20 +1604,15 @@ def test_node(
     ] = google_delay
 
     if google_delay is None:
-
         result[
             "reason"
-        ] = (
-            "Google delay failed"
-        )
-
+        ] = "Google delay failed"
         return result
 
     if (
         google_delay
         >= MAX_PROXY_DELAY_MS
     ):
-
         result[
             "reason"
         ] = (
@@ -1637,13 +1620,9 @@ def test_node(
             f"{google_delay}ms >= "
             f"{MAX_PROXY_DELAY_MS}ms"
         )
-
         return result
 
-    # --------------------------------------------------------
-    # 2. Gemini 实际代理延迟
-    # --------------------------------------------------------
-
+    # 2. Gemini
     gemini_delay = proxy_delay(
         proxy_name,
         GEMINI_DELAY_URL,
@@ -1655,21 +1634,18 @@ def test_node(
     ] = gemini_delay
 
     if gemini_delay is None:
-
         result[
             "reason"
         ] = (
             "Gemini delay/HTTP "
             "check failed"
         )
-
         return result
 
     if (
         gemini_delay
         >= MAX_PROXY_DELAY_MS
     ):
-
         result[
             "reason"
         ] = (
@@ -1677,13 +1653,9 @@ def test_node(
             f"{gemini_delay}ms >= "
             f"{MAX_PROXY_DELAY_MS}ms"
         )
-
         return result
 
-    # --------------------------------------------------------
-    # 3. Google Play 实际代理延迟
-    # --------------------------------------------------------
-
+    # 3. Google Play
     play_delay = proxy_delay(
         proxy_name,
         PLAY_DELAY_URL,
@@ -1695,21 +1667,18 @@ def test_node(
     ] = play_delay
 
     if play_delay is None:
-
         result[
             "reason"
         ] = (
             "Google Play delay/"
             "HTTP check failed"
         )
-
         return result
 
     if (
         play_delay
         >= MAX_PROXY_DELAY_MS
     ):
-
         result[
             "reason"
         ] = (
@@ -1717,12 +1686,7 @@ def test_node(
             f"{play_delay}ms >= "
             f"{MAX_PROXY_DELAY_MS}ms"
         )
-
         return result
-
-    # --------------------------------------------------------
-    # 4. 三项最大延迟
-    # --------------------------------------------------------
 
     result[
         "max_delay_ms"
@@ -1732,29 +1696,17 @@ def test_node(
         play_delay,
     )
 
-    # --------------------------------------------------------
-    # 5. 获取出口 IP / 清洁度
-    # --------------------------------------------------------
+    # 4. IP 清洁度
+    session = build_proxy_session()
 
-    session = (
-        build_proxy_session()
-    )
-
-    ip_info = (
-        get_exit_ip_info(
-            session
-        )
+    ip_info = get_exit_ip_info(
+        session
     )
 
     if not ip_info:
-
         result[
             "reason"
-        ] = (
-            "Exit IP information "
-            "failed"
-        )
-
+        ] = "Exit IP information failed"
         return result
 
     result[
@@ -1828,20 +1780,14 @@ def test_node(
         REQUIRE_CLEAN_IP
         and not result["is_clean"]
     ):
-
         result[
             "reason"
         ] = (
-            "IP marked as hosting/"
-            "proxy"
+            "IP marked as hosting/proxy"
         )
-
         return result
 
-    # --------------------------------------------------------
-    # 6. Google / Gemini / Play 实际 GET
-    # --------------------------------------------------------
-
+    # 5. 实际 GET
     ok, _ = probe_url(
         session,
         GEMINI_DELAY_URL,
@@ -1849,13 +1795,9 @@ def test_node(
     )
 
     if not ok:
-
         result[
             "reason"
-        ] = (
-            "Gemini GET probe failed"
-        )
-
+        ] = "Gemini GET probe failed"
         return result
 
     result[
@@ -1869,14 +1811,12 @@ def test_node(
     )
 
     if not ok:
-
         result[
             "reason"
         ] = (
             "Google Play GET "
             "probe failed"
         )
-
         return result
 
     result[
@@ -1890,28 +1830,19 @@ def test_node(
     )
 
     if not ok:
-
         result[
             "reason"
-        ] = (
-            "Google GET probe failed"
-        )
-
+        ] = "Google GET probe failed"
         return result
 
     result[
         "google_access"
     ] = True
 
-    # --------------------------------------------------------
-    # 7. Gemini Android / Google 关键主机
-    # --------------------------------------------------------
-
+    # 6. Gemini Android / Google 关键主机
     passed = 0
 
-    for url in (
-        GEMINI_MOBILE_PROBES
-    ):
+    for url in GEMINI_MOBILE_PROBES:
 
         ok, _ = probe_url(
             session,
@@ -1931,8 +1862,7 @@ def test_node(
         int(
             len(
                 GEMINI_MOBILE_PROBES
-            )
-            * 0.75
+            ) * 0.75
             + 0.999
         ),
     )
@@ -1941,16 +1871,13 @@ def test_node(
         passed
         < required_mobile
     ):
-
         result[
             "reason"
         ] = (
-            f"Gemini mobile "
-            f"host probes "
+            f"Gemini mobile host probes "
             f"{passed}/"
             f"{len(GEMINI_MOBILE_PROBES)}"
         )
-
         return result
 
     result[
@@ -2209,6 +2136,10 @@ def build_final_config(
 
     return {
 
+        # ====================================================
+        # 基础
+        # ====================================================
+
         "mixed-port":
             7890,
 
@@ -2224,8 +2155,124 @@ def build_final_config(
         "log-level":
             "info",
 
+        "unified-delay":
+            True,
+
+        "tcp-concurrent":
+            True,
+
         "proxies":
             proxies,
+
+        # ====================================================
+        # DNS
+        # ====================================================
+        # 国内：
+        #   国内域名优先走国内 DoH
+        #   DIRECT 再由系统 DNS 解析
+        #
+        # 海外：
+        #   使用默认 nameserver
+        #
+        # IPv6 DNS 关闭，避免部分国内网络
+        # 因 AAAA 路径异常产生额外等待。
+        # ====================================================
+
+        "dns": {
+
+            "enable":
+                True,
+
+            "cache-algorithm":
+                "arc",
+
+            "prefer-h3":
+                False,
+
+            "use-hosts":
+                True,
+
+            "use-system-hosts":
+                True,
+
+            "respect-rules":
+                False,
+
+            "listen":
+                "0.0.0.0:1053",
+
+            "ipv6":
+                False,
+
+            "enhanced-mode":
+                "fake-ip",
+
+            "fake-ip-range":
+                "198.18.0.1/16",
+
+            "fake-ip-filter-mode":
+                "blacklist",
+
+            "fake-ip-filter": [
+                "*.lan",
+                "*.local",
+                "+.local",
+                "+.localhost",
+            ],
+
+            "default-nameserver": [
+                "223.5.5.5",
+                "223.6.6.6",
+            ],
+
+            # 国内域名优先国内 DoH
+            "nameserver-policy": {
+
+                "geosite:cn": [
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
+                ],
+
+                "+.cn": [
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
+                ],
+
+                "+.com.cn": [
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
+                ],
+
+                "+.org.cn": [
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
+                ],
+
+                "+.net.cn": [
+                    "https://doh.pub/dns-query",
+                    "https://dns.alidns.com/dns-query",
+                ],
+            },
+
+            # 默认 DNS
+            "nameserver": [
+                "https://doh.pub/dns-query",
+                "https://dns.alidns.com/dns-query",
+            ],
+
+            # DIRECT 出口重新使用系统 DNS
+            "direct-nameserver": [
+                "system",
+            ],
+
+            "direct-nameserver-follow-policy":
+                False,
+
+        },
+
+        # ====================================================
+        # Proxy Groups
+        # ====================================================
 
         "proxy-groups": [
 
@@ -2247,8 +2294,6 @@ def build_final_config(
             },
 
             # Gemini 自动选择
-            # 节点必须先通过离线 Gemini 验证
-            # 运行后每180秒重新健康检查
             {
                 "name":
                     "♻️ 自动选择",
@@ -2344,21 +2389,19 @@ def build_final_config(
             },
         ],
 
+        # ====================================================
+        # Rules
+        # ====================================================
+
         "rules": [
 
-            # =================================================
             # 私有网络
-            # =================================================
-
             "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
             "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
             "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
             "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
 
-            # =================================================
-            # 中国大陆直连
-            # =================================================
-
+            # 中国大陆
             "GEOSITE,CN,DIRECT",
             "GEOIP,CN,DIRECT",
 
@@ -2368,6 +2411,7 @@ def build_final_config(
             "DOMAIN-SUFFIX,net.cn,DIRECT",
             "DOMAIN-SUFFIX,gov.cn,DIRECT",
 
+            # 常用国内站点
             "DOMAIN-SUFFIX,qq.com,DIRECT",
             "DOMAIN-SUFFIX,baidu.com,DIRECT",
             "DOMAIN-SUFFIX,taobao.com,DIRECT",
@@ -2379,17 +2423,11 @@ def build_final_config(
             "DOMAIN-SUFFIX,163.com,DIRECT",
             "DOMAIN-SUFFIX,alibaba.com,DIRECT",
 
-            # =================================================
             # Google Play
-            # =================================================
-
             "DOMAIN-SUFFIX,play.google.com,🛍 Play自动选择",
             "DOMAIN-SUFFIX,play.googleapis.com,🛍 Play自动选择",
 
-            # =================================================
-            # Gemini Android / Google 后端
-            # =================================================
-
+            # Gemini / Google
             "DOMAIN-SUFFIX,gemini.google.com,♻️ 自动选择",
             "DOMAIN-SUFFIX,jnn-pa.googleapis.com,♻️ 自动选择",
             "DOMAIN-SUFFIX,waa-pa.clients6.google.com,♻️ 自动选择",
@@ -2401,18 +2439,12 @@ def build_final_config(
             "DOMAIN-SUFFIX,gvt1.com,♻️ 自动选择",
             "DOMAIN-SUFFIX,google.com,♻️ 自动选择",
 
-            # =================================================
             # YouTube
-            # =================================================
-
             "DOMAIN-SUFFIX,youtube.com,🚀 节点选择",
             "DOMAIN-SUFFIX,youtubei.googleapis.com,🚀 节点选择",
             "DOMAIN-SUFFIX,googlevideo.com,🚀 节点选择",
 
-            # =================================================
             # 其他海外
-            # =================================================
-
             "MATCH,🚀 节点选择",
         ],
     }
@@ -2442,7 +2474,7 @@ def run_agent():
         registry = {}
 
     # --------------------------------------------------------
-    # 1. 自动发现源
+    # 1. 自动发现订阅源
     # --------------------------------------------------------
 
     source_urls = (
@@ -2450,7 +2482,7 @@ def run_agent():
     )
 
     # --------------------------------------------------------
-    # 2. 拉取候选节点
+    # 2. 获取候选节点
     # --------------------------------------------------------
 
     candidates = (
@@ -2475,7 +2507,7 @@ def run_agent():
         return
 
     # --------------------------------------------------------
-    # 3. 建立 Mihomo 测试实例
+    # 3. 启动 Mihomo 测试实例
     # --------------------------------------------------------
 
     test_config, metadata = (
@@ -2562,7 +2594,7 @@ def run_agent():
             )
 
             # ------------------------------------------------
-            # 5. 更新节点历史
+            # 5. 节点历史
             # ------------------------------------------------
 
             history_item = (
@@ -2591,7 +2623,6 @@ def run_agent():
                 / 3600
             )
 
-            # 至少两次成功后才输出
             if (
                 pass_count
                 < STABLE_PASS_COUNT
@@ -2685,6 +2716,8 @@ def run_agent():
                 f"Google={test['google_delay_ms']} | "
                 f"Gemini={test['gemini_delay_ms']} | "
                 f"Play={test['play_delay_ms']} | "
+                f"Mobile={test['mobile_probe_passed']}/"
+                f"{test['mobile_probe_total']} | "
                 f"life={survival_hours}h"
             )
 
@@ -2727,9 +2760,7 @@ def run_agent():
             ]
         )
 
-        # 台湾第一
-        # 美国第二
-        # 其他第三
+        # 台湾 > 美国 > 其他
         region_rank = (
             0
             if country_code == "TW"
@@ -2740,7 +2771,7 @@ def run_agent():
             )
         )
 
-        # 清洁 IP 第一
+        # 清洁优先
         clean_rank = (
             0
             if node[
@@ -2749,7 +2780,7 @@ def run_agent():
             else 1
         )
 
-        # 存活时间优先
+        # 长寿命优先
         long_life_rank = (
             0
             if (
@@ -2773,8 +2804,7 @@ def run_agent():
             ],
             node[
                 "latency"
-            ]
-            or 999999,
+            ] or 999999,
         )
 
     passed.sort(
@@ -2786,7 +2816,7 @@ def run_agent():
     ]
 
     # --------------------------------------------------------
-    # 7. 输出最终配置
+    # 7. 输出
     # --------------------------------------------------------
 
     final_config = (

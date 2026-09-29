@@ -6,7 +6,7 @@ import base64
 import subprocess
 import re
 from datetime import datetime, timezone, timedelta
-from urllib.parse import quote, urlencode, urlparse
+from urllib.parse import quote, urlencode, urlparse, parse_qs, unquote
 
 import requests
 import yaml
@@ -35,6 +35,7 @@ MAX_CANDIDATES = 240
 MAX_PER_SOURCE = 30
 MAX_OUTPUT_NODES = 40
 MAX_SUBSCRIPTION_SOURCES = 60
+MAX_SOURCES_PER_REPO = 6
 
 REQUEST_TIMEOUT = 6
 DELAY_TIMEOUT_MS = 5000
@@ -181,17 +182,66 @@ def save_json(path, data):
 # 节点历史
 # ============================================================
 
+def migrate_history(data):
+    if not isinstance(data, dict):
+        return {}
+
+    changed = 0
+
+    for _, item in data.items():
+        if not isinstance(item, dict):
+            continue
+
+        last_seen = int(
+            item.get("last_seen", 0) or 0
+        )
+
+        if "pass_count" not in item:
+            streak = int(
+                item.get(
+                    "success_streak",
+                    0,
+                ) or 0
+            )
+            item["pass_count"] = max(
+                0,
+                streak,
+            )
+            changed += 1
+
+        if "first_seen" not in item:
+            # 旧格式没有可靠的首次成功时间，不虚构寿命。
+            item["first_seen"] = (
+                last_seen
+                if last_seen
+                else int(time.time())
+            )
+            changed += 1
+
+        if (
+            "last_max_delay_ms" not in item
+            and "last_latency_ms" in item
+        ):
+            item["last_max_delay_ms"] = item.get(
+                "last_latency_ms"
+            )
+            changed += 1
+
+    if changed:
+        print(
+            f"History migration fields updated: {changed}"
+        )
+
+    return data
+
+
 def load_history():
     data = load_json(
         HISTORY_FILE,
         {},
     )
 
-    return (
-        data
-        if isinstance(data, dict)
-        else {}
-    )
+    return migrate_history(data)
 
 
 def save_history(history):
@@ -214,8 +264,16 @@ def normalize_url(url):
     if not url:
         return ""
 
-    url = url.strip().rstrip(
-        ").,;'\""
+    url = url.strip()
+
+    # 清理 README/Markdown 残片。
+    if "](" in url:
+        url = url.split("](", 1)[0]
+
+    url = url.replace(chr(96), "")
+    url = url.replace("**", "")
+    url = url.rstrip(
+        " ).,;'\">]}"
     )
 
     if (
@@ -248,20 +306,35 @@ def is_plausible_subscription_url(url):
         "deploy.workers.cloudflare.com",
         "t.me",
         "telegram.me",
+        "apps.apple.com",
+        "play.google.com",
+        "dns.google",
+        "dns.quad9.net",
+        "cloudflare-dns.com",
+        "doh.opendns.com",
+        "dns.adguard-dns.com",
+        "freedns.controld.com",
     )
 
     blocked_markers = (
         "star-history",
         "repository-url=",
         "releases/download/",
-        "github.com/2dust/",
         "clash-verge-rev/releases/",
+        "/releases",
+        "mobileconfig",
+        ".dae",
+        "tor-bridges",
+        "white-sni",
+        "white-cidr",
+        "mirrors_links",
     )
 
     blocked_extensions = (
         ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
         ".bmp", ".ico", ".exe", ".msi", ".apk", ".dmg",
         ".zip", ".gz", ".tar", ".7z", ".deb", ".rpm",
+        ".mobileconfig", ".dae", ".html", ".htm",
     )
 
     try:
@@ -282,22 +355,55 @@ def is_plausible_subscription_url(url):
         return False
     if host in ("github.com", "www.github.com"):
         return False
+    if "," in url or "](" in url:
+        return False
+    if not host:
+        return False
 
-    if host in (
+    raw_hosts = (
         "raw.githubusercontent.com",
         "raw.githack.com",
         "cdn.jsdelivr.net",
-    ):
-        return True
+    )
 
-    return (
-        any(token in path for token in (
+    if host in raw_hosts:
+        markers = (
             "/sub", "/subscribe", "/subscription",
             "/clash", "/mihomo", "/v2ray", "/vless",
             "/vmess", "/trojan", "/ss", "/nodes",
-            "/proxy", "/proxies", "/free",
-        ))
-        or path.endswith((".yaml", ".yml", ".json", ".txt", ".conf"))
+            "/proxy", "/proxies", "/free", "/export",
+            "base64", "oneclash", "clashmeta", "freeclash",
+        )
+        return any(token in path for token in markers)
+
+    if "bitbucket.org" in host:
+        return (
+            "/raw/" in path
+            and any(
+                token in path
+                for token in (
+                    "vless", "vmess", "trojan", "clash",
+                    "mihomo", "v2ray", "nodes", "proxy",
+                )
+            )
+        )
+
+    return (
+        any(
+            token in path
+            for token in (
+                "/sub", "/subscribe", "/subscription",
+                "/clash", "/mihomo", "/v2ray", "/vless",
+                "/vmess", "/trojan", "/ss", "/nodes",
+                "/proxy", "/proxies", "/free",
+            )
+        )
+        and path.endswith(
+            (
+                ".yaml", ".yml", ".json", ".txt", ".conf",
+                "/sub", "/subscribe", "/subscription",
+            )
+        )
     )
 
 
@@ -305,24 +411,21 @@ def extract_subscription_urls(text):
     if not text:
         return []
 
-    patterns = [
-        r'https?://raw\.githubusercontent\.com/[^\s\'"<>]+',
-        r'https?://cdn\.jsdelivr\.net/gh/[^\s\'"<>]+',
-        r'https?://[^\s\'"<>]+\.(?:yaml|yml|json|txt|conf)(?:\?[^\s\'"<>]*)?',
-        r'https?://[^\s\'"<>]+/(?:sub|subscribe|subscription|clash|mihomo|v2ray|vless|vmess|trojan|ss|nodes|proxy|proxies|free)[^\s\'"<>]*',
-    ]
-
     urls = set()
 
-    for pattern in patterns:
-        for item in re.findall(pattern, text, re.I):
-            item = normalize_url(item)
-            if (
-                len(item) > 20
-                and item.startswith("http")
-                and is_plausible_subscription_url(item)
-            ):
-                urls.add(item)
+    for item in re.findall(
+        r'https?://[^\s\'"<>\\]\}]+',
+        text,
+        re.I,
+    ):
+        item = normalize_url(item)
+
+        if (
+            len(item) > 20
+            and item.startswith("http")
+            and is_plausible_subscription_url(item)
+        ):
+            urls.add(item)
 
     return sorted(urls)
 
@@ -728,30 +831,58 @@ def discover_subscription_sources():
             {},
         )
 
+        last_nodes = int(
+            entry.get(
+                "last_nodes",
+                0,
+            )
+            or 0
+        )
+
+        last_qualified = int(
+            entry.get(
+                "last_qualified_nodes",
+                0,
+            )
+            or 0
+        )
+
+        qualified_runs = int(
+            entry.get(
+                "qualified_runs",
+                0,
+            )
+            or 0
+        )
+
+        success_count = int(
+            entry.get(
+                "success_count",
+                0,
+            )
+            or 0
+        )
+
         return (
+            0 if last_qualified > 0 else 1,
+            0 if last_nodes > 0 else 1,
+            -qualified_runs,
+            -success_count,
+            -last_qualified,
+            -last_nodes,
             -int(
                 entry.get(
-                    "qualified_runs",
+                    "last_qualified_at",
                     0,
                 )
-            ),
-            -int(
-                entry.get(
-                    "success_count",
-                    0,
-                )
+                or 0
             ),
             -int(
                 entry.get(
                     "stars",
                     0,
                 )
-            ),
-            -int(
-                entry.get(
-                    "last_qualified_at",
-                    0,
-                )
+                or 0
             ),
         )
 
@@ -759,9 +890,42 @@ def discover_subscription_sources():
         key=source_priority
     )
 
-    unique = unique[
-        :MAX_SUBSCRIPTION_SOURCES
-    ]
+    selected = []
+    repo_counts = {}
+
+    for url in unique:
+        entry = registry.get(
+            url,
+            {},
+        )
+
+        repo = (
+            entry.get("repo")
+            or "unknown"
+        )
+
+        if repo_counts.get(
+            repo,
+            0,
+        ) >= MAX_SOURCES_PER_REPO:
+            continue
+
+        selected.append(
+            url
+        )
+
+        repo_counts[repo] = (
+            repo_counts.get(
+                repo,
+                0,
+            )
+            + 1
+        )
+
+        if len(selected) >= MAX_SUBSCRIPTION_SOURCES:
+            break
+
+    unique = selected
 
     save_json(
         SOURCE_CACHE_FILE,
@@ -870,27 +1034,810 @@ def proxy_fingerprint(proxy):
 # 订阅获取
 # ============================================================
 
-def parse_yaml(text):
+def safe_int(value):
+    try:
+        return int(value)
+    except Exception:
+        return None
+
+
+def decode_b64_text(value):
+    if not value:
+        return ""
+
+    compact = "".join(
+        str(value).split()
+    )
+
+    if len(compact) < 8:
+        return ""
 
     try:
+        raw = base64.b64decode(
+            compact
+            + "=" * (-len(compact) % 4),
+            validate=False,
+        )
+        return raw.decode(
+            "utf-8",
+            errors="ignore",
+        ).strip()
+    except Exception:
+        return ""
 
+
+def query_value(query, *keys):
+    for key in keys:
+        value = query.get(key)
+        if value:
+            return unquote(
+                value[0]
+            )
+    return ""
+
+
+def parse_vmess_uri(uri):
+    try:
+        payload = uri.split(
+            "://",
+            1,
+        )[1].split(
+            "#",
+            1,
+        )[0]
+
+        decoded = decode_b64_text(
+            payload
+        )
+        data = json.loads(decoded)
+
+        server = (
+            data.get("add")
+            or data.get("server")
+            or data.get("host")
+        )
+        port = safe_int(
+            data.get("port")
+        )
+        uuid = (
+            data.get("id")
+            or data.get("uuid")
+        )
+
+        if not server or not port or not uuid:
+            return None
+
+        proxy = {
+            "name":
+                data.get("ps")
+                or server,
+            "type":
+                "vmess",
+            "server":
+                server,
+            "port":
+                port,
+            "uuid":
+                uuid,
+            "alterId":
+                safe_int(
+                    data.get(
+                        "aid",
+                        data.get(
+                            "alterId",
+                            0,
+                        ),
+                    )
+                ) or 0,
+            "cipher":
+                data.get(
+                    "scy",
+                    "auto",
+                ),
+            "tls":
+                str(
+                    data.get(
+                        "tls",
+                        "",
+                    )
+                ).lower()
+                in (
+                    "tls",
+                    "true",
+                ),
+            "network":
+                data.get(
+                    "net",
+                    "tcp",
+                ),
+        }
+
+        sni = (
+            data.get("sni")
+            or data.get("host")
+        )
+        if sni:
+            proxy["servername"] = sni
+
+        network = str(
+            proxy.get(
+                "network",
+                "",
+            )
+        ).lower()
+
+        if network == "ws":
+            ws_opts = {
+                "path":
+                    data.get(
+                        "path",
+                        "/",
+                    )
+            }
+            host = data.get("host")
+            if host:
+                ws_opts["headers"] = {
+                    "Host": host
+                }
+            proxy["ws-opts"] = ws_opts
+
+        return proxy
+
+    except Exception:
+        return None
+
+
+def parse_ss_uri(uri):
+    try:
+        parsed = urlparse(uri)
+        name = (
+            unquote(
+                parsed.fragment
+            )
+            if parsed.fragment
+            else (
+                parsed.hostname
+                or "ss"
+            )
+        )
+
+        server = parsed.hostname
+        port = parsed.port
+
+        if server and port:
+            username = unquote(
+                parsed.username or ""
+            )
+            password = unquote(
+                parsed.password or ""
+            )
+
+            if username and password:
+                method = username
+                secret = password
+            else:
+                decoded = decode_b64_text(
+                    username
+                )
+                if ":" in decoded:
+                    method, secret = decoded.split(
+                        ":",
+                        1,
+                    )
+                else:
+                    method = username
+                    secret = password
+
+            if method and secret:
+                return {
+                    "name": name,
+                    "type": "ss",
+                    "server": server,
+                    "port": port,
+                    "cipher": method,
+                    "password": secret,
+                    "udp": True,
+                }
+
+        payload = (
+            parsed.path
+            or ""
+        ).lstrip("/")
+
+        decoded = decode_b64_text(
+            payload
+        )
+
+        if "@" not in decoded:
+            return None
+
+        userinfo, address = decoded.rsplit(
+            "@",
+            1,
+        )
+
+        if ":" not in userinfo or ":" not in address:
+            return None
+
+        method, secret = userinfo.split(
+            ":",
+            1,
+        )
+        server, port_text = address.rsplit(
+            ":",
+            1,
+        )
+        port = safe_int(port_text)
+
+        if not server or not port:
+            return None
+
+        return {
+            "name": name,
+            "type": "ss",
+            "server": server,
+            "port": port,
+            "cipher": method,
+            "password": secret,
+            "udp": True,
+        }
+
+    except Exception:
+        return None
+
+
+def parse_uri_node(uri):
+    uri = normalize_url(uri)
+
+    if uri.lower().startswith("vmess://"):
+        return parse_vmess_uri(uri)
+
+    try:
+        parsed = urlparse(uri)
+        scheme = (
+            parsed.scheme or ""
+        ).lower()
+
+        if scheme == "ss":
+            return parse_ss_uri(uri)
+
+        if scheme not in (
+            "vless",
+            "trojan",
+        ):
+            return None
+
+        server = parsed.hostname
+        port = parsed.port
+        user = unquote(
+            parsed.username or ""
+        )
+        query = parse_qs(
+            parsed.query,
+            keep_blank_values=True,
+        )
+
+        if not server or not port or not user:
+            return None
+
+        name = (
+            unquote(
+                parsed.fragment
+            )
+            if parsed.fragment
+            else server
+        )
+
+        if scheme == "vless":
+            proxy = {
+                "name": name,
+                "type": "vless",
+                "server": server,
+                "port": port,
+                "uuid": user,
+                "network":
+                    query_value(
+                        query,
+                        "type",
+                    )
+                    or "tcp",
+            }
+
+            flow = query_value(
+                query,
+                "flow",
+            )
+            if flow:
+                proxy["flow"] = flow
+
+            encryption = query_value(
+                query,
+                "encryption",
+            )
+            if encryption:
+                proxy["encryption"] = encryption
+
+            security = query_value(
+                query,
+                "security",
+            ).lower()
+
+            sni = query_value(
+                query,
+                "sni",
+                "servername",
+            )
+            if sni:
+                proxy["servername"] = sni
+
+            if security in (
+                "tls",
+                "reality",
+            ):
+                proxy["tls"] = True
+
+            if security == "reality":
+                reality_opts = {}
+
+                pbk = query_value(
+                    query,
+                    "pbk",
+                )
+                sid = query_value(
+                    query,
+                    "sid",
+                )
+
+                if pbk:
+                    reality_opts["public-key"] = pbk
+                if sid:
+                    reality_opts["short-id"] = sid
+
+                if reality_opts:
+                    proxy[
+                        "reality-opts"
+                    ] = reality_opts
+
+                fp = query_value(
+                    query,
+                    "fp",
+                )
+                if fp:
+                    proxy[
+                        "client-fingerprint"
+                    ] = fp
+
+            network = str(
+                proxy.get(
+                    "network",
+                    "tcp",
+                )
+            ).lower()
+
+            if network == "ws":
+                ws_opts = {
+                    "path":
+                        query_value(
+                            query,
+                            "path",
+                        )
+                        or "/"
+                }
+                host = query_value(
+                    query,
+                    "host",
+                )
+                if host:
+                    ws_opts["headers"] = {
+                        "Host": host
+                    }
+                proxy["ws-opts"] = ws_opts
+
+            elif network == "grpc":
+                service = query_value(
+                    query,
+                    "serviceName",
+                )
+                if service:
+                    proxy["grpc-opts"] = {
+                        "grpc-service-name":
+                            service
+                    }
+
+            return proxy
+
+        proxy = {
+            "name": name,
+            "type": "trojan",
+            "server": server,
+            "port": port,
+            "password": user,
+            "tls": True,
+        }
+
+        sni = query_value(
+            query,
+            "sni",
+            "servername",
+        )
+        if sni:
+            proxy["sni"] = sni
+            proxy["servername"] = sni
+
+        network = (
+            query_value(
+                query,
+                "type",
+            )
+            or "tcp"
+        ).lower()
+
+        proxy["network"] = network
+
+        if network == "ws":
+            ws_opts = {
+                "path":
+                    query_value(
+                        query,
+                        "path",
+                    )
+                    or "/"
+            }
+            host = query_value(
+                query,
+                "host",
+            )
+            if host:
+                ws_opts["headers"] = {
+                    "Host": host
+                }
+            proxy["ws-opts"] = ws_opts
+
+        elif network == "grpc":
+            service = query_value(
+                query,
+                "serviceName",
+            )
+            if service:
+                proxy["grpc-opts"] = {
+                    "grpc-service-name":
+                        service
+                }
+
+        return proxy
+
+    except Exception:
+        return None
+
+
+def parse_uri_subscription(text):
+    if not text:
+        return []
+
+    uris = re.findall(
+        r'(?:vless|vmess|trojan|ss)://[^\s\'"<>\\]\}]+',
+        text,
+        re.I,
+    )
+
+    nodes = []
+
+    for uri in uris:
+        node = parse_uri_node(
+            uri
+        )
+        if node:
+            nodes.append(node)
+
+    return nodes
+
+
+def parse_base64_uri_subscription(text):
+    decoded = decode_b64_text(
+        text
+    )
+
+    if not decoded:
+        return []
+
+    return parse_uri_subscription(
+        decoded
+    )
+
+
+def normalize_json_node(data):
+    if not isinstance(data, dict):
+        return None
+
+    proxy_type = str(
+        data.get("type")
+        or data.get("protocol")
+        or ""
+    ).lower()
+
+    if proxy_type == "shadowsocks":
+        proxy_type = "ss"
+
+    if proxy_type not in (
+        "vless",
+        "vmess",
+        "trojan",
+        "ss",
+    ):
+        if (
+            data.get("alterId") is not None
+            or data.get("aid") is not None
+        ):
+            proxy_type = "vmess"
+        elif (
+            data.get("cipher")
+            and (
+                data.get("password")
+                or data.get("passwd")
+            )
+        ):
+            proxy_type = "ss"
+        elif data.get("uuid"):
+            proxy_type = "vless"
+        elif (
+            data.get("password")
+            or data.get("passwd")
+        ):
+            proxy_type = "trojan"
+        else:
+            return None
+
+    server = (
+        data.get("server")
+        or data.get("address")
+        or data.get("add")
+        or data.get("host")
+    )
+
+    port = safe_int(
+        data.get("port")
+        or data.get("server_port")
+        or data.get("serverPort")
+    )
+
+    if not server or not port:
+        return None
+
+    proxy = {
+        "name":
+            data.get("name")
+            or data.get("remarks")
+            or data.get("ps")
+            or data.get("tag")
+            or server,
+        "type":
+            proxy_type,
+        "server":
+            server,
+        "port":
+            port,
+    }
+
+    if proxy_type in (
+        "vless",
+        "vmess",
+    ):
+        uuid = (
+            data.get("uuid")
+            or data.get("id")
+        )
+        if not uuid:
+            return None
+
+        proxy["uuid"] = uuid
+
+    if proxy_type == "vmess":
+        proxy["alterId"] = safe_int(
+            data.get(
+                "alterId",
+                data.get(
+                    "aid",
+                    0,
+                ),
+            )
+        ) or 0
+        proxy["cipher"] = data.get(
+            "cipher",
+            data.get(
+                "scy",
+                "auto",
+            ),
+        )
+
+    elif proxy_type == "vless":
+        for key in (
+            "flow",
+            "encryption",
+        ):
+            if data.get(key):
+                proxy[key] = data.get(key)
+
+    else:
+        secret = (
+            data.get("password")
+            or data.get("passwd")
+        )
+        if secret:
+            proxy["password"] = secret
+
+    if data.get("udp") is not None:
+        proxy["udp"] = bool(
+            data.get("udp")
+        )
+
+    tls = data.get("tls")
+
+    if isinstance(tls, dict):
+        if tls.get("enabled"):
+            proxy["tls"] = True
+
+        sni = tls.get("server_name")
+        if sni:
+            proxy["servername"] = sni
+
+        reality = tls.get("reality")
+        if isinstance(reality, dict):
+            reality_opts = {}
+
+            public_key = (
+                reality.get("public_key")
+                or reality.get("public-key")
+            )
+            short_id = (
+                reality.get("short_id")
+                or reality.get("short-id")
+            )
+
+            if public_key:
+                reality_opts["public-key"] = public_key
+            if short_id:
+                reality_opts["short-id"] = short_id
+
+            if reality_opts:
+                proxy["tls"] = True
+                proxy["reality-opts"] = reality_opts
+
+    elif tls:
+        proxy["tls"] = True
+
+    sni = (
+        data.get("sni")
+        or data.get("servername")
+    )
+    if sni:
+        proxy["servername"] = sni
+
+    network = (
+        data.get("network")
+        or data.get("net")
+    )
+    transport = data.get(
+        "transport"
+    )
+    if isinstance(transport, dict):
+        network = network or transport.get(
+            "type"
+        )
+
+    if network:
+        proxy["network"] = network
+
+    if str(network).lower() == "ws":
+        ws = data.get("ws-opts")
+        if not isinstance(ws, dict):
+            ws = {}
+
+        if isinstance(transport, dict):
+            path = transport.get("path")
+            if path and not ws.get("path"):
+                ws["path"] = path
+            headers = transport.get("headers")
+            if headers and not ws.get("headers"):
+                ws["headers"] = headers
+
+        ws.setdefault(
+            "path",
+            data.get(
+                "path",
+                "/",
+            ),
+        )
+
+        if data.get("host"):
+            ws.setdefault(
+                "headers",
+                {},
+            )
+            ws["headers"].setdefault(
+                "Host",
+                data.get("host"),
+            )
+
+        proxy["ws-opts"] = ws
+
+    elif str(network).lower() == "grpc":
+        service = (
+            data.get("service-name")
+            or data.get("serviceName")
+        )
+
+        if isinstance(transport, dict):
+            service = service or transport.get(
+                "service_name"
+            )
+
+        if service:
+            proxy["grpc-opts"] = {
+                "grpc-service-name":
+                    service
+            }
+
+    return proxy
+
+
+def parse_json_nodes(text):
+    try:
+        data = json.loads(
+            text
+        )
+    except Exception:
+        return []
+
+    nodes = []
+    seen = set()
+
+    def walk(obj):
+        if isinstance(obj, dict):
+            for key in (
+                "proxies",
+                "nodes",
+                "outbounds",
+                "servers",
+            ):
+                value = obj.get(key)
+                if isinstance(value, list):
+                    for item in value:
+                        walk(item)
+
+            node = normalize_json_node(
+                obj
+            )
+            if node:
+                fingerprint = proxy_fingerprint(
+                    node
+                )
+                if fingerprint not in seen:
+                    seen.add(fingerprint)
+                    nodes.append(node)
+
+        elif isinstance(obj, list):
+            for item in obj:
+                walk(item)
+
+    walk(data)
+
+    return nodes
+
+
+def parse_yaml(text):
+    try:
         data = yaml.safe_load(
             text
         )
 
         if (
-            isinstance(
-                data,
-                dict,
-            )
+            isinstance(data, dict)
             and isinstance(
                 data.get("proxies"),
                 list,
             )
         ):
-            return data[
-                "proxies"
-            ]
+            return data["proxies"]
 
         if isinstance(
             data,
@@ -905,40 +1852,20 @@ def parse_yaml(text):
 
 
 def parse_base64_yaml(text):
+    decoded = decode_b64_text(
+        text
+    )
 
-    try:
-
-        compact = "".join(
-            text.split()
-        )
-
-        decoded = (
-            base64.b64decode(
-                compact
-                + "="
-                * (
-                    -len(compact)
-                    % 4
-                ),
-                validate=False,
-            )
-        )
-
-        return parse_yaml(
-            decoded.decode(
-                "utf-8",
-                errors="ignore",
-            )
-        )
-
-    except Exception:
+    if not decoded:
         return []
+
+    return parse_yaml(
+        decoded
+    )
 
 
 def fetch_source(url):
-
     try:
-
         response = requests.get(
             url,
             headers=HEADERS,
@@ -946,36 +1873,28 @@ def fetch_source(url):
         )
 
         if response.status_code != 200:
-
             return (
                 [],
-                f"HTTP "
-                f"{response.status_code}",
+                f"HTTP {response.status_code}",
             )
 
-        text = (
-            response.text.strip()
+        text = response.text.strip()
+
+        parsers = (
+            (parse_yaml, "YAML"),
+            (parse_json_nodes, "JSON"),
+            (parse_uri_subscription, "URI"),
+            (parse_base64_yaml, "Base64 YAML"),
+            (parse_base64_uri_subscription, "Base64 URI"),
         )
 
-        nodes = parse_yaml(
-            text
-        )
-
-        if nodes:
-            return (
-                nodes,
-                "YAML",
-            )
-
-        nodes = parse_base64_yaml(
-            text
-        )
-
-        if nodes:
-            return (
-                nodes,
-                "Base64 YAML",
-            )
+        for parser, label in parsers:
+            nodes = parser(text)
+            if nodes:
+                return (
+                    nodes,
+                    label,
+                )
 
         return (
             [],
@@ -983,7 +1902,6 @@ def fetch_source(url):
         )
 
     except Exception as exc:
-
         return (
             [],
             str(exc),
@@ -3166,7 +4084,7 @@ def build_final_config(
     auto_nodes = (
         names
         if names
-        else ["REJECT"]
+        else ["DIRECT"]
     )
 
     manual_nodes = (
@@ -3838,9 +4756,36 @@ def run_agent():
     # 7. 输出 Clash
     # --------------------------------------------------------
 
-    # 本轮没有合格节点时，禁止把客户端覆盖成空配置。
+    # 本轮没有合格节点时，仍然发布完整的 DNS/分流安全配置。
+    # 不再因为空节点直接 return，避免 DNS 修复无法落盘。
     if not passed:
-        print("No qualified nodes; keeping previous published subscriptions.")
+        print(
+            "No qualified nodes; publishing safe DNS/routing config."
+        )
+
+        final_config = build_final_config(
+            []
+        )
+
+        write_yaml(
+            CLASH_OUTPUT_FILE,
+            final_config,
+        )
+
+        write_v2ray_subscription(
+            []
+        )
+
+        print(
+            f"Generated: "
+            f"{CLASH_OUTPUT_FILE}"
+        )
+
+        print(
+            f"Generated: "
+            f"{V2RAY_OUTPUT_FILE}"
+        )
+
         return
 
     final_config = build_final_config(passed)

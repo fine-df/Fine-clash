@@ -762,17 +762,6 @@ def discover_subscription_sources():
     ):
         cache = []
 
-    registry = load_json(
-        SOURCE_REGISTRY_FILE,
-        {},
-    )
-
-    if not isinstance(
-        registry,
-        dict,
-    ):
-        registry = {}
-
     discovered = []
 
     for url in cache:
@@ -4691,14 +4680,28 @@ def run_agent():
             history
         )
 
+        # discover_subscription_sources() / collect_candidates() each persist
+        # the latest registry. Reload it here instead of overwriting those
+        # updates with the stale snapshot loaded before discovery.
+        latest_registry = load_json(
+            SOURCE_REGISTRY_FILE,
+            {},
+        )
+
+        if not isinstance(
+            latest_registry,
+            dict,
+        ):
+            latest_registry = {}
+
         finalize_source_registry(
-            registry,
+            latest_registry,
             qualified_by_source,
         )
 
         save_json(
             SOURCE_REGISTRY_FILE,
-            registry,
+            latest_registry,
         )
 
         stop_mihomo(

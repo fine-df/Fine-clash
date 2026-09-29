@@ -129,6 +129,10 @@ if GITHUB_TOKEN:
         f"Bearer {GITHUB_TOKEN}"
     )
 
+# Never forward the GitHub credential to arbitrary subscription hosts.
+PUBLIC_HEADERS = dict(HEADERS)
+PUBLIC_HEADERS.pop("Authorization", None)
+
 
 # ============================================================
 # 兜底订阅源
@@ -638,7 +642,7 @@ def fetch_text(
 
         response = requests.get(
             url,
-            headers=HEADERS,
+            headers=PUBLIC_HEADERS,
             timeout=timeout,
         )
 
@@ -1890,7 +1894,7 @@ def fetch_source(url):
     try:
         response = requests.get(
             url,
-            headers=HEADERS,
+            headers=PUBLIC_HEADERS,
             timeout=12,
         )
 
@@ -1971,6 +1975,12 @@ def collect_candidates(
         entry[
             "last_nodes"
         ] = len(raw)
+
+        # This field means the result of the latest completed source scan.
+        # Reset stale success state before recording this run's qualified nodes.
+        entry[
+            "last_qualified_nodes"
+        ] = 0
 
         if raw:
 
@@ -2382,21 +2392,56 @@ def proxy_delay(
         )
 
         if response.status_code != 200:
-            return None
+            detail = (
+                response.text
+                or ""
+            ).replace(
+                "\n",
+                " ",
+            )[:180]
 
-        data = response.json()
+            return (
+                None,
+                f"controller HTTP {response.status_code}"
+                + (f": {detail}" if detail else ""),
+            )
+
+        try:
+            data = response.json()
+        except Exception as exc:
+            return (
+                None,
+                f"invalid controller JSON: {type(exc).__name__}: {exc}",
+            )
 
         delay = data.get(
             "delay"
         )
 
         if delay is None:
-            return None
+            detail = (
+                json.dumps(
+                    data,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )[:180]
+            )
 
-        return int(delay)
+            return (
+                None,
+                f"controller returned no delay: {detail}",
+            )
 
-    except Exception:
-        return None
+        return (
+            int(delay),
+            "",
+        )
+
+    except Exception as exc:
+        return (
+            None,
+            f"{type(exc).__name__}: {exc}",
+        )
 
 
 # ============================================================
@@ -2583,7 +2628,7 @@ def test_node(
     }
 
     # 1. Google
-    google_delay = proxy_delay(
+    google_delay, google_delay_error = proxy_delay(
         proxy_name,
         GOOGLE_DELAY_URL,
         "204",
@@ -2596,7 +2641,14 @@ def test_node(
     if google_delay is None:
         result[
             "reason"
-        ] = "Google delay failed"
+        ] = (
+            "Google delay failed"
+            + (
+                f": {google_delay_error}"
+                if google_delay_error
+                else ""
+            )
+        )
         return result
 
     if google_delay >= MAX_PROXY_DELAY_MS:
@@ -2607,7 +2659,7 @@ def test_node(
         return result
 
     # 2. Gemini
-    gemini_delay = proxy_delay(
+    gemini_delay, gemini_delay_error = proxy_delay(
         proxy_name,
         GEMINI_DELAY_URL,
         "200-399",
@@ -2623,6 +2675,11 @@ def test_node(
         ] = (
             "Gemini delay/HTTP "
             "check failed"
+            + (
+                f": {gemini_delay_error}"
+                if gemini_delay_error
+                else ""
+            )
         )
         return result
 
@@ -2634,7 +2691,7 @@ def test_node(
         return result
 
     # 3. Google Play
-    play_delay = proxy_delay(
+    play_delay, play_delay_error = proxy_delay(
         proxy_name,
         PLAY_DELAY_URL,
         "200-399",
@@ -2650,6 +2707,11 @@ def test_node(
         ] = (
             "Google Play delay/"
             "HTTP check failed"
+            + (
+                f": {play_delay_error}"
+                if play_delay_error
+                else ""
+            )
         )
         return result
 

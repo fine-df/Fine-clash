@@ -3,7 +3,7 @@ allow-lan: true
 mode: rule
 proxies:
 - type: vless
-  name: 俄罗斯(yudou789.top 玉豆分享) [296e1422]
+  name: 俄罗斯(yudou789.top 玉豆分享)
   server: fbsv6.guardora.pro
   port: 443
   udp: true
@@ -16,16 +16,6 @@ proxies:
     path: /ws
     headers:
       Host: fbsv6.guardora.pro
-- type: vless
-  name: 俄罗斯(yudou789.top 玉豆分享) [a3b7a9cb]
-  server: 176.109.106.182
-  port: 9881
-  udp: true
-  uuid: 5d16ac22-6eea-426f-b778-6f4c2961faef
-  tls: true
-  servername: dl.google.com
-  public-key: Dfgu8Ey0M8Hz4gXGZAwQ3H9jLt2HByVsjAOTWiuKDB0
-  network: grpc
 - type: vmess
   name: 美国(yudou789.top 玉豆分享) [3de18304]
   server: 157.148.7.55
@@ -188,225 +178,6 @@ proxies:
   alterId: 0
   cipher: auto
   udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [f03a2350]
-  server: 36.133.78.37
-  port: 50014
-  uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [7dd08008]
-  server: 36.133.79.17
-  port: 50011
-  uuid: 9e63ca55-1ff9-453b-ae80-75947b8596d3
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [29b4f75e]
-  server: northland.paslanmaz.ir
-  port: 4489
-  udp: true
-  uuid: 162ff214-21c8-4963-a80a-6200cbad787e
-  tls: true
-  servername: www.tno.nl
-  flow: xtls-rprx-vision
-  client-fingerprint: random
-  public-key: Zb5hC10blFFRMl6raHM7yJS_TWaMy3pMzrBLDm8RC1w
-  short-id: 3cace608cf980b78
-  network: tcp
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [22da5170]
-  server: 36.134.35.36
-  port: 50011
-  uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [74c9a9e3]
-  server: 172.67.183.52
-  port: 80
-  udp: true
-  uuid: c8f3f81a-5276-48e9-af6b-c537fb4c7856
-  servername: 172.67.183.52
-  network: ws
-  ws-opts:
-    path: /vl/2INL39K32mKsOBKt?ed=2560
-    headers:
-      Host: r7yhmg1zxnt120wmkag.mf1h0myptv4lougs7341bmttcz8.workers.dev
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [6b164eb2]
-  server: 36.134.35.36
-  port: 50011
-  uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [65657c26]
-  server: 36.133.78.37
-  port: 50015
-  uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: trojan
-  name: 美国(yudou789.top 玉豆分享) [cac9bce1]
-  server: 162.159.136.234
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.ignitelimit.com
-  network: ws
-  ws-opts:
-    path: /assignment
-- type: trojan
-  name: 美国(yudou789.top 玉豆分享) [89accc02]
-  server: 104.18.23.63
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.ignitelimit.com
-  network: ws
-  ws-opts:
-    path: /assignment
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [4fa1c0d8]
-  server: 104.21.56.90
-  port: 80
-  udp: true
-  uuid: c8f3f81a-5276-48e9-af6b-c537fb4c7856
-  servername: 104.21.56.90
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vl/2INL39K32mKsOBKt?ed=2560
-    headers:
-      Host: r7yhmg1zxnt120wmkag.mf1h0myptv4lougs7341bmttcz8.workers.dev
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [abcb903f]
-  server: 36.133.78.37
-  port: 50018
-  uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [37e2100c]
-  server: 36.133.78.37
-  port: 50018
-  uuid: f114d414-1535-4321-856c-29979eeed799
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [aae77dfe]
-  server: 172.67.203.138
-  port: 8080
-  udp: true
-  uuid: 015fada5-2c95-4251-9c58-39fa3abf1e24
-  servername: 172.67.203.138
-  network: ws
-  ws-opts:
-    path: /eyJqdW5rIjoidzY2QTdySkdOeiIsInByb3RvY29sIjoidmwiLCJtb2RlIjoicHJlZml4IiwicGFuZWxJUHMiOlsiWzJhMDI6ODk4OjE0Njo2NDo6XSIsIlsyNjAyOmZjNTk6MTE6NjQ6Ol0iLCJbMjYwMjpmYzU5OmIwOjY0OjpdIl19?ed=2560
-    headers:
-      Host: server17.peekconfig1.workers.dev
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [db895281]
-  server: 34.79.178.1
-  port: 443
-  udp: true
-  uuid: 51e493d4-b275-45e0-a714-e014f40b3c32
-  tls: true
-  servername: www.cloudflare.com
-  client-fingerprint: chrome
-  public-key: nTLhc6e5HMgO-hpD8RUMp0cd2t6p2_RqHLHM0P39_xA
-  short-id: 95ae4a39d3933191
-  network: tcp
-- type: trojan
-  name: 美国(yudou789.top 玉豆分享) [c9b1f100]
-  server: 216.24.57.1
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.ignitelimit.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /assignment
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [3b34ff42]
-  server: 36.133.78.37
-  port: 50012
-  uuid: abcb006d-739f-4cec-b13f-12c10d334d92
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [fbf8b15c]
-  server: 172.67.207.26
-  port: 8880
-  udp: true
-  uuid: 26beb784-a664-4c3e-becf-0f0c12568b62
-  servername: 172.67.207.26
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /pyip=ProxyIP.JP.CMLiussss.net
-    headers:
-      Host: twilight-poetry-2bfe.218-699.workers.dev
-- type: trojan
-  name: 美国(yudou789.top 玉豆分享) [e7d0b0ba]
-  server: 104.18.22.63
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.ignitelimit.com
-  network: ws
-  ws-opts:
-    path: /assignment
-- type: vless
-  name: 美国(yudou789.top 玉豆分享) [7e9ca3d4]
-  server: 104.21.70.21
-  port: 8080
-  udp: true
-  uuid: 8a36be1d-7c78-4885-8a1f-bedf5ba7db1c
-  network: ws
-  ws-opts:
-    path: /rN50nmm9L1DeY73C?ed=2560
-    headers:
-      Host: lucky-lab-ac6d.caveyi8071.workers.dev
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [cb225674]
-  server: 36.133.78.37
-  port: 50018
-  uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [4db34e3a]
-  server: 36.133.78.37
-  port: 50012
-  uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
-  alterId: 0
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 美国(yudou789.top 玉豆分享) [91f8f2dd]
-  server: 36.133.78.37
-  port: 50012
-  uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
-  alterId: 0
-  cipher: auto
-  udp: true
 - type: vless
   name: 荷兰(yudou789.top 玉豆分享)
   server: 2a14:3f87:f001:46::a
@@ -436,7 +207,7 @@ proxies:
   uuid: e3e9805a-6c8b-4edd-8ee8-621df79806eb
   tls: true
   servername: ch.aksay.pro
-  client-fingerprint: safari
+  client-fingerprint: qq
   network: ws
   ws-opts:
     path: /ws
@@ -463,18 +234,6 @@ proxies:
   uuid: 0afc6426-606c-48e7-bd70-3c424a416842
   network: tcp
 - type: vless
-  name: 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
-  server: www.large-files.info
-  port: 8443
-  udp: true
-  uuid: 7c99dc89-bf49-45c9-acc5-e43f36657518
-  tls: true
-  servername: www.large-files.info
-  client-fingerprint: qq
-  network: ws
-  ws-opts:
-    path: /var/www/html/video/preview/download/i8o0la
-- type: vless
   name: 🇫🇷 France | [*CIDR]
   server: 87.242.94.19
   port: 2443
@@ -499,19 +258,104 @@ proxies:
   public-key: pyZ0M0nE3aGx2UtCXNhajcneyCF4E8J3zpxhIKkQw0w
   short-id: 6bc02f1c474260c3
   network: xhttp
-- type: vless
-  name: 🇭🇰 Hong Kong, Hong Kong | 🌐 | [BL]
-  server: bgroup.hk1.ilovegairport.com
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [106e34a9]
+  server: wwafj5lhl6bi8au9.v.3dns.vip
   port: 443
+  uuid: f23bb427-c1f9-4373-876c-2f43e9f790f3
+  alterId: 0
+  cipher: auto
   udp: true
-  uuid: 8079ccd4-4b4b-44e2-92f0-8f0367ad9c24
+  network: ws
   tls: true
-  servername: ap-east-1.console.aws.amazon.com
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  public-key: Z0sxSuzxnWYa5FNTZ-W4ImxQd674VG4KfmOBqlcudjU
-  short-id: 7c7ad24684
-  network: tcp
+  servername: wwafj5lhl6bi8au9.v.3dns.vip
+  ws-opts:
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [09d412d9]
+  server: wwafj5lhl6bi8au9.v.3dns.vip
+  port: 443
+  uuid: f23bb427c1f94373876c2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: wwafj5LHl6bI8aU9.v.3dns.vip
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [408db74b]
+  server: 47.243.80.106
+  port: 443
+  uuid: f23bb427-c1f9-4373-876c-2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: wwafj5LHl6bI8aU9.v.3dns.vip
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [a2393028]
+  server: 47.243.80.106
+  port: 443
+  uuid: f23bb427c1f94373876c2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  servername: wwafj5LHl6bI8aU9.v.3dns.vip
+  ws-opts:
+    headers:
+      Host: wwafj5LHl6bI8aU9.v.3dns.vip
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [e47ee1b7]
+  server: 8.217.229.155
+  port: 443
+  uuid: f23bb427-c1f9-4373-876c-2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: qTKDR8jXE3wEFxJM.v.3dns.vip
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [7e858554]
+  server: 8.217.229.155
+  port: 443
+  uuid: f23bb427c1f94373876c2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: qTKDR8jXE3wEFxJM.v.3dns.vip
+    path: /ws-vmess
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [49441729]
+  server: 20.235.220.189
+  port: 443
+  uuid: f23bb427c1f94373876c2f43e9f790f3
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: 6JDvArazgU3qQR6Q.v.3dns.vip
+    path: /ws-vmess
 - type: vmess
   name: 🇭🇰_HK_中国香港
   server: v10.hdacd.com
@@ -560,6 +404,30 @@ proxies:
   alterId: 2
   cipher: auto
   udp: true
+- type: vmess
+  name: 🇰🇿 Kazakhstan, Almaty | [BL] [04ae4d01]
+  server: 38.107.234.57
+  port: 80
+  uuid: 567f4be5-12ab-42e1-b8d9-db6fd1fdd31c
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  ws-opts:
+    path: /vmess/
+- type: vmess
+  name: 🇰🇿 Kazakhstan, Almaty | [BL] [1a5649c2]
+  server: 3h-kazakhstan1.09vpn.com
+  port: 80
+  uuid: 567f4be5-12ab-42e1-b8d9-db6fd1fdd31c
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  ws-opts:
+    headers:
+      Host: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc
+    path: /vmess/
 - type: vless
   name: 🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru
   server: 144.31.243.240
@@ -584,16 +452,6 @@ proxies:
   client-fingerprint: safari
   public-key: DuxQy3KWEZTU_sBhXSfeo_1Q0-0lMcSnx21bWvUi5hQ
   network: xhttp
-- type: vless
-  name: 🇵🇱 Poland | [*CIDR]
-  server: hub-main.pleiades.codes
-  port: 443
-  udp: true
-  uuid: e0b9fb0f-1bbd-478b-9580-c2294778338b
-  tls: true
-  servername: hub-main.pleiades.codes
-  client-fingerprint: qq
-  network: grpc
 - type: vless
   name: 🇷🇸 Serbia | [*CIDR]
   server: 45.132.176.161
@@ -628,32 +486,6 @@ proxies:
   tls: true
   network: ws
 - type: vless
-  name: 🇸🇬 Singapore, Singapore (Outram) | [BL]
-  server: 173.234.14.105
-  port: 59615
-  udp: true
-  uuid: e2632874-614e-4261-af62-52aca3358e4e
-  tls: true
-  servername: biosmod.partners.nvidia.com
-  flow: xtls-rprx-vision
-  client-fingerprint: safari
-  public-key: 7PB-58vYXFLNhK6kY8bJJO3-fPOXTPQJ0UqDlhSOH3M
-  short-id: 6b
-  network: tcp
-- type: vless
-  name: 🇸🇬 Singapore, Singapore | [BL]
-  server: agroup.sg3.ilovegairport.com
-  port: 443
-  udp: true
-  uuid: 129e26fe-cee2-4786-9261-b29668337829
-  tls: true
-  servername: ap-southeast-1.console.aws.amazon.com
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  public-key: eAQrXEfedW5BrMMeOecf_M9tkNNqQIShlLOl2xg1cho
-  short-id: c75bbeb4b67fba71
-  network: tcp
-- type: vless
   name: 🇸🇬_SG_新加坡 [41e9b2c1]
   server: free-server.techsonic.dev
   port: 2096
@@ -675,20 +507,16 @@ proxies:
   uuid: 408fbae6-a40b-4f0b-9723-0b4ce8e3d035
   tls: true
   network: tcp
-- type: vmess
-  name: 🇺🇸 United States, St Louis (Downtown) | [BL]
-  server: 172.64.80.1
-  port: 8443
-  uuid: 60441548-b68e-43b2-8191-e3b884be4b3c
-  alterId: 0
-  cipher: auto
+- type: trojan
+  name: 🇺🇸 United States, Denver (North Capitol Hill) | [BL]
+  server: us3.zestapp778.com
+  port: 443
   udp: true
-  network: ws
+  password: Trojan@82164024
   tls: true
-  ws-opts:
-    headers:
-      Host: v2ray1.dozapp.xyz
-    path: /lMnsZUN4/
+  servername: us3.zestapp778.com
+  client-fingerprint: firefox
+  network: tcp
 - type: vless
   name: 🇺🇸_US_美国->🇩🇪_DE_德国 [401ae6a2]
   server: ewylr.smartorbitbox-bekhabdg.site
@@ -729,8 +557,7 @@ proxy-groups:
 - name: PROXY
   type: select
   proxies:
-  - 俄罗斯(yudou789.top 玉豆分享) [296e1422]
-  - 俄罗斯(yudou789.top 玉豆分享) [a3b7a9cb]
+  - 俄罗斯(yudou789.top 玉豆分享)
   - 美国(yudou789.top 玉豆分享) [3de18304]
   - 美国(yudou789.top 玉豆分享) [86a5ac19]
   - 美国(yudou789.top 玉豆分享) [e541f312]
@@ -751,60 +578,52 @@ proxy-groups:
   - 美国(yudou789.top 玉豆分享) [b63b820c]
   - 美国(yudou789.top 玉豆分享) [1883e8a1]
   - 美国(yudou789.top 玉豆分享) [072a0953]
-  - 美国(yudou789.top 玉豆分享) [f03a2350]
-  - 美国(yudou789.top 玉豆分享) [7dd08008]
-  - 美国(yudou789.top 玉豆分享) [29b4f75e]
-  - 美国(yudou789.top 玉豆分享) [22da5170]
-  - 美国(yudou789.top 玉豆分享) [74c9a9e3]
-  - 美国(yudou789.top 玉豆分享) [6b164eb2]
-  - 美国(yudou789.top 玉豆分享) [65657c26]
-  - 美国(yudou789.top 玉豆分享) [cac9bce1]
-  - 美国(yudou789.top 玉豆分享) [89accc02]
-  - 美国(yudou789.top 玉豆分享) [4fa1c0d8]
-  - 美国(yudou789.top 玉豆分享) [abcb903f]
-  - 美国(yudou789.top 玉豆分享) [37e2100c]
-  - 美国(yudou789.top 玉豆分享) [aae77dfe]
-  - 美国(yudou789.top 玉豆分享) [db895281]
-  - 美国(yudou789.top 玉豆分享) [c9b1f100]
-  - 美国(yudou789.top 玉豆分享) [3b34ff42]
-  - 美国(yudou789.top 玉豆分享) [fbf8b15c]
-  - 美国(yudou789.top 玉豆分享) [e7d0b0ba]
-  - 美国(yudou789.top 玉豆分享) [7e9ca3d4]
-  - 美国(yudou789.top 玉豆分享) [cb225674]
-  - 美国(yudou789.top 玉豆分享) [4db34e3a]
-  - 美国(yudou789.top 玉豆分享) [91f8f2dd]
   - 荷兰(yudou789.top 玉豆分享)
   - 🇨🇭 Switzerland [*CIDR]
   - 🇨🇭 Switzerland, Bern | [BL]
   - 🇨🇳_CN_中国
   - 🇨🇳_CN_中国->🇺🇸_US_美国 [523108a0]
   - 🇨🇳_CN_中国->🇺🇸_US_美国 [baa58229]
-  - 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
   - 🇫🇷 France | [*CIDR]
   - 🇬🇧 United Kingdom | [*CIDR]
-  - 🇭🇰 Hong Kong, Hong Kong | 🌐 | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [106e34a9]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [09d412d9]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [408db74b]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [a2393028]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [e47ee1b7]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [7e858554]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [49441729]
   - 🇭🇰_HK_中国香港
   - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - 🇭🇰_HK_中国香港->🇺🇸_US_美国 [ce0c0201]
   - 🇭🇰_HK_中国香港->🇺🇸_US_美国 [472267ac]
+  - 🇰🇿 Kazakhstan, Almaty | [BL] [04ae4d01]
+  - 🇰🇿 Kazakhstan, Almaty | [BL] [1a5649c2]
   - 🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru
   - 🇳🇱 The Netherlands | [*CIDR] YA
-  - 🇵🇱 Poland | [*CIDR]
   - 🇷🇸 Serbia | [*CIDR]
   - 🇷🇺 Russia | [*CIDR]
   - 🇷🇺_RU_俄罗斯->🇹🇷_TR_土耳其
-  - 🇸🇬 Singapore, Singapore (Outram) | [BL]
-  - 🇸🇬 Singapore, Singapore | [BL]
   - 🇸🇬_SG_新加坡 [41e9b2c1]
   - 🇸🇬_SG_新加坡 [56c9c438]
-  - 🇺🇸 United States, St Louis (Downtown) | [BL]
+  - 🇺🇸 United States, Denver (North Capitol Hill) | [BL]
   - 🇺🇸_US_美国->🇩🇪_DE_德国 [401ae6a2]
   - 🇺🇸_US_美国->🇩🇪_DE_德国 [e0563a9a]
   - 🇺🇸_US_美国->🇯🇵_JP_日本
   - DIRECT
 rules:
+- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+- DOMAIN-SUFFIX,wx.qq.com,DIRECT
+- DOMAIN-SUFFIX,wechat.com,DIRECT
+- DOMAIN-SUFFIX,qpic.cn,DIRECT
+- DOMAIN-SUFFIX,qlogo.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,tenpay.com,DIRECT
+- DOMAIN-SUFFIX,wechatpay.cn,DIRECT
 - GEOSITE,CN,DIRECT
 - GEOIP,CN,DIRECT
 - MATCH,PROXY

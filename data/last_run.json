@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T15:29:39.766502+00:00",
+  "generated_at": "2026-09-30T15:53:45.399629+00:00",
   "sources": 7,
   "nodes_discovered": 80,
   "results": [
@@ -58,672 +58,672 @@
       "lifespan_days": 0
     },
     {
-      "fingerprint": "a17158658c0b31162fb6",
-      "name": "🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "e9cc9e2bc71b0eee04cd",
+      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
-      "fingerprint": "e943975802bb55def95b",
-      "name": "🇭🇰 Hong Kong, Hong Kong | 🌐 | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "d4fde113d7e722bd8121",
+      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
-      "fingerprint": "46b1e074b2f9f278bdf7",
-      "name": "🇸🇬 Singapore, Singapore | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "f1506e36c0bf272ef6ca",
+      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
-      "fingerprint": "ab376b72c9630ed06523",
-      "name": "🇸🇬 Singapore, Singapore (Outram) | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "7d5434b152cc65d42dc6",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
-      "fingerprint": "c39bbafdfe5d49744835",
-      "name": "🇨🇭 Switzerland, Bern | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "69db8520043478b14a88",
+      "name": "🇯🇵 Japan, Akiruno (Ushinuma) | 🌐 | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
-      "fingerprint": "8520784d9bfedd60cca5",
-      "name": "🇺🇸 United States, St Louis (Downtown) | [BL]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "cab197b19aa8954cfe1e",
-      "name": "🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "003a755a8f81676c6173",
-      "name": "🇨🇭 Switzerland [*CIDR]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7f2bc499ca1cef188740",
-      "name": "🇫🇷 France | [*CIDR]",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
+      "fingerprint": "2992f3d8e297831ae394",
+      "name": "🇯🇵 Japan, Shibuya City | 🌐 | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0
     },
     {
       "fingerprint": "2b61072212837e2ff27e",
       "name": "🇵🇱 Poland | [*CIDR]",
-      "score": 82,
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "ad3e4aea56918596ee21",
+      "name": "🇵🇱 Poland, Warsaw | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "46b1e074b2f9f278bdf7",
+      "name": "🇸🇬 Singapore, Singapore | [BL]",
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "864ef2473276101d457a",
+      "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "d80ff86ec27be6d27a83",
+      "name": "🇸🇪 Sweden, Stockholm | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "88113861bdf94452b47f",
+      "name": "🇸🇪 Sweden, Stockholm | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "c39bbafdfe5d49744835",
+      "name": "🇨🇭 Switzerland, Bern | [BL]",
+      "score": 86,
       "gemini": true,
       "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "86635bf14ab534373e66",
+      "name": "🇨🇭 Switzerland, Geneva | 🌐 | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
       "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "ce4f6058cad9647abd77",
+      "name": "🇳🇱 The Netherlands, Amsterdam | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "579bd65d0a738c0406a0",
+      "name": "🇺🇸 United States | 🌐 | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "8450b463b5bc45cd12b0",
+      "name": "🇺🇸 United States, Boardman | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "4e6da00b83df6b8c5b7e",
+      "name": ".𖥔 ݁ ˖ִ🛸༄˖°. | [BL]",
+      "score": 36,
+      "gemini": false,
+      "google_play": false,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "7c157ecd432205e422d8",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "599709edbc8a3868bfe6",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "106e34a9583a3945bb50",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "09d412d90856a5751509",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "408db74babc6252bd5c4",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "a2393028ced7d3e20411",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "e47ee1b70afdc49acf1d",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "7e858554fc112e9ffa20",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "49441729d7437e98df67",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "04ae4d01eea09d1adedc",
+      "name": "🇰🇿 Kazakhstan, Almaty | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "1a5649c2dd278f134a43",
+      "name": "🇰🇿 Kazakhstan, Almaty | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "52c841c54d2586ea089e",
+      "name": "🇺🇸 United States, Denver (North Capitol Hill) | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "cab197b19aa8954cfe1e",
+      "name": "🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "003a755a8f81676c6173",
+      "name": "🇨🇭 Switzerland [*CIDR]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0
+    },
+    {
+      "fingerprint": "7f2bc499ca1cef188740",
+      "name": "🇫🇷 France | [*CIDR]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "0210b05fb28d050df156",
       "name": "🇷🇸 Serbia | [*CIDR]",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "ca86209d1dcd838e0bac",
       "name": "🇳🇱 The Netherlands | [*CIDR] YA",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "710e753707940f4557d2",
       "name": "🇬🇧 United Kingdom | [*CIDR]",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "e33bdcaeaa181d3e1043",
       "name": "🇷🇺 Russia | [*CIDR]",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "985f9894d7fb15ac986c",
       "name": "🇨🇳_CN_中国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "523108a05a0495c00028",
       "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "baa5822975cbabfdd696",
       "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "549f90b1cdfaccc63dfe",
       "name": "🇭🇰_HK_中国香港->🇯🇵_JP_日本",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "ce0c0201c348e9a945f8",
       "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "41e9b2c171ce0d29c05a",
       "name": "🇸🇬_SG_新加坡",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "cf0ee9db362964ad8d02",
       "name": "🇭🇰_HK_中国香港->🇬🇧_GB_英国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "296e14222f9138172377",
       "name": "俄罗斯(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "b71d62892f32c0d8cfd2",
       "name": "🇭🇰_HK_中国香港->🇫🇷_FR_法国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "56c9c4388a86a680c0fa",
       "name": "🇸🇬_SG_新加坡",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "472267ac46bf4ae5e097",
       "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "65cb7d48400cb5231c9c",
       "name": "🇷🇺_RU_俄罗斯->🇹🇷_TR_土耳其",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "83a64c10cbbcf0cdff22",
       "name": "🇭🇰_HK_中国香港",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "0c085a09e749fac8667e",
       "name": "🇺🇸_US_美国->🇯🇵_JP_日本",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "401ae6a2c8df6dee7ff6",
       "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "e0563a9a440e4e24e7fe",
       "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "3de183046fabe7de2b75",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "86a5ac19e1c7b93e8534",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "e541f312faa3d125c368",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "6cfedf4d05e1b205f40f",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "fb43bae6f636341ecfaa",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "9e25d95403860d6fc930",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "a125b9b5db8d73209481",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "6a1206e1ecb36c52de40",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "436219468ab2ee81b5b3",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "1da056b4680d42f50066",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "be292ba596c16a1da390",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "b32a9f9a6269629dbd11",
       "name": "荷兰(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "a2d871e0049882cd0c9c",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "a4a5173405c8ac9c9be6",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "1dd7adaa643d1fb4f9c9",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "26a1816c147c6da557c3",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "a6ba114251cd50753887",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "072dcb5cf756d9a13180",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "b63b820c516c902c218a",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "1883e8a135919680a1bf",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     },
     {
       "fingerprint": "072a0953a5f8bc81ba47",
       "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "f03a23506163826369bf",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7dd080087f3237f170d0",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "29b4f75e41bd13cfb00f",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "22da5170e96aeca2ddea",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "74c9a9e3dd2015a29041",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "6b164eb2bb309e9c1ed5",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "65657c26f34fce7e5ae2",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "a3b7a9cb011e906d37a4",
-      "name": "俄罗斯(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "cac9bce173cc09936500",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "89accc0294f00f5399da",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "4fa1c0d83a17fc9818ba",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "abcb903f40de3c2bfc23",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "37e2100cf28d4a7bb9b7",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "aae77dfe83ab3aa7e2b9",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "db89528191c61fe357fc",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "c9b1f100c99186c66ed9",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "3b34ff427b6274aed660",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "fbf8b15c864f34ff5c23",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e7d0b0ba22dca5ab8c1c",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7e9ca3d4441915ef3671",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "cb22567484d3f7d61aa2",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "4db34e3ae1deb813ba85",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "91f8f2dd01e90e216f38",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 82,
-      "gemini": true,
-      "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0
     }
   ],
   "published": true,
-  "selected": 74
+  "selected": 55
 }

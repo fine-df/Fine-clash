@@ -1,5 +1,6 @@
 from __future__ import annotations
 import base64, hashlib, ipaddress, json, os, re, shutil, subprocess, tempfile, time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
@@ -32,6 +33,8 @@ WECHAT_DIRECT_RULES = [
     "DOMAIN-SUFFIX,qq.com,DIRECT",
     "DOMAIN-SUFFIX,tenpay.com,DIRECT",
     "DOMAIN-SUFFIX,wechatpay.cn,DIRECT",
+    "DOMAIN-SUFFIX,tencent.com,DIRECT",
+    "DOMAIN-SUFFIX,tencent-cloud.com,DIRECT",
 ]
 
 def load_rules():
@@ -186,13 +189,24 @@ def node_to_uri(node):
     if kind=="trojan":
         q=["security=tls"]
         if node.get("servername"): q.append("sni="+quote(str(node["servername"]),safe=""))
+        if node.get("network"): q.append("type="+quote(str(node["network"]),safe=""))
+        if node.get("network")=="ws":
+            ws=node.get("ws-opts",{})
+            if ws.get("path"): q.append("path="+quote(str(ws["path"]),safe=""))
+            if ws.get("headers",{}).get("Host"): q.append("host="+quote(str(ws["headers"]["Host"]),safe=""))
+        elif node.get("network")=="grpc":
+            service=node.get("grpc-opts",{}).get("grpc-service-name")
+            if service: q.append("serviceName="+quote(str(service),safe=""))
         return f"trojan://{quote(str(node.get('password','')),safe='')}@{host}:{port}?{'&'.join(q)}#{name}"
     if kind=="ss":
         raw=f"{node.get('cipher','chacha20-ietf-poly1305')}:{node.get('password','')}@{host}:{port}"
         return f"ss://{base64.urlsafe_b64encode(raw.encode()).decode().rstrip('=')}#{name}"
     if kind=="vmess":
         ws=node.get("ws-opts",{})
-        payload={"v":"2","ps":node.get("name","vmess"),"add":server,"port":str(port),"id":node.get("uuid",""),"aid":str(node.get("alterId",0)),"scy":node.get("cipher","auto"),"net":node.get("network","tcp"),"type":"none","host":ws.get("headers",{}).get("Host",""),"path":ws.get("path",""),"tls":"tls" if node.get("tls") else ""}
+        network=node.get("network","tcp")
+        payload={"v":"2","ps":node.get("name","vmess"),"add":server,"port":str(port),"id":node.get("uuid",""),"aid":str(node.get("alterId",0)),"scy":node.get("cipher","auto"),"net":network,"type":"none","host":ws.get("headers",{}).get("Host",""),"path":ws.get("path",""),"tls":"tls" if node.get("tls") else ""}
+        if network=="grpc" and node.get("grpc-opts",{}).get("grpc-service-name"):
+            payload["path"]=node["grpc-opts"]["grpc-service-name"]
         if node.get("servername"): payload["sni"]=node["servername"]
         return "vmess://"+base64.b64encode(json.dumps(payload,ensure_ascii=False,separators=(",",":")).encode()).decode()
     return None
@@ -224,6 +238,10 @@ class GlobalpingShenzhenProbe:
         self.cfg=cfg
         self.session=requests.Session()
         self.session.headers.update({"User-Agent":UA,"Content-Type":"application/json"})
+        token_name=str(self.cfg.get("api_token_env","GLOBALPING_API_TOKEN"))
+        token=os.getenv(token_name,"").strip()
+        if token:
+            self.session.headers["Authorization"]=f"Bearer {token}"
         self.base_url="https://api.globalping.io/v1/measurements"
 
     def measure(self, node):
@@ -366,19 +384,21 @@ class GitHubDiscovery:
         return out
 
 class MihomoTester:
-    def __init__(self,binary,cfg):
+    def __init__(self,binary,cfg,port_offset=0):
         self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.session=requests.Session()
+        self.proxy_port=17890+int(port_offset)
+        self.controller_port=19090+int(port_offset)
     def start(self,nodes):
         names=[]; proxies=[]
         for idx,node in enumerate(nodes):
             name=f"N{idx:03d}"; names.append(name); proxy=dict(node); proxy["name"]=name; proxies.append(proxy)
-        config={"mixed-port":17890,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":"127.0.0.1:19090","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,TEST"]}
+        config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,TEST"]}
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(float(self.cfg["controller_startup_seconds"])); return names
     def choose(self,name):
-        response=self.session.put("http://127.0.0.1:19090/proxies/TEST",json={"name":name},timeout=5); response.raise_for_status(); time.sleep(float(self.cfg["switch_wait_seconds"]))
+        response=self.session.put(f"http://127.0.0.1:{self.controller_port}/proxies/TEST",json={"name":name},timeout=5); response.raise_for_status(); time.sleep(float(self.cfg["switch_wait_seconds"]))
     def request(self,url,parse_json=False):
-        started=time.perf_counter(); proxy={"http":"http://127.0.0.1:17890","https":"http://127.0.0.1:17890"}
+        started=time.perf_counter(); proxy={"http":f"http://127.0.0.1:{self.proxy_port}","https":f"http://127.0.0.1:{self.proxy_port}"}
         try:
             response=self.session.get(url,headers={"User-Agent":UA},proxies=proxy,timeout=float(self.cfg["test_timeout_seconds"]),allow_redirects=True)
             text=response.text[:50000].lower(); challenge=any(marker.lower() in text for marker in self.cfg.get("challenge_markers",[])); ok=response.status_code in self.cfg.get("success_statuses",[200,204,301,302]) and not challenge
@@ -403,6 +423,30 @@ class MihomoTester:
         try: self.proc.wait(timeout=5)
         except subprocess.TimeoutExpired: self.proc.kill()
         self.proc=None
+
+def test_nodes_parallel(binary,nodes,cfg,checks):
+    workers=max(1,min(int(cfg.get("validation_workers",1)),len(nodes)))
+    if workers<=1:
+        return MihomoTester(binary,cfg).test_nodes(nodes,checks)
+    batches=[nodes[i::workers] for i in range(workers) if nodes[i::workers]]
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures=[executor.submit(MihomoTester(binary,cfg,port_offset=idx*10).test_nodes,batch,checks) for idx,batch in enumerate(batches)]
+        results=[]
+        for future in futures:
+            results.extend(future.result())
+    return results
+
+def probe_shenzhen_parallel(tasks,cfg):
+    if not tasks:
+        return {}
+    workers=max(1,min(int(cfg.get("workers",1)),len(tasks)))
+    def worker(item):
+        fp,node=item
+        return fp,GlobalpingShenzhenProbe(cfg).measure(node)
+    if workers<=1:
+        return dict(worker(task) for task in tasks)
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        return dict(executor.map(worker,tasks))
 
 def unique_node_names(nodes):
     """Return copied nodes with deterministic unique Clash proxy names."""
@@ -434,7 +478,33 @@ def build_outputs(nodes, output_rules):
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
     route_rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]
-    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":route_rules}
+    dns_config={
+        "enable":True,
+        "ipv6":False,
+        "use-hosts":True,
+        "use-system-hosts":True,
+        "enhanced-mode":"redir-host",
+        "default-nameserver":["223.5.5.5","119.29.29.29"],
+        "nameserver-policy":{
+            "+.qq.com":["223.5.5.5","119.29.29.29"],
+            "+.weixin.qq.com":["223.5.5.5","119.29.29.29"],
+            "+.wx.qq.com":["223.5.5.5","119.29.29.29"],
+            "+.qpic.cn":["223.5.5.5","119.29.29.29"],
+            "+.qlogo.cn":["223.5.5.5","119.29.29.29"],
+            "+.gtimg.cn":["223.5.5.5","119.29.29.29"],
+            "+.gtimg.com":["223.5.5.5","119.29.29.29"],
+            "+.wechat.com":["223.5.5.5","119.29.29.29"],
+            "+.tenpay.com":["223.5.5.5","119.29.29.29"],
+            "+.wechatpay.cn":["223.5.5.5","119.29.29.29"],
+            "+.tencent.com":["223.5.5.5","119.29.29.29"],
+        },
+        "nameserver":["223.5.5.5","119.29.29.29"],
+        "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],
+        "fallback-filter":{"geoip":True,"geoip-code":"CN"},
+        "direct-nameserver":["223.5.5.5","119.29.29.29"],
+        "direct-nameserver-follow-policy":True,
+    }
+    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","dns":dns_config,"proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":route_rules}
     clash_path=ROOT/output_rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
     v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
@@ -455,26 +525,42 @@ def run():
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
     report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"results":[]}
-    for item in MihomoTester(binary,tester_cfg).test_nodes(nodes,checks):
-        node,fp=item["node"],fingerprint(item["node"]); row=history.get(fp,{"first_seen":date.today().isoformat()}); life=lifespan_days(row); clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
-        score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability); row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
+    report_lookup={}
+    candidate_records=[]
+
+    for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
+        node,fp=item["node"],fingerprint(item["node"])
+        row=history.get(fp,{"first_seen":date.today().isoformat(),"last_seen":date.today().isoformat(),"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
+        life=lifespan_days(row); clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
+        score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
+        row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
         candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested"}
+        report["results"].append(entry); report_lookup[fp]=entry
+
         shenzhen_cfg=rules.get("shenzhen_probe",{})
-        shenzhen_result=None
         if candidate and shenzhen_cfg.get("enabled",False):
-            shenzhen_result=cached_shenzhen_result(row,shenzhen_cfg)
-            if shenzhen_result is None:
-                shenzhen_result=GlobalpingShenzhenProbe(shenzhen_cfg).measure(node)
-                save_shenzhen_history(row,shenzhen_result)
-            candidate=shenzhen_passes(shenzhen_result,shenzhen_cfg)
-        report["results"].append({
-            "fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],
-            "clean":clean,"lifespan_days":lifespan_days(row),
-            "shenzhen_ping_ms":shenzhen_result.get("avg_ms") if shenzhen_result and shenzhen_result.get("ok") else None,
-            "shenzhen_loss_pct":shenzhen_result.get("loss_pct") if shenzhen_result and shenzhen_result.get("ok") else None,
-            "shenzhen_status":shenzhen_result.get("status") if shenzhen_result else "not-tested",
-        })
-        if candidate: selected.append(node)
+            cached=cached_shenzhen_result(row,shenzhen_cfg)
+            candidate_records.append({"fp":fp,"node":node,"result":cached})
+        elif candidate:
+            selected.append(node)
+
+    shenzhen_cfg=rules.get("shenzhen_probe",{})
+    pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
+    measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
+    for rec in candidate_records:
+        fp,node,cached=rec["fp"],rec["node"],rec["result"]
+        row=history[fp]
+        result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
+        if cached is None:
+            save_shenzhen_history(row,result)
+        entry=report_lookup[fp]
+        entry["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
+        entry["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
+        entry["shenzhen_status"]=result.get("status","unknown")
+        if shenzhen_passes(result,shenzhen_cfg):
+            selected.append(node)
+
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return

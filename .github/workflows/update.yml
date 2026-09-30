@@ -47,6 +47,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data output
+          git add data output live_clash.yaml live_v2ray.txt
           git diff --cached --quiet || git commit -m 'chore: update verified subscriptions'
           git push

@@ -33,8 +33,8 @@ checks:
     - 'access denied'
 
 output:
-  clash_file: 'output/clash.yaml'
-  v2ray_file: 'output/v2ray.txt'
+  clash_file: 'live_clash.yaml'
+  v2ray_file: 'live_v2ray.txt'
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
   report_file: 'data/last_run.json'

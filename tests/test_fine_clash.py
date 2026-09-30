@@ -78,3 +78,25 @@ def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
     assert "DOMAIN-SUFFIX,qq.com,DIRECT" in routes
     assert "GEOSITE,CN,DIRECT" in routes
     assert routes[-1] == "MATCH,PROXY"
+
+
+def test_vless_reality_is_normalized_for_mihomo():
+    uri = "vless://123e4567-e89b-12d3-a456-426614174000@example.com:443?security=reality&sni=example.com&fp=chrome&pbk=PUBLICKEY&sid=SHORTID&type=tcp#reality"
+    node = fc.parse_subscription(uri)[0]
+    assert node["reality-opts"] == {"public-key": "PUBLICKEY", "short-id": "SHORTID"}
+    assert "public-key" not in node and "short-id" not in node
+    assert fc.node_to_uri(node).startswith("vless://")
+    assert "security=reality" in fc.node_to_uri(node)
+    assert "pbk=PUBLICKEY" in fc.node_to_uri(node)
+    assert "sid=SHORTID" in fc.node_to_uri(node)
+
+
+def test_output_builder_filters_xhttp_for_compatibility(tmp_path: Path):
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    nodes = [
+        {"name":"xhttp","type":"vless","server":"x.example","port":443,"uuid":"u","tls":True,"network":"xhttp","xhttp-opts":{"path":"/x"}},
+        {"name":"ws","type":"vless","server":"w.example","port":443,"uuid":"u2","tls":True,"network":"ws"},
+    ]
+    fc.build_outputs(nodes, rules)
+    built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
+    assert [n["name"] for n in built["proxies"]] == ["ws"]

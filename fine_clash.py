@@ -38,6 +38,8 @@ def _decode_b64(value):
     return None
 
 def is_safe_server(server):
+    if not isinstance(server, (str, int)):
+        return False
     value=str(server or "").strip().lower().rstrip(".")
     blocked={"localhost","ip6-localhost","ip6-loopback","0.0.0.0","::","ip6-allnodes","ip6-allrouters"}
     if value in blocked or value.endswith((".localhost",".local",".internal")): return False
@@ -67,7 +69,7 @@ def _parse_standard(uri):
     parsed=urlparse(uri); scheme=parsed.scheme.lower()
     if scheme not in {"vless","trojan","ss"}: return None
     server,port=parsed.hostname,parsed.port
-    if not server or not port or not is_safe_server(server): return None
+    if not isinstance(server, str) or not server or not port or not is_safe_server(server): return None
     name=_clean_name(parsed.fragment,f"{scheme}-{server}:{port}")
     if scheme=="ss":
         user,password=parsed.username or "",parsed.password or ""
@@ -111,7 +113,7 @@ def parse_subscription(text):
             for proxy in proxies:
                 if not isinstance(proxy,dict): continue
                 kind=str(proxy.get("type","")).lower()
-                if kind not in SUPPORTED or not proxy.get("server") or not _safe_int(proxy.get("port")): continue
+                if kind not in SUPPORTED or not isinstance(proxy.get("server"), str) or not proxy.get("server") or not _safe_int(proxy.get("port")): continue
                 if not is_safe_server(proxy.get("server")): continue
                 node={k:proxy[k] for k in ALLOWED_FIELDS[kind] if k in proxy}
                 node["type"]=kind; node["port"]=_safe_int(proxy["port"]); node["name"]=_clean_name(node.get("name"),f"{kind}-{node['server']}:{node['port']}")
@@ -125,7 +127,7 @@ def parse_subscription(text):
     return []
 
 def fingerprint(node):
-    data="|".join([node.get("type",""),node.get("server",""),str(node.get("port","")),node.get("uuid",""),node.get("password","")])
+    data="|".join(str(node.get(k,"")) for k in ("type","server","port","uuid","password"))
     return hashlib.sha256(data.encode()).hexdigest()[:20]
 
 def node_to_uri(node):

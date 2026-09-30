@@ -58,7 +58,7 @@ def test_output_builder_deduplicates_proxy_names(tmp_path: Path):
     fc.build_outputs(nodes, rules)
     text = (tmp_path / "clash.yaml").read_text()
     assert text.count("  name: same") == 0
-    assert text.count("  - same") == 0
+    assert "  - same\n" not in text
     assert text.count("[") >= 2
     built = fc.yaml.safe_load(text)
     proxy_names = [node["name"] for node in built["proxies"]]

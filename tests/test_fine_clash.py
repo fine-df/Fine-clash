@@ -47,3 +47,21 @@ def test_output_builder(tmp_path: Path):
     fc.build_outputs(nodes, rules)
     assert "GEOSITE,CN,DIRECT" in (tmp_path / "clash.yaml").read_text()
     assert base64.b64decode((tmp_path / "v2ray.txt").read_text()).decode().startswith("trojan://")
+
+
+def test_output_builder_deduplicates_proxy_names(tmp_path: Path):
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    nodes = [
+        {"name":"same","type":"trojan","server":"one.example","port":443,"password":"one","tls":True},
+        {"name":"same","type":"trojan","server":"two.example","port":443,"password":"two","tls":True},
+    ]
+    fc.build_outputs(nodes, rules)
+    text = (tmp_path / "clash.yaml").read_text()
+    assert text.count("  name: same") == 0
+    assert text.count("  - same") == 0
+    assert text.count("[") >= 2
+    built = fc.yaml.safe_load(text)
+    proxy_names = [node["name"] for node in built["proxies"]]
+    group_names = built["proxy-groups"][0]["proxies"][:-1]
+    assert len(proxy_names) == len(set(proxy_names)) == 2
+    assert group_names == proxy_names

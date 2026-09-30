@@ -24,11 +24,11 @@ shenzhen_probe:
   enabled: true
   city: 'Shenzhen'
   protocol: 'TCP'
-  packets: 3
+  packets: 2
   reject_above_ms: 400
   cache_days: 1
-  poll_interval_seconds: 2
-  max_wait_seconds: 30
+  poll_interval_seconds: 1
+  max_wait_seconds: 12
   fail_closed: false
 
 checks:

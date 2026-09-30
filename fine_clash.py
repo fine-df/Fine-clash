@@ -400,7 +400,8 @@ class MihomoTester:
     def request(self,url,parse_json=False):
         started=time.perf_counter(); proxy={"http":f"http://127.0.0.1:{self.proxy_port}","https":f"http://127.0.0.1:{self.proxy_port}"}
         try:
-            response=self.session.get(url,headers={"User-Agent":UA},proxies=proxy,timeout=float(self.cfg["test_timeout_seconds"]),allow_redirects=True)
+            session=requests.Session()
+            response=session.get(url,headers={"User-Agent":UA},proxies=proxy,timeout=float(self.cfg["test_timeout_seconds"]),allow_redirects=True)
             text=response.text[:50000].lower(); challenge=any(marker.lower() in text for marker in self.cfg.get("challenge_markers",[])); ok=response.status_code in self.cfg.get("success_statuses",[200,204,301,302]) and not challenge
             data=None
             if parse_json and ok:
@@ -411,11 +412,29 @@ class MihomoTester:
             return {"ok":False,"status":0,"latency_ms":round((time.perf_counter()-started)*1000),"error":str(exc)[:160],"challenge":False,"data":None}
     def test_nodes(self,nodes,checks):
         names=self.start(nodes); results=[]
+        endpoint_workers=max(1,min(int(self.cfg.get("endpoint_workers",4)),4))
+        endpoints=[
+            ("gemini",checks["gemini_url"],False),
+            ("google_play",checks["google_play_url"],False),
+            ("google",checks["google_204_url"],False),
+            ("ipinfo",checks["ipinfo_url"],True),
+        ]
         try:
             for idx,node in enumerate(nodes):
-                self.choose(names[idx]); gemini=self.request(checks["gemini_url"]); play=self.request(checks["google_play_url"]); google=self.request(checks["google_204_url"]); ip=self.request(checks["ipinfo_url"],True)
-                results.append({"node":node,"gemini":gemini["ok"],"google_play":play["ok"],"google":google,"ipinfo":ip.get("data") if ip["ok"] else None})
-        finally: self.stop()
+                self.choose(names[idx])
+                with ThreadPoolExecutor(max_workers=endpoint_workers) as executor:
+                    futures=[executor.submit(self.request,url,parse_json) for _,url,parse_json in endpoints]
+                    checks_out=[future.result() for future in futures]
+                item=dict(zip((name for name,_,_ in endpoints),checks_out))
+                results.append({
+                    "node":node,
+                    "gemini":item["gemini"]["ok"],
+                    "google_play":item["google_play"]["ok"],
+                    "google":item["google"],
+                    "ipinfo":item["ipinfo"].get("data") if item["ipinfo"]["ok"] else None,
+                })
+        finally:
+            self.stop()
         return results
     def stop(self):
         if self.proc is None: return

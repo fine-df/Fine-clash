@@ -1,0 +1,40 @@
+sources:
+  recent_days: 21
+  repositories_per_query: 12
+  max_repositories: 30
+  max_candidate_files_per_repo: 4
+  max_source_bytes: 6000000
+  min_nodes_per_source: 2
+  queries:
+    - 'clash subscription in:name,description,readme archived:false stars:>=50'
+    - 'v2ray subscription in:name,description,readme archived:false stars:>=50'
+    - 'free clash nodes in:name,description,readme archived:false stars:>=50'
+    - 'free v2ray nodes in:name,description,readme archived:false stars:>=50'
+
+nodes:
+  allowed_types: [vmess, vless, trojan, ss]
+  max_test_nodes: 80
+  min_final_nodes: 3
+  test_timeout_seconds: 12
+  controller_startup_seconds: 2.5
+  switch_wait_seconds: 0.8
+  score_threshold: 70
+
+checks:
+  gemini_url: 'https://gemini.google.com/'
+  google_play_url: 'https://play.google.com/store'
+  google_204_url: 'https://www.google.com/generate_204'
+  ipinfo_url: 'https://ipinfo.io/json'
+  success_statuses: [200, 204, 301, 302]
+  challenge_markers:
+    - 'unusual traffic'
+    - 'our systems have detected unusual traffic'
+    - 'captcha'
+    - 'access denied'
+
+output:
+  clash_file: 'output/clash.yaml'
+  v2ray_file: 'output/v2ray.txt'
+  history_file: 'data/history.json'
+  source_file: 'data/sources.json'
+  report_file: 'data/last_run.json'

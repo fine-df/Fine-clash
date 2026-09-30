@@ -4,10 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fine-clash"
-version = "0.1.0"
-description = "Clash monitoring utility"
+version = "1.0.0"
+description = "Discover, verify, score, and publish public Clash/V2Ray nodes."
 requires-python = ">=3.10"
-dependencies = [
-  "requests>=2.31.0",
-  "PyYAML>=6.0.1"
-]
+dependencies = ["requests>=2.32,<3", "PyYAML>=6.0,<7", "PySocks>=1.7,<2"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,2 +1,4 @@
-requests>=2.31.0
-PyYAML>=6.0.1
+requests>=2.32,<3
+PyYAML>=6.0,<7
+PySocks>=1.7,<2
+pytest>=8.0,<9

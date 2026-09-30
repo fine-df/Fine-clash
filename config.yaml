@@ -15,6 +15,7 @@ nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 80
   min_final_nodes: 3
+  validation_workers: 4
   test_timeout_seconds: 12
   controller_startup_seconds: 2.5
   switch_wait_seconds: 0.8
@@ -27,9 +28,11 @@ shenzhen_probe:
   packets: 2
   reject_above_ms: 400
   cache_days: 1
+  workers: 6
   poll_interval_seconds: 1
   max_wait_seconds: 12
-  fail_closed: false
+  fail_closed: true
+  api_token_env: 'GLOBALPING_API_TOKEN'
 
 checks:
   gemini_url: 'https://gemini.google.com/'

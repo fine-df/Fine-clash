@@ -1,6 +1,8 @@
 name: Fine-Clash daily update
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
@@ -14,6 +16,7 @@ concurrency:
 
 jobs:
   update:
+    if: github.event_name != 'push' || github.event.head_commit.message == 'test: release validation'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

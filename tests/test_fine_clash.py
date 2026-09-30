@@ -120,3 +120,53 @@ def test_cached_shenzhen_result(tmp_path: Path):
     }
     cached = fc.cached_shenzhen_result(row, {"cache_days": 1})
     assert cached and cached["avg_ms"] == 210.5 and cached["status"] == "cached"
+
+
+def test_output_builder_configures_wechat_friendly_dns(tmp_path: Path):
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
+    fc.build_outputs(nodes, rules)
+    built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
+    assert built["dns"]["enhanced-mode"] == "redir-host"
+    assert built["dns"]["nameserver-policy"]["+.qq.com"] == ["223.5.5.5", "119.29.29.29"]
+    assert built["dns"]["direct-nameserver-follow-policy"] is True
+
+
+def test_trojan_grpc_v2ray_uri_preserves_transport_options():
+    node = {
+        "name":"grpc",
+        "type":"trojan",
+        "server":"example.com",
+        "port":443,
+        "password":"secret",
+        "tls":True,
+        "servername":"example.com",
+        "network":"grpc",
+        "grpc-opts":{"grpc-service-name":"edge"},
+    }
+    uri = fc.node_to_uri(node)
+    assert "type=grpc" in uri
+    assert "serviceName=edge" in uri
+
+
+def test_vmess_grpc_v2ray_uri_preserves_service_name():
+    node = {
+        "name":"vmess-grpc",
+        "type":"vmess",
+        "server":"example.com",
+        "port":443,
+        "uuid":"123e4567-e89b-12d3-a456-426614174000",
+        "tls":True,
+        "network":"grpc",
+        "grpc-opts":{"grpc-service-name":"edge"},
+    }
+    uri = fc.node_to_uri(node)
+    payload = fc.base64.b64decode(uri[len("vmess://"):]).decode()
+    assert '"net":"grpc"' in payload
+    assert '"path":"edge"' in payload
+
+
+def test_globalping_token_is_applied(monkeypatch):
+    monkeypatch.setenv("GLOBALPING_API_TOKEN", "test-token")
+    probe = fc.GlobalpingShenzhenProbe({"api_token_env":"GLOBALPING_API_TOKEN"})
+    assert probe.session.headers["Authorization"] == "Bearer test-token"

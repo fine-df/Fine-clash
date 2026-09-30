@@ -15,6 +15,7 @@ nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 80
   min_final_nodes: 3
+  max_final_nodes: 20
   validation_workers: 4
   endpoint_workers: 4
   test_timeout_seconds: 12

@@ -18,6 +18,22 @@ CANDIDATE_NAMES=("sub","subscribe","subscription","clash","v2ray","proxy","nodes
 EXTENSIONS=(".yaml",".yml",".txt",".conf",".base64")
 ROOT=Path(__file__).resolve().parent
 
+# High-priority direct routes for WeChat/Tencent infrastructure. These sit above
+# generic CN matching because some router environments resolve or route these
+# domains before country rules can reliably classify them.
+WECHAT_DIRECT_RULES = [
+    "DOMAIN-SUFFIX,weixin.qq.com,DIRECT",
+    "DOMAIN-SUFFIX,wx.qq.com,DIRECT",
+    "DOMAIN-SUFFIX,wechat.com,DIRECT",
+    "DOMAIN-SUFFIX,qpic.cn,DIRECT",
+    "DOMAIN-SUFFIX,qlogo.cn,DIRECT",
+    "DOMAIN-SUFFIX,gtimg.cn,DIRECT",
+    "DOMAIN-SUFFIX,gtimg.com,DIRECT",
+    "DOMAIN-SUFFIX,qq.com,DIRECT",
+    "DOMAIN-SUFFIX,tenpay.com,DIRECT",
+    "DOMAIN-SUFFIX,wechatpay.cn,DIRECT",
+]
+
 def load_rules():
     return yaml.safe_load((ROOT/"config.yaml").read_text(encoding="utf-8"))
 
@@ -307,7 +323,8 @@ def unique_node_names(nodes):
 def build_outputs(nodes,rules):
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
-    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]}
+    rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]
+    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":rules}
     clash_path=ROOT/rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
     v2ray_path=ROOT/rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")

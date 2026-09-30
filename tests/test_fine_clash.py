@@ -65,3 +65,16 @@ def test_output_builder_deduplicates_proxy_names(tmp_path: Path):
     group_names = built["proxy-groups"][0]["proxies"][:-1]
     assert len(proxy_names) == len(set(proxy_names)) == 2
     assert group_names == proxy_names
+
+
+def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
+    fc.build_outputs(nodes, rules)
+    built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
+    routes = built["rules"]
+    assert routes[:3] == fc.WECHAT_DIRECT_RULES[:3]
+    assert "DOMAIN-SUFFIX,qpic.cn,DIRECT" in routes
+    assert "DOMAIN-SUFFIX,qq.com,DIRECT" in routes
+    assert "GEOSITE,CN,DIRECT" in routes
+    assert routes[-1] == "MATCH,PROXY"

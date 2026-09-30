@@ -1,6 +1,8 @@
 name: Fine-Clash daily update
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
@@ -14,6 +16,7 @@ concurrency:
 
 jobs:
   update:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -43,6 +46,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python fine_clash.py
+      - name: Validate generated Clash config
+        run: |
+          set -euo pipefail
+          if [ -f live_clash.yaml ]; then
+            mihomo -t -f live_clash.yaml
+          else
+            echo "No live_clash.yaml published in this run"
+          fi
       - name: Commit outputs and history
         run: |
           set -euo pipefail

@@ -219,6 +219,90 @@ def lifespan_days(row):
     try: return max(0,(date.today()-date.fromisoformat(row["first_seen"])).days)
     except Exception: return 0
 
+class GlobalpingShenzhenProbe:
+    def __init__(self, cfg):
+        self.cfg=cfg
+        self.session=requests.Session()
+        self.session.headers.update({"User-Agent":UA,"Content-Type":"application/json"})
+        self.base_url="https://api.globalping.io/v1/measurements"
+
+    def measure(self, node):
+        city=str(self.cfg.get("city","Shenzhen"))
+        port=_safe_int(node.get("port"))
+        target=str(node.get("server") or "").strip()
+        if not target or not port:
+            return {"ok":False,"status":"invalid-target"}
+        payload={
+            "target":target,
+            "type":"ping",
+            "locations":[{"city":city,"limit":1}],
+            "measurementOptions":{
+                "protocol":str(self.cfg.get("protocol","TCP")).upper(),
+                "port":port,
+                "packets":int(self.cfg.get("packets",3)),
+            },
+        }
+        try:
+            created=self.session.post(self.base_url,json=payload,timeout=15)
+            created.raise_for_status(); body=created.json(); measurement_id=body.get("id")
+            if not measurement_id:
+                return {"ok":False,"status":"no-measurement-id"}
+            deadline=time.monotonic()+float(self.cfg.get("max_wait_seconds",30))
+            poll=float(self.cfg.get("poll_interval_seconds",2))
+            result=None
+            while time.monotonic()<deadline:
+                time.sleep(poll)
+                response=self.session.get(f"{self.base_url}/{measurement_id}",timeout=15)
+                response.raise_for_status(); result=response.json()
+                if result.get("status") != "in-progress": break
+            if not result or result.get("status")=="in-progress":
+                return {"ok":False,"status":"timeout","measurement_id":measurement_id}
+            for entry in result.get("results",[]):
+                data=entry.get("result") or {}
+                stats=data.get("stats") or {}
+                avg=stats.get("avg")
+                if avg is None: avg=stats.get("average")
+                loss=stats.get("loss")
+                if avg is not None:
+                    return {
+                        "ok":True,
+                        "status":"ok",
+                        "avg_ms":float(avg),
+                        "loss_pct":float(loss) if loss is not None else None,
+                        "probe_city":(entry.get("probe") or {}).get("city"),
+                        "measurement_id":measurement_id,
+                    }
+            return {"ok":False,"status":"no-stats","measurement_id":measurement_id}
+        except (requests.RequestException,ValueError,TypeError) as exc:
+            return {"ok":False,"status":"error","error":str(exc)[:180]}
+
+
+def cached_shenzhen_result(row, cfg):
+    checked=row.get("shenzhen_checked_at")
+    avg=row.get("shenzhen_ping_ms")
+    if not checked or avg is None: return None
+    try:
+        checked_at=datetime.fromisoformat(checked)
+        if datetime.now(timezone.utc)-checked_at <= timedelta(days=float(cfg.get("cache_days",1))):
+            return {"ok":True,"status":"cached","avg_ms":float(avg),"loss_pct":row.get("shenzhen_loss_pct"),"probe_city":row.get("shenzhen_probe_city")}
+    except (ValueError,TypeError):
+        pass
+    return None
+
+
+def shenzhen_passes(result, cfg):
+    if result.get("ok"):
+        return float(result["avg_ms"]) <= float(cfg.get("reject_above_ms",400))
+    return not bool(cfg.get("fail_closed",False))
+
+
+def save_shenzhen_history(row, result):
+    row["shenzhen_checked_at"]=datetime.now(timezone.utc).isoformat()
+    row["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
+    row["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
+    row["shenzhen_status"]=result.get("status","unknown")
+    row["shenzhen_probe_city"]=result.get("probe_city")
+
 def clean_score(ipinfo,google_result):
     if not ipinfo: return 60
     score=80; org=str(ipinfo.get("org","")).lower()
@@ -374,8 +458,23 @@ def run():
     for item in MihomoTester(binary,tester_cfg).test_nodes(nodes,checks):
         node,fp=item["node"],fingerprint(item["node"]); row=history.get(fp,{"first_seen":date.today().isoformat()}); life=lifespan_days(row); clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability); row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
-        report["results"].append({"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row)})
-        if item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]): selected.append(node)
+        candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
+        shenzhen_cfg=rules.get("shenzhen_probe",{})
+        shenzhen_result=None
+        if candidate and shenzhen_cfg.get("enabled",False):
+            shenzhen_result=cached_shenzhen_result(row,shenzhen_cfg)
+            if shenzhen_result is None:
+                shenzhen_result=GlobalpingShenzhenProbe(shenzhen_cfg).measure(node)
+                save_shenzhen_history(row,shenzhen_result)
+            candidate=shenzhen_passes(shenzhen_result,shenzhen_cfg)
+        report["results"].append({
+            "fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],
+            "clean":clean,"lifespan_days":lifespan_days(row),
+            "shenzhen_ping_ms":shenzhen_result.get("avg_ms") if shenzhen_result and shenzhen_result.get("ok") else None,
+            "shenzhen_loss_pct":shenzhen_result.get("loss_pct") if shenzhen_result and shenzhen_result.get("ok") else None,
+            "shenzhen_status":shenzhen_result.get("status") if shenzhen_result else "not-tested",
+        })
+        if candidate: selected.append(node)
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return

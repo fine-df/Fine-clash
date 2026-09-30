@@ -100,3 +100,23 @@ def test_output_builder_filters_xhttp_for_compatibility(tmp_path: Path):
     fc.build_outputs(nodes, rules)
     built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
     assert [n["name"] for n in built["proxies"]] == ["ws"]
+
+
+def test_shenzhen_latency_filter():
+    cfg = {"reject_above_ms": 400, "fail_closed": False}
+    assert fc.shenzhen_passes({"ok": True, "avg_ms": 399.9}, cfg)
+    assert fc.shenzhen_passes({"ok": True, "avg_ms": 400}, cfg)
+    assert not fc.shenzhen_passes({"ok": True, "avg_ms": 400.1}, cfg)
+    assert fc.shenzhen_passes({"ok": False, "status": "timeout"}, cfg)
+    assert not fc.shenzhen_passes({"ok": False, "status": "timeout"}, {**cfg, "fail_closed": True})
+
+
+def test_cached_shenzhen_result(tmp_path: Path):
+    row = {
+        "shenzhen_checked_at": fc.datetime.now(fc.timezone.utc).isoformat(),
+        "shenzhen_ping_ms": 210.5,
+        "shenzhen_loss_pct": 0,
+        "shenzhen_probe_city": "Shenzhen",
+    }
+    cached = fc.cached_shenzhen_result(row, {"cache_days": 1})
+    assert cached and cached["avg_ms"] == 210.5 and cached["status"] == "cached"

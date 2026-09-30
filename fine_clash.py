@@ -320,14 +320,14 @@ def unique_node_names(nodes):
         used.add(candidate); out.append(copy)
     return out
 
-def build_outputs(nodes,rules):
+def build_outputs(nodes, output_rules):
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
-    rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]
-    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":rules}
-    clash_path=ROOT/rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
+    route_rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]
+    config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":route_rules}
+    clash_path=ROOT/output_rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
-    v2ray_path=ROOT/rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
+    v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
 
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]

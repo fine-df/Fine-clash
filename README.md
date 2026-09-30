@@ -18,5 +18,3 @@ The cleanliness score is a network-level heuristic based on exit-IP metadata and
 
 If a run finds fewer than the required number of qualifying nodes, the previous published subscriptions are preserved while history and the run report are updated.
 
-
-<!-- bootstrap-run: 2026-09-30 -->

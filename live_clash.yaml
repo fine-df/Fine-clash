@@ -3,7 +3,7 @@ allow-lan: true
 mode: rule
 proxies:
 - type: vless
-  name: 俄罗斯(yudou789.top 玉豆分享)
+  name: 俄罗斯(yudou789.top 玉豆分享) [296e1422]
   server: fbsv6.guardora.pro
   port: 443
   udp: true
@@ -17,7 +17,7 @@ proxies:
     headers:
       Host: fbsv6.guardora.pro
 - type: vless
-  name: 俄罗斯(yudou789.top 玉豆分享)
+  name: 俄罗斯(yudou789.top 玉豆分享) [a3b7a9cb]
   server: 176.109.106.182
   port: 9881
   udp: true
@@ -27,7 +27,7 @@ proxies:
   public-key: Dfgu8Ey0M8Hz4gXGZAwQ3H9jLt2HByVsjAOTWiuKDB0
   network: grpc
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [3de18304]
   server: 157.148.7.55
   port: 50011
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -35,7 +35,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [86a5ac19]
   server: 36.133.78.37
   port: 50015
   uuid: f114d414-1535-4321-856c-29979eeed799
@@ -43,7 +43,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [e541f312]
   server: 36.133.78.37
   port: 50016
   uuid: f114d414-1535-4321-856c-29979eeed799
@@ -51,7 +51,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [6cfedf4d]
   server: dey.lnmarketplace.net
   port: 443
   udp: true
@@ -61,7 +61,7 @@ proxies:
   client-fingerprint: firefox
   network: xhttp
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [fb43bae6]
   server: 36.133.78.37
   port: 50015
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -69,7 +69,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [9e25d954]
   server: 36.133.78.37
   port: 50015
   uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
@@ -77,7 +77,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [a125b9b5]
   server: 36.133.78.37
   port: 50016
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -85,7 +85,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [6a1206e1]
   server: 36.133.78.37
   port: 50016
   uuid: 9e63ca55-1ff9-453b-ae80-75947b8596d3
@@ -93,7 +93,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [43621946]
   server: 36.133.78.37
   port: 50017
   uuid: 9e63ca55-1ff9-453b-ae80-75947b8596d3
@@ -101,7 +101,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [1da056b4]
   server: 36.133.78.37
   port: 50016
   uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
@@ -109,7 +109,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [be292ba5]
   server: 36.133.78.37
   port: 50017
   uuid: abcb006d-739f-4cec-b13f-12c10d334d92
@@ -117,7 +117,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [a2d871e0]
   server: 36.133.78.37
   port: 50017
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -125,7 +125,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [a4a51734]
   server: 36.133.78.37
   port: 50017
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -133,7 +133,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [1dd7adaa]
   server: 36.133.78.37
   port: 50017
   uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
@@ -141,7 +141,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [26a1816c]
   server: 36.133.78.37
   port: 50017
   uuid: f114d414-1535-4321-856c-29979eeed799
@@ -149,7 +149,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [a6ba1142]
   server: 36.133.78.37
   port: 50016
   uuid: abcb006d-739f-4cec-b13f-12c10d334d92
@@ -157,7 +157,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [072dcb5c]
   server: 36.133.79.17
   port: 50011
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -165,7 +165,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [b63b820c]
   server: 36.133.78.37
   port: 50014
   uuid: abcb006d-739f-4cec-b13f-12c10d334d92
@@ -173,7 +173,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [1883e8a1]
   server: 36.133.78.37
   port: 50014
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -181,7 +181,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [072a0953]
   server: 36.133.78.37
   port: 50014
   uuid: 9e63ca55-1ff9-453b-ae80-75947b8596d3
@@ -189,7 +189,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [f03a2350]
   server: 36.133.78.37
   port: 50014
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -197,7 +197,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [7dd08008]
   server: 36.133.79.17
   port: 50011
   uuid: 9e63ca55-1ff9-453b-ae80-75947b8596d3
@@ -205,7 +205,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [29b4f75e]
   server: northland.paslanmaz.ir
   port: 4489
   udp: true
@@ -218,7 +218,7 @@ proxies:
   short-id: 3cace608cf980b78
   network: tcp
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [22da5170]
   server: 36.134.35.36
   port: 50011
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -226,7 +226,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [74c9a9e3]
   server: 172.67.183.52
   port: 80
   udp: true
@@ -238,7 +238,7 @@ proxies:
     headers:
       Host: r7yhmg1zxnt120wmkag.mf1h0myptv4lougs7341bmttcz8.workers.dev
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [6b164eb2]
   server: 36.134.35.36
   port: 50011
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -246,7 +246,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [65657c26]
   server: 36.133.78.37
   port: 50015
   uuid: 148e82ae-5014-4a1a-a783-dd63fa9cdc9d
@@ -254,7 +254,7 @@ proxies:
   cipher: auto
   udp: true
 - type: trojan
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [cac9bce1]
   server: 162.159.136.234
   port: 443
   udp: true
@@ -265,7 +265,7 @@ proxies:
   ws-opts:
     path: /assignment
 - type: trojan
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [89accc02]
   server: 104.18.23.63
   port: 443
   udp: true
@@ -276,7 +276,7 @@ proxies:
   ws-opts:
     path: /assignment
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [4fa1c0d8]
   server: 104.21.56.90
   port: 80
   udp: true
@@ -289,7 +289,7 @@ proxies:
     headers:
       Host: r7yhmg1zxnt120wmkag.mf1h0myptv4lougs7341bmttcz8.workers.dev
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [abcb903f]
   server: 36.133.78.37
   port: 50018
   uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
@@ -297,7 +297,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [37e2100c]
   server: 36.133.78.37
   port: 50018
   uuid: f114d414-1535-4321-856c-29979eeed799
@@ -305,7 +305,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [aae77dfe]
   server: 172.67.203.138
   port: 8080
   udp: true
@@ -317,7 +317,7 @@ proxies:
     headers:
       Host: server17.peekconfig1.workers.dev
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [db895281]
   server: 34.79.178.1
   port: 443
   udp: true
@@ -329,7 +329,7 @@ proxies:
   short-id: 95ae4a39d3933191
   network: tcp
 - type: trojan
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [c9b1f100]
   server: 216.24.57.1
   port: 443
   udp: true
@@ -341,7 +341,7 @@ proxies:
   ws-opts:
     path: /assignment
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [3b34ff42]
   server: 36.133.78.37
   port: 50012
   uuid: abcb006d-739f-4cec-b13f-12c10d334d92
@@ -349,7 +349,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [fbf8b15c]
   server: 172.67.207.26
   port: 8880
   udp: true
@@ -362,7 +362,7 @@ proxies:
     headers:
       Host: twilight-poetry-2bfe.218-699.workers.dev
 - type: trojan
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [e7d0b0ba]
   server: 104.18.22.63
   port: 443
   udp: true
@@ -373,7 +373,7 @@ proxies:
   ws-opts:
     path: /assignment
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [7e9ca3d4]
   server: 104.21.70.21
   port: 8080
   udp: true
@@ -384,7 +384,7 @@ proxies:
     headers:
       Host: lucky-lab-ac6d.caveyi8071.workers.dev
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [cb225674]
   server: 36.133.78.37
   port: 50018
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -392,7 +392,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [4db34e3a]
   server: 36.133.78.37
   port: 50012
   uuid: 23b5790c-4e96-49fa-95fc-9079ce9cf43c
@@ -400,7 +400,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 美国(yudou789.top 玉豆分享) [91f8f2dd]
   server: 36.133.78.37
   port: 50012
   uuid: e37149b8-63df-4b4e-bd17-d7fc0b3009db
@@ -449,14 +449,14 @@ proxies:
   cipher: auto
   udp: true
 - type: vless
-  name: 🇨🇳_CN_中国->🇺🇸_US_美国
+  name: 🇨🇳_CN_中国->🇺🇸_US_美国 [523108a0]
   server: jp.sofast.live
   port: 52683
   udp: true
   uuid: 399b6b23-cc40-4831-a494-61948e2df133
   network: tcp
 - type: vless
-  name: 🇨🇳_CN_中国->🇺🇸_US_美国
+  name: 🇨🇳_CN_中国->🇺🇸_US_美国 [baa58229]
   server: us22.sofast.live
   port: 58011
   udp: true
@@ -545,7 +545,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国 [ce0c0201]
   server: v24.hdacd.com
   port: 30824
   uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
@@ -553,7 +553,7 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国 [472267ac]
   server: v4.hdacd.com
   port: 30804
   uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
@@ -654,7 +654,7 @@ proxies:
   short-id: c75bbeb4b67fba71
   network: tcp
 - type: vless
-  name: 🇸🇬_SG_新加坡
+  name: 🇸🇬_SG_新加坡 [41e9b2c1]
   server: free-server.techsonic.dev
   port: 2096
   udp: true
@@ -668,7 +668,7 @@ proxies:
     headers:
       Host: free-server.techsonic.dev
 - type: vless
-  name: 🇸🇬_SG_新加坡
+  name: 🇸🇬_SG_新加坡 [56c9c438]
   server: onhit.shalana.xyz
   port: 443
   udp: true
@@ -690,7 +690,7 @@ proxies:
       Host: v2ray1.dozapp.xyz
     path: /lMnsZUN4/
 - type: vless
-  name: 🇺🇸_US_美国->🇩🇪_DE_德国
+  name: 🇺🇸_US_美国->🇩🇪_DE_德国 [401ae6a2]
   server: ewylr.smartorbitbox-bekhabdg.site
   port: 443
   udp: true
@@ -704,7 +704,7 @@ proxies:
     headers:
       Host: ewylr.smartorbitbox-bekhabdg.site
 - type: vless
-  name: 🇺🇸_US_美国->🇩🇪_DE_德国
+  name: 🇺🇸_US_美国->🇩🇪_DE_德国 [e0563a9a]
   server: site.check-looks.space
   port: 2083
   udp: true
@@ -729,56 +729,56 @@ proxy-groups:
 - name: PROXY
   type: select
   proxies:
-  - 俄罗斯(yudou789.top 玉豆分享)
-  - 俄罗斯(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
-  - 美国(yudou789.top 玉豆分享)
+  - 俄罗斯(yudou789.top 玉豆分享) [296e1422]
+  - 俄罗斯(yudou789.top 玉豆分享) [a3b7a9cb]
+  - 美国(yudou789.top 玉豆分享) [3de18304]
+  - 美国(yudou789.top 玉豆分享) [86a5ac19]
+  - 美国(yudou789.top 玉豆分享) [e541f312]
+  - 美国(yudou789.top 玉豆分享) [6cfedf4d]
+  - 美国(yudou789.top 玉豆分享) [fb43bae6]
+  - 美国(yudou789.top 玉豆分享) [9e25d954]
+  - 美国(yudou789.top 玉豆分享) [a125b9b5]
+  - 美国(yudou789.top 玉豆分享) [6a1206e1]
+  - 美国(yudou789.top 玉豆分享) [43621946]
+  - 美国(yudou789.top 玉豆分享) [1da056b4]
+  - 美国(yudou789.top 玉豆分享) [be292ba5]
+  - 美国(yudou789.top 玉豆分享) [a2d871e0]
+  - 美国(yudou789.top 玉豆分享) [a4a51734]
+  - 美国(yudou789.top 玉豆分享) [1dd7adaa]
+  - 美国(yudou789.top 玉豆分享) [26a1816c]
+  - 美国(yudou789.top 玉豆分享) [a6ba1142]
+  - 美国(yudou789.top 玉豆分享) [072dcb5c]
+  - 美国(yudou789.top 玉豆分享) [b63b820c]
+  - 美国(yudou789.top 玉豆分享) [1883e8a1]
+  - 美国(yudou789.top 玉豆分享) [072a0953]
+  - 美国(yudou789.top 玉豆分享) [f03a2350]
+  - 美国(yudou789.top 玉豆分享) [7dd08008]
+  - 美国(yudou789.top 玉豆分享) [29b4f75e]
+  - 美国(yudou789.top 玉豆分享) [22da5170]
+  - 美国(yudou789.top 玉豆分享) [74c9a9e3]
+  - 美国(yudou789.top 玉豆分享) [6b164eb2]
+  - 美国(yudou789.top 玉豆分享) [65657c26]
+  - 美国(yudou789.top 玉豆分享) [cac9bce1]
+  - 美国(yudou789.top 玉豆分享) [89accc02]
+  - 美国(yudou789.top 玉豆分享) [4fa1c0d8]
+  - 美国(yudou789.top 玉豆分享) [abcb903f]
+  - 美国(yudou789.top 玉豆分享) [37e2100c]
+  - 美国(yudou789.top 玉豆分享) [aae77dfe]
+  - 美国(yudou789.top 玉豆分享) [db895281]
+  - 美国(yudou789.top 玉豆分享) [c9b1f100]
+  - 美国(yudou789.top 玉豆分享) [3b34ff42]
+  - 美国(yudou789.top 玉豆分享) [fbf8b15c]
+  - 美国(yudou789.top 玉豆分享) [e7d0b0ba]
+  - 美国(yudou789.top 玉豆分享) [7e9ca3d4]
+  - 美国(yudou789.top 玉豆分享) [cb225674]
+  - 美国(yudou789.top 玉豆分享) [4db34e3a]
+  - 美国(yudou789.top 玉豆分享) [91f8f2dd]
   - 荷兰(yudou789.top 玉豆分享)
   - 🇨🇭 Switzerland [*CIDR]
   - 🇨🇭 Switzerland, Bern | [BL]
   - 🇨🇳_CN_中国
-  - 🇨🇳_CN_中国->🇺🇸_US_美国
-  - 🇨🇳_CN_中国->🇺🇸_US_美国
+  - 🇨🇳_CN_中国->🇺🇸_US_美国 [523108a0]
+  - 🇨🇳_CN_中国->🇺🇸_US_美国 [baa58229]
   - 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
   - 🇫🇷 France | [*CIDR]
   - 🇬🇧 United Kingdom | [*CIDR]
@@ -787,8 +787,8 @@ proxy-groups:
   - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - 🇭🇰_HK_中国香港->🇬🇧_GB_英国
   - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国 [ce0c0201]
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国 [472267ac]
   - 🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru
   - 🇳🇱 The Netherlands | [*CIDR] YA
   - 🇵🇱 Poland | [*CIDR]
@@ -797,11 +797,11 @@ proxy-groups:
   - 🇷🇺_RU_俄罗斯->🇹🇷_TR_土耳其
   - 🇸🇬 Singapore, Singapore (Outram) | [BL]
   - 🇸🇬 Singapore, Singapore | [BL]
-  - 🇸🇬_SG_新加坡
-  - 🇸🇬_SG_新加坡
+  - 🇸🇬_SG_新加坡 [41e9b2c1]
+  - 🇸🇬_SG_新加坡 [56c9c438]
   - 🇺🇸 United States, St Louis (Downtown) | [BL]
-  - 🇺🇸_US_美国->🇩🇪_DE_德国
-  - 🇺🇸_US_美国->🇩🇪_DE_德国
+  - 🇺🇸_US_美国->🇩🇪_DE_德国 [401ae6a2]
+  - 🇺🇸_US_美国->🇩🇪_DE_德国 [e0563a9a]
   - 🇺🇸_US_美国->🇯🇵_JP_日本
   - DIRECT
 rules:

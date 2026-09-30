@@ -17,3 +17,6 @@ A node is published only when both Gemini and Google Play checks pass and the to
 The cleanliness score is a network-level heuristic based on exit-IP metadata and Google challenge signals. It is not a guarantee of account-level or device-level access.
 
 If a run finds fewer than the required number of qualifying nodes, the previous published subscriptions are preserved while history and the run report are updated.
+
+
+<!-- bootstrap-run: 2026-09-30 -->

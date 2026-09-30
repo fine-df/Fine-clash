@@ -16,6 +16,7 @@ nodes:
   max_test_nodes: 80
   min_final_nodes: 3
   validation_workers: 4
+  endpoint_workers: 4
   test_timeout_seconds: 12
   controller_startup_seconds: 2.5
   switch_wait_seconds: 0.8

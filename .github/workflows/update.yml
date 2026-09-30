@@ -1,6 +1,8 @@
 name: Fine-Clash daily update
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
@@ -51,7 +53,9 @@ jobs:
           for attempt in 1 2 3; do
             git fetch origin main
             git reset --mixed origin/main
-            git add data output live_clash.yaml live_v2ray.txt
+            git add data
+          [ ! -f live_clash.yaml ] || git add live_clash.yaml
+          [ ! -f live_v2ray.txt ] || git add live_v2ray.txt
             if git diff --cached --quiet; then
               exit 0
             fi

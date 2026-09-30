@@ -20,6 +20,17 @@ nodes:
   switch_wait_seconds: 0.8
   score_threshold: 70
 
+shenzhen_probe:
+  enabled: true
+  city: 'Shenzhen'
+  protocol: 'TCP'
+  packets: 3
+  reject_above_ms: 400
+  cache_days: 1
+  poll_interval_seconds: 2
+  max_wait_seconds: 30
+  fail_closed: false
+
 checks:
   gemini_url: 'https://gemini.google.com/'
   google_play_url: 'https://play.google.com/store'

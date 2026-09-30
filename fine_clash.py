@@ -281,7 +281,31 @@ class MihomoTester:
         except subprocess.TimeoutExpired: self.proc.kill()
         self.proc=None
 
+def unique_node_names(nodes):
+    """Return copied nodes with deterministic unique Clash proxy names."""
+    bases=[_clean_name(node.get("name"),f"{node.get('type','node')}-{node.get('server','')}") for node in nodes]
+    counts={}
+    for base in bases: counts[base]=counts.get(base,0)+1
+    used=set(); out=[]
+    for node,base in zip(nodes,bases):
+        candidate=base
+        if counts[base]>1:
+            suffix=f" [{fingerprint(node)[:8]}]"
+            candidate=f"{base[:100-len(suffix)]}{suffix}"
+        if candidate in used:
+            suffix=f" [{fingerprint(node)[:12]}]"
+            candidate=f"{base[:100-len(suffix)]}{suffix}"
+        counter=2
+        while candidate in used:
+            suffix=f" [{fingerprint(node)[:8]}-{counter}]"
+            candidate=f"{base[:100-len(suffix)]}{suffix}"
+            counter+=1
+        copy=dict(node); copy["name"]=candidate
+        used.add(candidate); out.append(copy)
+    return out
+
 def build_outputs(nodes,rules):
+    nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
     config={"mixed-port":7890,"allow-lan":True,"mode":"rule","proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]}
     clash_path=ROOT/rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")

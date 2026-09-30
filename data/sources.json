@@ -3,7 +3,7 @@
     "url": "https://raw.githubusercontent.com/KaringX/karing/main/README_examples/clash/config.yaml",
     "repo": "KaringX/karing",
     "path": "README_examples/clash/config.yaml",
-    "stars": 15182,
+    "stars": 15184,
     "forks": 1273,
     "pushed_at": "2026-09-30T05:34:40Z",
     "nodes": 17
@@ -12,37 +12,37 @@
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
-    "stars": 8990,
+    "stars": 8991,
     "forks": 445,
-    "pushed_at": "2026-09-30T15:37:29Z",
-    "nodes": 90
+    "pushed_at": "2026-09-30T16:32:58Z",
+    "nodes": 130
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_SS%2BAll_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_SS+All_RUS_v2rayN.txt",
-    "stars": 8990,
+    "stars": 8991,
     "forks": 445,
-    "pushed_at": "2026-09-30T15:37:29Z",
-    "nodes": 32
+    "pushed_at": "2026-09-30T16:32:58Z",
+    "nodes": 15
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
-    "stars": 8990,
+    "stars": 8991,
     "forks": 445,
-    "pushed_at": "2026-09-30T15:37:29Z",
+    "pushed_at": "2026-09-30T16:32:58Z",
     "nodes": 10
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
-    "stars": 8990,
+    "stars": 8991,
     "forks": 445,
-    "pushed_at": "2026-09-30T15:37:29Z",
-    "nodes": 40
+    "pushed_at": "2026-09-30T16:32:58Z",
+    "nodes": 30
   },
   {
     "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/cfmem.txt",

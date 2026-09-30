@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T16:02:19.462232+00:00",
+  "generated_at": "2026-09-30T17:17:53.079417+00:00",
   "sources": 7,
   "nodes_discovered": 80,
   "results": [
@@ -10,34 +10,10 @@
       "gemini": false,
       "google_play": false,
       "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "1294860be6ce850b38ef",
-      "name": "vmess-grpc",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "4214543bc08855902959",
-      "name": "vless-ws",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "758fa26b2c7b9c547264",
-      "name": "trojan-xtls",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
     },
     {
       "fingerprint": "4e383d3b50ab14fe5492",
@@ -46,250 +22,82 @@
       "gemini": false,
       "google_play": false,
       "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "721c619c2b4651438b41",
-      "name": "🇫🇮 Finland, Kaarina | [BL]",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e9cc9e2bc71b0eee04cd",
-      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 32,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
     },
     {
       "fingerprint": "d4fde113d7e722bd8121",
       "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 56,
-      "gemini": false,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "f1506e36c0bf272ef6ca",
-      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 56,
-      "gemini": false,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7d5434b152cc65d42dc6",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
       "score": 81,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 203.9,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
-      "fingerprint": "69db8520043478b14a88",
-      "name": "🇯🇵 Japan, Akiruno (Ushinuma) | 🌐 | [BL]",
+      "fingerprint": "a268c6839f589810a935",
+      "name": "🇭🇰 Hong Kong, Hong Kong | 🌐 | [BL]",
       "score": 81,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
     },
     {
       "fingerprint": "2992f3d8e297831ae394",
       "name": "🇯🇵 Japan, Shibuya City | 🌐 | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "2b61072212837e2ff27e",
-      "name": "🇵🇱 Poland | [*CIDR]",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "ad3e4aea56918596ee21",
-      "name": "🇵🇱 Poland, Warsaw | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "46b1e074b2f9f278bdf7",
-      "name": "🇸🇬 Singapore, Singapore | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "864ef2473276101d457a",
-      "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 57.49,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "d80ff86ec27be6d27a83",
       "name": "🇸🇪 Sweden, Stockholm | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "88113861bdf94452b47f",
-      "name": "🇸🇪 Sweden, Stockholm | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "c39bbafdfe5d49744835",
-      "name": "🇨🇭 Switzerland, Bern | [BL]",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 391.3,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
-      "fingerprint": "86635bf14ab534373e66",
-      "name": "🇨🇭 Switzerland, Geneva | 🌐 | [BL]",
+      "fingerprint": "234fa80afb287a9dbc47",
+      "name": "🇳🇱 The Netherlands, Eygelshoven | 🌐 | [BL]",
       "score": 81,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 230.5,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
-      "fingerprint": "ce4f6058cad9647abd77",
-      "name": "🇳🇱 The Netherlands, Amsterdam | [BL]",
+      "fingerprint": "075c5c552a3b5771448e",
+      "name": "🇺🇸 United States, Secaucus | 🌐 | [BL]",
       "score": 81,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "579bd65d0a738c0406a0",
-      "name": "🇺🇸 United States | 🌐 | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "8450b463b5bc45cd12b0",
-      "name": "🇺🇸 United States, Boardman | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "4e6da00b83df6b8c5b7e",
-      "name": ".𖥔 ݁ ˖ִ🛸༄˖°. | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7c157ecd432205e422d8",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "599709edbc8a3868bfe6",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "106e34a9583a3945bb50",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "09d412d90856a5751509",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "408db74babc6252bd5c4",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "a2393028ced7d3e20411",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e47ee1b70afdc49acf1d",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7e858554fc112e9ffa20",
-      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
     },
     {
       "fingerprint": "49441729d7437e98df67",
@@ -298,25 +106,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "04ae4d01eea09d1adedc",
-      "name": "🇰🇿 Kazakhstan, Almaty | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "1a5649c2dd278f134a43",
-      "name": "🇰🇿 Kazakhstan, Almaty | [BL]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
     },
     {
       "fingerprint": "52c841c54d2586ea089e",
@@ -325,79 +118,22 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 158.3,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
-      "fingerprint": "cab197b19aa8954cfe1e",
-      "name": "🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru",
-      "score": 86,
+      "fingerprint": "dedf9281084f23ceab39",
+      "name": "🇪🇸 Spain | 🌐 | [*CIDR]",
+      "score": 81,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "003a755a8f81676c6173",
-      "name": "🇨🇭 Switzerland [*CIDR]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "7f2bc499ca1cef188740",
-      "name": "🇫🇷 France | [*CIDR]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "0210b05fb28d050df156",
-      "name": "🇷🇸 Serbia | [*CIDR]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "ca86209d1dcd838e0bac",
-      "name": "🇳🇱 The Netherlands | [*CIDR] YA",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "710e753707940f4557d2",
-      "name": "🇬🇧 United Kingdom | [*CIDR]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e33bdcaeaa181d3e1043",
-      "name": "🇷🇺 Russia | [*CIDR]",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "985f9894d7fb15ac986c",
-      "name": "🇨🇳_CN_中国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 214.2,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "523108a05a0495c00028",
@@ -406,34 +142,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "baa5822975cbabfdd696",
-      "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "549f90b1cdfaccc63dfe",
-      "name": "🇭🇰_HK_中国香港->🇯🇵_JP_日本",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "ce0c0201c348e9a945f8",
-      "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 14.52,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "41e9b2c171ce0d29c05a",
@@ -442,34 +154,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "cf0ee9db362964ad8d02",
-      "name": "🇭🇰_HK_中国香港->🇬🇧_GB_英国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "296e14222f9138172377",
-      "name": "俄罗斯(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "b71d62892f32c0d8cfd2",
-      "name": "🇭🇰_HK_中国香港->🇫🇷_FR_法国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
     },
     {
       "fingerprint": "56c9c4388a86a680c0fa",
@@ -478,34 +166,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "472267ac46bf4ae5e097",
-      "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "65cb7d48400cb5231c9c",
-      "name": "🇷🇺_RU_俄罗斯->🇹🇷_TR_土耳其",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "83a64c10cbbcf0cdff22",
-      "name": "🇭🇰_HK_中国香港",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
     },
     {
       "fingerprint": "0c085a09e749fac8667e",
@@ -514,34 +178,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "401ae6a2c8df6dee7ff6",
-      "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e0563a9a440e4e24e7fe",
-      "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "3de183046fabe7de2b75",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 220.1,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "86a5ac19e1c7b93e8534",
@@ -550,34 +190,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "e541f312faa3d125c368",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "6cfedf4d05e1b205f40f",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "fb43bae6f636341ecfaa",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 30.24,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "9e25d95403860d6fc930",
@@ -586,34 +202,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "a125b9b5db8d73209481",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "6a1206e1ecb36c52de40",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "436219468ab2ee81b5b3",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 29.76,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "1da056b4680d42f50066",
@@ -622,34 +214,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "be292ba596c16a1da390",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "b32a9f9a6269629dbd11",
-      "name": "荷兰(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "a2d871e0049882cd0c9c",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 29.85,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "a4a5173405c8ac9c9be6",
@@ -658,34 +226,10 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "1dd7adaa643d1fb4f9c9",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "26a1816c147c6da557c3",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
-    },
-    {
-      "fingerprint": "a6ba114251cd50753887",
-      "name": "美国(yudou789.top 玉豆分享)",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 21.72,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "072dcb5cf756d9a13180",
@@ -694,25 +238,718 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 27.63,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "1294860be6ce850b38ef",
+      "name": "vmess-grpc",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "f41f92422ff14372aa35",
+      "name": "🇧🇪 Belgium, Brussels | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "f1506e36c0bf272ef6ca",
+      "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "e943975802bb55def95b",
+      "name": "🇭🇰 Hong Kong, Hong Kong | 🌐 | [BL]",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "364a3a360c77bef28b90",
+      "name": "🇵🇱 Poland | 🌐 | [BL]",
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 205.9,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "88113861bdf94452b47f",
+      "name": "🇸🇪 Sweden, Stockholm | [BL]",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 289.2,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "1212c39a5e8490b5fcf0",
+      "name": "🇺🇸 United States, Ashburn | [BL]",
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "d4b2646a724ff904f083",
+      "name": "🌐 Anycast-IP | 🇨🇦 🇭🇰 | [BL]",
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 1771.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "a2393028ced7d3e20411",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "cab197b19aa8954cfe1e",
+      "name": "🇱🇹 Lithuania | 🌐 | [SNI-RU] dzen.ru",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 296.1,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "1f9f87094802609774a7",
+      "name": "🇬🇧 United Kingdom | [*CIDR]",
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 2314.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "baa5822975cbabfdd696",
+      "name": "🇨🇳_CN_中国->🇺🇸_US_美国",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 14.67,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "cf0ee9db362964ad8d02",
+      "name": "🇭🇰_HK_中国香港->🇬🇧_GB_英国",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 492.4,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "472267ac46bf4ae5e097",
+      "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 475.9,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "401ae6a2c8df6dee7ff6",
+      "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 211.8,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "e541f312faa3d125c368",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 25.38,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "a125b9b5db8d73209481",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 29.23,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "be292ba596c16a1da390",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 27.8,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "1dd7adaa643d1fb4f9c9",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 26.74,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "b63b820c516c902c218a",
       "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 31.36,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "4214543bc08855902959",
+      "name": "vless-ws",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "721c619c2b4651438b41",
+      "name": "🇫🇮 Finland, Kaarina | [BL]",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "7d5434b152cc65d42dc6",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "f1c23c39814dbb58450b",
+      "name": "🇮🇹 Italy, Milan | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "ad3e4aea56918596ee21",
+      "name": "🇵🇱 Poland, Warsaw | [BL]",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 221.9,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "c39bbafdfe5d49744835",
+      "name": "🇨🇭 Switzerland, Bern | [BL]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 223.6,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "8450b463b5bc45cd12b0",
+      "name": "🇺🇸 United States, Boardman | [BL]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 174.6,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "106e34a9583a3945bb50",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "0cd8ff53fb071b0a13bb",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 55.09,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "2b61072212837e2ff27e",
+      "name": "🇪🇸 Spain | [*CIDR]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "75ba2cd1a38f04d9802a",
+      "name": "🇷🇺 Russia | 🌐 | [*CIDR]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "549f90b1cdfaccc63dfe",
+      "name": "🇭🇰_HK_中国香港->🇯🇵_JP_日本",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 346.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "296e14222f9138172377",
+      "name": "俄罗斯(yudou789.top 玉豆分享)",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 262.2,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "65cb7d48400cb5231c9c",
+      "name": "🇷🇺_RU_俄罗斯->🇹🇷_TR_土耳其",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "e0563a9a440e4e24e7fe",
+      "name": "🇺🇸_US_美国->🇩🇪_DE_德国",
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "6cfedf4d05e1b205f40f",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "6a1206e1ecb36c52de40",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 26.45,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "b32a9f9a6269629dbd11",
+      "name": "荷兰(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 1394.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "26a1816c147c6da557c3",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 31.93,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "1883e8a135919680a1bf",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 28.74,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "758fa26b2c7b9c547264",
+      "name": "trojan-xtls",
+      "score": 12,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "b285eb35a5c6ad651803",
+      "name": "🇩🇪 Germany, Berlin | [BL]",
+      "score": 32,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "0c54433967daa47d73f3",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 32,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "69db8520043478b14a88",
+      "name": "🇯🇵 Japan, Akiruno (Ushinuma) | 🌐 | [BL]",
+      "score": 37,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "864ef2473276101d457a",
+      "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
+      "score": 37,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "86635bf14ab534373e66",
+      "name": "🇨🇭 Switzerland, Geneva | 🌐 | [BL]",
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested"
+    },
+    {
+      "fingerprint": "6fb09e229efd163f8d52",
+      "name": "🇺🇸 United States, Boardman | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 184.8,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "09d412d90856a5751509",
+      "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "17fb5027b66946e72140",
+      "name": "🇺🇸 United States, St Louis (Downtown) | [BL]",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "timeout"
+    },
+    {
+      "fingerprint": "fbadb92b0da12995f09d",
+      "name": "🇵🇱 Poland | [*CIDR] VK",
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 2274.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "985f9894d7fb15ac986c",
+      "name": "🇨🇳_CN_中国",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 5081.0,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "ce0c0201c348e9a945f8",
+      "name": "🇭🇰_HK_中国香港->🇺🇸_US_美国",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 446.7,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "b71d62892f32c0d8cfd2",
+      "name": "🇭🇰_HK_中国香港->🇫🇷_FR_法国",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 509.7,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "83a64c10cbbcf0cdff22",
+      "name": "🇭🇰_HK_中国香港",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 468.2,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "3de183046fabe7de2b75",
       "name": "美国(yudou789.top 玉豆分享)",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 17.47,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "fb43bae6f636341ecfaa",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 21.29,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "436219468ab2ee81b5b3",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 30.97,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "a2d871e0049882cd0c9c",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 29.75,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
+    },
+    {
+      "fingerprint": "a6ba114251cd50753887",
+      "name": "美国(yudou789.top 玉豆分享)",
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 25.1,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     },
     {
       "fingerprint": "072a0953a5f8bc81ba47",
@@ -721,9 +958,12 @@
       "gemini": true,
       "google_play": true,
       "clean": 80,
-      "lifespan_days": 0
+      "lifespan_days": 0,
+      "shenzhen_ping_ms": 26.96,
+      "shenzhen_loss_pct": 0.0,
+      "shenzhen_status": "ok"
     }
   ],
   "published": true,
-  "selected": 71
+  "selected": 39
 }

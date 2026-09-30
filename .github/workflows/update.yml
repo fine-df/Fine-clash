@@ -28,11 +28,14 @@ jobs:
         run: pip install -r requirements.txt
       - name: Download latest Mihomo
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          version=$(curl -fsSL https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | python -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')
+          api_headers=(-H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+          version=$(curl -fsSL "${api_headers[@]}" https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | python -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')
           asset="mihomo-linux-amd64-${version}.gz"
-          curl -fsSL "https://github.com/MetaCubeX/mihomo/releases/download/${version}/${asset}" -o mihomo.gz
+          curl -fsSL "${api_headers[@]}" "https://github.com/MetaCubeX/mihomo/releases/download/${version}/${asset}" -o mihomo.gz
           gunzip mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/mihomo

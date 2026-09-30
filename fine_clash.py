@@ -8,7 +8,7 @@ import requests, yaml
 SUPPORTED = {"vmess","vless","trojan","ss"}
 ALLOWED_FIELDS = {
     "vmess":{"type","name","server","port","uuid","alterId","cipher","tls","servername","network","ws-opts","udp"},
-    "vless":{"type","name","server","port","uuid","tls","servername","flow","network","ws-opts","public-key","short-id","client-fingerprint","udp"},
+    "vless":{"type","name","server","port","uuid","tls","servername","flow","network","ws-opts","grpc-opts","reality-opts","client-fingerprint","encryption","udp"},
     "trojan":{"type","name","server","port","password","tls","servername","network","ws-opts","udp"},
     "ss":{"type","name","server","port","cipher","password","udp"},
 }
@@ -102,11 +102,19 @@ def _parse_standard(uri):
     secret=unquote(parsed.username or "")
     if not secret: return None
     node={"type":scheme,"name":name,"server":server,"port":port,"udp":True,("uuid" if scheme=="vless" else "password"):secret}
-    query=parse_qs(parsed.query,keep_blank_values=True); security=query.get("security",[""])[0]
+    query=parse_qs(parsed.query,keep_blank_values=True); security=query.get("security",[""])[0].lower()
+    if scheme=="vless":
+        node["encryption"]=unquote(query.get("encryption",["none"])[0] or "none")
     if security in {"tls","reality"} or scheme=="trojan": node["tls"]=True
-    for src,dst in (("sni","servername"),("flow","flow"),("fp","client-fingerprint"),("pbk","public-key"),("sid","short-id")):
+    for src,dst in (("sni","servername"),("flow","flow"),("fp","client-fingerprint")):
         value=query.get(src,[""])[0]
         if value: node[dst]=unquote(value)
+    if security=="reality":
+        pbk=unquote(query.get("pbk",[""])[0]); sid=unquote(query.get("sid",[""])[0])
+        reality={}
+        if pbk: reality["public-key"]=pbk
+        if sid: reality["short-id"]=sid
+        if reality: node["reality-opts"]=reality
     network=query.get("type",[""])[0]
     if network: node["network"]=network
     if network=="ws":
@@ -114,6 +122,14 @@ def _parse_standard(uri):
         if query.get("path",[""])[0]: ws["path"]=unquote(query["path"][0])
         if query.get("host",[""])[0]: ws["headers"]={"Host":unquote(query["host"][0])}
         if ws: node["ws-opts"]=ws
+    elif network=="grpc" and query.get("serviceName",[""])[0]:
+        node["grpc-opts"]={"grpc-service-name":unquote(query["serviceName"][0])}
+    elif network=="xhttp":
+        xhttp={}
+        if query.get("path",[""])[0]: xhttp["path"]=unquote(query["path"][0])
+        if query.get("host",[""])[0]: xhttp["host"]=unquote(query["host"][0])
+        if query.get("mode",[""])[0]: xhttp["mode"]=unquote(query["mode"][0])
+        if xhttp: node["xhttp-opts"]=xhttp
     return node
 
 def parse_uri(uri):
@@ -153,12 +169,19 @@ def node_to_uri(node):
     host=f"[{server}]" if ":" in str(server) and not str(server).startswith("[") else str(server)
     if kind=="vless":
         q=[]
-        if node.get("tls"): q.append("security=tls")
+        reality=node.get("reality-opts")
+        if reality: q.append("security=reality")
+        elif node.get("tls"): q.append("security=tls")
+        if node.get("encryption"): q.append("encryption="+quote(str(node["encryption"]),safe=""))
         if node.get("servername"): q.append("sni="+quote(str(node["servername"]),safe=""))
         if node.get("flow"): q.append("flow="+quote(str(node["flow"]),safe=""))
+        if node.get("client-fingerprint"): q.append("fp="+quote(str(node["client-fingerprint"]),safe=""))
+        if reality and reality.get("public-key"): q.append("pbk="+quote(str(reality["public-key"]),safe=""))
+        if reality and reality.get("short-id"): q.append("sid="+quote(str(reality["short-id"]),safe=""))
         if node.get("network"): q.append("type="+quote(str(node["network"]),safe=""))
         if node.get("network")=="ws" and node.get("ws-opts",{}).get("path"): q.append("path="+quote(str(node["ws-opts"]["path"]),safe=""))
         if node.get("network")=="ws" and node.get("ws-opts",{}).get("headers",{}).get("Host"): q.append("host="+quote(str(node["ws-opts"]["headers"]["Host"]),safe=""))
+        if node.get("network")=="grpc" and node.get("grpc-opts",{}).get("grpc-service-name"): q.append("serviceName="+quote(str(node["grpc-opts"]["grpc-service-name"]),safe=""))
         return f"vless://{quote(str(node.get('uuid','')),safe='')}@{host}:{port}?{'&'.join(q)}#{name}"
     if kind=="trojan":
         q=["security=tls"]
@@ -320,7 +343,10 @@ def unique_node_names(nodes):
         used.add(candidate); out.append(copy)
     return out
 
+COMPATIBLE_NETWORKS = {"tcp", "ws", "grpc"}
+
 def build_outputs(nodes, output_rules):
+    nodes=[dict(node) for node in nodes if node.get("network","tcp") in COMPATIBLE_NETWORKS]
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
     route_rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]

@@ -16,14 +16,16 @@ tolerance=100ms 抑制快慢交替造成的横跳（切一次就是一次断流�
 """
 import io, os, sys, yaml
 
-# ---- PROXY(url-test) 参数唯一真源：构建产物和产物顶部的 fine-override 标记都从这里取值 ----
+# ---- 参数唯一真源：构建产物和产物顶部的 fine-override 标记都从这里取值 ----
+AUTO_NAME = "♻️ 自动选择"   # url-test 组：只放节点，永远选最快
+PICK_NAME = "🚀 节点选择"   # select  组：手动入口，第一项=自动选择（=默认自动挡）
 PROBE_URL = "https://play.google.com/store"
 INTERVAL = 90        # 比速间隔（秒）。原 180 太钝：掉线后要 2 轮才恢复（实测 245s 才跳一次）
 TIMEOUT = 10000      # 单节点探针超时（毫秒）。原 6000 会误杀首字节波动大的边缘节点
-TOLERANCE = 0        # 原 100 会把 251ms vs 266ms 判为等价而保留旧节点；自动挡就该真的取最小值
-UNIFIED_DELAY = False  # GLOBAL 是纯 select 外壳，没有自动父组，统一延迟量纲没有收益
+TOLERANCE = 50       # 与参考配置一致：50ms 内视为等价，避免两个节点反复横跳（切一次=一次断流）
+UNIFIED_DELAY = False  # 上层是纯 select，没有自动父组，统一延迟量纲没有收益
 LOG_LEVEL = "warning"
-OVERRIDE_TAG = "v2"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新参数
+OVERRIDE_TAG = "v3"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新参数
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else ("fine_only.yaml" if os.path.exists("fine_only.yaml") else "live_clash.yaml")
 OUT = "fine_final.yaml"
@@ -35,41 +37,66 @@ if not names:
     sys.exit(1)
 print("source:", SRC, "nodes:", len(names))
 
-replaced = 0
-for g in base.get("proxy-groups", []):
-    if g.get("name") != "PROXY":
-        continue
-    g.clear()
-    g.update({
-        "name": "PROXY",
-        "type": "url-test",
-        "url": PROBE_URL,
-        "interval": INTERVAL,
-        "timeout": TIMEOUT,
-        "tolerance": TOLERANCE,
-        "lazy": False,
-        "proxies": list(names),
-    })
-    replaced += 1
-if not replaced:
+if not any(g.get("name") == "PROXY" for g in base.get("proxy-groups", [])):
     print("FATAL: PROXY group not found in", SRC, file=sys.stderr)
     sys.exit(1)
 
-# 显式定义 GLOBAL（放在 proxy-groups 首位）。
-# GLOBAL 只是外壳：type=select、只挂 PROXY 一个成员，真正干活的是内层 PROXY(url-test)。
-# 不写 GLOBAL 时，Clash Verge 会自行生成一个 selector 并把**全部节点平铺**进去，
-# 界面上的「GLOBAL」就变成「手动锁一个点、掉线不切」——WIN 端打不开 PLAY 的根因。
-# 显式定义后：Verge 里选 GLOBAL → 落到 PROXY → 180s 比速、自动切最快可达节点，
-# 与路由器行为一致。CrashCore 侧多一个 select 组，不影响 url-test 现有逻辑。
-groups = base.get("proxy-groups", [])
-for g in groups:
-    if g.get("name") == "GLOBAL":
-        g.clear()
-        break
-else:
-    g = {}
-    groups.insert(0, g)
-g.update({"name": "GLOBAL", "type": "select", "proxies": ["PROXY"]})
+# ============================ 两组结构（对齐参考配置 c.yaml）============================
+# 为什么必须两层，而不是把节点直接平铺进一个组：
+#
+#   mihomo URLTest 源码（v1.19.28 adapter/outboundgroup/urltest.go）:
+#       func (u *URLTest) fast(touch bool) C.Proxy {
+#           ... if u.selected != "" {                     // 只要被「手动选过点」
+#                   for _, proxy := range proxies {
+#                       if proxy.Name() == u.selected { return proxy }  // 直接返回，跳过比速
+#           ...
+#           // 只有 selected == "" 时，才走「遍历全部成员取最小延迟」＋ tolerance 判定
+#       }
+#   → 在 url-test 组里点任何一个节点（Dashboard / Verge / API PUT）都会写 u.selected，
+#     该组就此**被钉死在那台节点上**，比速形同虚设，直到重启核心或节点被判死。
+#     实测：fixed=🇵🇱 Poland 而当时最快的 🇫🇷 只有 220ms（波兰 315ms）却永不切换。
+#
+#   解法就是参考配置的做法：
+#     ♻️ 自动选择(url-test)  ← 只放节点，任何人不要去点它
+#     🚀 节点选择(select)    ← 手动入口：第一项=自动选择（默认=自动挡），后面才是 DIRECT + 各节点
+#   想锁某台节点，只在「节点选择」里选，永远不污染「自动选择」组。
+# =============================================================================
+
+auto = {
+    "name": AUTO_NAME,
+    "type": "url-test",
+    "url": PROBE_URL,
+    "interval": INTERVAL,
+    "timeout": TIMEOUT,
+    "tolerance": TOLERANCE,
+    "lazy": False,
+    "proxies": list(names),
+}
+# 第一项必须是自动选择：mihomo Select 组未指定 default 时取成员列表首项为初始选中项，
+# 这样「开箱即自动挡」，用户不必先手动选一次。
+pick = {
+    "name": PICK_NAME,
+    "type": "select",
+    "proxies": [AUTO_NAME, "DIRECT"] + list(names),
+}
+# GLOBAL 只做外壳：不写它时 Clash Verge 会自行造一个 selector 并把全部节点平铺，
+# 界面上的 GLOBAL 就变成「手动锁一个点、掉线不切」。
+global_group = {"name": "GLOBAL", "type": "select", "proxies": [PICK_NAME]}
+base["proxy-groups"] = [global_group, pick, auto]
+
+# 规则出口改指向「节点选择」：所有原指向 PROXY 的规则、以及 MATCH 兜底，全部改道。
+# （改道后默认链路 = 节点选择 → 自动选择 → 全场最快节点）
+rules = base.get("rules", [])
+new_rules = []
+for r in rules:
+    parts = r.split(",")
+    kind = parts[0].strip().upper()
+    if kind in ("MATCH", "FINAL"):
+        parts[-1] = PICK_NAME
+    elif parts[-1].strip() == "PROXY":
+        parts[-1] = PICK_NAME
+    new_rules.append(",".join(parts))
+base["rules"] = new_rules
 
 # 路由器是 mihomo v1.19.28，去掉 tun / 重定向模式相关字段，避免启动冲突
 for k in ("tun", "redir-port", "tproxy-port", "routing-mark"):
@@ -93,7 +120,9 @@ base["unified-delay"] = UNIFIED_DELAY
 # 想主动发布新参数时，把 OVERRIDE_TAG 的序号 +1 即可（老 CDN 版本带 v(N-1) 标记 → 触发正常比对）。
 dumped = yaml.safe_dump(base, allow_unicode=True, sort_keys=False, default_flow_style=False)
 with io.open(OUT, "w", encoding="utf-8") as f:
-    f.write("# fine-override: %s | url=%s interval=%s timeout=%s tolerance=%s unified-delay=%s log=%s\n"
-            % (OVERRIDE_TAG, PROBE_URL, INTERVAL, TIMEOUT, TOLERANCE, UNIFIED_DELAY, LOG_LEVEL))
+    f.write("# fine-override: %s | %s(select)->%s(url-test) url=%s interval=%s timeout=%s tolerance=%s unified-delay=%s log=%s\n"
+            % (OVERRIDE_TAG, PICK_NAME, AUTO_NAME, PROBE_URL, INTERVAL, TIMEOUT, TOLERANCE,
+               UNIFIED_DELAY, LOG_LEVEL))
     f.write(dumped)
-print("written", OUT, os.path.getsize(OUT), "bytes; PROXY url-test over", len(names), "nodes")
+print("written", OUT, os.path.getsize(OUT), "bytes; %s -> %s over %d nodes"
+      % (PICK_NAME, AUTO_NAME, len(names)))

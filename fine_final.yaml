@@ -1,4 +1,4 @@
-# fine-override: v2 | url=https://play.google.com/store interval=90 timeout=10000 tolerance=0 unified-delay=False log=warning
+# fine-override: v3 | 🚀 节点选择(select)->♻️ 自动选择(url-test) url=https://play.google.com/store interval=90 timeout=10000 tolerance=50 unified-delay=False log=warning
 mixed-port: 7890
 allow-lan: true
 mode: rule
@@ -347,13 +347,38 @@ proxy-groups:
 - name: GLOBAL
   type: select
   proxies:
-  - PROXY
-- name: PROXY
+  - 🚀 节点选择
+- name: 🚀 节点选择
+  type: select
+  proxies:
+  - ♻️ 自动选择
+  - DIRECT
+  - 🇯🇵 Japan, Shibuya City | [BL]
+  - 🇹🇷 Turkey | 🌐 | [BL] [b9c41906]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇸🇬 Singapore, Singapore | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [72f78d4f]
+  - 🇫🇷 France, Paris | [BL] [bc276c10]
+  - 🇷🇸 Serbia | [*CIDR]
+  - 🇫🇷 France, Paris | [BL] [6511a000]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a580a083]
+  - 🇺🇸 United States, Council Bluffs | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a0aeebd4]
+  - 🇹🇼 Taiwan, Taipei | [BL]
+  - 🇳🇱 The Netherlands [SNI-RU] mail.ru
+  - 🇹🇷 Turkey | 🌐 | [BL] [8f4c821f]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [7a24be72]
+  - 🇪🇪 Estonia, Tallinn | [BL] [14006960]
+  - 🇵🇱 Poland | [*CIDR]
+- name: ♻️ 自动选择
   type: url-test
   url: https://play.google.com/store
   interval: 90
   timeout: 10000
-  tolerance: 0
+  tolerance: 50
   lazy: false
   proxies:
   - 🇯🇵 Japan, Shibuya City | [BL]
@@ -391,7 +416,7 @@ rules:
 - DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
 - GEOSITE,CN,DIRECT
 - GEOIP,CN,DIRECT
-- MATCH,PROXY
+- MATCH,🚀 节点选择
 find-process-mode: 'off'
 log-level: warning
 external-controller: 0.0.0.0:9999

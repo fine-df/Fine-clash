@@ -45,25 +45,45 @@ except Exception as e:
 proxies = doc.get("proxies", [])
 pnames = set(p.get("name") for p in proxies)
 groups = {g.get("name"): g for g in doc.get("proxy-groups", [])}
-gproxy = groups.get("PROXY", {})
+
+AUTO_NAME = "♻️ 自动选择"
+PICK_NAME = "🚀 节点选择"
+gauto = groups.get(AUTO_NAME, {})
+gpick = groups.get(PICK_NAME, {})
 
 # P0-2
 g = groups.get("GLOBAL")
-ok_g = bool(g) and g.get("type") == "select" and g.get("proxies") == ["PROXY"]
-check("P0-2", "P0", "GLOBAL=select{PROXY}（Verge 不再自动平铺 selector，掉线可自动切）", ok_g)
+ok_g = bool(g) and g.get("type") == "select" and g.get("proxies") == [PICK_NAME]
+check("P0-2", "P0", "GLOBAL=select{%s}（Verge 不再自动平铺 selector）" % PICK_NAME, ok_g)
 
 # P0-3
 need = ["type", "url", "interval", "timeout", "tolerance", "lazy"]
-miss = [k for k in need if k not in gproxy]
-check("P0-3", "P0", "PROXY url-test 字段齐全 %s" % need, not miss and gproxy.get("type") == "url-test")
+miss = [k for k in need if k not in gauto]
+check("P0-3", "P0", "%s url-test 字段齐全 %s" % (AUTO_NAME, need),
+      not miss and gauto.get("type") == "url-test")
 
 # P0-4
-url = gproxy.get("url", "")
+url = gauto.get("url", "")
 check("P0-4", "P0", "探针 = %s（曾误用 gstatic 导致选到 PLAY 打不开的节点）" % url,
       url == "https://play.google.com/store")
 
-# P0-5  组可以引用「代理」，也可以引用「另一个组」（如 GLOBAL->PROXY），两者都算合法成员
-pool = pnames | set(groups.keys())
+# P0-7 ★两层结构：这是本配置存在的唯一理由，拆错了会出现「永远不切最快节点」
+#   - 节点选择(select) 第一项必须是 自动选择 → 初始即自动挡（mihomo Select 无 default 时取首项）
+#   - 节点选择 必须带 DIRECT（用户可切直连）
+#   - 节点选择 必须平铺全部节点（用户可手动锁点，且锁点只发生在这里）
+#   - 自动选择 必须只含节点（不能转发给另一个组，否则节点名对不上无法比速）
+pick_members = gpick.get("proxies", [])
+ok_pick = (gpick.get("type") == "select" and pick_members[:1] == [AUTO_NAME]
+           and "DIRECT" in pick_members and len(pick_members) == len(proxies) + 2)
+check("P0-7", "P0", "%s=select{%s 首项, DIRECT, %d 节点}（首项即默认自动挡）"
+      % (PICK_NAME, AUTO_NAME, len(proxies)), ok_pick)
+ok_auto = gauto.get("type") == "url-test" and gauto.get("proxies") == [p.get("name") for p in proxies]
+check("P0-8", "P0", "%s 成员 == 全部 %d 个节点（纯节点，不比速层级嵌套）"
+      % (AUTO_NAME, len(proxies)), ok_auto)
+
+# P0-5  组可以引用「代理」，也可以引用「另一个组」（如 GLOBAL->节点选择），两者都算合法成员
+#       DIRECT 是 mihomo 内置出站，不在 proxies/组名里，但合法。
+pool = pnames | set(groups.keys()) | {"DIRECT", "REJECT"}
 bad = []
 for gset in doc.get("proxy-groups", []):
     for m in gset.get("proxies", []):
@@ -82,6 +102,24 @@ lname = last.split(",")[-1] if last else ""
 check("P1-1", "P1", "末条规则 = %s（目标组 %s 存在）" % (last, lname),
       last.startswith("MATCH,") and lname in groups)
 
+# P0-9 所有规则的目标（最后一段）必须真实存在：改组名后残留的 `,PROXY` 会让核心启动失败
+builtin = {"DIRECT", "REJECT", "REJECT-DROP", "PASS", "COMPATIBLE", "NO-RESOLVE"}
+rbad = []
+for r in rules:
+    if "," not in r or r.startswith("#"):
+        continue
+    tgt = r.split(",")[-1].strip()
+    if tgt in builtin or tgt in groups or tgt in pnames or tgt.isdigit():
+        continue
+    if r.split(",")[0].strip().upper() in ("MATCH", "FINAL") or True:
+        rbad.append(r)
+# 规则里还可能带 no-resolve / src 等参数，只对已知策略名做白名单外的报错收敛
+rbad = [r for r in rbad if r.split(",")[-1].strip() not in builtin
+        and r.split(",")[-1].strip() not in groups
+        and r.split(",")[-1].strip() not in pnames
+        and not r.split(",")[-1].strip().isdigit()]
+check("P0-9", "P0", "全部 %d 条规则的目标均存在（无残留 ,PROXY）" % len(rules), not rbad)
+
 # P1-2
 try:
     src_names = [p["name"] for p in yaml.safe_load(io.open(SRC, encoding="utf-8")).get("proxies", [])]
@@ -96,7 +134,8 @@ check("P1-3", "P1", "external-controller=%s / allow-lan=%s / authentication=%s"
       ec == "0.0.0.0:9999" and doc.get("allow-lan") is True and doc.get("authentication") == [])
 
 # P1-4
-check("P1-4", "P1", "组数 = %d（期望 2：GLOBAL + PROXY）" % len(groups), len(groups) == 2)
+check("P1-4", "P1", "组数 = %d（期望 3：GLOBAL + %s + %s）" % (len(groups), PICK_NAME, AUTO_NAME),
+      len(groups) == 3)
 
 # P2-1
 try:

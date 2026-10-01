@@ -3,7 +3,7 @@
     "url": "https://raw.githubusercontent.com/KaringX/karing/main/README_examples/clash/config.yaml",
     "repo": "KaringX/karing",
     "path": "README_examples/clash/config.yaml",
-    "stars": 15185,
+    "stars": 15187,
     "forks": 1273,
     "pushed_at": "2026-09-30T05:34:40Z",
     "nodes": 17
@@ -12,43 +12,43 @@
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
-    "stars": 8991,
-    "forks": 446,
-    "pushed_at": "2026-09-30T17:30:34Z",
-    "nodes": 90
+    "stars": 8997,
+    "forks": 447,
+    "pushed_at": "2026-09-30T23:32:49Z",
+    "nodes": 145
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_SS%2BAll_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_SS+All_RUS_v2rayN.txt",
-    "stars": 8991,
-    "forks": 446,
-    "pushed_at": "2026-09-30T17:30:34Z",
-    "nodes": 18
+    "stars": 8997,
+    "forks": 447,
+    "pushed_at": "2026-09-30T23:32:49Z",
+    "nodes": 27
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
-    "stars": 8991,
-    "forks": 446,
-    "pushed_at": "2026-09-30T17:30:34Z",
-    "nodes": 10
+    "stars": 8997,
+    "forks": 447,
+    "pushed_at": "2026-09-30T23:32:49Z",
+    "nodes": 4
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
-    "stars": 8991,
-    "forks": 446,
-    "pushed_at": "2026-09-30T17:30:34Z",
-    "nodes": 30
+    "stars": 8997,
+    "forks": 447,
+    "pushed_at": "2026-09-30T23:32:49Z",
+    "nodes": 114
   },
   {
     "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/cfmem.txt",
     "repo": "Barabama/FreeNodes",
     "path": "nodes/cfmem.txt",
-    "stars": 3205,
+    "stars": 3208,
     "forks": 396,
     "pushed_at": "2026-09-30T10:12:21Z",
     "nodes": 21
@@ -57,7 +57,7 @@
     "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/yudou.txt",
     "repo": "Barabama/FreeNodes",
     "path": "nodes/yudou.txt",
-    "stars": 3205,
+    "stars": 3208,
     "forks": 396,
     "pushed_at": "2026-09-30T10:12:21Z",
     "nodes": 360

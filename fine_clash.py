@@ -44,6 +44,12 @@ def _safe_int(value, default=0):
     try: return int(str(value).strip())
     except (TypeError,ValueError): return default
 
+def _safe_float(value, default=0.0):
+    try:
+        if value is None: return default
+        return float(value)
+    except (TypeError,ValueError): return default
+
 def _clean_name(value, fallback):
     value=unquote(str(value or "")).strip()
     return value[:100] or fallback
@@ -528,6 +534,55 @@ def build_outputs(nodes, output_rules):
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
     v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
 
+def rank_candidates(nodes, limit=20, metadata=None):
+    """Rank verified nodes by score and diversity, returning the top `limit`.
+
+    Sorting priority (higher first unless noted):
+      1. total_score (desc)
+      2. shenzhen_ping_ms (asc)
+      3. shenzhen_loss_pct (asc)
+      4. stability (desc)
+      5. lifespan (desc)
+      6. fingerprint (asc, deterministic tiebreak)
+
+    Diversity caps applied greedily in sorted order:
+      - duplicate fingerprint -> keep only the highest-scored node
+      - same server -> keep at most 2
+      - same org/ASN -> keep at most 3
+
+    `metadata` is a fingerprint -> dict lookup (score, shenzhen_ping_ms,
+    shenzhen_loss_pct, stability, lifespan, org, asn). Missing fields fall back
+    safely, so ranking never raises.
+    """
+    metadata=metadata or {}
+    try: limit=max(1,int(limit))
+    except (TypeError,ValueError): limit=20
+    enriched=[]
+    for node in nodes:
+        fp=fingerprint(node); meta=metadata.get(fp,{})
+        enriched.append({
+            "node":node,"fp":fp,
+            "score":_safe_float(meta.get("score"),0.0),
+            "ping":_safe_float(meta.get("shenzhen_ping_ms"),float("inf")),
+            "loss":_safe_float(meta.get("shenzhen_loss_pct"),float("inf")),
+            "stability":_safe_float(meta.get("stability"),0.0),
+            "lifespan":_safe_float(meta.get("lifespan"),0.0),
+            "server":str(node.get("server") or "").strip().lower(),
+            "org":str(meta.get("org") or meta.get("asn") or "").strip().lower(),
+        })
+    enriched.sort(key=lambda e:(-e["score"],e["ping"],e["loss"],-e["stability"],-e["lifespan"],e["fp"]))
+    seen_fp=set(); server_count={}; org_count={}; picked=[]
+    for e in enriched:
+        if e["fp"] in seen_fp: continue
+        if e["server"] and server_count.get(e["server"],0)>=2: continue
+        if e["org"] and org_count.get(e["org"],0)>=3: continue
+        seen_fp.add(e["fp"])
+        if e["server"]: server_count[e["server"]]=server_count.get(e["server"],0)+1
+        if e["org"]: org_count[e["org"]]=org_count.get(e["org"],0)+1
+        picked.append(e["node"])
+        if len(picked)>=limit: break
+    return picked
+
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     sources=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover(); source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
@@ -550,11 +605,12 @@ def run():
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
         row=history.get(fp,{"first_seen":date.today().isoformat(),"last_seen":date.today().isoformat(),"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
-        life=lifespan_days(row); clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
+        life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
         row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
         candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
-        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested"}
+        asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
@@ -583,6 +639,19 @@ def run():
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return
-    selected.sort(key=lambda node:node["name"]); build_outputs(selected,rules); report["published"]=True; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+    ranking_meta={}
+    for node in selected:
+        fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
+        ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn")}
+    ranked=rank_candidates(selected,limit=int(rules["nodes"].get("max_final_nodes",20)),metadata=ranking_meta)
+    report["ranking"]=[]
+    for i,node in enumerate(ranked,1):
+        entry=report_lookup.get(fingerprint(node),{})
+        report["ranking"].append({"rank":i,"score":entry.get("score"),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"server":node.get("server"),"type":node.get("type")})
+    print("Top20 Ranking:"); print("Rank | Score | Ping | Loss | Server | Type")
+    for r in report["ranking"]:
+        ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
+        print(f"{r['rank']:>4} | {r['score']:>5} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
+    build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

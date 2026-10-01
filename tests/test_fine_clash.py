@@ -170,3 +170,95 @@ def test_globalping_token_is_applied(monkeypatch):
     monkeypatch.setenv("GLOBALPING_API_TOKEN", "test-token")
     probe = fc.GlobalpingShenzhenProbe({"api_token_env":"GLOBALPING_API_TOKEN"})
     assert probe.session.headers["Authorization"] == "Bearer test-token"
+
+
+def _rank_node(name, server, password="p"):
+    return {"name": name, "type": "trojan", "server": server, "port": 443, "password": password, "tls": True}
+
+
+def _rank_meta(node, score=80, ping=100, loss=0, stability=1, lifespan=10, org=None):
+    return {
+        "score": score,
+        "shenzhen_ping_ms": ping,
+        "shenzhen_loss_pct": loss,
+        "stability": stability,
+        "lifespan": lifespan,
+        "org": org,
+    }
+
+
+def test_rank_candidates_sorts_and_limits():
+    nodes = [
+        _rank_node("low", "a.example"),
+        _rank_node("high", "b.example"),
+        _rank_node("mid", "c.example"),
+    ]
+    meta = {
+        fc.fingerprint(nodes[0]): _rank_meta(nodes[0], score=70, ping=100),
+        fc.fingerprint(nodes[1]): _rank_meta(nodes[1], score=90, ping=50),
+        fc.fingerprint(nodes[2]): _rank_meta(nodes[2], score=80, ping=75),
+    }
+    ranked = fc.rank_candidates(nodes, limit=2, metadata=meta)
+    assert [n["name"] for n in ranked] == ["high", "mid"]
+
+
+def test_rank_candidates_orders_by_score_then_ping():
+    tie = _rank_node("tie-a", "t1.example")
+    faster = _rank_node("tie-b", "t2.example")
+    slower = _rank_node("tie-c", "t3.example")
+    nodes = [tie, slower, faster]
+    meta = {
+        fc.fingerprint(tie): _rank_meta(tie, score=80, ping=100),
+        fc.fingerprint(slower): _rank_meta(slower, score=80, ping=300),
+        fc.fingerprint(faster): _rank_meta(faster, score=80, ping=50),
+    }
+    ranked = fc.rank_candidates(nodes, metadata=meta)
+    assert [n["name"] for n in ranked] == ["tie-b", "tie-a", "tie-c"]
+
+
+def test_rank_candidates_dedups_fingerprint():
+    node = _rank_node("dup", "9.9.9.9")
+    nodes = [dict(node), dict(node)]
+    meta = {fc.fingerprint(node): _rank_meta(node, score=88)}
+    ranked = fc.rank_candidates(nodes, metadata=meta)
+    assert len(ranked) == 1
+
+
+def test_rank_candidates_caps_same_server():
+    nodes = [
+        _rank_node("a1", "1.2.3.4", password="p1"),
+        _rank_node("a2", "1.2.3.4", password="p2"),
+        _rank_node("a3", "1.2.3.4", password="p3"),
+        _rank_node("b1", "5.6.7.8"),
+    ]
+    meta = {
+        fc.fingerprint(nodes[0]): _rank_meta(nodes[0], score=90),
+        fc.fingerprint(nodes[1]): _rank_meta(nodes[1], score=89),
+        fc.fingerprint(nodes[2]): _rank_meta(nodes[2], score=88),
+        fc.fingerprint(nodes[3]): _rank_meta(nodes[3], score=87),
+    }
+    ranked = fc.rank_candidates(nodes, limit=20, metadata=meta)
+    servers = [n["server"] for n in ranked]
+    assert servers.count("1.2.3.4") <= 2
+    assert "5.6.7.8" in servers
+
+
+def test_rank_candidates_caps_same_org():
+    nodes = [
+        _rank_node("n1", "1.1.1.1"),
+        _rank_node("n2", "2.2.2.2"),
+        _rank_node("n3", "3.3.3.3"),
+        _rank_node("n4", "4.4.4.4"),
+    ]
+    meta = {
+        fc.fingerprint(nodes[i]): _rank_meta(nodes[i], score=90 - i, org="Cloudflare, Inc.")
+        for i in range(len(nodes))
+    }
+    ranked = fc.rank_candidates(nodes, limit=20, metadata=meta)
+    assert len(ranked) == 3
+
+
+def test_rank_candidates_missing_metadata_is_safe():
+    nodes = [_rank_node("a", "10.0.0.1"), _rank_node("b", "10.0.0.2")]
+    ranked = fc.rank_candidates(nodes, limit=20, metadata=None)
+    assert len(ranked) == 2

@@ -16,6 +16,15 @@ tolerance=100ms 抑制快慢交替造成的横跳（切一次就是一次断流�
 """
 import io, os, sys, yaml
 
+# ---- PROXY(url-test) 参数唯一真源：构建产物和产物顶部的 fine-override 标记都从这里取值 ----
+PROBE_URL = "https://play.google.com/store"
+INTERVAL = 90        # 比速间隔（秒）。原 180 太钝：掉线后要 2 轮才恢复（实测 245s 才跳一次）
+TIMEOUT = 10000      # 单节点探针超时（毫秒）。原 6000 会误杀首字节波动大的边缘节点
+TOLERANCE = 0        # 原 100 会把 251ms vs 266ms 判为等价而保留旧节点；自动挡就该真的取最小值
+UNIFIED_DELAY = False  # GLOBAL 是纯 select 外壳，没有自动父组，统一延迟量纲没有收益
+LOG_LEVEL = "warning"
+OVERRIDE_TAG = "v2"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新参数
+
 SRC = sys.argv[1] if len(sys.argv) > 1 else ("fine_only.yaml" if os.path.exists("fine_only.yaml") else "live_clash.yaml")
 OUT = "fine_final.yaml"
 
@@ -34,10 +43,10 @@ for g in base.get("proxy-groups", []):
     g.update({
         "name": "PROXY",
         "type": "url-test",
-        "url": "https://play.google.com/store",
-        "interval": 180,
-        "timeout": 6000,
-        "tolerance": 100,
+        "url": PROBE_URL,
+        "interval": INTERVAL,
+        "timeout": TIMEOUT,
+        "tolerance": TOLERANCE,
         "lazy": False,
         "proxies": list(names),
     })
@@ -66,7 +75,7 @@ g.update({"name": "GLOBAL", "type": "select", "proxies": ["PROXY"]})
 for k in ("tun", "redir-port", "tproxy-port", "routing-mark"):
     base.pop(k, None)
 base["find-process-mode"] = "off"
-base["log-level"] = "info"
+base["log-level"] = LOG_LEVEL
 base["external-controller"] = "0.0.0.0:9999"
 base["external-ui"] = "ui"
 base["external-ui-url"] = ""
@@ -74,8 +83,17 @@ base["authentication"] = []
 base["allow-lan"] = True
 base["mode"] = "rule"
 base["ipv6"] = False
-base["unified-delay"] = True
+# unified-delay 只在「父组也是自动策略」时才需要（让父组拿到与节点同量纲的延迟）。
+# 这里 GLOBAL 是纯 select 外壳，没有自动父组，统一延迟量纲买不到任何好处，
+# 反而多一个不确定变量 —— 关掉，让 url-test 的选点判定回到最原始的最小值比较。
+base["unified-delay"] = UNIFIED_DELAY
 
+# 产物顶部写一行 fine-override 标记（yaml.safe_dump 会丢注释，所以自己写在 dump 之前）：
+# 告诉路由器的 _fine_sync.sh「这份文件带本地调过的参数，CDN 旧参数版本不许盖回来」。
+# 想主动发布新参数时，把 OVERRIDE_TAG 的序号 +1 即可（老 CDN 版本带 v(N-1) 标记 → 触发正常比对）。
+dumped = yaml.safe_dump(base, allow_unicode=True, sort_keys=False, default_flow_style=False)
 with io.open(OUT, "w", encoding="utf-8") as f:
-    yaml.safe_dump(base, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+    f.write("# fine-override: %s | url=%s interval=%s timeout=%s tolerance=%s unified-delay=%s log=%s\n"
+            % (OVERRIDE_TAG, PROBE_URL, INTERVAL, TIMEOUT, TOLERANCE, UNIFIED_DELAY, LOG_LEVEL))
+    f.write(dumped)
 print("written", OUT, os.path.getsize(OUT), "bytes; PROXY url-test over", len(names), "nodes")

@@ -133,6 +133,17 @@ if os.path.exists(SYNC):
 else:
     check("P1-5", "P1", "%s 不在审计路径，跳过" % SYNC, True)
 
+# P1-7 产物必须有 fine-override 标记行：这是 sync 识别「本地参数版本」的唯一依据。
+# 没有它，路由器的 */15 sync 会用 CDN 旧参数版把本地调好的 interval/tolerance 盖回去
+# （2026-10-01 实测：改完参数 15 分钟内被还原，用户看到「节点不自动切换」）。
+m = re.search(r"^#\s*fine-override:\s*(\S+)", raw, re.M)
+check("P1-7", "P1", "产物含 fine-override 标记 %s" % (m.group(1) if m else "缺失"),
+      m is not None)
+# P1-8 sync 必须有「本地带标记、CDN 没有 → 跳过」的降级保护
+locally = "sync_skip_local_override" in (io.open(SYNC, encoding="utf-8").read()
+                                         if os.path.exists(SYNC) else "")
+check("P1-8", "P1", "sync 含本地 override 降级保护(sync_skip_local_override)", locally)
+
 p0fail = [x for x in results if x[1] == "P0" and not x[3]]
 p1fail = [x for x in results if x[1] == "P1" and not x[3]]
 print("-" * 62)

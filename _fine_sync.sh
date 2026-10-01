@@ -31,6 +31,19 @@ if [ -z "$SRC" ]; then
   exit 0
 fi
 echo "sync_src=$USED"
+# ★本地参数优先级护栏（2026-10-01 血案）：
+#   build_final.py 会在产物顶部写一行 `# fine-override: v2 | interval=90 ...` 注释，
+#   标记这份配置**携带本地调过的 url-test 参数**（interval/timeout/tolerance）。
+#   实测坑：改完参数 deploy_local 直推路由器后不到 15 分钟，`*/15` 的 sync 就把 CDN 上的
+#   **旧参数**版本盖回来（CDN 那份同样含 `name: GLOBAL`，旧护栏只判 GLOBAL 判不出新旧），
+#   用户表现为「参数改了没生效 / 节点不自动切」。
+#   规则：本地带 fine-override 标记、而拉到的 CDN 文件没有 → 说明 CDN 是旧参数，禁用降级覆盖；
+#         两边都带标记才走正常的内容比对（手动 bump 版本号即可主动发布新参数）。
+if grep -q "^# fine-override:" "$DST" 2>/dev/null && ! grep -q "^# fine-override:" "$TMP"; then
+  echo "sync_skip_local_override(cdn lacks fine-override => stale params)"
+  rm -f "$TMP"
+  exit 0
+fi
 # 内容护栏：必须是带 url-test PROXY 组的 mihomo 配置
 grep -q "type: url-test" "$TMP" || { echo "sync_fail_content"; rm -f "$TMP"; exit 1; }
 grep -q "^proxies:" "$TMP" || { echo "sync_fail_noproxies"; rm -f "$TMP"; exit 1; }

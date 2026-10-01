@@ -1,3 +1,4 @@
+# fine-override: v2 | url=https://play.google.com/store interval=90 timeout=10000 tolerance=0 unified-delay=False log=warning
 mixed-port: 7890
 allow-lan: true
 mode: rule
@@ -350,9 +351,9 @@ proxy-groups:
 - name: PROXY
   type: url-test
   url: https://play.google.com/store
-  interval: 180
-  timeout: 6000
-  tolerance: 100
+  interval: 90
+  timeout: 10000
+  tolerance: 0
   lazy: false
   proxies:
   - 🇯🇵 Japan, Shibuya City | [BL]
@@ -392,10 +393,10 @@ rules:
 - GEOIP,CN,DIRECT
 - MATCH,PROXY
 find-process-mode: 'off'
-log-level: info
+log-level: warning
 external-controller: 0.0.0.0:9999
 external-ui: ui
 external-ui-url: ''
 authentication: []
 ipv6: false
-unified-delay: true
+unified-delay: false

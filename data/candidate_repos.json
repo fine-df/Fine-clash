@@ -1,0 +1,1688 @@
+[
+  {
+    "full_name": "clash-verge-rev/clash-verge-rev",
+    "stars": 148554,
+    "pushed_at": "2026-09-30",
+    "desc": "A modern GUI client based on Tauri, designed to run in Windows, macOS and Linux for tailor",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "clash-verge",
+      "linux"
+    ]
+  },
+  {
+    "full_name": "2dust/v2rayN",
+    "stars": 117371,
+    "pushed_at": "2026-09-30",
+    "desc": "A GUI client for Windows, Linux and macOS, support Xray and sing-box and others",
+    "topic": [
+      "proxy",
+      "shadowsocks",
+      "socks5",
+      "trojan"
+    ]
+  },
+  {
+    "full_name": "fatedier/frp",
+    "stars": 109722,
+    "pushed_at": "2026-09-15",
+    "desc": "A fast reverse proxy to help you expose a local server behind a NAT or firewall to the int",
+    "topic": [
+      "expose",
+      "firewall",
+      "frp",
+      "go"
+    ]
+  },
+  {
+    "full_name": "headroomlabs-ai/headroom",
+    "stars": 74192,
+    "pushed_at": "2026-10-01",
+    "desc": "Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer to",
+    "topic": [
+      "agent",
+      "ai",
+      "anthropic",
+      "claude-code"
+    ]
+  },
+  {
+    "full_name": "2dust/v2rayNG",
+    "stars": 63349,
+    "pushed_at": "2026-09-22",
+    "desc": "A V2Ray client for Android, support Xray core and v2fly core",
+    "topic": [
+      "android",
+      "proxy",
+      "shadowsocks",
+      "socks5"
+    ]
+  },
+  {
+    "full_name": "chen08209/FlClash",
+    "stars": 53987,
+    "pushed_at": "2026-10-01",
+    "desc": "A multi-platform proxy client based on ClashMeta,simple and easy to use, open-source and a",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "flutter",
+      "hysteria"
+    ]
+  },
+  {
+    "full_name": "bannedbook/fanqiang",
+    "stars": 53825,
+    "pushed_at": "2026-09-13",
+    "desc": "翻墙-科学上网",
+    "topic": [
+      "brook",
+      "daze",
+      "fanqiang",
+      "goflyway"
+    ]
+  },
+  {
+    "full_name": "v2ray/v2ray-core",
+    "stars": 46932,
+    "pushed_at": "2026-08-31",
+    "desc": "A platform for building proxies to bypass network restrictions.",
+    "topic": [
+      "golang",
+      "http-proxy",
+      "proxy",
+      "shadowsocks"
+    ]
+  },
+  {
+    "full_name": "mitmproxy/mitmproxy",
+    "stars": 45208,
+    "pushed_at": "2026-09-30",
+    "desc": "An interactive TLS-capable intercepting HTTP proxy for penetration testers and software de",
+    "topic": [
+      "debugging",
+      "http",
+      "http2",
+      "man-in-the-middle"
+    ]
+  },
+  {
+    "full_name": "XTLS/Xray-core",
+    "stars": 41886,
+    "pushed_at": "2026-09-30",
+    "desc": "Xray, Penetrates Everything. Also the best v2ray-core. Where the magic happens. An open pl",
+    "topic": [
+      "anticensorship",
+      "dns",
+      "network",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "v2fly/v2ray-core",
+    "stars": 34658,
+    "pushed_at": "2026-09-29",
+    "desc": "A platform for building proxies to bypass network restrictions.",
+    "topic": [
+      "anticensorship",
+      "hacktoberfest",
+      "network",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "XX-net/XX-Net",
+    "stars": 33447,
+    "pushed_at": "2026-09-30",
+    "desc": "A proxy tool to bypass GFW.",
+    "topic": [
+      "gfw",
+      "goagent",
+      "proxy",
+      "uncensored"
+    ]
+  },
+  {
+    "full_name": "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+    "stars": 30726,
+    "pushed_at": "2026-09-30",
+    "desc": "提供多款 Shadowrocket 规则，拥有强劲的广告过滤功能。每日 8 时重新构建规则。",
+    "topic": [
+      "adblock",
+      "gfw",
+      "proxy",
+      "shadowrocket"
+    ]
+  },
+  {
+    "full_name": "Loyalsoldier/clash-rules",
+    "stars": 28635,
+    "pushed_at": "2026-09-30",
+    "desc": "🦄️ 🎃 👻 Clash Premium 规则集(RULE-SET)，兼容 ClashX Pro、Clash for Windows 等基于 Clash Premium 内核的客户",
+    "topic": [
+      "adblock",
+      "adguard",
+      "anticensorship",
+      "chinalist"
+    ]
+  },
+  {
+    "full_name": "Z-Siqi/Clash-for-Windows_Chinese",
+    "stars": 28581,
+    "pushed_at": "2026-09-26",
+    "desc": "Clash for Windows 的前汉化版. 现在提供 Clash for Windows 的改进版本, 这包括 Mihomo 核心替换, AnyTLS 等现代协议兼容",
+    "topic": [
+      "anytls",
+      "chinese-localization",
+      "clash",
+      "hysteria2"
+    ]
+  },
+  {
+    "full_name": "vernesong/OpenClash",
+    "stars": 27655,
+    "pushed_at": "2026-09-30",
+    "desc": "A Clash Client For OpenWrt",
+    "topic": [
+      "clash",
+      "luci",
+      "mihomo",
+      "openclash"
+    ]
+  },
+  {
+    "full_name": "mihomo-party-org/clash-party",
+    "stars": 26654,
+    "pushed_at": "2026-09-30",
+    "desc": ":electron: Another Mihomo GUI. ",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "electron",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "goauthentik/authentik",
+    "stars": 25795,
+    "pushed_at": "2026-10-01",
+    "desc": "The authentication glue you need.",
+    "topic": [
+      "authentication",
+      "authentik",
+      "authorization",
+      "kubernetes"
+    ]
+  },
+  {
+    "full_name": "docmirror/dev-sidecar",
+    "stars": 24283,
+    "pushed_at": "2026-09-25",
+    "desc": "开发者边车，github打不开，github加速，git clone加速，git release下载加速，stackoverflow加速",
+    "topic": [
+      "dev-sidecar",
+      "dns-ip",
+      "electron",
+      "fastgit"
+    ]
+  },
+  {
+    "full_name": "HyNetworks/hysteria",
+    "stars": 22597,
+    "pushed_at": "2026-10-01",
+    "desc": "Hysteria is powerful, lightning-fast, and censorship-resistant open-source proxy software",
+    "topic": [
+      "censorship-circumvention",
+      "golang",
+      "http-proxy",
+      "hysteria"
+    ]
+  },
+  {
+    "full_name": "mack-a/v2ray-agent",
+    "stars": 21992,
+    "pushed_at": "2026-09-15",
+    "desc": "Xray、Tuic、hysteria2、sing-box 八合一一键脚本",
+    "topic": [
+      "cloudflare",
+      "grpc-cloudflare",
+      "httpupgrade",
+      "hysteria2"
+    ]
+  },
+  {
+    "full_name": "Loyalsoldier/v2ray-rules-dat",
+    "stars": 20800,
+    "pushed_at": "2026-10-01",
+    "desc": "🦄 🎃 👻 V2Ray 路由规则文件加强版，可代替 V2Ray 官方 geoip.dat 和 geosite.dat，适用于 V2Ray、Xray-core、mihomo(Clas",
+    "topic": [
+      "adblock",
+      "adguard",
+      "anticensorship",
+      "chinalist"
+    ]
+  },
+  {
+    "full_name": "Pawdroid/Free-servers",
+    "stars": 19290,
+    "pushed_at": "2026-10-01",
+    "desc": "🚀 免费订阅地址，🚀 免费节点，🚀 6小时更新一次，共享节点，节点质量高可用，完全免费。免费clash订阅地址，免费翻墙、免费科学上网、免费梯子、免费ss/v2ray/trojan",
+    "topic": [
+      "clash",
+      "client",
+      "fanqiang",
+      "fq"
+    ]
+  },
+  {
+    "full_name": "joewalnes/websocketd",
+    "stars": 17471,
+    "pushed_at": "2026-09-07",
+    "desc": "Turn any program that uses STDIN/STDOUT into a WebSocket server. Like inetd, but for WebSo",
+    "topic": [
+      "proxy",
+      "websocket-server",
+      "websockets"
+    ]
+  },
+  {
+    "full_name": "free-nodes/clashfree",
+    "stars": 16771,
+    "pushed_at": "2026-09-30",
+    "desc": "clash节点、免费clash节点、免费节点、免费梯子、clash科学上网、clash翻墙、clash订阅链接、clash for Windows、clash教程、免费公益节点、最",
+    "topic": [
+      "clash",
+      "freefq",
+      "freenode",
+      "ssr"
+    ]
+  },
+  {
+    "full_name": "lidge-jun/opencodex",
+    "stars": 16726,
+    "pushed_at": "2026-10-01",
+    "desc": "Universal provider proxy for OpenAI Codex & Claude Code — use any LLM (Claude, Gemini, Gro",
+    "topic": [
+      "ai-gateway",
+      "ai-tools",
+      "anthropic",
+      "chatgpt"
+    ]
+  },
+  {
+    "full_name": "yonggekkk/Cloudflare-vless-trojan",
+    "stars": 16379,
+    "pushed_at": "2026-09-20",
+    "desc": "CF-workers/pages代理脚本：支持Vless-ws(tls)、Trojan-ws(tls)；Socks5/http本地代理脚本：可选ECH-TLS、普通TLS、无TLS",
+    "topic": [
+      "argo",
+      "cdn",
+      "clash-meta",
+      "cloudflare"
+    ]
+  },
+  {
+    "full_name": "Jackett/Jackett",
+    "stars": 16113,
+    "pushed_at": "2026-10-01",
+    "desc": "API Support for your favorite torrent trackers",
+    "topic": [
+      "api",
+      "couchpotato",
+      "duckietv",
+      "hacktoberfest"
+    ]
+  },
+  {
+    "full_name": "FlareSolverr/FlareSolverr",
+    "stars": 15724,
+    "pushed_at": "2026-09-27",
+    "desc": "Proxy server to bypass Cloudflare protection",
+    "topic": [
+      "api",
+      "chrome",
+      "chromium",
+      "cloudflare"
+    ]
+  },
+  {
+    "full_name": "avwo/whistle",
+    "stars": 15715,
+    "pushed_at": "2026-09-21",
+    "desc": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
+    "topic": [
+      "charles",
+      "debug",
+      "fiddler",
+      "hosts"
+    ]
+  },
+  {
+    "full_name": "v2rayA/v2rayA",
+    "stars": 15650,
+    "pushed_at": "2026-10-01",
+    "desc": "A web client for its own Xray-based core with global transparent proxy on Linux, Windows a",
+    "topic": [
+      "gfw",
+      "gui",
+      "hy2",
+      "juicity"
+    ]
+  },
+  {
+    "full_name": "DiningFactory/panda-vpn-pro",
+    "stars": 15609,
+    "pushed_at": "2026-09-30",
+    "desc": "🚁🚀 2026机场推荐 |  熊猫VPN（PandaVPNPro）已确定跑路！快连VPN ，小牛加速器（小牛VPN）体验不佳且价格贵。低价机场，便宜机场，平价机场，性价比机场，高速",
+    "topic": [
+      "airport",
+      "clash",
+      "gfw",
+      "hysteria2"
+    ]
+  },
+  {
+    "full_name": "txthinking/brook",
+    "stars": 15192,
+    "pushed_at": "2026-09-25",
+    "desc": "A cross-platform programmable network tool",
+    "topic": [
+      "android",
+      "cross-platform",
+      "decryption",
+      "encryption"
+    ]
+  },
+  {
+    "full_name": "nelvko/clash-for-linux-install",
+    "stars": 14936,
+    "pushed_at": "2026-09-26",
+    "desc": "😼 优雅地使用基于 clash/mihomo 的代理环境",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "linux",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "rathole-org/rathole",
+    "stars": 14283,
+    "pushed_at": "2026-08-23",
+    "desc": "A lightweight and high-performance reverse proxy for NAT traversal, written in Rust. An al",
+    "topic": [
+      "firewall",
+      "frp",
+      "http",
+      "nat"
+    ]
+  },
+  {
+    "full_name": "wanghongenpin/proxypin",
+    "stars": 14034,
+    "pushed_at": "2026-09-29",
+    "desc": "Open source free capture HTTP(S) traffic  software ProxyPin, supporting full platform syst",
+    "topic": [
+      "capture-traffic",
+      "charles",
+      "fiddler",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "free-nodes/v2rayfree",
+    "stars": 13956,
+    "pushed_at": "2026-09-30",
+    "desc": "免费节点、免费v2ray节点、最新公益免费v2ray节点订阅地址、免费v2ray节点每日更新、免费ss/v2ray/trojan节点、freefq ",
+    "topic": [
+      "fanqiang",
+      "gfw",
+      "lantern",
+      "ss"
+    ]
+  },
+  {
+    "full_name": "DNSCrypt/dnscrypt-proxy",
+    "stars": 13707,
+    "pushed_at": "2026-09-30",
+    "desc": "dnscrypt-proxy 2 - A flexible DNS proxy, with support for encrypted DNS protocols.",
+    "topic": [
+      "anonymized",
+      "anonymized-dns",
+      "dns",
+      "dns-over-https"
+    ]
+  },
+  {
+    "full_name": "libnyanpasu/clash-nyanpasu",
+    "stars": 13210,
+    "pushed_at": "2026-10-01",
+    "desc": "Clash Nyanpasu～(∠・ω< )⌒☆​",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "clash-nyanpasu",
+      "clash-rs"
+    ]
+  },
+  {
+    "full_name": "Shopify/toxiproxy",
+    "stars": 12371,
+    "pushed_at": "2026-09-15",
+    "desc": ":alarm_clock: :fire: A TCP proxy to simulate network and system conditions for chaos and r",
+    "topic": [
+      "chaos",
+      "down",
+      "go",
+      "is"
+    ]
+  },
+  {
+    "full_name": "jason5ng32/MyIP",
+    "stars": 12018,
+    "pushed_at": "2026-09-29",
+    "desc": "The best IP Toolbox. Check your IP address & geolocation, test IP for WebRTC and DNS IP le",
+    "topic": [
+      "awesome",
+      "censorship",
+      "dns",
+      "dnsleak"
+    ]
+  },
+  {
+    "full_name": "chimurai/http-proxy-middleware",
+    "stars": 11127,
+    "pushed_at": "2026-09-26",
+    "desc": ":zap: The one-liner node.js http-proxy (httpxy) middleware for connect, express, next.js a",
+    "topic": [
+      "browser-sync",
+      "connect",
+      "express",
+      "fastify"
+    ]
+  },
+  {
+    "full_name": "rofl0r/proxychains-ng",
+    "stars": 10687,
+    "pushed_at": "2026-08-27",
+    "desc": "proxychains ng (new generation) - a preloader which hooks calls to sockets in dynamically ",
+    "topic": [
+      "hack",
+      "hook",
+      "http",
+      "preload"
+    ]
+  },
+  {
+    "full_name": "sub-store-org/Sub-Store",
+    "stars": 10585,
+    "pushed_at": "2026-10-01",
+    "desc": "Advanced Subscription Manager for QX, Loon, Surge, Stash, Egern and Shadowrocket!",
+    "topic": [
+      "clash",
+      "http",
+      "loon",
+      "quantumultx"
+    ]
+  },
+  {
+    "full_name": "yonggekkk/sing-box-yg",
+    "stars": 10343,
+    "pushed_at": "2026-09-15",
+    "desc": "Sing-box精装桶五合一协议VPS专用脚本：三大独家功能！自签/acme双证书切换、Argo固定临时双隧道（可共存）、Psiphon赛风VPN（30个国家）分流功能、本地IP订",
+    "topic": [
+      "acme",
+      "alpine",
+      "anytls",
+      "argo"
+    ]
+  },
+  {
+    "full_name": "pmndrs/valtio",
+    "stars": 10241,
+    "pushed_at": "2026-09-29",
+    "desc": "🧙 Valtio makes proxy-state simple  for React and Vanilla",
+    "topic": [
+      "mutable",
+      "proxy",
+      "react",
+      "state"
+    ]
+  },
+  {
+    "full_name": "KaringX/clashmi",
+    "stars": 9611,
+    "pushed_at": "2026-09-28",
+    "desc": "Clash Mihomo for iOS/MacOS/Android/Windows/Linux",
+    "topic": [
+      "clash",
+      "clashmi",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "v2fly/domain-list-community",
+    "stars": 9600,
+    "pushed_at": "2026-09-29",
+    "desc": "Community managed domain list. Generate geosite.dat for V2Ray.",
+    "topic": [
+      "geosite",
+      "v2ray"
+    ]
+  },
+  {
+    "full_name": "ermaozi/get_subscribe",
+    "stars": 9326,
+    "pushed_at": "2026-10-01",
+    "desc": "✈️ 白嫖免费机场  / 免费VPN -> 自动获取免 clash/v2ray/trojan/sr/ssr 订阅链接，持续更新 | 科学上网 | 翻墙",
+    "topic": [
+      "android",
+      "clash",
+      "sr",
+      "ssr"
+    ]
+  },
+  {
+    "full_name": "hiddify/Hiddify-Manager",
+    "stars": 9318,
+    "pushed_at": "2026-09-30",
+    "desc": "Multi-user anti-filtering panel, with an effortless installation and supporting more than ",
+    "topic": [
+      "clash",
+      "clashforwindows",
+      "clashmeta",
+      "ech"
+    ]
+  },
+  {
+    "full_name": "clashbk/clash",
+    "stars": 9091,
+    "pushed_at": "2026-09-30",
+    "desc": "Clash官网各版本Clash下载地址及备份下载地址",
+    "topic": [
+      "clash",
+      "clash-core",
+      "clashmeta",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "igareck/vpn-configs-for-russia",
+    "stars": 8998,
+    "pushed_at": "2026-10-01",
+    "desc": "🗽Бесплатные и проверенные VPN/Tor конфигурации, работающие в РФ ⚪ Белые списки / обход бел",
+    "topic": [
+      "free-vpn-key",
+      "free-vpn-russia",
+      "roskomnadzor",
+      "russia-vpn"
+    ]
+  },
+  {
+    "full_name": "warp-tech/warpgate",
+    "stars": 7996,
+    "pushed_at": "2026-09-30",
+    "desc": "Fully transparent SSH, HTTPS, Kubernetes, database and RDP/VNC bastion/PAM that doesn't ne",
+    "topic": [
+      "bastion",
+      "bastion-host",
+      "https",
+      "https-proxy"
+    ]
+  },
+  {
+    "full_name": "217heidai/adblockfilters",
+    "stars": 7614,
+    "pushed_at": "2026-09-30",
+    "desc": "去广告合并规则，每8个小时更新一次。",
+    "topic": [
+      "adblock",
+      "adguard",
+      "adguardhome",
+      "clash"
+    ]
+  },
+  {
+    "full_name": "mnfst/llm-gateway",
+    "stars": 7551,
+    "pushed_at": "2026-10-01",
+    "desc": "Connect Your Agents And Harnesses With Any Provider 🦚",
+    "topic": [
+      "ai",
+      "ai-",
+      "ai-sdk",
+      "anthropic"
+    ]
+  },
+  {
+    "full_name": "Hackl0us/GeoIP2-CN",
+    "stars": 7432,
+    "pushed_at": "2026-10-01",
+    "desc": "小巧精悍、准确、实用 GeoIP2 数据库",
+    "topic": [
+      "clash",
+      "geoip",
+      "geoip2",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "limbopro/Paolujichang",
+    "stars": 7326,
+    "pushed_at": "2026-09-14",
+    "desc": "科学上网🕸️之跑路机场名单收集（2020-2026），欢迎投稿。客观描述，保持友善，Ad 🔗 🈲🙅❌",
+    "topic": [
+      "limbopro",
+      "paolujichang",
+      "shadowsocks",
+      "trojan"
+    ]
+  },
+  {
+    "full_name": "throneproj/Throne",
+    "stars": 7324,
+    "pushed_at": "2026-09-30",
+    "desc": "Cross-platform GUI proxy utility (Empowered by sing-box)",
+    "topic": [
+      "amneziawg",
+      "amneziawg2",
+      "amneziawg3",
+      "anytls"
+    ]
+  },
+  {
+    "full_name": "telepresenceio/telepresence",
+    "stars": 7310,
+    "pushed_at": "2026-09-30",
+    "desc": "Local development against a remote Kubernetes or OpenShift cluster",
+    "topic": [
+      "docker",
+      "kubernetes",
+      "local-development",
+      "minikube"
+    ]
+  },
+  {
+    "full_name": "katanemo/plano",
+    "stars": 7075,
+    "pushed_at": "2026-09-28",
+    "desc": "Plano is an AI-native proxy server and data plane for agentic apps. Smart LLM routing, obs",
+    "topic": [
+      "ai-gateway",
+      "ai-gateway-support",
+      "envoy",
+      "envoyproxy"
+    ]
+  },
+  {
+    "full_name": "ProxymanApp/Proxyman",
+    "stars": 6994,
+    "pushed_at": "2026-09-27",
+    "desc": "The best-in-class HTTP Debugger for macOS. Capture HTTP/HTTPS from macOS, iOS, Android wit",
+    "topic": [
+      "debugging-tool",
+      "ios",
+      "macos",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "haproxy/haproxy",
+    "stars": 6896,
+    "pushed_at": "2026-09-30",
+    "desc": "HAProxy Load Balancer's development branch (mirror of git.haproxy.org)",
+    "topic": [
+      "cache",
+      "caching",
+      "ddos-mitigation",
+      "fastcgi"
+    ]
+  },
+  {
+    "full_name": "ACL4SSR/ACL4SSR",
+    "stars": 6750,
+    "pushed_at": "2026-10-01",
+    "desc": "SSR 去广告ACL规则/SS完整GFWList规则/Clash规则碎片，Telegram频道订阅地址",
+    "topic": [
+      "acl",
+      "acl4ssr",
+      "clash",
+      "gfwlist"
+    ]
+  },
+  {
+    "full_name": "hoochanlon/fq-book",
+    "stars": 6675,
+    "pushed_at": "2026-09-19",
+    "desc": "📖《这本书能让你连接互联网》 详细阐述代理、隧道、VPN运作过程，并对GFW策略如：地址端口封锁、服务器缓存投毒、数字验证攻击、SSL连接阻断做相关的原理说明",
+    "topic": [
+      "deep-web",
+      "digital-certificate",
+      "fq-book",
+      "gfw"
+    ]
+  },
+  {
+    "full_name": "Loyalsoldier/geoip",
+    "stars": 6582,
+    "pushed_at": "2026-10-01",
+    "desc": "🌚 🌍 🌝 GeoIP 增强版，自由定制多种格式 GeoIP 文件，包括但不限于 V2Ray dat 格式文件 geoip.dat、MaxMind mmdb 格式文件、sing-b",
+    "topic": [
+      "anti-censorship",
+      "anticensorship",
+      "clash",
+      "geoip"
+    ]
+  },
+  {
+    "full_name": "TG-Twilight/AWAvenue-Ads-Rule",
+    "stars": 6574,
+    "pushed_at": "2026-09-21",
+    "desc": "众多优秀广告规则的上游、开源社区中最棒的广告过滤器之一。适配AdGuard/Home/DNS、AdAway、hosts、Mosdns、ClashMeta、QuantumultX等主",
+    "topic": [
+      "adblock",
+      "adblock-list",
+      "adguard",
+      "adguard-blocklist"
+    ]
+  },
+  {
+    "full_name": "Aethersailor/Custom_OpenClash_Rules",
+    "stars": 6564,
+    "pushed_at": "2026-09-30",
+    "desc": "面向 OpenClash 用户的配置、订阅转换模板、YAML、规则、覆写模块、脚本与中文教程。",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "gfwlist",
+      "openclash"
+    ]
+  },
+  {
+    "full_name": "awesome-vpn/awesome-vpn",
+    "stars": 6522,
+    "pushed_at": "2026-10-01",
+    "desc": "Free proxy node aggregator. Daily updated vmess/vless/trojan/ss. 免费 代理节点 翻墙 梯子 科学上网 机场订阅 网",
+    "topic": [
+      "clash",
+      "clashvergerev",
+      "fanqiang",
+      "free"
+    ]
+  },
+  {
+    "full_name": "OpenRunner/clash-freenode",
+    "stars": 6461,
+    "pushed_at": "2026-09-30",
+    "desc": "订阅地址🚀 免费共享♻️ 定期更新✨ 科学上网🌈 请勿滥用🚫一键订阅📪SSR/CLASH/V2RAY",
+    "topic": [
+      "clash",
+      "freenode",
+      "node",
+      "proxy"
+    ]
+  },
+  {
+    "full_name": "666OS/ClashMac",
+    "stars": 6306,
+    "pushed_at": "2026-09-29",
+    "desc": "Native Proxy Experience Built for macOS",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "macos",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "daeuniverse/dae",
+    "stars": 6270,
+    "pushed_at": "2026-09-30",
+    "desc": "eBPF-based Linux high-performance transparent proxy solution.",
+    "topic": [
+      "dae",
+      "ebpf",
+      "golang",
+      "policy-routing"
+    ]
+  },
+  {
+    "full_name": "wnlen/clash-for-linux",
+    "stars": 6084,
+    "pushed_at": "2026-09-24",
+    "desc": "🐧 一个更完整、更优雅的 Linux Clash / Mihomo 代理运行平台",
+    "topic": [
+      "clash-meta",
+      "devops-tools",
+      "linux",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "fscarmen/sing-box",
+    "stars": 5744,
+    "pushed_at": "2026-09-18",
+    "desc": "Sing-box 全家桶 --- 一键多协议脚本。支持 Reality、Hysteria2 、TUIC 、Trojan 、Shadowsocks 、 AnyTLS 、ShadowT",
+    "topic": [
+      "anytls",
+      "argo",
+      "hysteria2",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "Lin-arm/GKD_subscription",
+    "stars": 5612,
+    "pushed_at": "2026-10-01",
+    "desc": "用于安卓 GKD 的第三方订阅规则 (👻Fork版)",
+    "topic": [
+      "ad",
+      "gkd",
+      "gkd-subscription",
+      "subscription"
+    ]
+  },
+  {
+    "full_name": "free18/v2ray",
+    "stars": 5543,
+    "pushed_at": "2026-09-30",
+    "desc": "每日分享免费节点、免费机场、付费机场、电报代理、ssr节点、v2ray节点、v2ray订阅、clash节点、clash订阅、shadowrocket订阅、Quantumult X订",
+    "topic": [
+      "android-vpn",
+      "bulink",
+      "clash",
+      "fanqiang"
+    ]
+  },
+  {
+    "full_name": "GMOogway/shadowrocket-rules",
+    "stars": 5533,
+    "pushed_at": "2026-10-01",
+    "desc": "小火箭规则🚀，小火箭模块，小火箭配置，shadowrocket规则，shadowrocket rules，最全面的直连（DIRECT）、代理（PROXY）、屏蔽（REJECT）规则",
+    "topic": [
+      "adblock",
+      "direct",
+      "gfw",
+      "gfwlist"
+    ]
+  },
+  {
+    "full_name": "7Sageer/sublink-worker",
+    "stars": 5450,
+    "pushed_at": "2026-09-24",
+    "desc": "One Worker, All Subscriptions",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "cloudflare-workers",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "nikkinikki-org/OpenWrt-nikki",
+    "stars": 5320,
+    "pushed_at": "2026-10-01",
+    "desc": "Transparent Proxy with Mihomo on OpenWrt.",
+    "topic": [
+      "clash",
+      "luci-app",
+      "luci-app-nikki",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "clashdownload/Clash",
+    "stars": 4615,
+    "pushed_at": "2026-09-01",
+    "desc": "Clash官网各版本Clash下载地址及备份下载地址",
+    "topic": [
+      "clash",
+      "clash-core",
+      "clash-core-premium",
+      "clash-download"
+    ]
+  },
+  {
+    "full_name": "SukkaW/Surge",
+    "stars": 4510,
+    "pushed_at": "2026-09-30",
+    "desc": "Rule Snippet & Rule Set for Surge / Mihomo (Clash.Meta) / Clash Premium (Dreamacro) / sing",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "clash-premium",
+      "clash-rules"
+    ]
+  },
+  {
+    "full_name": "MetaCubeX/metacubexd",
+    "stars": 4442,
+    "pushed_at": "2026-09-30",
+    "desc": "Mihomo Dashboard, The Official One, XD",
+    "topic": [
+      "clash",
+      "daisyui",
+      "dashboard",
+      "docker"
+    ]
+  },
+  {
+    "full_name": "robinebers/openusage",
+    "stars": 4292,
+    "pushed_at": "2026-09-30",
+    "desc": "Burning through your subscriptions too fast? Paying for stuff you never use? Stop guessing",
+    "topic": [
+      "claude",
+      "codex",
+      "copilot",
+      "cursor"
+    ]
+  },
+  {
+    "full_name": "yonggekkk/x-ui-yg",
+    "stars": 4069,
+    "pushed_at": "2026-09-15",
+    "desc": "x-ui精简修改版脚本，支持Hysteria2、Xhttp传输协议、ENC加密、MLDSA65加密，集成argo固定临时双隧道（可共存）、Psiphon赛风VPN（30个国家）分流",
+    "topic": [
+      "alpine",
+      "argo",
+      "chatgpt",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "mahdibland/V2RayAggregator",
+    "stars": 4018,
+    "pushed_at": "2026-09-30",
+    "desc": "Collect Lots of Shadowsocks, ShadowsocksR, Trojan, Vmess from Public Sources & Filter Best",
+    "topic": [
+      "airport",
+      "best-nodes",
+      "china-censorship",
+      "clash"
+    ]
+  },
+  {
+    "full_name": "clash-download/Clash",
+    "stars": 3975,
+    "pushed_at": "2026-09-30",
+    "desc": "🟢 收录 Clash Verge Rev, Clash for Windows,Clash for Android,FlClash 等Clash内核全平台客户端 Github 官方",
+    "topic": [
+      "clash",
+      "clash-for-android",
+      "clash-for-windows",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "appshubcc/Bettbox",
+    "stars": 3898,
+    "pushed_at": "2026-09-28",
+    "desc": "Another Better Mihomo Client",
+    "topic": [
+      "bettbox",
+      "clash",
+      "clash-meta",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "peasoft/NoMoreWalls",
+    "stars": 3528,
+    "pushed_at": "2026-09-30",
+    "desc": "自动抓取合并互联网上的公开节点。",
+    "topic": [
+      "bypass-gfw",
+      "china",
+      "clash",
+      "gfw"
+    ]
+  },
+  {
+    "full_name": "dongyubin/Free-AppleId-Serve",
+    "stars": 3517,
+    "pushed_at": "2026-09-27",
+    "desc": "2026年9月每日更新🚀苹果美区账号 APPLE ID🚀免费Shadowrocket（小火箭）共享账号,Quantumult X，圈x，stash，小火箭节点，🚀 免费订阅地址，🚀",
+    "topic": [
+      "android",
+      "appleid",
+      "chatgpt",
+      "clash"
+    ]
+  },
+  {
+    "full_name": "Epodonios/v2ray-configs",
+    "stars": 3260,
+    "pushed_at": "2026-10-01",
+    "desc": "Free vless-vmess-shadowsocks-trojan-xray-V2ray Configs Updating Every 5 minutes",
+    "topic": [
+      "bulk-connection",
+      "bulk-operation",
+      "gfw",
+      "gfw-china"
+    ]
+  },
+  {
+    "full_name": "Barabama/FreeNodes",
+    "stars": 3211,
+    "pushed_at": "2026-09-30",
+    "desc": "v2ray、clash免费节点爬虫，自动更新",
+    "topic": [
+      "clash",
+      "proxy",
+      "ss",
+      "trojan"
+    ]
+  },
+  {
+    "full_name": "amclubs/am-cf-tunnel",
+    "stars": 3155,
+    "pushed_at": "2026-09-19",
+    "desc": "这是一个基于 Cloudflare Workers 和 Pages平台的脚本,通过EDtunnel修改，使用该脚本可以自动生成VLESS、Trojan免费节点,并配置信息使用在线配",
+    "topic": [
+      "clash",
+      "cloudflare",
+      "openclash",
+      "quantumult-x"
+    ]
+  },
+  {
+    "full_name": "Loyalsoldier/surge-rules",
+    "stars": 3150,
+    "pushed_at": "2026-09-30",
+    "desc": "🦄 🎃 👻 Surge 规则集(DOMAIN-SET 和 RULE-SET)，适用于 Surge for iOS 和 Surge for Mac 客户端。",
+    "topic": [
+      "adblock",
+      "adguard",
+      "anticensorship",
+      "chinalist"
+    ]
+  },
+  {
+    "full_name": "Alvin9999-newpac/fanqiang",
+    "stars": 2921,
+    "pushed_at": "2026-10-01",
+    "desc": "免费翻墙、免费科学上网、翻墙翻墙、科学上网、Mac/iOS/安卓翻墙、翻墙翻墙、自由上网、 一键翻墙浏览器、免费shadowsocks/ss/ssr/v2ray/hysteria/",
+    "topic": [
+      "clash",
+      "fanqiang",
+      "hysteria2",
+      "kexueshangwang"
+    ]
+  },
+  {
+    "full_name": "OverTheWallNode/SSV2RayTrojanSSRClash",
+    "stars": 2848,
+    "pushed_at": "2026-09-16",
+    "desc": "2026 科学上网，ss, ssr, v2ray, trojan, clash, clashr，翻墙机场推荐",
+    "topic": [
+      "clash",
+      "free",
+      "google",
+      "hysteria"
+    ]
+  },
+  {
+    "full_name": "HenryChiao/MIHOMO_YAMLS",
+    "stars": 2810,
+    "pushed_at": "2026-09-30",
+    "desc": "一个精心整理的 Mihomo (Clash Meta) 配置文件仓库，通过 GitHub Actions 每日自动同步上游优质规则，提供从入门到进阶的完整解决方案。",
+    "topic": [
+      "clash-meta",
+      "clash-party",
+      "clash-yaml",
+      "clashmac"
+    ]
+  },
+  {
+    "full_name": "pay-rails/pay",
+    "stars": 2254,
+    "pushed_at": "2026-09-26",
+    "desc": "Payments for Ruby on Rails apps",
+    "topic": [
+      "braintree",
+      "engine",
+      "hacktoberfest",
+      "paddle"
+    ]
+  },
+  {
+    "full_name": "DustinWin/dustinwin.github.io",
+    "stars": 1595,
+    "pushed_at": "2026-09-25",
+    "desc": "mihomo 和 sing-box 教程合集——安装、配置、自定义规则、DNS 分流",
+    "topic": [
+      "adguard-home",
+      "adguardhome",
+      "clash",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "DustinWin/proxy-tools",
+    "stars": 1507,
+    "pushed_at": "2026-09-22",
+    "desc": "自动同步 mihomo 内核、sing-box 内核、sing-box reF1nd 版内核、Dashboard 面板和 AdGuard Home 最新版",
+    "topic": [
+      "adguard-home",
+      "adguardhome",
+      "clash",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "Sitoi/ClashBar",
+    "stars": 1493,
+    "pushed_at": "2026-09-30",
+    "desc": "原生 macOS 菜单栏代理客户端，基于 SwiftUI + AppKit，由 mihomo 驱动。 轻量、稳定，在菜单栏完成配置、节点、规则、连接与系统代理管理。",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "clashbar",
+      "macos"
+    ]
+  },
+  {
+    "full_name": "NiREvil/vless",
+    "stars": 1340,
+    "pushed_at": "2026-09-30",
+    "desc": "v2ray subscription links",
+    "topic": [
+      "amnezia",
+      "clash-meta",
+      "cloudflare-workers",
+      "fragments"
+    ]
+  },
+  {
+    "full_name": "eallion/uBlacklist-subscription-compilation",
+    "stars": 1325,
+    "pushed_at": "2026-09-28",
+    "desc": "🚫 uBlacklist subscription 订阅合集",
+    "topic": [
+      "block",
+      "chrome",
+      "edge",
+      "extensions"
+    ]
+  },
+  {
+    "full_name": "zhiyi7/gfw-pac",
+    "stars": 1261,
+    "pushed_at": "2026-09-24",
+    "desc": "科学上网 PAC 成品文件以及生成器。可自定义代理域名和直连域名。不在自定义名单里的域名再按IP匹配，CNIP走直连，其他走代理，支持IPv6",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "cnip",
+      "geoip"
+    ]
+  },
+  {
+    "full_name": "snakem982/Pandora-Box",
+    "stars": 1198,
+    "pushed_at": "2026-09-27",
+    "desc": "A Simple Mihomo GUI. 一个简易的 Mihomo 桌面客户端",
+    "topic": [
+      "anytls",
+      "clash",
+      "clash-meta",
+      "clashmeta"
+    ]
+  },
+  {
+    "full_name": "vue-stripe/vue-stripe",
+    "stars": 1126,
+    "pushed_at": "2026-09-14",
+    "desc": "Stripe Checkout & Elements for Vue.js",
+    "topic": [
+      "hacktoberfest",
+      "javascript",
+      "nuxt-demo",
+      "payment"
+    ]
+  },
+  {
+    "full_name": "Aethersailor/SubConverter-Extended",
+    "stars": 1002,
+    "pushed_at": "2026-09-30",
+    "desc": "基于 subconverter 演进的多客户端订阅转换后端，重点增强 Mihomo Provider、远程资源、安全与多平台部署。",
+    "topic": [
+      "anytls",
+      "clash",
+      "clash-meta",
+      "hysteria"
+    ]
+  },
+  {
+    "full_name": "xmdhs/clash2singbox",
+    "stars": 955,
+    "pushed_at": "2026-09-07",
+    "desc": "将 clash.meta 格式的配置文件或链接转换为 sing-box 格式",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "sing-box"
+    ]
+  },
+  {
+    "full_name": "DOMjudge/domjudge",
+    "stars": 916,
+    "pushed_at": "2026-09-29",
+    "desc": "DOMjudge programming contest jury system",
+    "topic": [
+      "competitive-programming",
+      "domjudge",
+      "domjudge-developers",
+      "domjudge-homepage"
+    ]
+  },
+  {
+    "full_name": "xinggaoya/sing-box-windows",
+    "stars": 888,
+    "pushed_at": "2026-09-08",
+    "desc": "🚀 现代化 sing-box 跨平台桌面客户端｜订阅导入・代理模式切换・运行态监控・托盘自动启动｜基于 Tauri 2 + Vue 3 + Rust｜🪟 Windows / 🐧 L",
+    "topic": [
+      "cross-platform",
+      "desktop-app",
+      "proxy",
+      "rust"
+    ]
+  },
+  {
+    "full_name": "zn0wii/satelite-proxy",
+    "stars": 871,
+    "pushed_at": "2026-09-29",
+    "desc": "轻量、好看的 sing-box / Xray / mihomo 桌面客户端。支持clash订阅导入, 规则分流、系统代理 / TUN，macOS 与 Windows 开箱即用。",
+    "topic": [
+      "clash-meta",
+      "hysteria2",
+      "macos",
+      "networking"
+    ]
+  },
+  {
+    "full_name": "Au1rxx/free-vpn-subscriptions",
+    "stars": 864,
+    "pushed_at": "2026-10-01",
+    "desc": "Free Clash, sing-box, and V2Ray subscription feed with live node status and setup guides",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "free-nodes",
+      "free-proxy"
+    ]
+  },
+  {
+    "full_name": "sinavm/sinavm",
+    "stars": 838,
+    "pushed_at": "2026-09-30",
+    "desc": "مواقعی که اینترنت ملی و محدود است، بدون نیاز به وی پی ان می‌توانید به محتوای کانال‌ها و کا",
+    "topic": [
+      "amnezia",
+      "amnezia-vpn",
+      "android-application",
+      "configuration"
+    ]
+  },
+  {
+    "full_name": "paywallpro/paywall-gallery",
+    "stars": 782,
+    "pushed_at": "2026-09-30",
+    "desc": "Top iOS app subscription paywall and onboarding gallery with screenshots, videos, pricing ",
+    "topic": [
+      "app-business",
+      "app-store",
+      "growth",
+      "ios"
+    ]
+  },
+  {
+    "full_name": "xmdhs/clash2sfa",
+    "stars": 781,
+    "pushed_at": "2026-09-22",
+    "desc": "将 Clash.Meta 格式 / 原始格式的订阅链接转换为 sing-box 格式的订阅，用于 SFA",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "sing-box"
+    ]
+  },
+  {
+    "full_name": "billabear/billabear",
+    "stars": 761,
+    "pushed_at": "2026-09-13",
+    "desc": "Subscription Management and Billing System",
+    "topic": [
+      "billing",
+      "billing-system",
+      "generator",
+      "invoice-generator"
+    ]
+  },
+  {
+    "full_name": "Juwan-Hwang/Zephyr",
+    "stars": 717,
+    "pushed_at": "2026-09-28",
+    "desc": "Zephyr: A modern, lightweight, and secure Mihomo / Clash Meta GUI client built with Tauri ",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "cross-platform",
+      "desktop-app"
+    ]
+  },
+  {
+    "full_name": "samber/ro",
+    "stars": 689,
+    "pushed_at": "2026-09-29",
+    "desc": "🏎️ Streams & Reactive Programming paradigm for Go: declarative and composable API for even",
+    "topic": [
+      "event-driven",
+      "generics",
+      "go",
+      "golang"
+    ]
+  },
+  {
+    "full_name": "QuixoticHeart/rule-set",
+    "stars": 648,
+    "pushed_at": "2026-10-01",
+    "desc": "面向 mihomo/clash.meta、surge、loon、stash、shadowrocket、quantumultx、egern 和 sing-box 多个代理工具的定制规",
+    "topic": [
+      "anticensorship",
+      "clash",
+      "clash-meta",
+      "egern"
+    ]
+  },
+  {
+    "full_name": "Kwisma/cf-SubCloud",
+    "stars": 606,
+    "pushed_at": "2026-09-06",
+    "desc": "快速生成mihomo（clash  meta）配置文件,  适用于软路由 mihomo 内核，clash meta 客户端等",
+    "topic": [
+      "cf-workers",
+      "clash-meta",
+      "clashmi",
+      "cloudflare-workers"
+    ]
+  },
+  {
+    "full_name": "velobase/velobase-harness",
+    "stars": 604,
+    "pushed_at": "2026-09-26",
+    "desc": "All AI developers deserve to get paid.  Turn your AI prototype into a paid SaaS with open-",
+    "topic": [
+      "ai-agent",
+      "ai-saas",
+      "billing",
+      "monetization"
+    ]
+  },
+  {
+    "full_name": "hello-world-1989/cn-news",
+    "stars": 602,
+    "pushed_at": "2026-10-01",
+    "desc": "V2Ray Clash订阅链接, Outline, 大翻墙运动, 拆除防火墙,拆墙运动,李老师不是你老师 推文 每小时更新 , 完全免费vpn, 免费科学上网, 翻墙,科学上网,免",
+    "topic": [
+      "anti-censorship",
+      "anticensorship",
+      "ban-gfw",
+      "blank-paper"
+    ]
+  },
+  {
+    "full_name": "Silentely/AdBlock-Acceleration",
+    "stars": 556,
+    "pushed_at": "2026-10-01",
+    "desc": "Accelerated subscription for international/China region ad filtering rules（国际/中国地区广告过滤规则的加",
+    "topic": [
+      "accelerate",
+      "adblock",
+      "adguard",
+      "advertising"
+    ]
+  },
+  {
+    "full_name": "mermeroo/V2RAY-CLASH-BASE64-Subscription.Links",
+    "stars": 526,
+    "pushed_at": "2026-09-28",
+    "desc": "Clash and V2ray and Base64 subscription links collected from GitHub and other public sourc",
+    "topic": [
+      "base64",
+      "clash",
+      "freenode",
+      "freenodes"
+    ]
+  },
+  {
+    "full_name": "dodopayments/billingsdk",
+    "stars": 507,
+    "pushed_at": "2026-09-15",
+    "desc": "Modern Billing & Monetization UI Components Library",
+    "topic": [
+      "billing",
+      "components",
+      "dodopayments",
+      "hacktoberfest"
+    ]
+  },
+  {
+    "full_name": "adaptyteam/AdaptySDK-iOS",
+    "stars": 486,
+    "pushed_at": "2026-09-30",
+    "desc": "SDK for growing mobile in-app purchases",
+    "topic": [
+      "apple",
+      "entitlements",
+      "iap",
+      "iap-verification"
+    ]
+  },
+  {
+    "full_name": "bscott/subtrackr",
+    "stars": 471,
+    "pushed_at": "2026-10-01",
+    "desc": "Self-hosted Subscription Tracker",
+    "topic": [
+      "finance",
+      "finance-management",
+      "go",
+      "homelab"
+    ]
+  },
+  {
+    "full_name": "n1ru4l/graphql-live-query",
+    "stars": 442,
+    "pushed_at": "2026-09-30",
+    "desc": "Realtime GraphQL Live Queries with JavaScript",
+    "topic": [
+      "concept",
+      "graphql",
+      "graphql-clients",
+      "graphql-schema"
+    ]
+  },
+  {
+    "full_name": "sinavm/SVM",
+    "stars": 432,
+    "pushed_at": "2026-10-01",
+    "desc": "ابزار جمع ‌آوری و تبدیل کانفیگ‌های وی‌پی‌ان به پروتکل‌های مختلف ، توسعه‌یافته توسط سینا",
+    "topic": [
+      "clash",
+      "config",
+      "farsi",
+      "freevpn"
+    ]
+  },
+  {
+    "full_name": "chenx-dust/DeckyClash",
+    "stars": 390,
+    "pushed_at": "2026-09-28",
+    "desc": "Light-weight Clash/Mihomo proxy client for Steam OS",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "decky-plugin",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "REIJI007/AdBlock_Rule_For_Clash",
+    "stars": 363,
+    "pushed_at": "2026-10-01",
+    "desc": "适用于Clash（premium核心与mihomo核心）的广告域名拦截RULE-SET规则集，每20分钟更新一次",
+    "topic": [
+      "adblock",
+      "clash",
+      "clash-meta",
+      "clash-premium"
+    ]
+  },
+  {
+    "full_name": "abshare3/abshare3.github.io",
+    "stars": 354,
+    "pushed_at": "2026-09-30",
+    "desc": "每日分享免费节点、免费机场、ssr节点、v2ray节点、v2ray订阅、clash节点、clash订阅、shadowrocket订阅、Quantumult X订阅、Clash .N",
+    "topic": [
+      "chatgpt",
+      "clash-meta",
+      "clash-verge",
+      "clash-verge-rev"
+    ]
+  },
+  {
+    "full_name": "Accademia/Clash_Configuration_Template",
+    "stars": 329,
+    "pushed_at": "2026-09-19",
+    "desc": "🔥🔥🔥 超级省电 Clash 配置模板 🔥🔥🔥 （The ultimate Clash configuration template, combining high-precisi",
+    "topic": [
+      "clash",
+      "clash-config",
+      "clash-meta",
+      "clashmeta"
+    ]
+  },
+  {
+    "full_name": "Mahdi0024/ProxyCollector",
+    "stars": 326,
+    "pushed_at": "2026-09-30",
+    "desc": "Automatically collects and tests v2ray proxies and puts them in github for everyone to use",
+    "topic": [
+      "proxy",
+      "shadowsocks",
+      "sing-box",
+      "socks"
+    ]
+  },
+  {
+    "full_name": "MhdiTaheri/V2rayCollector",
+    "stars": 320,
+    "pushed_at": "2026-10-01",
+    "desc": "This script is designed to retrieve configuration details for various VPN protocols (VLESS",
+    "topic": [
+      "config",
+      "hysteria",
+      "php",
+      "server"
+    ]
+  },
+  {
+    "full_name": "linzjian666/chromego_extractor",
+    "stars": 310,
+    "pushed_at": "2026-10-01",
+    "desc": "",
+    "topic": [
+      "clash",
+      "clash-config",
+      "clash-meta",
+      "free-proxies"
+    ]
+  },
+  {
+    "full_name": "F0rc3Run/F0rc3Run",
+    "stars": 309,
+    "pushed_at": "2026-10-01",
+    "desc": "Free VPNs with VMess, VLESS, Shadowsocks & SSTP — powered by V2rayCollector. Bypass censor",
+    "topic": [
+      "anti-censorship",
+      "bypass-filter",
+      "f0rc3run",
+      "forcerun"
+    ]
+  },
+  {
+    "full_name": "mkshare3/mkshare3.github.io",
+    "stars": 301,
+    "pushed_at": "2026-10-01",
+    "desc": "每日分享免费节点、免费机场、ssr节点、v2ray节点、v2ray订阅、clash节点、clash订阅、shadowrocket订阅、Quantumult X订阅、Clash .N",
+    "topic": [
+      "chatgpt",
+      "clash-for-android",
+      "clash-for-windows",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "cbusifabcap/daily_free_vpn",
+    "stars": 295,
+    "pushed_at": "2026-10-01",
+    "desc": "分享免费节点、免费机场、付费机场、电报代理、ssr节点、v2ray节点、v2ray订阅、clash节点、clash订阅、shadowrocket订阅、Quantumult X订阅、",
+    "topic": [
+      "clash",
+      "clash-meta",
+      "hy2",
+      "hysteria2"
+    ]
+  },
+  {
+    "full_name": "toshare5/toshare5.github.io",
+    "stars": 294,
+    "pushed_at": "2026-09-30",
+    "desc": "每日分享免费节点、免费机场、ssr节点、v2ray节点、v2ray订阅、clash节点、clash订阅、shadowrocket订阅、Quantumult X订阅、Clash .N",
+    "topic": [
+      "chatgpt",
+      "clash-for-android",
+      "clash-for-windows",
+      "clash-meta"
+    ]
+  },
+  {
+    "full_name": "zhuhaiuk/free-nodes",
+    "stars": 292,
+    "pushed_at": "2026-10-01",
+    "desc": "每小时自动更新的免费节点订阅，支持 Clash、Mihomo、V2Ray、Trojan、Shadowrocket 等客户端测试使用。",
+    "topic": [
+      "clash",
+      "free-nodes",
+      "free-proxy",
+      "mihomo"
+    ]
+  },
+  {
+    "full_name": "apphud/ApphudSDK",
+    "stars": 239,
+    "pushed_at": "2026-09-30",
+    "desc": "Build, Measure and Grow iOS subscription business",
+    "topic": [
+      "apphud",
+      "iap",
+      "iap-verification",
+      "in-app-purchase"
+    ]
+  },
+  {
+    "full_name": "Vann-Dev/proxy-list",
+    "stars": 143,
+    "pushed_at": "2026-09-30",
+    "desc": "List of public proxies, and checked to some domain like Google, Facebook, Twitter",
+    "topic": [
+      "facebook",
+      "google",
+      "microsoft",
+      "proxies"
+    ]
+  }
+]

@@ -18,7 +18,7 @@
   P2-1  幂等：重新调用 build_final 产出字节一致
   P2-2  proxies 段为行首 `- name:`（safe_dump 格式，sync 脚本 awk 计数依赖此格式）
 """
-import io, os, sys, subprocess, yaml
+import io, os, re, sys, subprocess, yaml
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "fine_final.yaml"
 SRC = sys.argv[2] if len(sys.argv) > 2 else "live_clash.yaml"
@@ -116,6 +116,22 @@ for ln in seg.splitlines():
     block.append(ln)
 cnt = sum(1 for ln in block if ln.startswith("- "))
 check("P2-2", "P2", "proxies 行首 `- ` 计数 = %d（sync 脚本 awk 依赖）" % cnt, cnt == len(proxies))
+
+# P1-5 sync 护栏必须校验 GLOBAL：CDN 边缘缓存的是旧版（无 GLOBAL）时，护栏要能识别并跳过
+SYNC = "_fine_sync.sh"
+if os.path.exists(SYNC):
+    sraw = io.open(SYNC, encoding="utf-8").read()
+    guard = 'grep -q "name: GLOBAL"' in sraw
+    edges = all(("cdn.jsdelivr.net" in sraw or "%s.jsdelivr.net" in sraw or "cdn" in sraw.split(),
+                 "gcore" in sraw, "testingcf" in sraw))
+    check("P1-5", "P1", "sync 护栏含 GLOBAL 判据 + 多源兜底(cdn/gcore/testingcf)", guard and edges)
+    # 禁止把 tolerance 值写死（曾写死 200 把正确的新版自己拦死）。
+    # 先剥掉注释行——注释里常拿 "tolerance: 200" 举例，不剥离会误报。
+    code = "\n".join(ln for ln in sraw.splitlines() if not ln.lstrip().startswith("#"))
+    hardcoded = re.search(r"tolerance:\s*\d+", code) is not None
+    check("P1-6", "P1", "sync 护栏未把 tolerance 值写死", not hardcoded)
+else:
+    check("P1-5", "P1", "%s 不在审计路径，跳过" % SYNC, True)
 
 p0fail = [x for x in results if x[1] == "P0" and not x[3]]
 p1fail = [x for x in results if x[1] == "P1" and not x[3]]

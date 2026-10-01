@@ -2,7 +2,9 @@ name: Fine-Clash daily update
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    # 每 4 小时一次（UTC）。节点寿命以小时计，刷得太少 = 死节点长期滞留池子。
+    # 曾因 schedule 停在 '0 2 * * *'（1 次/天）导致 9 个后死节点霸占池子。
+    - cron: '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:
 
 permissions:

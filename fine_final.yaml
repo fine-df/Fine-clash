@@ -345,9 +345,10 @@ proxies:
 proxy-groups:
 - name: PROXY
   type: url-test
-  url: https://gemini.google.com/
+  url: https://www.gstatic.com/generate_204
   interval: 120
-  timeout: 8000
+  timeout: 6000
+  tolerance: 200
   lazy: false
   proxies:
   - 🇯🇵 Japan, Shibuya City | [BL]

@@ -46,6 +46,22 @@ if not replaced:
     print("FATAL: PROXY group not found in", SRC, file=sys.stderr)
     sys.exit(1)
 
+# 显式定义 GLOBAL（放在 proxy-groups 首位）。
+# GLOBAL 只是外壳：type=select、只挂 PROXY 一个成员，真正干活的是内层 PROXY(url-test)。
+# 不写 GLOBAL 时，Clash Verge 会自行生成一个 selector 并把**全部节点平铺**进去，
+# 界面上的「GLOBAL」就变成「手动锁一个点、掉线不切」——WIN 端打不开 PLAY 的根因。
+# 显式定义后：Verge 里选 GLOBAL → 落到 PROXY → 180s 比速、自动切最快可达节点，
+# 与路由器行为一致。CrashCore 侧多一个 select 组，不影响 url-test 现有逻辑。
+groups = base.get("proxy-groups", [])
+for g in groups:
+    if g.get("name") == "GLOBAL":
+        g.clear()
+        break
+else:
+    g = {}
+    groups.insert(0, g)
+g.update({"name": "GLOBAL", "type": "select", "proxies": ["PROXY"]})
+
 # 路由器是 mihomo v1.19.28，去掉 tun / 重定向模式相关字段，避免启动冲突
 for k in ("tun", "redir-port", "tproxy-port", "routing-mark"):
     base.pop(k, None)

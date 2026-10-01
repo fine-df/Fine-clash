@@ -343,6 +343,10 @@ proxies:
   grpc-opts:
     grpc-service-name: grpc-tunnel
 proxy-groups:
+- name: GLOBAL
+  type: select
+  proxies:
+  - PROXY
 - name: PROXY
   type: url-test
   url: https://play.google.com/store

@@ -33,7 +33,7 @@ If a run finds fewer than the required number of qualifying nodes, the previous 
 ## 自动更新链路（无需人工干预）
 
 ```
-GitHub Actions (每天 00/06/12/18 UTC，即北京 08/14/20/02 点)
+GitHub Actions (cron 0 2,8,14,20 * * * UTC，即北京每天 10/16/22/04 点)
   └─ fine_clash.py  发现高星源 → 探测 → 评分 → live_clash.yaml
   └─ build_final.py 转路由器配置 → fine_final.yaml（PROXY=url-test 探测 gemini.google.com）
   └─ commit 到 main  ──►  jsDelivr CDN（缓存通常 1~20 分钟）

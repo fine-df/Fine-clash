@@ -14,7 +14,12 @@ Mirror (jsDelivr):
 https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
 https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_v2ray.txt
 
-> Note for mainland China: both `raw.githubusercontent.com` and `cdn.jsdelivr.net` are DNS-poisoned. If your client reports "invalid subscription" (无效的订阅内容), the subscription domain is being routed DIRECT and resolving to a fake IP. Route it through your proxy instead — e.g. add `DOMAIN-SUFFIX,jsdelivr.net,PROXY` (or the raw GitHub domain) to your Clash/sing-box rules, or enable "update subscription via proxy" in your client.
+> Note for mainland China: both `raw.githubusercontent.com` and `cdn.jsdelivr.net` are DNS-poisoned (resolving to fake IPs such as `28.0.0.x`). If your client reports "invalid subscription" (无效的订阅内容), the subscription domain is being resolved to a fake IP.
+
+Client-specific remedies:
+
+- **Clash / mihomo**: add `DOMAIN-SUFFIX,jsdelivr.net,PROXY` (and the raw GitHub domain) to your rules, or enable "update subscription via proxy".
+- **v2rayN**: updating a subscription goes DIRECT by default and cannot reuse a local proxy port. Import the subscription as a local file instead — copy the mirrored URL to a local file, then add the subscription with address `file:///C:/path/to/live_v2ray.txt` and click *update current subscription (not via proxy)*. Alternatively, open the mirrored URL in a browser while the proxy is on and copy the text into *Servers -> import batch URLs from clipboard*.
 
 The generated Clash rules default to China direct and proxy for remaining traffic. WeChat/Tencent routes are explicitly direct, and the generated Clash config also enables redir-host DNS with China DNS policies for Tencent/WeChat domains.
 

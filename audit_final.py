@@ -137,11 +137,14 @@ check("P1-3", "P1", "external-controller=%s / allow-lan=%s / authentication=%s"
 check("P1-4", "P1", "组数 = %d（期望 3：GLOBAL + %s + %s）" % (len(groups), PICK_NAME, AUTO_NAME),
       len(groups) == 3)
 
-# P2-1
+# P2-1 幂等：必须「重跑前」先固话字节再比对。
+# 旧写法 `open(OUT).read() == open(OUT).read()` 是拿文件跟自己比 → 恒真，是个假绿项（已修）。
 try:
+    before = io.open(OUT, "rb").read()
     r = subprocess.run([PYBIN, "build_final.py", SRC], capture_output=True, timeout=120)
-    same = r.returncode == 0 and open(OUT, "rb").read() == open(OUT, "rb").read()
-    check("P2-1", "P2", "幂等：重跑 build_final 输出字节一致", same)
+    after = io.open(OUT, "rb").read()
+    same = r.returncode == 0 and before == after
+    check("P2-1", "P2", "幂等：重跑 build_final 输出字节一致（%d B）" % len(after), same)
 except Exception as e:
     check("P2-1", "P2", "幂等检查异常 %s" % e, False)
 

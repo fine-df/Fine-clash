@@ -47,14 +47,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
         run: python fine_clash.py
+      - name: Build router profile (fine_final.yaml)
+        run: |
+          set -euo pipefail
+          python build_final.py live_clash.yaml
       - name: Validate generated Clash config
         run: |
           set -euo pipefail
-          if [ -f live_clash.yaml ]; then
-            mihomo -t -f live_clash.yaml
-          else
-            echo "No live_clash.yaml published in this run"
-          fi
+          mihomo -t -f live_clash.yaml
+          mihomo -t -f fine_final.yaml
       - name: Commit outputs and history
         run: |
           set -euo pipefail
@@ -65,6 +66,7 @@ jobs:
             git reset --mixed origin/main
             git add data
             if [ -f live_clash.yaml ]; then git add live_clash.yaml; fi
+            if [ -f fine_final.yaml ]; then git add fine_final.yaml; fi
             if [ -f live_v2ray.txt ]; then git add live_v2ray.txt; fi
             if git diff --cached --quiet; then
               exit 0
@@ -76,3 +78,39 @@ jobs:
           done
           echo 'Failed to publish after 3 attempts'
           exit 1
+
+      # GitHub 会对长时间无活动的仓库冻结 schedule，
+      # 这里做兜底：距上次成功超过 22 小时就自己再触发一次。
+      - name: Self-trigger watchdog
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, json, time, urllib.request
+          token = os.environ["GH_TOKEN"]
+          owner, repo = os.environ["GITHUB_REPOSITORY"].split("/")
+
+          def api(path, method="GET", data=None):
+              url = "https://api.github.com/repos/%s/%s%s" % (owner, repo, path)
+              req = urllib.request.Request(url, method=method, data=data)
+              req.add_header("Authorization", "Bearer " + token)
+              req.add_header("Accept", "application/vnd.github+json")
+              req.add_header("User-Agent", "fine-clash-watchdog")
+              with urllib.request.urlopen(req, timeout=25) as r:
+                  return json.load(r)
+
+          runs = api("/actions/runs?status=success&per_page=1&branch=main")
+          wr = runs.get("workflow_runs") or []
+          gap = 999.0
+          if wr:
+              gap = (time.time() - wr[0]["created_at"]) / 3600.0
+          print("last_success=%s gap_hours=%.1f" % (wr[0]["created_at"] if wr else "none", gap))
+          if gap < 22:
+              print("watchdog skip: too fresh")
+              raise SystemExit(0)
+          print("watchdog trigger: dispatch update.yml")
+          api("/actions/workflows/update.yml/dispatches", method="POST",
+              data=json.dumps({"ref": "main"}).encode())
+          PY

@@ -89,6 +89,7 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           import os, json, time, urllib.request
+          from datetime import datetime, timezone
           token = os.environ["GH_TOKEN"]
           owner, repo = os.environ["GITHUB_REPOSITORY"].split("/")
 
@@ -105,7 +106,9 @@ jobs:
           wr = runs.get("workflow_runs") or []
           gap = 999.0
           if wr:
-              gap = (time.time() - wr[0]["created_at"]) / 3600.0
+              # API v3 的 created_at 是 ISO 字符串，必须转 datetime 才能相减
+              t0 = datetime.fromisoformat(wr[0]["created_at"].replace("Z", "+00:00"))
+              gap = (datetime.now(timezone.utc) - t0).total_seconds() / 3600.0
           print("last_success=%s gap_hours=%.1f" % (wr[0]["created_at"] if wr else "none", gap))
           if gap < 22:
               print("watchdog skip: too fresh")

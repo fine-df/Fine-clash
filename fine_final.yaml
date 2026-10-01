@@ -345,10 +345,10 @@ proxies:
 proxy-groups:
 - name: PROXY
   type: url-test
-  url: https://www.gstatic.com/generate_204
-  interval: 120
+  url: https://play.google.com/store
+  interval: 180
   timeout: 6000
-  tolerance: 200
+  tolerance: 100
   lazy: false
   proxies:
   - 🇯🇵 Japan, Shibuya City | [BL]

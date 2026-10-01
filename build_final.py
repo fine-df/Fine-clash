@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 """由 live_clash.yaml（CI 产物）生成路由器专用 fine_final.yaml。
 
-PROXY 组 = url-test，探测 https://gemini.google.com/ ，
-仅在能连上 GEMINI 的节点中自动选延迟最小的那个（掉线即剔除）。
+PROXY 组 = url-test，探测 https://play.google.com/store（用户实际诉求是 PLAY 商店），
+在能开 PLAY 的节点中自动选延迟最小的那个（掉线即剔除）。
+
+⚠️ 探针选型（2026-10-01 实测 19 节点）：
+  play.google.com/store   通过 11/19   ← 直接代表 PLAY 可用性
+  gemini.google.com/      通过 10/19
+  gstatic.com/generate_204 通过  9/19
+三者通过集合**互不包含**，所以探针必须选 PLAY 本体；
+用 gstatic/204 会选中「204 通但 PLAY 打不开」的节点（实测 Turkey 即此情况）。
+
+mihomo 对 3xx 判定为成功（不 follow 重定向），store 返回 302 即为可达。
+tolerance=100ms 抑制快慢交替造成的横跳（切一次就是一次断流）。
 """
 import io, os, sys, yaml
 
@@ -24,9 +34,10 @@ for g in base.get("proxy-groups", []):
     g.update({
         "name": "PROXY",
         "type": "url-test",
-        "url": "https://gemini.google.com/",
-        "interval": 120,
-        "timeout": 8000,
+        "url": "https://play.google.com/store",
+        "interval": 180,
+        "timeout": 6000,
+        "tolerance": 100,
         "lazy": False,
         "proxies": list(names),
     })

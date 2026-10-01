@@ -276,3 +276,24 @@ def test_rank_candidates_max_per_org_is_configurable():
     meta = {fc.fingerprint(n): _rank_meta(n, score=90 - i, org="SameOrg, Inc.") for i, n in enumerate(nodes)}
     ranked = fc.rank_candidates(nodes, limit=20, metadata=meta, max_per_org=5)
     assert len(ranked) == 5
+
+
+def test_clean_score_catches_google_and_oracle():
+    g_ok = {"ok": True, "challenge": False}
+    assert fc.clean_score({"org": "AS396982 Google LLC"}, g_ok) < 80
+    assert fc.clean_score({"org": "AS31898 Oracle Corporation"}, g_ok) < 80
+
+
+def test_clean_score_catches_high_risk_hosting():
+    g_ok = {"ok": True, "challenge": False}
+    assert fc.clean_score({"org": "AS9009 M247 Europe SRL"}, g_ok) < 80
+    assert fc.clean_score({"org": "AS199912 Layer7 Networks GmbH"}, g_ok) < 80
+    assert fc.clean_score({"org": "AS62005 BlueVPS OU"}, g_ok) < 80
+
+
+def test_update_history_dedups_within_same_day():
+    db = {}
+    result = {"score": 80, "gemini": True, "google_play": True}
+    fc.update_history(db, "fp", result)
+    row = fc.update_history(db, "fp", result)  # 同一自然日第二次访问
+    assert row["pass_count"] == 1 and row["seen_count"] == 1

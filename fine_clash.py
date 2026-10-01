@@ -230,6 +230,10 @@ def update_history(db,fp,result):
         row["last_seen"]=today; row["seen_count"]+=1
     elif row["seen_count"]==0:
         row["seen_count"]=1
+    else:
+        # 同一自然日内重复访问：pass_count/gemini/play 计数已在当天首次访问时累加，
+        # 此处不再累加，保持 pass_count 与 seen_count 同为「天数」口径，避免同天多次运行虚高。
+        return row
     if result.get("score",0)>=70: row["pass_count"]+=1
     if result.get("gemini"): row["gemini_pass_count"]+=1
     if result.get("google_play"): row["play_pass_count"]+=1
@@ -327,11 +331,13 @@ def save_shenzhen_history(row, result):
     row["shenzhen_status"]=result.get("status","unknown")
     row["shenzhen_probe_city"]=result.get("probe_city")
 
+CLOUD_MARKERS=("amazon","aws","google","azure","microsoft","digitalocean","vultr","linode","hetzner","contabo","oracle","cloudflare")
+HIGH_RISK_MARKERS=("m247","layer7","bluevps","alfahost")
+
 def clean_score(ipinfo,google_result):
     if not ipinfo: return 60
     score=80; org=str(ipinfo.get("org","")).lower()
-    markers=("amazon","aws","google cloud","azure","microsoft","digitalocean","vultr","linode","hetzner","contabo","oracle cloud")
-    if any(x in org for x in markers): score-=20
+    if any(x in org for x in CLOUD_MARKERS+HIGH_RISK_MARKERS): score-=20
     privacy=ipinfo.get("privacy") or {}
     if isinstance(privacy,dict):
         if privacy.get("vpn"): score-=15

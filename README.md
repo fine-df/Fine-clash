@@ -10,6 +10,12 @@ https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.
 V2Ray subscription (Base64):
 https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_v2ray.txt
 
+Mirror (jsDelivr):
+https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_v2ray.txt
+
+> Note for mainland China: both `raw.githubusercontent.com` and `cdn.jsdelivr.net` are DNS-poisoned. If your client reports "invalid subscription" (无效的订阅内容), the subscription domain is being routed DIRECT and resolving to a fake IP. Route it through your proxy instead — e.g. add `DOMAIN-SUFFIX,jsdelivr.net,PROXY` (or the raw GitHub domain) to your Clash/sing-box rules, or enable "update subscription via proxy" in your client.
+
 The generated Clash rules default to China direct and proxy for remaining traffic. WeChat/Tencent routes are explicitly direct, and the generated Clash config also enables redir-host DNS with China DNS policies for Tencent/WeChat domains.
 
 A node is published only when both Gemini and Google Play checks pass, the total score reaches the configured threshold, and the Shenzhen TCP latency gate passes. Node longevity is measured from repeated observations, not from repository age. Candidate verification and Shenzhen probes run concurrently to keep daily runs within the workflow timeout.

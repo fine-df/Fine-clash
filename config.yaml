@@ -16,6 +16,8 @@ nodes:
   max_test_nodes: 80
   min_final_nodes: 3
   max_final_nodes: 20
+  max_per_server: 2
+  max_per_org: 3
   validation_workers: 4
   endpoint_workers: 4
   test_timeout_seconds: 12

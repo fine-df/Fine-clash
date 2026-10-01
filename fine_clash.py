@@ -534,7 +534,7 @@ def build_outputs(nodes, output_rules):
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
     v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
 
-def rank_candidates(nodes, limit=20, metadata=None):
+def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_org=3):
     """Rank verified nodes by score and diversity, returning the top `limit`.
 
     Sorting priority (higher first unless noted):
@@ -547,8 +547,8 @@ def rank_candidates(nodes, limit=20, metadata=None):
 
     Diversity caps applied greedily in sorted order:
       - duplicate fingerprint -> keep only the highest-scored node
-      - same server -> keep at most 2
-      - same org/ASN -> keep at most 3
+      - same server -> keep at most `max_per_server`
+      - same org/ASN -> keep at most `max_per_org`
 
     `metadata` is a fingerprint -> dict lookup (score, shenzhen_ping_ms,
     shenzhen_loss_pct, stability, lifespan, org, asn). Missing fields fall back
@@ -557,6 +557,10 @@ def rank_candidates(nodes, limit=20, metadata=None):
     metadata=metadata or {}
     try: limit=max(1,int(limit))
     except (TypeError,ValueError): limit=20
+    try: max_per_server=max(1,int(max_per_server))
+    except (TypeError,ValueError): max_per_server=2
+    try: max_per_org=max(1,int(max_per_org))
+    except (TypeError,ValueError): max_per_org=3
     enriched=[]
     for node in nodes:
         fp=fingerprint(node); meta=metadata.get(fp,{})
@@ -574,8 +578,8 @@ def rank_candidates(nodes, limit=20, metadata=None):
     seen_fp=set(); server_count={}; org_count={}; picked=[]
     for e in enriched:
         if e["fp"] in seen_fp: continue
-        if e["server"] and server_count.get(e["server"],0)>=2: continue
-        if e["org"] and org_count.get(e["org"],0)>=3: continue
+        if e["server"] and server_count.get(e["server"],0)>=max_per_server: continue
+        if e["org"] and org_count.get(e["org"],0)>=max_per_org: continue
         seen_fp.add(e["fp"])
         if e["server"]: server_count[e["server"]]=server_count.get(e["server"],0)+1
         if e["org"]: org_count[e["org"]]=org_count.get(e["org"],0)+1
@@ -643,7 +647,7 @@ def run():
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
         ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn")}
-    ranked=rank_candidates(selected,limit=int(rules["nodes"].get("max_final_nodes",20)),metadata=ranking_meta)
+    ranked=rank_candidates(selected,limit=int(rules["nodes"].get("max_final_nodes",20)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
     report["ranking"]=[]
     for i,node in enumerate(ranked,1):
         entry=report_lookup.get(fingerprint(node),{})
@@ -652,6 +656,8 @@ def run():
     for r in report["ranking"]:
         ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
         print(f"{r['rank']:>4} | {r['score']:>5} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
+    if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
+        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
     build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

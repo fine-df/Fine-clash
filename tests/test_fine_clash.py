@@ -262,3 +262,17 @@ def test_rank_candidates_missing_metadata_is_safe():
     nodes = [_rank_node("a", "10.0.0.1"), _rank_node("b", "10.0.0.2")]
     ranked = fc.rank_candidates(nodes, limit=20, metadata=None)
     assert len(ranked) == 2
+
+
+def test_rank_candidates_max_per_server_is_configurable():
+    nodes = [_rank_node(f"s{i}", "20.20.20.20", password=f"pw{i}") for i in range(5)]
+    meta = {fc.fingerprint(n): _rank_meta(n, score=90 - i) for i, n in enumerate(nodes)}
+    ranked = fc.rank_candidates(nodes, limit=20, metadata=meta, max_per_server=3)
+    assert len(ranked) == 3
+
+
+def test_rank_candidates_max_per_org_is_configurable():
+    nodes = [_rank_node(f"o{i}", f"30.0.{i}.1") for i in range(6)]
+    meta = {fc.fingerprint(n): _rank_meta(n, score=90 - i, org="SameOrg, Inc.") for i, n in enumerate(nodes)}
+    ranked = fc.rank_candidates(nodes, limit=20, metadata=meta, max_per_org=5)
+    assert len(ranked) == 5

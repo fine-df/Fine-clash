@@ -29,3 +29,21 @@ The cleanliness score is a network-level heuristic based on exit-IP metadata and
 
 If a run finds fewer than the required number of qualifying nodes, the previous published subscriptions are preserved while history and the run report are updated. The Clash subscription keeps the legacy root-level path live_clash.yaml for client compatibility.
 
+
+## 自动更新链路（无需人工干预）
+
+```
+GitHub Actions (每天 00/06/12/18 UTC，即北京 08/14/20/02 点)
+  └─ fine_clash.py  发现高星源 → 探测 → 评分 → live_clash.yaml
+  └─ build_final.py 转路由器配置 → fine_final.yaml（PROXY=url-test 探测 gemini.google.com）
+  └─ commit 到 main  ──►  jsDelivr CDN（缓存通常 1~20 分钟）
+                                      │
+小米路由器 ShellClash  ──►  /data/clash/fine_sync.sh（crontab 每 15 分钟）
+                              └─ 拉 CDN 文件 → 护栏校验（url-test / ^proxies: / CrashCore -t）
+                                 → 覆盖 /data/clash/yamls/config.yaml → 重启 CrashCore
+```
+
+- 节点池变化后，路由器最多 **~35 分钟**（CDN 缓存 ≤20 分钟 + 同步间隔 ≤15 分钟）自动生效。
+- PROXY 组为 `url-test`，只在**能连上 gemini.google.com 的节点里**自动选延迟最小的，掉线即剔除。
+- 装置保：CI 每次结束若距上次成功 >20 小时，会自己再触发一次 `workflow_dispatch`（防止 GitHub 冻结 schedule）。
+- 直连源只有 `cdn.jsdelivr.net` 在路由器可用（raw.githubusercontent / gitclone.com / ghproxy 均不可达）。

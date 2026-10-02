@@ -59,51 +59,8 @@ dns:
   - 119.29.29.29
   direct-nameserver-follow-policy: true
 proxies:
-- type: vless
-  name: 🇵🇱 Poland [*CIDR] VK
-  server: 90.156.218.163
-  port: 443
-  udp: true
-  uuid: adc11f30-e4cb-4985-bf5e-f9ded69c019f
-  encryption: none
-  tls: true
-  servername: eh.vk.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: random
-  reality-opts:
-    public-key: fNfokzklCF4l_c8k8PciOCjm5ecNoF_sNLjEtaO-xzI
-    short-id: db04ce8bdb8900f1
 - type: vmess
-  name: 🇸🇬 Singapore, Singapore (Queenstown Estate) | 🌐 | [BL]
-  server: mdk.mdmekjll.best
-  port: 80
-  uuid: 6E571484-4166-4699-8F58-B34A1823691F
-  alterId: 0
-  cipher: auto
-  udp: true
-  network: ws
-  servername: mdk.mdmekjll.best
-  ws-opts:
-    headers:
-      Host: mdk.mdmekjll.best
-    path: /game/resources
-- type: vless
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [*CIDR]
-  server: 201.24.115.189
-  port: 443
-  udp: true
-  uuid: adc11f30-e4cb-4985-bf5e-f9ded69c019f
-  encryption: none
-  tls: true
-  servername: nvidia.com
-  flow: xtls-rprx-vision
-  client-fingerprint: random
-  reality-opts:
-    public-key: fNfokzklCF4l_c8k8PciOCjm5ecNoF_sNLjEtaO-xzI
-    short-id: db04ce8bdb8900f1
-  network: tcp
-- type: vmess
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [8b5ead81]
   server: yg1.ygkkk.dpdns.org
   port: 443
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
@@ -112,236 +69,281 @@ proxies:
   udp: true
   network: ws
   tls: true
-  servername: jmp1.907737.xyz
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-- type: vless
-  name: 🇪🇸 Spain | [*CIDR] [0011a75a]
-  server: 104.171.132.197
-  port: 443
-  udp: true
-  uuid: e0b9fb0f-1bbd-478b-9580-c2294778338b
-  encryption: none
-  tls: true
-  servername: es.avroraservice.online
-  client-fingerprint: qq
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.EsService
-- type: vless
-  name: 🇪🇸 Spain | [*CIDR] [47ab5212]
-  server: 104.171.132.197
-  port: 443
-  udp: true
-  uuid: 0dca2cfe-98eb-4f9d-9a47-cf87510c558b
-  encryption: none
-  tls: true
-  servername: es.avroraservice.online
-  client-fingerprint: qq
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.EsService
-- type: vless
-  name: 🇪🇸 Spain | [*CIDR] [30b7ddc8]
-  server: es.avroraservice.online
-  port: 443
-  udp: true
-  uuid: 0dca2cfe-98eb-4f9d-9a47-cf87510c558b
-  encryption: none
-  tls: true
-  servername: es.avroraservice.online
-  client-fingerprint: random
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.EsService
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0bf06720]
-  server: 45.128.78.84
-  port: 443
-  udp: true
-  uuid: 3f58af8e-7c91-424e-85c7-ec6913b7fc8f
-  encryption: none
-  tls: true
-  servername: sellflow.org
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  network: tcp
-- type: vless
-  name: 🇨🇭 Switzerland | [*CIDR]
-  server: 45.132.177.83
-  port: 9882
-  udp: true
-  uuid: 5d16ac22-6eea-426f-b778-6f4c2961faef
-  encryption: none
-  tls: true
-  servername: dl.google.com
-  client-fingerprint: random
-  reality-opts:
-    public-key: bnRIb3Er1i-K6NGGByCO9UbGfOvu43ZoiK7ulPd1SzU
-    short-id: aabb
-  network: grpc
-  grpc-opts:
-    grpc-service-name: grpc-tunnel
-- type: vless
-  name: 🇵🇱 Poland | [*CIDR] [75ebe224]
-  server: 176.108.253.133
-  port: 443
-  udp: true
-  uuid: e0b9fb0f-1bbd-478b-9580-c2294778338b
-  encryption: none
-  tls: true
-  servername: pl.avroraservice.online
-  client-fingerprint: qq
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.PlService
-- type: vless
-  name: 🇵🇱 Poland | [*CIDR] [4a9cdc3e]
-  server: pl.avroraservice.online
-  port: 443
-  udp: true
-  uuid: 0dca2cfe-98eb-4f9d-9a47-cf87510c558b
-  encryption: none
-  tls: true
-  servername: pl.avroraservice.online
-  client-fingerprint: random
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.PlService
-- type: vless
-  name: 🇵🇱 Poland | [*CIDR] [1ab649fe]
-  server: pl.avroraservice.online
-  port: 443
-  udp: true
-  uuid: e0b9fb0f-1bbd-478b-9580-c2294778338b
-  encryption: none
-  tls: true
-  servername: pl.avroraservice.online
-  client-fingerprint: random
-  network: grpc
-  grpc-opts:
-    grpc-service-name: cdn.v1.PlService
-- type: vless
-  name: 🇳🇱 The Netherlands, Zaandam | [BL]
-  server: 107.189.23.247
-  port: 443
-  udp: true
-  uuid: ac0c2945-b758-11f1-8181-54db13ea7d40
-  encryption: none
-  tls: true
-  servername: tradingview.com
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  reality-opts:
-    public-key: T6zoUTIKw5BMEvb5-GPicYK0a1nuXnbOEdKytLblizY
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [e607801d]
-  server: cdn-de.bulkavpn.top
-  port: 443
-  udp: true
-  uuid: 91d734be-a3d0-4d50-83ab-74cf7b6966fa
-  encryption: none
-  tls: true
-  servername: cdn-de.bulkavpn.top
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  reality-opts:
-    public-key: LEoyslGYLVf2XWq9Bkq8Hod-EsB3ZoTlvR5AKK3rciQ
-    short-id: c885e8f8
-  network: tcp
-- type: vless
-  name: 🇱🇻 Latvia, Riga | [BL]
-  server: 2.26.88.52
-  port: 443
-  udp: true
-  uuid: f0a52dd3-4377-4402-a450-210bc81bcf25
-  encryption: none
-  tls: true
-  servername: sh-lv-01.mintrocket.org
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: gcx8FNkRv0rdkd0kRhgSLWDXqVc7KgAw4rnYaYx9JgE
-    short-id: 338e250284b889ba
-  network: tcp
-- type: vless
-  name: 🌐 Anycast-IP | 🇸🇬 🇹🇼 🇺🇸 | [BL]
-  server: 103.118.41.206
-  port: 27149
-  udp: true
-  uuid: 26524cce-d514-4014-a426-365fb266a14d
-  encryption: none
-  tls: true
-  servername: qcswhj2.edge-cache.danfeng4.xyz
-  client-fingerprint: firefox
-  network: ws
-  ws-opts:
-    path: /danfeng-pw8lj2-nzliwt-h23l-978coeve
-    headers:
-      Host: qcswhj2.edge-cache.danfeng4.xyz
 - type: vmess
-  name: 🇹🇼 Taiwan, Taipei | [BL]
-  server: hi.northcluster.info
-  port: 52300
-  uuid: 6e571484-4166-4699-8f58-b34a1823691f
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [0cd8ff53]
+  server: cu.877774.xyz
+  port: 443
+  uuid: f3244e28-157b-49e9-9730-89832f89ebcc
   alterId: 0
   cipher: auto
   udp: true
   network: ws
-  servername: hi.northcluster.info
+  tls: true
   ws-opts:
     headers:
-      Host: hi.northcluster.info
-    path: /video
+      Host: balanced-minds-carrier-demanding.trycloudflare.com
+    path: /vmess-argo
+- type: vmess
+  name: 🇺🇸 United States, St Louis (Downtown) | [BL]
+  server: 172.64.80.1
+  port: 8443
+  uuid: 60441548-b68e-43b2-8191-e3b884be4b3c
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: v2ray1.dozapp.xyz
+    path: /lMnsZUN4/
 - type: vless
-  name: 🇸🇬 Singapore, Singapore | [BL]
-  server: 35.185.179.62
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [a8960330]
+  server: germanydvatri.online
   port: 443
   udp: true
-  uuid: 5567cac6-2a32-4318-83cd-7df3a9eebbd7
+  uuid: f811a2e8-08ed-4b30-b44c-449a7cab54d8
   encryption: none
   tls: true
-  servername: www.cloudflare.com
-  client-fingerprint: safari
+  servername: germanydvatri.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
   reality-opts:
-    public-key: hJCcmOf_ECJ3GUfHUjsgfcFKcgGb22H7cz_m_FvcVm4
-    short-id: eb97ce837da2f6ad
+    public-key: aHxzHc7w0r_8X8mdx1XCyg2ooRLjcOQMOuscdAQPrEo
   network: tcp
 - type: vless
-  name: 🌐 Anycast-IP | 🇨🇦 🇺🇸 | [BL]
-  server: 23.106.153.68
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [d789aa08]
+  server: 87.58.201.170
   port: 443
   udp: true
-  uuid: 26524cce-d514-4014-a426-365fb266a14d
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
   encryption: none
   tls: true
-  servername: qcswhj2.edge-cache.danfeng4.xyz
-  client-fingerprint: firefox
-  network: ws
-  ws-opts:
-    path: /danfeng-pw8lj2-nzliwt-h23l-978coeve
-    headers:
-      Host: qcswhj2.edge-cache.danfeng4.xyz
+  servername: d3-nl1.cloud-cdn.xyz
+  client-fingerprint: edge
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vlgrpc
 - type: vless
-  name: 🌐 Anycast-IP | 🇦🇷 🇸🇬 🇺🇸 | [BL]
-  server: 45.59.131.40
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
+  server: newblocksgerm.site
   port: 443
   udp: true
-  uuid: 26524cce-d514-4014-a426-365fb266a14d
+  uuid: f811a2e8-08ed-4b30-b44c-449a7cab54d8
   encryption: none
   tls: true
-  servername: qcswhj2.edge-cache.danfeng4.xyz
+  servername: newblocksgerm.site
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: _aURfmVUjvCRZipDI2eqMO0VQa64BJRGYFOdlBFi1XQ
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [0333b2c0]
+  server: 87.58.201.211
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-nl1.cloud-cdn.xyz
+  client-fingerprint: qq
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vlgrpc
+- type: vless
+  name: 🌐 Anycast-IP | 🇦🇪 🇳🇱 | [BL]
+  server: 217.60.35.228
+  port: 8443
+  udp: true
+  uuid: e19b5aa3-16c9-435a-8bc9-76f2f6ddff43
+  encryption: none
+  tls: true
+  servername: kaneki.cfd
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 4jeCe2efqOkTQ-r99RHuACTH8_BuNNP1Rx6cuBXS4hg
+    short-id: a4f8c92d
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [2adb769e]
+  server: 2.26.148.145
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: polo.ali-bard.online
+  flow: xtls-rprx-vision
   client-fingerprint: firefox
-  network: ws
-  ws-opts:
-    path: /danfeng-pw8lj2-nzliwt-h23l-978coeve
-    headers:
-      Host: qcswhj2.edge-cache.danfeng4.xyz
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [62ef86d1]
+  server: polo.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: polo.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇱🇹 Lithuania, Šiauliai | [BL] [76783494]
+  server: litva1.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: litva1.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  server: pol4.o4ka-internet.com
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: pol4.o4ka-internet.com
+  flow: xtls-rprx-vision
+  client-fingerprint: random
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+  network: tcp
+- type: vless
+  name: 🇱🇹 Lithuania, Šiauliai | [BL] [2517ba27]
+  server: 93.115.24.216
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: litva1.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇫🇮 Finland, Porvoo | [BL] [51819abf]
+  server: 170.168.4.52
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: finl11.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
+  server: 95.85.254.245
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: pol4.o4ka-internet.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+  network: tcp
+- type: vless
+  name: 🇫🇮 Finland, Porvoo | [BL] [30cbd7b2]
+  server: finl11.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: finl11.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇬🇷 Greece, Thessaloniki | 🌐 | [BL]
+  server: 85.90.197.146
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: greeeeeek.pumpkinpie.study
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: lza1anie-lqVSKrFdfSzq4XLd8Ge2qyCDkgZb1xr1k0
+    short-id: 9fa5c0092361b848
+  network: tcp
+- type: vless
+  name: 🇸🇪 Sweden, Stockholm | [BL]
+  server: 132.243.231.4
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-se1.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: zWDvtTWK-cWWwHDMHMXcOpQy4k3EKp7yw-5e0wTZAUM
+    short-id: 5efa80b939612291
+  network: tcp
+- type: vless
+  name: 🇷🇴 Romania, Bucharest | [BL]
+  server: 109.104.106.15
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-ro.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  reality-opts:
+    public-key: a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw
+    short-id: 87709fed663228e5
+  network: tcp
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL]
+  server: 163.245.52.91
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-ee1.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: g36Z7YIqJMJP-uv3DBr72X5jvfjyW1qIAxa8TkWmpmQ
+    short-id: ad6e08b22389abd2
+  network: tcp
 proxy-groups:
 - name: GLOBAL
   type: select
@@ -352,26 +354,26 @@ proxy-groups:
   proxies:
   - ♻️ 自动选择
   - DIRECT
-  - 🇵🇱 Poland [*CIDR] VK
-  - 🇸🇬 Singapore, Singapore (Queenstown Estate) | 🌐 | [BL]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [*CIDR]
-  - 🇭🇰 Hong Kong, Hong Kong | [BL]
-  - 🇪🇸 Spain | [*CIDR] [0011a75a]
-  - 🇪🇸 Spain | [*CIDR] [47ab5212]
-  - 🇪🇸 Spain | [*CIDR] [30b7ddc8]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0bf06720]
-  - 🇨🇭 Switzerland | [*CIDR]
-  - 🇵🇱 Poland | [*CIDR] [75ebe224]
-  - 🇵🇱 Poland | [*CIDR] [4a9cdc3e]
-  - 🇵🇱 Poland | [*CIDR] [1ab649fe]
-  - 🇳🇱 The Netherlands, Zaandam | [BL]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [e607801d]
-  - 🇱🇻 Latvia, Riga | [BL]
-  - 🌐 Anycast-IP | 🇸🇬 🇹🇼 🇺🇸 | [BL]
-  - 🇹🇼 Taiwan, Taipei | [BL]
-  - 🇸🇬 Singapore, Singapore | [BL]
-  - 🌐 Anycast-IP | 🇨🇦 🇺🇸 | [BL]
-  - 🌐 Anycast-IP | 🇦🇷 🇸🇬 🇺🇸 | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [8b5ead81]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [0cd8ff53]
+  - 🇺🇸 United States, St Louis (Downtown) | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a8960330]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [d789aa08]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [0333b2c0]
+  - 🌐 Anycast-IP | 🇦🇪 🇳🇱 | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL] [2adb769e]
+  - 🇵🇱 Poland, Warsaw | [BL] [62ef86d1]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [76783494]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [2517ba27]
+  - 🇫🇮 Finland, Porvoo | [BL] [51819abf]
+  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
+  - 🇫🇮 Finland, Porvoo | [BL] [30cbd7b2]
+  - 🇬🇷 Greece, Thessaloniki | 🌐 | [BL]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇷🇴 Romania, Bucharest | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL]
 - name: ♻️ 自动选择
   type: url-test
   url: https://play.google.com/store
@@ -380,26 +382,26 @@ proxy-groups:
   tolerance: 50
   lazy: false
   proxies:
-  - 🇵🇱 Poland [*CIDR] VK
-  - 🇸🇬 Singapore, Singapore (Queenstown Estate) | 🌐 | [BL]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [*CIDR]
-  - 🇭🇰 Hong Kong, Hong Kong | [BL]
-  - 🇪🇸 Spain | [*CIDR] [0011a75a]
-  - 🇪🇸 Spain | [*CIDR] [47ab5212]
-  - 🇪🇸 Spain | [*CIDR] [30b7ddc8]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0bf06720]
-  - 🇨🇭 Switzerland | [*CIDR]
-  - 🇵🇱 Poland | [*CIDR] [75ebe224]
-  - 🇵🇱 Poland | [*CIDR] [4a9cdc3e]
-  - 🇵🇱 Poland | [*CIDR] [1ab649fe]
-  - 🇳🇱 The Netherlands, Zaandam | [BL]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [e607801d]
-  - 🇱🇻 Latvia, Riga | [BL]
-  - 🌐 Anycast-IP | 🇸🇬 🇹🇼 🇺🇸 | [BL]
-  - 🇹🇼 Taiwan, Taipei | [BL]
-  - 🇸🇬 Singapore, Singapore | [BL]
-  - 🌐 Anycast-IP | 🇨🇦 🇺🇸 | [BL]
-  - 🌐 Anycast-IP | 🇦🇷 🇸🇬 🇺🇸 | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [8b5ead81]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [0cd8ff53]
+  - 🇺🇸 United States, St Louis (Downtown) | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a8960330]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [d789aa08]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [0333b2c0]
+  - 🌐 Anycast-IP | 🇦🇪 🇳🇱 | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL] [2adb769e]
+  - 🇵🇱 Poland, Warsaw | [BL] [62ef86d1]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [76783494]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [2517ba27]
+  - 🇫🇮 Finland, Porvoo | [BL] [51819abf]
+  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
+  - 🇫🇮 Finland, Porvoo | [BL] [30cbd7b2]
+  - 🇬🇷 Greece, Thessaloniki | 🌐 | [BL]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇷🇴 Romania, Bucharest | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL]
 rules:
 - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
 - DOMAIN-SUFFIX,wx.qq.com,DIRECT

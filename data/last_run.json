@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T10:13:43.825738+00:00",
+  "generated_at": "2026-10-02T17:13:19.671838+00:00",
   "sources": 10,
   "nodes_discovered": 80,
   "results": [
@@ -230,15 +230,15 @@
     {
       "fingerprint": "dde18ce9617782a56a50",
       "name": "未知 VLESS-68 | free-nodes",
-      "score": 86,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "timeout",
-      "org": "AS197196 PANSTAR CLOUD LIMITED",
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
@@ -454,15 +454,15 @@
     {
       "fingerprint": "c699d0917ea49c7aabe8",
       "name": "未知 SS-68 | free-nodes",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "not-tested",
-      "org": null,
+      "shenzhen_status": "timeout",
+      "org": "AS212238 Datacamp Limited",
       "asn": null
     },
     {
@@ -510,15 +510,15 @@
     {
       "fingerprint": "b6d7ef36ceae2211e54b",
       "name": "未知 VLESS-85 | free-nodes",
-      "score": 86,
-      "gemini": true,
+      "score": 37,
+      "gemini": false,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "timeout",
-      "org": "AS210546 CHSL ONE LTD",
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
@@ -804,15 +804,15 @@
     {
       "fingerprint": "70437438cd298d0df483",
       "name": "未知 VLESS-94 | free-nodes",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "timeout",
-      "org": null,
+      "org": "AS3462 Data Communication Business Group",
       "asn": null
     },
     {
@@ -958,15 +958,15 @@
     {
       "fingerprint": "51d620f9e2ee117798b4",
       "name": "未知 SS-48 | free-nodes",
-      "score": 82,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "timeout",
-      "org": null,
+      "org": "AS136557 Host Universal Pty Ltd",
       "asn": null
     },
     {
@@ -1097,7 +1097,7 @@
     },
     {
       "fingerprint": "58f03c63c7d995746e0f",
-      "name": "美国(yudou789.top 玉豆分享)",
+      "name": "未知 VLESS-79 | free-nodes",
       "score": 12,
       "gemini": false,
       "google_play": false,

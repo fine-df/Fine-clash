@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T03:32:00.831382+00:00",
+  "generated_at": "2026-10-02T10:13:43.825738+00:00",
   "sources": 10,
   "nodes_discovered": 80,
   "results": [
@@ -174,7 +174,7 @@
     {
       "fingerprint": "9ea3049ffb149b565c50",
       "name": "未知 SS-67 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -230,7 +230,7 @@
     {
       "fingerprint": "dde18ce9617782a56a50",
       "name": "未知 VLESS-68 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -272,7 +272,7 @@
     {
       "fingerprint": "1a757532763e513ad47a",
       "name": "未知 VLESS-101 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -454,15 +454,15 @@
     {
       "fingerprint": "c699d0917ea49c7aabe8",
       "name": "未知 SS-68 | free-nodes",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "timeout",
-      "org": "AS60068 Datacamp Limited",
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
@@ -510,7 +510,7 @@
     {
       "fingerprint": "b6d7ef36ceae2211e54b",
       "name": "未知 VLESS-85 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -524,29 +524,29 @@
     {
       "fingerprint": "4965e88e48634fcce5fe",
       "name": "未知 VLESS-89 | free-nodes",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "not-tested",
+      "shenzhen_status": "timeout",
       "org": null,
       "asn": null
     },
     {
       "fingerprint": "df38aab3d1f31ade0601",
       "name": "未知 VLESS-91 | free-nodes",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
+      "score": 81,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "not-tested",
-      "org": null,
+      "shenzhen_status": "timeout",
+      "org": "AS41745 Baykov Ilya Sergeevich",
       "asn": null
     },
     {
@@ -692,15 +692,15 @@
     {
       "fingerprint": "e8e76ec7cc645406785e",
       "name": "未知 SS-52 | free-nodes",
-      "score": 56,
+      "score": 12,
       "gemini": false,
-      "google_play": true,
-      "clean": 80,
+      "google_play": false,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS215365 Tom Gewiese",
+      "org": null,
       "asn": null
     },
     {
@@ -803,16 +803,16 @@
     },
     {
       "fingerprint": "70437438cd298d0df483",
-      "name": "🇹🇼 Taiwan, Xizhi District | [BL]",
-      "score": 81,
+      "name": "未知 VLESS-94 | free-nodes",
+      "score": 82,
       "gemini": true,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "timeout",
-      "org": "AS3462 Data Communication Business Group",
+      "org": null,
       "asn": null
     },
     {
@@ -958,15 +958,15 @@
     {
       "fingerprint": "51d620f9e2ee117798b4",
       "name": "未知 SS-48 | free-nodes",
-      "score": 81,
+      "score": 82,
       "gemini": true,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "timeout",
-      "org": "AS136557 Host Universal Pty Ltd",
+      "org": null,
       "asn": null
     },
     {
@@ -986,7 +986,7 @@
     {
       "fingerprint": "7c93b30d698bc7af9a8e",
       "name": "未知 SS-57 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -1084,7 +1084,7 @@
     {
       "fingerprint": "80daf7aebeca357ab7c3",
       "name": "未知 VLESS-90 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -1112,7 +1112,7 @@
     {
       "fingerprint": "930f754987b4db3e4192",
       "name": "未知 VLESS-105 | free-nodes",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,

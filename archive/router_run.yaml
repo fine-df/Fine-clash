@@ -1,0 +1,497 @@
+mixed-port: 7890
+redir-port: 7892
+tproxy-port: 7893
+authentication: [""]
+allow-lan: true
+mode: Rule
+log-level: info
+ipv6: true
+external-controller: :9999
+external-ui: ui
+external-ui-url: ""
+secret: 
+tun: {enable: true, stack: system, device: utun, auto-route: false, auto-detect-interface: false}
+experimental: {ignore-resolve-fail: true, interface-name: en0}
+
+find-process-mode: "off"
+routing-mark: 7894
+unified-delay: true
+dns:
+  enable: true
+  listen: :1053
+  use-hosts: true
+  ipv6: true
+  default-nameserver: [ 127.0.0.1 ]
+  enhanced-mode: fake-ip
+  fake-ip-range: 28.0.0.0/8
+  fake-ip-range6: fc00::/16
+  fake-ip-filter:
+    - '*'
+    - '*.lan'
+    - '*.localdomain'
+    - '*.example'
+    - '*.invalid'
+    - '*.localhost'
+    - '*.test'
+    - '*.local'
+    - '*.home.arpa'
+    - '*.direct'
+    - 'time.*.com'
+    - 'time.*.gov'
+    - 'time.*.edu.cn'
+    - 'time.*.apple.com'
+    - 'time-ios.apple.com'
+    - 'time1.*.com'
+    - 'time2.*.com'
+    - 'time3.*.com'
+    - 'time4.*.com'
+    - 'time5.*.com'
+    - 'time6.*.com'
+    - 'time7.*.com'
+    - 'ntp.*.com'
+    - 'ntp1.*.com'
+    - 'ntp2.*.com'
+    - 'ntp3.*.com'
+    - 'ntp4.*.com'
+    - 'ntp5.*.com'
+    - 'ntp6.*.com'
+    - 'ntp7.*.com'
+    - '*.time.edu.cn'
+    - '*.ntp.org.cn'
+    - '+.pool.ntp.org'
+    - 'time1.cloud.tencent.com'
+    - 'music.163.com'
+    - '*.music.163.com'
+    - '*.126.net'
+    - 'musicapi.taihe.com'
+    - 'music.taihe.com'
+    - 'songsearch.kugou.com'
+    - 'trackercdn.kugou.com'
+    - '*.kuwo.cn'
+    - 'api-jooxtt.sanook.com'
+    - 'api.joox.com'
+    - 'joox.com'
+    - 'y.qq.com'
+    - '*.y.qq.com'
+    - 'streamoc.music.tc.qq.com'
+    - 'mobileoc.music.tc.qq.com'
+    - 'isure.stream.qqmusic.qq.com'
+    - 'dl.stream.qqmusic.qq.com'
+    - 'aqqmusic.tc.qq.com'
+    - 'amobile.music.tc.qq.com'
+    - '*.xiami.com'
+    - '*.music.migu.cn'
+    - 'music.migu.cn'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+    - 'localhost.ptlogin2.qq.com'
+    - 'localhost.sec.qq.com'
+    - 'localhost.*.weixin.qq.com'
+    - '+.kk-rays.com'
+    - '+.steamcontent.com'
+    - '+.srv.nintendo.net'
+    - '*.n.n.srv.nintendo.net'
+    - '+.cdn.nintendo.net'
+    - 'xbox.*.*.microsoft.com'
+    - '*.*.xboxlive.com'
+    - 'xbox.*.microsoft.com'
+    - 'xnotify.xboxlive.com'
+    - '+.battle.net'
+    - '+.battlenet.com.cn'
+    - '+.wotgame.cn'
+    - '+.wggames.cn'
+    - '+.wowsgame.cn'
+    - '+.wargaming.net'
+    - 'proxy.golang.org'
+    - '+.stun.*.*'
+    - '+.stun.*.*.*'
+    - '+.stun.*.*.*.*'
+    - '+.stun.*.*.*.*.*'
+    - 'heartbeat.belkin.com'
+    - '*.linksys.com'
+    - '*.linksyssmartwifi.com'
+    - '*.router.asus.com'
+    - 'mesu.apple.com'
+    - 'swscan.apple.com'
+    - 'swquery.apple.com'
+    - 'swdownload.apple.com'
+    - 'swcdn.apple.com'
+    - 'swdist.apple.com'
+    - 'lens.l.google.com'
+    - 'na.b.g-tun.com'
+    - '*.square-enix.com'
+    - '*.finalfantasyxiv.com'
+    - '*.ffxiv.com'
+    - '*.ff14.sdo.com'
+    - 'ff.dorado.sdo.com'
+    - '*.mcdn.bilivideo.cn'
+    - '+.media.dssott.com'
+    - 'shark007.net'
+    - 'Mijia Cloud'
+    - '+.market.xiaomi.com'
+    - '+.cmbchina.com'
+    - '+.cmbimg.com'
+    - 'adguardteam.github.io'
+    - 'adrules.top'
+    - 'anti-ad.net'
+    - 'local.adguard.org'
+    - 'static.adtidy.org'
+    - '+.sandai.net'
+    - '+.n0808.com'
+    - '+.3gppnetwork.org'
+    - '+.uu.163.com'
+    - 'ps.res.netease.com'
+    - '+.pub.3gppnetwork.org'
+    - '+.oray.com'
+    - '+.orayimg.com'
+    - '+.gcloudcs.com'
+    - '+.gcloudsdk.com'
+    - '+.dynv6.net'
+  nameserver: [ localhost ]
+use-system-hosts: true
+hosts:
+  'time.android.com': 203.107.6.88
+  'time.facebook.com': 203.107.6.88
+  'services.googleapis.cn': services.googleapis.com
+  'localhost': 127.0.0.1
+  'XiaoQiang': 127.0.0.1
+#用于编写自定义设定(可参考https://lancellc.gitbook.io/clash/clash-config-file/general 或 https://docs.metacubex.one/function/general)
+#端口之类请在脚本中修改，否则不会加载
+#port: 7890
+#用于编写自定义的锚点、入站、proxy-providers、sub-rules、rule-set、script等功能
+#可参考 https://github.com/MetaCubeX/Clash.Meta/blob/Meta/docs/config.yaml 或 https://lancellc.gitbook.io/clash/clash-config-file/an-example-configuration-file
+#此处内容会被添加在配置文件的“proxy-group：”模块的末尾与“rules：”模块之前的位置
+#例如：
+#proxy-providers:
+#rule-providers:
+#sub-rules:
+#tunnels:
+#script:
+#listeners:
+proxies:
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [8b5ead81]
+  server: yg1.ygkkk.dpdns.org
+  port: 443
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: jmp1.907737.xyz
+    path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [0cd8ff53]
+  server: cu.877774.xyz
+  port: 443
+  uuid: f3244e28-157b-49e9-9730-89832f89ebcc
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: balanced-minds-carrier-demanding.trycloudflare.com
+    path: /vmess-argo
+- type: vmess
+  name: 🇺🇸 United States, St Louis (Downtown) | [BL]
+  server: 172.64.80.1
+  port: 8443
+  uuid: 60441548-b68e-43b2-8191-e3b884be4b3c
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: v2ray1.dozapp.xyz
+    path: /lMnsZUN4/
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [a8960330]
+  server: germanydvatri.online
+  port: 443
+  udp: true
+  uuid: f811a2e8-08ed-4b30-b44c-449a7cab54d8
+  encryption: none
+  tls: true
+  servername: germanydvatri.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: aHxzHc7w0r_8X8mdx1XCyg2ooRLjcOQMOuscdAQPrEo
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [d789aa08]
+  server: 87.58.201.170
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-nl1.cloud-cdn.xyz
+  client-fingerprint: edge
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vlgrpc
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
+  server: newblocksgerm.site
+  port: 443
+  udp: true
+  uuid: f811a2e8-08ed-4b30-b44c-449a7cab54d8
+  encryption: none
+  tls: true
+  servername: newblocksgerm.site
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: _aURfmVUjvCRZipDI2eqMO0VQa64BJRGYFOdlBFi1XQ
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [0333b2c0]
+  server: 87.58.201.211
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-nl1.cloud-cdn.xyz
+  client-fingerprint: qq
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vlgrpc
+- type: vless
+  name: 🌐 Anycast-IP | 🇦🇪 🇳🇱 | [BL]
+  server: 217.60.35.228
+  port: 8443
+  udp: true
+  uuid: e19b5aa3-16c9-435a-8bc9-76f2f6ddff43
+  encryption: none
+  tls: true
+  servername: kaneki.cfd
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: 4jeCe2efqOkTQ-r99RHuACTH8_BuNNP1Rx6cuBXS4hg
+    short-id: a4f8c92d
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [2adb769e]
+  server: 2.26.148.145
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: polo.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [62ef86d1]
+  server: polo.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: polo.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇱🇹 Lithuania, Šiauliai | [BL] [76783494]
+  server: litva1.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: litva1.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  server: pol4.o4ka-internet.com
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: pol4.o4ka-internet.com
+  flow: xtls-rprx-vision
+  client-fingerprint: random
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+  network: tcp
+- type: vless
+  name: 🇱🇹 Lithuania, Šiauliai | [BL] [2517ba27]
+  server: 93.115.24.216
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: litva1.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇫🇮 Finland, Porvoo | [BL] [51819abf]
+  server: 170.168.4.52
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: finl11.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
+  server: 95.85.254.245
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: pol4.o4ka-internet.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
+    short-id: 5629431325884ff0
+  network: tcp
+- type: vless
+  name: 🇫🇮 Finland, Porvoo | [BL] [30cbd7b2]
+  server: finl11.ali-bard.online
+  port: 443
+  udp: true
+  uuid: 4643976f-85fa-40cf-9e58-ea28b50f253b
+  encryption: none
+  tls: true
+  servername: finl11.ali-bard.online
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: SB1uC0OEveYjSiS_Nuw9Ld-uVVXWqi794OGnldthY3I
+  network: tcp
+- type: vless
+  name: 🇬🇷 Greece, Thessaloniki | 🌐 | [BL]
+  server: 85.90.197.146
+  port: 443
+  udp: true
+  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
+  encryption: none
+  tls: true
+  servername: greeeeeek.pumpkinpie.study
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: lza1anie-lqVSKrFdfSzq4XLd8Ge2qyCDkgZb1xr1k0
+    short-id: 9fa5c0092361b848
+  network: tcp
+- type: vless
+  name: 🇸🇪 Sweden, Stockholm | [BL]
+  server: 132.243.231.4
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-se1.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: zWDvtTWK-cWWwHDMHMXcOpQy4k3EKp7yw-5e0wTZAUM
+    short-id: 5efa80b939612291
+  network: tcp
+- type: vless
+  name: 🇷🇴 Romania, Bucharest | [BL]
+  server: 109.104.106.15
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-ro.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  reality-opts:
+    public-key: a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw
+    short-id: 87709fed663228e5
+  network: tcp
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL]
+  server: 163.245.52.91
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-ee1.cloud-cdn.xyz
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: g36Z7YIqJMJP-uv3DBr72X5jvfjyW1qIAxa8TkWmpmQ
+    short-id: ad6e08b22389abd2
+  network: tcp
+proxy-groups:
+- name: PROXY
+  type: select
+  proxies:
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [8b5ead81]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [0cd8ff53]
+  - 🇺🇸 United States, St Louis (Downtown) | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a8960330]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [d789aa08]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [0333b2c0]
+  - 🌐 Anycast-IP | 🇦🇪 🇳🇱 | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL] [2adb769e]
+  - 🇵🇱 Poland, Warsaw | [BL] [62ef86d1]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [76783494]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇱🇹 Lithuania, Šiauliai | [BL] [2517ba27]
+  - 🇫🇮 Finland, Porvoo | [BL] [51819abf]
+  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
+  - 🇫🇮 Finland, Porvoo | [BL] [30cbd7b2]
+  - 🇬🇷 Greece, Thessaloniki | 🌐 | [BL]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇷🇴 Romania, Bucharest | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL]
+  - DIRECT
+rules:
+ - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+ - DOMAIN-SUFFIX,wx.qq.com,DIRECT
+ - DOMAIN-SUFFIX,wechat.com,DIRECT
+ - DOMAIN-SUFFIX,qpic.cn,DIRECT
+ - DOMAIN-SUFFIX,qlogo.cn,DIRECT
+ - DOMAIN-SUFFIX,gtimg.cn,DIRECT
+ - DOMAIN-SUFFIX,gtimg.com,DIRECT
+ - DOMAIN-SUFFIX,qq.com,DIRECT
+ - DOMAIN-SUFFIX,tenpay.com,DIRECT
+ - DOMAIN-SUFFIX,wechatpay.cn,DIRECT
+ - DOMAIN-SUFFIX,tencent.com,DIRECT
+ - DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
+ - GEOSITE,CN,DIRECT
+ - GEOIP,CN,DIRECT
+ - MATCH,PROXY

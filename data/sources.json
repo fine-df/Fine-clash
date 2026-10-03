@@ -1,9 +1,36 @@
 [
   {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20260929.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20260929.yml",
+    "stars": 16783,
+    "forks": 1373,
+    "pushed_at": "2026-10-02T21:00:21Z",
+    "nodes": 280
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20260930.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20260930.yml",
+    "stars": 16783,
+    "forks": 1373,
+    "pushed_at": "2026-10-02T21:00:21Z",
+    "nodes": 365
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261001.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20261001.yml",
+    "stars": 16783,
+    "forks": 1373,
+    "pushed_at": "2026-10-02T21:00:21Z",
+    "nodes": 404
+  },
+  {
     "url": "https://raw.githubusercontent.com/KaringX/karing/main/README_examples/clash/config.yaml",
     "repo": "KaringX/karing",
     "path": "README_examples/clash/config.yaml",
-    "stars": 15265,
+    "stars": 15264,
     "forks": 1274,
     "pushed_at": "2026-09-30T05:34:40Z",
     "nodes": 17
@@ -12,43 +39,43 @@
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
-    "stars": 9033,
+    "stars": 9034,
     "forks": 447,
-    "pushed_at": "2026-10-02T23:17:33Z",
-    "nodes": 162
+    "pushed_at": "2026-10-03T03:07:40Z",
+    "nodes": 249
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_SS%2BAll_RUS_v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/BLACK_SS+All_RUS_v2rayN.txt",
-    "stars": 9033,
+    "stars": 9034,
     "forks": 447,
-    "pushed_at": "2026-10-02T23:17:33Z",
-    "nodes": 27
+    "pushed_at": "2026-10-03T03:07:40Z",
+    "nodes": 25
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
-    "stars": 9033,
+    "stars": 9034,
     "forks": 447,
-    "pushed_at": "2026-10-02T23:17:33Z",
-    "nodes": 6
+    "pushed_at": "2026-10-03T03:07:40Z",
+    "nodes": 10
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
-    "stars": 9033,
+    "stars": 9034,
     "forks": 447,
-    "pushed_at": "2026-10-02T23:17:33Z",
-    "nodes": 114
+    "pushed_at": "2026-10-03T03:07:40Z",
+    "nodes": 108
   },
   {
     "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/cfmem.txt",
     "repo": "Barabama/FreeNodes",
     "path": "nodes/cfmem.txt",
-    "stars": 3219,
+    "stars": 3220,
     "forks": 397,
     "pushed_at": "2026-10-02T10:17:01Z",
     "nodes": 27
@@ -57,7 +84,7 @@
     "url": "https://raw.githubusercontent.com/Barabama/FreeNodes/feat%2Fai-crawler-v2/nodes/yudou.txt",
     "repo": "Barabama/FreeNodes",
     "path": "nodes/yudou.txt",
-    "stars": 3219,
+    "stars": 3220,
     "forks": 397,
     "pushed_at": "2026-10-02T10:17:01Z",
     "nodes": 251

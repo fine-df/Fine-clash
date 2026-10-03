@@ -406,6 +406,11 @@ class MihomoTester:
             name=f"N{idx:03d}"; names.append(name); proxy=dict(node); proxy["name"]=name; proxies.append(proxy)
         config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,TEST"]}
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
+        # geo 预置(2026-10-03)：mihomo 首启会在线下载 GeoSite.dat，2.5s 启动窗口内下载不完导致控口拒绝连接；
+        # 从 MIHOMO_GEO_DIR 本地缓存预拷，跳过在线下载。缺文件时退回 mihomo 自带下载行为，不影响 CI。
+        for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
+            src=Path(os.environ.get("MIHOMO_GEO_DIR",""))/geo
+            if src.is_file(): shutil.copyfile(src,self.tmp/geo)
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(float(self.cfg["controller_startup_seconds"])); return names
     def choose(self,name):
         response=self.session.put(f"http://127.0.0.1:{self.controller_port}/proxies/TEST",json={"name":name},timeout=5); response.raise_for_status(); time.sleep(float(self.cfg["switch_wait_seconds"]))
@@ -595,7 +600,16 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
 
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
-    sources=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover(); source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
+    sources=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
+    if not sources and source_path.is_file():
+        # GitHub 匿名 API 限额兜底(2026-10-03)：限额期内 discovery 返回空(树接口全 403)，
+        # 沿用上次成功发现的源清单继续跑——raw.githubusercontent 拉订阅不占 API 限额，
+        # 个别源失效会在 fetch 阶段自然跳过，不会污染结果。
+        try:
+            cached=json.loads(source_path.read_text(encoding="utf-8"))
+            if isinstance(cached,list) and cached: sources=cached
+        except Exception: pass
+    source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
     nodes_by_fp={}; session=requests.Session()
     for source in sources:
         try:

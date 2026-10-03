@@ -15,7 +15,7 @@
   ↓ Fine：其他所有海外流量（MATCH）
 
 实现：Bitz / Fine 两个 url-test 组各持全部节点，但探针不同
-      （Bitz=RU 电商可达性 ozon.ru，Fine=综合 Web play.google.com/store），
+      （Bitz=RU 电商可达性 ozon.ru，Fine=综合 Web gemini.google.com 探针，自愈防 Gemini 断供），
       规则按层级把流量引到对应组；手动入口 节点选择 可强制某条链路。
 
 ⚠️ 探针选型（2026-10-01 实测 19 节点）：
@@ -35,7 +35,7 @@ BITZ_NAME = "Bitz"    # url-test 组：OZON/AMAZON/低流量网站走这里（RU
 FINE_NAME = "Fine"    # url-test 组：其他所有海外流量走这里（综合 Web 探针）
 PICK_NAME = "🚀 节点选择"   # select 组：手动入口，第一项=Fine（=默认海外出口）
 BITZ_PROBE = "https://www.ozon.ru"             # Bitz 探针：代表 RU 电商可达性
-FINE_PROBE = "https://play.google.com/store"   # Fine 探针：代表综合海外 Web 可用性
+FINE_PROBE = "https://gemini.google.com/"   # Fine 探针：代表 Gemini 可达性（自愈核心，避免选中过 play 不过 gemini 的节点导致 Gemini 断供）
 INTERVAL = 90        # 比速间隔（秒）。
 TIMEOUT = 10000      # 单节点探针超时（毫秒）。
 TOLERANCE = 50       # 与参考配置一致：50ms 内视为等价，避免两个节点反复横跳（切一次=一次断流）

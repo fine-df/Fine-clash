@@ -480,7 +480,7 @@ proxy-groups:
   - 🌐 Anycast-IP | 🇦🇷 🇸🇬 🇺🇸 | [BL]
 - name: Fine
   type: url-test
-  url: https://play.google.com/store
+  url: https://gemini.google.com/
   interval: 90
   timeout: 10000
   tolerance: 50

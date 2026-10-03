@@ -72,3 +72,4 @@ build_fine_only.py
 build_router_cfg.py
 *.backup.yaml
 *_backup.yaml
+extra_pool.yaml

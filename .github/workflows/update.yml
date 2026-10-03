@@ -58,6 +58,36 @@ jobs:
           set -euo pipefail
           mihomo -t -f live_clash.yaml
           mihomo -t -f fine_final.yaml
+      - name: Fetch public filler pool (extra_pool.yaml) for Fine group
+        run: |
+          set -euo pipefail
+          # clashfree 大池（400+ 节点）。Bitz 组用其中 20 个，
+          # 剩下的给 Fine 组做公开兜底（专线是用户私有机场节点，公开源里 0 个，
+          # 全烂时有兜底才不会断）。取最新一个 yml 的 proxies 段。
+          pick() {
+            for p in clash20261001.yml clash20261003.yml clash20261002.yml; do
+              if curl -fsSL --compressed --max-time 90 "https://raw.githubusercontent.com/free-nodes/clashfree/main/$p" -o pool.yml; then
+                python - "$p" <<'PY'
+                import re, sys
+                t = open("pool.yml", encoding="utf-8", errors="replace").read()
+                i = t.find("proxies:")
+                if i < 0:
+                  raise SystemExit(1)
+                j = t.find("\nproxy-groups:", i)
+                seg = t[i:j if j > 0 else len(t)]
+                n = len(re.findall(r"^\s+-\s*\{?name[=:]", seg, re.M))
+                print("pool=%s nodes=%d" % (sys.argv[1], n))
+                if n < 50:
+                  raise SystemExit(1)
+                open("extra_pool.yaml", "w", encoding="utf-8", newline="").write(seg)
+                PY
+                return 0
+              fi
+            done
+            echo "warning: no public filler pool fetched; Fine group falls back to line nodes only"
+            exit 0
+          }
+          pick
       - name: Rebuild universal phone/PC profile (mobile_dual_uni.yaml)
         run: python build_uni.py
       - name: Validate universal profile

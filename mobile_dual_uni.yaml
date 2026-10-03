@@ -543,6 +543,24 @@ proxies:
     public-key: a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw
     short-id: 87709fed663228e5
   network: tcp
+- name: 未知 SS-01 | free-nodes
+  server: 130.61.103.121
+  port: 59924
+  type: ss
+  cipher: 2022-blake3-chacha20-poly1305
+  password: +n5JF83I0RydYOC0f8bFw2GEKIAkYDaSSTq0epm0JDM=
+- name: 未知 SS-02 | free-nodes
+  server: 134.65.62.95
+  port: 61312
+  type: ss
+  cipher: 2022-blake3-chacha20-poly1305
+  password: +n/Yn6rWy+11rk4MxKsXdkGqV5y7bSFi1ktUN4jt11w=
+- name: 未知 SS-03 | free-nodes
+  server: 129.151.77.63
+  port: 61312
+  type: ss
+  cipher: 2022-blake3-chacha20-poly1305
+  password: /pYDD9iRDQlBUa4aL0lBTCSp6ZNStfL6xHNn4mSFqFE=
 
 - type: vless
   name: 🇪🇪 Estonia, Tallinn | [BL]
@@ -619,6 +637,9 @@ proxy-groups:
   - 🇧🇷 巴西-广东专线 GCore 1
   - 🇮🇳 印度-广东专线 DOIN
   - 🇸🇦 沙特-广东专线 STC
+  - 未知 SS-01 | free-nodes
+  - 未知 SS-02 | free-nodes
+  - 未知 SS-03 | free-nodes
 
 - name: ♻️ Bitz自动
   type: url-test

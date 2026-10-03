@@ -41,7 +41,7 @@ TIMEOUT = 10000      # 单节点探针超时（毫秒）。
 TOLERANCE = 50       # 与参考配置一致：50ms 内视为等价，避免两个节点反复横跳（切一次=一次断流）
 UNIFIED_DELAY = False
 LOG_LEVEL = "warning"
-OVERRIDE_TAG = "v4"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新结构（Bitz/Fine 双组）
+OVERRIDE_TAG = "v5"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新结构（Bitz/Fine 双组）
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else ("fine_only.yaml" if os.path.exists("fine_only.yaml") else "live_clash.yaml")
 # 用户要求：四端（Win/安卓/iOS/路由器）统一订阅 live_clash.yaml 且按规则分流。

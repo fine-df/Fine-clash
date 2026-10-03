@@ -13,34 +13,36 @@ BIN=/tmp/ShellCrash/CrashCore
 rm -f "$TMP"
 # 多源轮询：三个 jsDelivr 边缘实测路由器都可达（cdn/gcore/testingcf 均 200），
 # 主源缓存陈旧时（jsDelivr @main 缓存 s-maxage=43200，最长 ~12h）可以换源兜底。
-SRC=""
-USED=""
+# 多源轮询 + 取最高版本：jsDelivr @main 多边缘缓存不一致（cdn/gcore/testingcf 各持一份，
+# s-maxage=43200 最长 ~12h），且历史上 gcore 边缘曾滞留带 gemini 私货的旧 v4。
+# 所以不能「第一个可用就拿下」，而要遍历所有边缘、挑版本号最高的那份做判据。
+BEST=""; BESTV=0
 for e in $EDGES; do
   u=$(printf "$BASE" "$e")
   h=$(curl -s -m 25 -o "$TMP" -w "%{http_code}" "$u")
   if [ "$h" = "200" ] && grep -q "name: GLOBAL" "$TMP"; then
-    SRC="$u"; USED="$e"; break
+    V=$(head -1 "$TMP" 2>/dev/null | sed 's/.*fine-override: v//; s/ .*//'); [ -z "$V" ] && V=0
+    if [ "$V" -gt "$BESTV" ] 2>/dev/null; then BESTV=$V; BEST="$u"; cp "$TMP" "$TMP.best"; fi
+  else
+    echo "sync_edge_skip ${e} http=${h}"
   fi
-  echo "sync_edge_skip ${e} http=${h}"
   rm -f "$TMP"
 done
-if [ -z "$SRC" ]; then
-  # 任一源拉到的都不是「含 GLOBAL 的新版」→ 判定 CDN 陈旧，沿用当前模板（本地已是新版，不动它）
+if [ -z "$BEST" ]; then
   echo "sync_skip_stale_cdn_all_edges"
-  rm -f "$TMP"
   exit 0
 fi
-echo "sync_src=$USED"
-# ★本地参数优先级护栏（2026-10-01 血案）：
-#   build_final.py 会在产物顶部写一行 `# fine-override: v2 | interval=90 ...` 注释，
-#   标记这份配置**携带本地调过的 url-test 参数**（interval/timeout/tolerance）。
-#   实测坑：改完参数 deploy_local 直推路由器后不到 15 分钟，`*/15` 的 sync 就把 CDN 上的
-#   **旧参数**版本盖回来（CDN 那份同样含 `name: GLOBAL`，旧护栏只判 GLOBAL 判不出新旧），
-#   用户表现为「参数改了没生效 / 节点不自动切」。
-#   规则：本地带 fine-override 标记、而拉到的 CDN 文件没有 → 说明 CDN 是旧参数，禁用降级覆盖；
-#         两边都带标记才走正常的内容比对（手动 bump 版本号即可主动发布新参数）。
-if grep -q "^# fine-override:" "$DST" 2>/dev/null && ! grep -q "^# fine-override:" "$TMP"; then
-  echo "sync_skip_local_override(cdn lacks fine-override => stale params)"
+cp "$TMP.best" "$TMP"; rm -f "$TMP.best"
+SRC="$BEST"; USED=$(echo "$BEST" | sed 's#.*//##; s#\.jsdelivr.*##')
+echo "sync_src=$USED v$BESTV"
+# ★版本单调护栏（2026-10-03 血案根因修复）：
+#   旧逻辑「第一个可用边缘就覆盖」+ 仅按 GLOBAL 判新旧 → 本地调过的 v5 play 被 gcore 边缘
+#   滞留的 v4 gemini 反复盖回（二者都带 GLOBAL，版本号却相等，旧护栏判不出谁新）。
+#   新规则：只接受「CDN 最高版本 严格大于 本地版本」的更新；同版本或更低一律保留本地。
+#   bump OVERRIDE_TAG（如 v5→v6）并推 @main 后，CDN 刷新到更高版本才会被 sync 接纳。
+DV=$(head -1 "$DST" 2>/dev/null | sed 's/.*fine-override: v//; s/ .*//'); [ -z "$DV" ] && DV=0
+if [ "$BESTV" -le "$DV" ] 2>/dev/null; then
+  echo "sync_keep_local(cdn=v$BESTV <= local=v$DV)"
   rm -f "$TMP"
   exit 0
 fi

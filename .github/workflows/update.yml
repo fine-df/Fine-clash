@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
         run: python fine_clash.py
-      - name: Build router profile (fine_final.yaml)
+      - name: Build unified four-end profile (live_clash.yaml = split config)
         run: |
           set -euo pipefail
           python build_final.py live_clash.yaml
@@ -57,7 +57,6 @@ jobs:
         run: |
           set -euo pipefail
           mihomo -t -f live_clash.yaml
-          mihomo -t -f fine_final.yaml
       - name: Fetch public filler pool (extra_pool.yaml) for Fine group
         run: |
           set -euo pipefail
@@ -88,12 +87,6 @@ jobs:
             exit 0
           }
           pick
-      - name: Rebuild universal phone/PC profile (mobile_dual_uni.yaml)
-        run: python build_uni.py
-      - name: Validate universal profile
-        run: |
-          set -euo pipefail
-          mihomo -t -f mobile_dual_uni.yaml
       - name: Commit outputs and history
         run: |
           set -euo pipefail
@@ -104,9 +97,7 @@ jobs:
             git reset --mixed origin/main
             git add data
             if [ -f live_clash.yaml ]; then git add live_clash.yaml; fi
-            if [ -f fine_final.yaml ]; then git add fine_final.yaml; fi
             if [ -f live_v2ray.txt ]; then git add live_v2ray.txt; fi
-            if [ -f mobile_dual_uni.yaml ]; then git add mobile_dual_uni.yaml; fi
             if git diff --cached --quiet; then
               exit 0
             fi

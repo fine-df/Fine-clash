@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-"""由 live_clash.yaml（CI 产物）生成路由器专用 fine_final.yaml。
+"""由 live_clash.yaml（CI 裸节点池产物）原地重写成四端统一分流订阅 live_clash.yaml。
+
+四端（Win / 安卓 / iOS / 路由器）统一订阅这一个链接，且按用户给定层级分流：
+  DIRECT（微信/QQ/腾讯直连）
+  ↓ 中国大陆网站 → DIRECT
+  ↓ Bitz：OZON / AMAZON / 低流量网站
+  ↓ Fine：其他所有海外流量（MATCH）
+
 
 分组结构（用户给定路由层级）：
   DIRECT（微信/QQ/腾讯直连）
@@ -37,7 +44,10 @@ LOG_LEVEL = "warning"
 OVERRIDE_TAG = "v4"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新结构（Bitz/Fine 双组）
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else ("fine_only.yaml" if os.path.exists("fine_only.yaml") else "live_clash.yaml")
-OUT = "fine_final.yaml"
+# 用户要求：四端（Win/安卓/iOS/路由器）统一订阅 live_clash.yaml 且按规则分流。
+# 因此本脚本把「裸节点池(live_clash)」原地重写成「最终分流配置(live_clash)」，
+# 让 live_clash.yaml 这一个链接既是生成产物也是四端共用的分流订阅。
+OUT = "live_clash.yaml"
 
 base = yaml.safe_load(io.open(SRC, encoding="utf-8"))
 names = [p["name"] for p in base.get("proxies", [])]
@@ -141,24 +151,32 @@ base["ipv6"] = False
 # 反而多一个不确定变量 —— 关掉，让 url-test 的选点判定回到最原始的最小值比较。
 base["unified-delay"] = UNIFIED_DELAY
 
-# 复用已验证的路由器壳（fine_merged.yaml），保证 CDN 版 == 实际运行态（含 tun / 完整 dns）；
-# 若该文件不存在（如 CI 首次运行），退回内置精简壳（仍含 tun + fake-ip，可正常分流）。
+# 复用已验证的路由器壳（fine_merged.yaml）：tun / experimental / routing-mark / secret
+# 原样保留（路由器实测可用），确保四端统一链接在路由器上稳定分流、透明代理不丢。
+# dns 必须改为跨平台公网版：原 fine_merged 用 localhost / 127.0.0.1 作 nameserver，
+# 仅路由器成立，手机/PC 订阅会断 DNS。这里只把 nameserver / default-nameserver 改公网，
+# 其余（listen: :1053 / fake-ip / fake-ip-filter）保持与路由器一致。
 _SHELL_SRC = "fine_merged.yaml"
 if os.path.exists(_SHELL_SRC):
     _shell = yaml.safe_load(io.open(_SHELL_SRC, encoding="utf-8")) or {}
-    for _k in ("dns", "tun", "experimental", "routing-mark", "secret", "external-controller"):
+    for _k in ("tun", "experimental", "routing-mark", "secret"):
         if _k in _shell:
             base[_k] = _shell[_k]
+    if "dns" in _shell:
+        _dns = dict(_shell["dns"])
+        _dns["nameserver"] = ["223.5.5.5", "119.29.29.29"]
+        _dns["default-nameserver"] = ["223.5.5.5", "119.29.29.29"]
+        base["dns"] = _dns
 else:
     base.setdefault("tun", {"enable": True, "stack": "system", "device": "utun",
-                            "auto-route": False, "auto-detect-interface": False})
-    base.setdefault("experimental", {"ignore-resolve-fail": True, "interface-name": "en0"})
+                            "auto-route": True, "auto-detect-interface": True})
+    base.setdefault("experimental", {"ignore-resolve-fail": True})
     base.setdefault("routing-mark", 7894)
     base.setdefault("dns", {
-        "enable": True, "listen": ":1053", "use-hosts": True, "ipv6": True,
-        "default-nameserver": ["127.0.0.1"], "enhanced-mode": "fake-ip",
-        "fake-ip-range": "28.0.0.0/8", "fake-ip-range6": "fc00::/16",
-        "fake-ip-filter": ["*"], "nameserver": ["localhost"],
+        "enable": True, "listen": ":1053", "use-hosts": True, "ipv6": False,
+        "default-nameserver": ["223.5.5.5", "119.29.29.29"], "enhanced-mode": "fake-ip",
+        "fake-ip-range": "198.18.0.1/16", "fake-ip-filter": ["*.lan", "*.local", "localhost", "127.0.0.1", "::1"],
+        "nameserver": ["223.5.5.5", "119.29.29.29"],
     })
 
 # 产物顶部写一行 fine-override 标记（yaml.safe_dump 会丢注释，所以自己写在 dump 之前）：

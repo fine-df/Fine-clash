@@ -4,7 +4,7 @@ __pycache__/
 .env
 
 # ============ 本地密钥 / 绝不进仓库 ============
-# 含路由器 SSH 明文密码（9eeb78d4），一旦 git add -A 即泄露到 GitHub 公开库
+# 含路由器 SSH 明文密码（真实值见 .env 的 ROUTER_SSH_PASSWORD；切勿把真实前缀写入本注释或任何提交）
 _router_ssh.py
 ca-bundle.crt
 make_ca_bundle.ps1
@@ -73,3 +73,30 @@ build_router_cfg.py
 *.backup.yaml
 *_backup.yaml
 extra_pool.yaml
+
+# ============ 排障遗留 / 一次性脚本（勿提交，2026-10-03 已归档至 D:/Temp/Fine-clash_archive_20261003）============
+_bitz_*
+_dual_*
+_build_*
+_deploy_*
+_recover*
+_revert*
+_state_*
+_sub_*
+_ssh_min*
+_speaker_*
+_gotls_*
+_pool_*
+_verify_*
+_diag*
+_fine_capability.py
+_fine_nodes_test.py
+ab_run.log
+btest*.yaml
+ftest.yaml
+gtest.yaml
+dual_final*.yaml
+bitz_*.yaml
+fine_nodes.yaml
+router_fine_template.yaml
+_bitz_rollback/

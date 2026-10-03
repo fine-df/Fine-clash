@@ -600,15 +600,23 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
 
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
-    sources=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
-    if not sources and source_path.is_file():
-        # GitHub 匿名 API 限额兜底(2026-10-03)：限额期内 discovery 返回空(树接口全 403)，
-        # 沿用上次成功发现的源清单继续跑——raw.githubusercontent 拉订阅不占 API 限额，
-        # 个别源失效会在 fetch 阶段自然跳过，不会污染结果。
+    live=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
+    cached=[]
+    if source_path.is_file():
         try:
             cached=json.loads(source_path.read_text(encoding="utf-8"))
-            if isinstance(cached,list) and cached: sources=cached
-        except Exception: pass
+            if not isinstance(cached,list): cached=[]
+        except Exception: cached=[]
+    # ★ 2026-10-04：始终合并缓存源（data/sources.json）。匿名 GitHub API 限额时 live 可能很少，
+    #   而 data/sources.json 由 discover_broad.py 预先用 raw 路径绕过 tree 限流挖出大量含订阅的仓库。
+    #   合并策略：live 优先，cached 中 url 不重复的追加，确保扩源成果一定进候选池。
+    seen={s.get("url") for s in live if isinstance(s,dict)}
+    sources=list(live)
+    for s in cached:
+        if isinstance(s,dict) and s.get("url") and s["url"] not in seen:
+            seen.add(s["url"]); sources.append(s)
+    if not sources and cached:
+        sources=cached
     source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
     nodes_by_fp={}; session=requests.Session()
     for source in sources:
@@ -621,6 +629,7 @@ def run():
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
     #   走和免费源完全相同的 gemini/play/深圳 实测闸门——活的才发布，过期的一样被筛掉。
     curated_file=rules.get("curated_nodes_file")
+    curated_fps=set()
     if curated_file:
         cf=ROOT/curated_file
         if cf.is_file():
@@ -634,11 +643,36 @@ def run():
                 cnt=0
                 for node in parse_subscription(text):
                     if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
-                        nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
+                        fp=fingerprint(node); nodes_by_fp.setdefault(fp,node); curated_fps.add(fp); cnt+=1
                 print("curated_source: loaded %d nodes from %s" % (cnt, curated_file))
             except Exception as e:
                 print("curated_source: skip %s (%s)" % (curated_file, type(e).__name__))
-    nodes=list(nodes_by_fp.values())[:int(rules["nodes"]["max_test_nodes"])]
+    # ★ 直接订阅 URL 通道（2026-10-04 新增）：绕过 GitHub 搜索，直接拉取已知
+    #   免费订阅端点（clash/v2ray base64 / yaml），并入同一候选池走相同实测闸门。
+    direct_urls=rules.get("direct_urls") or []
+    if isinstance(direct_urls,list) and direct_urls:
+        try:
+            dsession=requests.Session()
+            for url in direct_urls:
+                try:
+                    resp=dsession.get(url,timeout=20,headers={"User-Agent":UA}); resp.raise_for_status()
+                    cnt=0
+                    for node in parse_subscription(resp.text):
+                        if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                            nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
+                    print("direct_url: loaded %d nodes from %s" % (cnt, url))
+                except requests.RequestException as e:
+                    print("direct_url: skip %s (%s)" % (url, type(e).__name__))
+        except Exception as e:
+            print("direct_url: fatal %s" % type(e).__name__)
+
+    # ★ curated 优质节点优先（2026-10-04 修复回退）：用户手维护的 [BL] 节点是能通 Gemini 的
+    #   核心资产，必须始终排在测试集最前、绝不被 max_test_nodes 截断丢弃。否则会出现
+    #   「免费 204 节点挤掉唯一通 Gemini 的 [BL] 节点」的净亏（实测发生过：Gemini 从 200 掉到 000）。
+    #   排序：curated 优先，其余按发现顺序；再截断到上限。
+    cap=int(rules["nodes"]["max_test_nodes"])
+    ordered=[n for fp,n in nodes_by_fp.items() if fp in curated_fps]+[n for fp,n in nodes_by_fp.items() if fp not in curated_fps]
+    nodes=ordered[:cap]
     binary=shutil.which("mihomo") or shutil.which("clash")
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
@@ -655,6 +689,21 @@ def run():
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
         row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
         candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
+        # ★ 2026-10-04 策略放宽（池子做大的核心）：
+        #   candidate_gate 控制「候选」门槛，分数(score)只用于排序/多样性，不再卡入选。
+        #   - reachable（推荐）：代理能通外网即可（google204/gemini/play 任一可达）。
+        #     新挖到的免费节点无历史(lifespan/stability=0)，硬卡 70 分会把仅过单探针的活节点全刷掉，
+        #     导致 selected=0 永远不发布。改「通外网即候选」才能保证池子真正长大。
+        #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
+        #   - gemini_and_play：原双过严格档（保留向后兼容）。
+        gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
+        google_ok=bool((item.get("google") or {}).get("ok"))
+        if gate=="reachable":
+            candidate=bool(google_ok or item["gemini"] or item["google_play"])
+        elif gate=="gemini_or_play":
+            candidate=((item["gemini"] or item["google_play"]) and score>=int(rules["nodes"]["score_threshold"]))
+        else:
+            candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
         entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
         report["results"].append(entry); report_lookup[fp]=entry

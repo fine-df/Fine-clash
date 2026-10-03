@@ -88,5 +88,40 @@
     "forks": 397,
     "pushed_at": "2026-10-02T10:17:01Z",
     "nodes": 251
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    "repo": "Pawdroid/Free-servers",
+    "path": "sub",
+    "branch": "main",
+    "nodes": 2
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/sub",
+    "repo": "free-nodes/v2rayfree",
+    "path": "sub",
+    "branch": "main",
+    "nodes": 336
+  },
+  {
+    "url": "https://raw.githubusercontent.com/awesome-vpn/awesome-vpn/master/clash.yaml",
+    "repo": "awesome-vpn/awesome-vpn",
+    "path": "clash.yaml",
+    "branch": "master",
+    "nodes": 40
+  },
+  {
+    "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml",
+    "repo": "hello-world-1989/cn-news",
+    "path": "clash.yaml",
+    "branch": "main",
+    "nodes": 2
+  },
+  {
+    "url": "https://raw.githubusercontent.com/zhuhaiuk/free-nodes/main/nodes.txt",
+    "repo": "zhuhaiuk/free-nodes",
+    "path": "nodes.txt",
+    "branch": "main",
+    "nodes": 8
   }
 ]

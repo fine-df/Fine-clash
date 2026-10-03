@@ -1,0 +1,760 @@
+mixed-port: 7890
+allow-lan: false
+mode: rule
+dns:
+  enable: true
+  ipv6: false
+  use-hosts: true
+  use-system-hosts: true
+  enhanced-mode: redir-host
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  nameserver-policy:
+    +.qq.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.weixin.qq.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.wx.qq.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.qpic.cn:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.qlogo.cn:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.gtimg.cn:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.gtimg.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.wechat.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.tenpay.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.wechatpay.cn:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.tencent.com:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  fallback:
+  - https://1.1.1.1/dns-query
+  - tls://8.8.8.8
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+  direct-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  direct-nameserver-follow-policy: true
+find-process-mode: 'off'
+log-level: warning
+ipv6: false
+proxies:
+- type: vless
+  name: 🇯🇵 Japan, Shibuya City | [BL]
+  server: qp.lichao0223.cn
+  port: 49152
+  udp: true
+  uuid: 71b460a1-8f78-45c5-fb3c-ab26a2a1f7b9
+  encryption: none
+  tls: true
+  servername: qp.lichao0223.cn
+  client-fingerprint: safari
+  network: ws
+- type: vless
+  name: 🇹🇷 Turkey | 🌐 | [BL] [b9c41906]
+  server: 45.74.158.103
+  port: 443
+  udp: true
+  uuid: 46e62b9b-f9db-4310-8f18-7d6e449cfd5c
+  encryption: none
+  tls: true
+  servername: tr2.gigobingo.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: random
+  reality-opts:
+    public-key: Aj6Op88j_eYXxoBw095KS_NnKCBm5uwa874uumXdiDQ
+    short-id: ef7c4e4302bd52d7
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
+  server: 93.89.220.37
+  port: 443
+  udp: true
+  uuid: 185e2bb3-2934-48d0-bbd5-dd20d16e83ee
+  encryption: none
+  tls: true
+  servername: ibm.com
+  flow: xtls-rprx-vision
+  client-fingerprint: edge
+  reality-opts:
+    public-key: lwKaUQ81wJUJRsqAPsfTPj5V_f9N50UYEwzRI_nuq2g
+    short-id: e88cb983f3c97528
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL]
+  server: 83.168.68.59
+  port: 443
+  udp: true
+  uuid: 8dbcb4ef-65bf-4890-a257-c32073689ee8
+  encryption: none
+  tls: true
+  servername: smotret.tv
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: UmiO58uvMjH4a9DIkUbLCy5EJYncSsraFFtiJS_oinU
+    short-id: 4e85d77e533afc1c
+  network: tcp
+- type: vless
+  name: 🇸🇬 Singapore, Singapore | [BL]
+  server: 136.85.2.50
+  port: 443
+  udp: true
+  uuid: 5567cac6-2a32-4318-83cd-7df3a9eebbd7
+  encryption: none
+  tls: true
+  servername: www.cloudflare.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: hJCcmOf_ECJ3GUfHUjsgfcFKcgGb22H7cz_m_FvcVm4
+    short-id: eb97ce837da2f6ad
+  network: tcp
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL] [72f78d4f]
+  server: 141.0.187.53
+  port: 2083
+  udp: true
+  uuid: 8dd437e1-5f3f-446e-98fe-aa29b80057fb
+  encryption: none
+  tls: true
+  servername: crt.dodopanel.biz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /vless-ws
+- type: vless
+  name: 🇫🇷 France, Paris | [BL] [bc276c10]
+  server: 194.24.161.179
+  port: 443
+  udp: true
+  uuid: c40ec629-cd50-4569-8ea7-ea7c498423fd
+  encryption: none
+  tls: true
+  servername: borsch.spravedlivost.fun
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: /api/metric/ws
+- type: vless
+  name: 🇷🇸 Serbia | [*CIDR]
+  server: 45.132.177.96
+  port: 9889
+  udp: true
+  uuid: 5d16ac22-6eea-426f-b778-6f4c2961faef
+  encryption: none
+  tls: true
+  servername: dl.google.com
+  client-fingerprint: random
+  reality-opts:
+    public-key: ycPIUcY6ci2yi7YA_OHc20e4gzxEdJTqpmeShxSuHRU
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpc-tunnel
+- type: vless
+  name: 🇫🇷 France, Paris | [BL] [6511a000]
+  server: borsch.spravedlivost.fun
+  port: 443
+  udp: true
+  uuid: c40ec629-cd50-4569-8ea7-ea7c498423fd
+  encryption: none
+  tls: true
+  servername: borsch.spravedlivost.fun
+  client-fingerprint: random
+  network: ws
+  ws-opts:
+    path: /api/metric/ws
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL] [a580a083]
+  server: ee10.zazazuza.ru
+  port: 8443
+  udp: true
+  uuid: 6c713691-3ca2-4446-ad25-113d1bed6b03
+  encryption: none
+  tls: true
+  servername: fdghyt.com
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /vpn-wss/fluxor/59011/
+    headers:
+      Host: fdghyt.com
+- type: vless
+  name: 🇺🇸 United States, Council Bluffs | [BL]
+  server: 34.66.64.236
+  port: 443
+  udp: true
+  uuid: 3893f05b-9b24-4bb1-a1dc-ba55509b0a01
+  encryption: none
+  tls: true
+  servername: www.cloudflare.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: Th2whwnn3zQaHdImi5B1wYn8hxXz3JQs3_AQCuHfanQ
+    short-id: 76d093d99ceaf06a
+  network: tcp
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL]
+  server: 34.159.243.3
+  port: 443
+  udp: true
+  uuid: 753fa5ef-0b08-4fd3-b688-173ff594b758
+  encryption: none
+  tls: true
+  servername: www.cloudflare.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: XRYeVrK7q9baNj66NmBBIX_sllPJtxOBTjrxTaQMQ2U
+    short-id: 7394ea3cc2106697
+  network: tcp
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL] [a0aeebd4]
+  server: 194.26.141.148
+  port: 8443
+  udp: true
+  uuid: 6c713691-3ca2-4446-ad25-113d1bed6b03
+  encryption: none
+  tls: true
+  servername: fdghyt.com
+  client-fingerprint: random
+  network: ws
+  ws-opts:
+    path: /vpn-wss/fluxor/59011/
+    headers:
+      Host: fdghyt.com
+- type: vless
+  name: 🇹🇼 Taiwan, Taipei | [BL]
+  server: ali-hk.qrfly.top
+  port: 10102
+  udp: true
+  uuid: bcfbb19f-5b0e-4862-a77b-904fffd0b513
+  encryption: none
+  tls: true
+  servername: tesla.com
+  flow: xtls-rprx-vision
+  client-fingerprint: random
+  reality-opts:
+    public-key: kVpVhfT5_4__Sxj4i0S2DOQKKfK549rgy2HWP9QU4iw
+    short-id: db6c60f1
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands [SNI-RU] mail.ru
+  server: 171.22.129.158
+  port: 443
+  udp: true
+  uuid: 4abdfe42-aec7-4b66-974d-3f891e2e8184
+  encryption: none
+  tls: true
+  servername: mail.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: kk7OIl7fsEKSuCTWKb8pSgWQbZuJurc4qGYMBYSd5hA
+    short-id: 3bdedfbb43fe4637
+  network: tcp
+- type: vless
+  name: 🇹🇷 Turkey | 🌐 | [BL] [8f4c821f]
+  server: tr2.gigobingo.ru
+  port: 443
+  udp: true
+  uuid: 46e62b9b-f9db-4310-8f18-7d6e449cfd5c
+  encryption: none
+  tls: true
+  servername: tr2.gigobingo.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: Aj6Op88j_eYXxoBw095KS_NnKCBm5uwa874uumXdiDQ
+    short-id: ef7c4e4302bd52d7
+  network: tcp
+- type: vless
+  name: 🇸🇪 Sweden, Stockholm | [BL]
+  server: 31.77.158.241
+  port: 443
+  udp: true
+  uuid: 1b7ee703-fa08-4305-8469-ae3e30e61e44
+  encryption: none
+  tls: true
+  servername: swself2.yandex-api.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: HXFe_cPryw01zqXchAFjZciDAS4UJg1-xScx6vjgjjY
+    short-id: 7f2e9c4b1a8d6e25
+  network: tcp
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL] [7a24be72]
+  server: 141.0.187.52
+  port: 2083
+  udp: true
+  uuid: 8dd437e1-5f3f-446e-98fe-aa29b80057fb
+  encryption: none
+  tls: true
+  servername: crt.dodopanel.biz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /vless-ws
+- type: vless
+  name: 🇪🇪 Estonia, Tallinn | [BL] [14006960]
+  server: 141.0.187.16
+  port: 2083
+  udp: true
+  uuid: fba73f98-777a-42a6-83c0-7d1f6f070e8d
+  encryption: none
+  tls: true
+  servername: crt.dodopanel.biz
+  client-fingerprint: random
+  network: ws
+  ws-opts:
+    path: /vless-ws
+- type: vless
+  name: 🇵🇱 Poland | [*CIDR]
+  server: 45.132.177.72
+  port: 9844
+  udp: true
+  uuid: 5d16ac22-6eea-426f-b778-6f4c2961faef
+  encryption: none
+  tls: true
+  servername: dl.google.com
+  client-fingerprint: random
+  reality-opts:
+    public-key: bnRIb3Er1i-K6NGGByCO9UbGfOvu43ZoiK7ulPd1SzU
+    short-id: aabb
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpc-tunnel
+- client-fingerprint: chrome
+  flow: xtls-rprx-vision
+  name: 🇺🇸 美国-直连线路 BGP
+  port: 32501
+  reality-opts:
+    public-key: Ray45IC5uMaT58fkQG7tBMTCRbA1UeitKNqkWgCFVn4
+    short-id: 76a1da15
+  server: 348b6100-99c5-4183-b34e-24c66d00d54d.bnsepserv.com
+  servername: minor-api-os.hoyoverse.com
+  tls: true
+  type: vless
+  udp: true
+  uuid: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+- client-fingerprint: chrome
+  name: 🇺🇸 美国-广东专线 BGP 1
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32001
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇺🇸 美国-广东专线 BGP 2
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32028
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇹🇼 台湾-广东专线 NeaRoute
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32003
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇷🇺 俄罗斯-广东专线 PQ
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32008
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇫🇷 法国-广东专线 BGP
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32009
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇬🇧 英国-广东专线 BGP
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32010
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇬🇧 英国-广东专线 Scaleblade
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32047
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇨🇦 加拿大-广东专线 BGP
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32039
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇩🇪 德国-广东专线 BGP
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32011
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇦🇺 澳大利亚-广东专线 VUAU
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32012
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇲🇾 马来西亚-广东专线 Shin
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32038
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇹🇭 泰国-广东专线 Bangmod
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32043
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇹🇷 土耳其-广东专线 Kapteyan
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32014
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇹🇷 土耳其-广东专线 GCore
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32026
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇦🇷 阿根廷-广东专线 DonWeb
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32015
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇳🇬 尼日利亚-广东专线 Melbicom
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32034
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇺🇦 乌克兰-广东专线 Vik
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32019
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇧🇷 巴西-广东专线 GCore 1
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32016
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇮🇳 印度-广东专线 DOIN
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32017
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+- client-fingerprint: chrome
+  name: 🇸🇦 沙特-广东专线 STC
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  port: 32035
+  server: 514b5fc3-833e-430c-ba80-5370cde9c40e.bnsepserv.com
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+  type: trojan
+  udp: true
+proxy-groups:
+- name: 🚀 节点选择
+  type: select
+  proxies:
+  - ♻️ Fine自动
+  - ♻️ Bitz自动
+  - DIRECT
+  - 🇯🇵 Japan, Shibuya City | [BL]
+  - 🇹🇷 Turkey | 🌐 | [BL] [b9c41906]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇸🇬 Singapore, Singapore | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [72f78d4f]
+  - 🇫🇷 France, Paris | [BL] [bc276c10]
+  - 🇷🇸 Serbia | [*CIDR]
+  - 🇫🇷 France, Paris | [BL] [6511a000]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a580a083]
+  - 🇺🇸 United States, Council Bluffs | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a0aeebd4]
+  - 🇹🇼 Taiwan, Taipei | [BL]
+  - 🇳🇱 The Netherlands [SNI-RU] mail.ru
+  - 🇹🇷 Turkey | 🌐 | [BL] [8f4c821f]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [7a24be72]
+  - 🇪🇪 Estonia, Tallinn | [BL] [14006960]
+  - 🇵🇱 Poland | [*CIDR]
+  - 🇺🇸 美国-直连线路 BGP
+  - 🇺🇸 美国-广东专线 BGP 1
+  - 🇺🇸 美国-广东专线 BGP 2
+  - 🇹🇼 台湾-广东专线 NeaRoute
+  - 🇷🇺 俄罗斯-广东专线 PQ
+  - 🇫🇷 法国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 Scaleblade
+  - 🇨🇦 加拿大-广东专线 BGP
+  - 🇩🇪 德国-广东专线 BGP
+  - 🇦🇺 澳大利亚-广东专线 VUAU
+  - 🇲🇾 马来西亚-广东专线 Shin
+  - 🇹🇭 泰国-广东专线 Bangmod
+  - 🇹🇷 土耳其-广东专线 Kapteyan
+  - 🇹🇷 土耳其-广东专线 GCore
+  - 🇦🇷 阿根廷-广东专线 DonWeb
+  - 🇳🇬 尼日利亚-广东专线 Melbicom
+  - 🇺🇦 乌克兰-广东专线 Vik
+  - 🇧🇷 巴西-广东专线 GCore 1
+  - 🇮🇳 印度-广东专线 DOIN
+  - 🇸🇦 沙特-广东专线 STC
+- name: ♻️ Fine自动
+  type: url-test
+  url: https://play.google.com/store
+  interval: 90
+  timeout: 10000
+  tolerance: 50
+  lazy: false
+  proxies:
+  - 🇯🇵 Japan, Shibuya City | [BL]
+  - 🇹🇷 Turkey | 🌐 | [BL] [b9c41906]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇸🇬 Singapore, Singapore | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [72f78d4f]
+  - 🇫🇷 France, Paris | [BL] [bc276c10]
+  - 🇷🇸 Serbia | [*CIDR]
+  - 🇫🇷 France, Paris | [BL] [6511a000]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a580a083]
+  - 🇺🇸 United States, Council Bluffs | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [a0aeebd4]
+  - 🇹🇼 Taiwan, Taipei | [BL]
+  - 🇳🇱 The Netherlands [SNI-RU] mail.ru
+  - 🇹🇷 Turkey | 🌐 | [BL] [8f4c821f]
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇪🇪 Estonia, Tallinn | [BL] [7a24be72]
+  - 🇪🇪 Estonia, Tallinn | [BL] [14006960]
+  - 🇵🇱 Poland | [*CIDR]
+- name: ♻️ Bitz自动
+  type: url-test
+  url: https://play.google.com/store
+  interval: 90
+  timeout: 10000
+  tolerance: 50
+  lazy: false
+  proxies:
+  - 🇺🇸 美国-直连线路 BGP
+  - 🇺🇸 美国-广东专线 BGP 1
+  - 🇺🇸 美国-广东专线 BGP 2
+  - 🇹🇼 台湾-广东专线 NeaRoute
+  - 🇷🇺 俄罗斯-广东专线 PQ
+  - 🇫🇷 法国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 Scaleblade
+  - 🇨🇦 加拿大-广东专线 BGP
+  - 🇩🇪 德国-广东专线 BGP
+  - 🇦🇺 澳大利亚-广东专线 VUAU
+  - 🇲🇾 马来西亚-广东专线 Shin
+  - 🇹🇭 泰国-广东专线 Bangmod
+  - 🇹🇷 土耳其-广东专线 Kapteyan
+  - 🇹🇷 土耳其-广东专线 GCore
+  - 🇦🇷 阿根廷-广东专线 DonWeb
+  - 🇳🇬 尼日利亚-广东专线 Melbicom
+  - 🇺🇦 乌克兰-广东专线 Vik
+  - 🇧🇷 巴西-广东专线 GCore 1
+  - 🇮🇳 印度-广东专线 DOIN
+  - 🇸🇦 沙特-广东专线 STC
+- name: GLOBAL
+  type: select
+  proxies:
+  - 🚀 节点选择
+  - ♻️ Fine自动
+  - ♻️ Bitz自动
+rules:
+- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+- DOMAIN-SUFFIX,wx.qq.com,DIRECT
+- DOMAIN-SUFFIX,wechat.com,DIRECT
+- DOMAIN-SUFFIX,qpic.cn,DIRECT
+- DOMAIN-SUFFIX,qlogo.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,tenpay.com,DIRECT
+- DOMAIN-SUFFIX,wechatpay.cn,DIRECT
+- DOMAIN-SUFFIX,tencent.com,DIRECT
+- DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
+- GEOSITE,CN,DIRECT
+- GEOIP,CN,DIRECT
+- DOMAIN-SUFFIX,play.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,android.clients.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,dl.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,update.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,googleusercontent.com,♻️ Fine自动
+- DOMAIN-KEYWORD,gvt1.com,♻️ Fine自动
+- DOMAIN-SUFFIX,youtube.com,♻️ Fine自动
+- DOMAIN-SUFFIX,youtu.be,♻️ Fine自动
+- DOMAIN-SUFFIX,googlevideo.com,♻️ Fine自动
+- DOMAIN-SUFFIX,netflix.com,♻️ Fine自动
+- DOMAIN-SUFFIX,nflxvideo.net,♻️ Fine自动
+- DOMAIN-SUFFIX,nflxso.net,♻️ Fine自动
+- DOMAIN-SUFFIX,netflix.net,♻️ Fine自动
+- DOMAIN-SUFFIX,disneyplus.com,♻️ Fine自动
+- DOMAIN-SUFFIX,bilibili.com,♻️ Fine自动
+- DOMAIN-SUFFIX,hdslb.com,♻️ Fine自动
+- DOMAIN-SUFFIX,appstore.com,♻️ Fine自动
+- DOMAIN-SUFFIX,apple.com,♻️ Fine自动
+- DOMAIN-SUFFIX,mzstatic.com,♻️ Fine自动
+- DOMAIN-SUFFIX,icloud.com,♻️ Fine自动
+- DOMAIN-SUFFIX,cdn-apple.com,♻️ Fine自动
+- DOMAIN-SUFFIX,playstation.com,♻️ Fine自动
+- DOMAIN-SUFFIX,xboxlive.com,♻️ Fine自动
+- DOMAIN-SUFFIX,ytimg.com,♻️ Fine自动
+- DOMAIN-SUFFIX,youtube-nocookie.com,♻️ Fine自动
+- DOMAIN-SUFFIX,nflximg.net,♻️ Fine自动
+- DOMAIN-SUFFIX,tiktok.com,♻️ Fine自动
+- DOMAIN-SUFFIX,tiktokv.com,♻️ Fine自动
+- DOMAIN-SUFFIX,tiktokcdn.com,♻️ Fine自动
+- DOMAIN-SUFFIX,musically.com,♻️ Fine自动
+- DOMAIN-SUFFIX,byteoversea.com,♻️ Fine自动
+- DOMAIN-SUFFIX,twitch.tv,♻️ Fine自动
+- DOMAIN-SUFFIX,jtvnw.net,♻️ Fine自动
+- DOMAIN-SUFFIX,bamgrid.com,♻️ Fine自动
+- DOMAIN-SUFFIX,dssott.com,♻️ Fine自动
+- DOMAIN-SUFFIX,primevideo.com,♻️ Fine自动
+- DOMAIN-SUFFIX,hulu.com,♻️ Fine自动
+- DOMAIN-SUFFIX,hulustream.com,♻️ Fine自动
+- DOMAIN-SUFFIX,hbomax.com,♻️ Fine自动
+- DOMAIN-SUFFIX,max.com,♻️ Fine自动
+- DOMAIN-SUFFIX,hdslb.net,♻️ Fine自动
+- DOMAIN-SUFFIX,instagram.com,♻️ Fine自动
+- DOMAIN-SUFFIX,fbcdn.net,♻️ Fine自动
+- DOMAIN-SUFFIX,facebook.com,♻️ Fine自动
+- DOMAIN-SUFFIX,twimg.com,♻️ Fine自动
+- DOMAIN-SUFFIX,twitter.com,♻️ Bitz自动
+- DOMAIN-SUFFIX,x.com,♻️ Bitz自动
+- DOMAIN-SUFFIX,spotify.com,♻️ Fine自动
+- DOMAIN-SUFFIX,scdn.co,♻️ Fine自动
+- DOMAIN-SUFFIX,spotifycdn.com,♻️ Fine自动
+- DOMAIN-SUFFIX,music.apple.com,♻️ Fine自动
+- DOMAIN-SUFFIX,gvt1.com,♻️ Fine自动
+- DOMAIN-SUFFIX,apps.apple.com,♻️ Fine自动
+- DOMAIN-SUFFIX,itunes.apple.com,♻️ Fine自动
+- DOMAIN-SUFFIX,microsoft.com,♻️ Fine自动
+- DOMAIN-SUFFIX,windowsupdate.com,♻️ Fine自动
+- DOMAIN-SUFFIX,update.microsoft.com,♻️ Fine自动
+- DOMAIN-SUFFIX,steampowered.com,♻️ Fine自动
+- DOMAIN-SUFFIX,steamcommunity.com,♻️ Fine自动
+- DOMAIN-SUFFIX,steamcontent.com,♻️ Fine自动
+- DOMAIN-SUFFIX,epicgames.com,♻️ Fine自动
+- DOMAIN-SUFFIX,gog.com,♻️ Fine自动
+- DOMAIN-SUFFIX,ea.com,♻️ Fine自动
+- DOMAIN-SUFFIX,ubisoft.com,♻️ Fine自动
+- DOMAIN-SUFFIX,xbox.com,♻️ Fine自动
+- DOMAIN-SUFFIX,nintendo.com,♻️ Fine自动
+- DOMAIN-SUFFIX,drive.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,dropbox.com,♻️ Fine自动
+- DOMAIN-SUFFIX,dropboxusercontent.com,♻️ Fine自动
+- DOMAIN-SUFFIX,onedrive.com,♻️ Fine自动
+- DOMAIN-SUFFIX,1drv.com,♻️ Fine自动
+- DOMAIN-SUFFIX,box.com,♻️ Fine自动
+- DOMAIN-SUFFIX,mega.nz,♻️ Fine自动
+- DOMAIN-SUFFIX,objects.githubusercontent.com,♻️ Fine自动
+- DOMAIN-SUFFIX,codeload.github.com,♻️ Fine自动
+- DOMAIN-SUFFIX,registry.npmjs.org,♻️ Fine自动
+- DOMAIN-SUFFIX,docker.io,♻️ Fine自动
+- DOMAIN-SUFFIX,googleapis.com,♻️ Fine自动
+- DOMAIN-SUFFIX,clients4.google.com,♻️ Fine自动
+- DOMAIN-SUFFIX,telegram.org,♻️ Fine自动
+- DOMAIN-SUFFIX,t.me,♻️ Fine自动
+- DOMAIN-SUFFIX,discord.com,♻️ Fine自动
+- DOMAIN-SUFFIX,discordapp.com,♻️ Fine自动
+- DOMAIN-SUFFIX,discord.gg,♻️ Fine自动
+- DOMAIN-SUFFIX,zoom.us,♻️ Fine自动
+- DOMAIN-SUFFIX,vimeo.com,♻️ Fine自动
+- DOMAIN-SUFFIX,dailymotion.com,♻️ Fine自动
+- DOMAIN-SUFFIX,soundcloud.com,♻️ Fine自动
+- DOMAIN-SUFFIX,pinterest.com,♻️ Fine自动
+- DOMAIN-KEYWORD,video,♻️ Fine自动
+- DOMAIN-KEYWORD,stream,♻️ Fine自动
+- DOMAIN-KEYWORD,download,♻️ Fine自动
+- DOMAIN-KEYWORD,cdn,♻️ Fine自动
+- MATCH,♻️ Bitz自动

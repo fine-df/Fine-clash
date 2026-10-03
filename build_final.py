@@ -125,12 +125,11 @@ BITZ_RULES = [
 new_rules = kept + BITZ_RULES + ["MATCH,Fine"]
 base["rules"] = new_rules
 
-# 路由器是 mihomo v1.19.28，去掉 tun / 重定向模式相关字段，避免启动冲突
-for k in ("tun", "redir-port", "tproxy-port", "routing-mark"):
-    base.pop(k, None)
+# 路由器是 mihomo v1.19.28 —— 保留 tun / routing-mark。
+# 实测运行态（fine_merged，含 tun）工作正常，且订阅此 CDN 链接重启后也需保持透明代理，故不再剥离。
 base["find-process-mode"] = "off"
 base["log-level"] = LOG_LEVEL
-base["external-controller"] = "0.0.0.0:9999"
+base["external-controller"] = ":9999"
 base["external-ui"] = "ui"
 base["external-ui-url"] = ""
 base["authentication"] = []
@@ -141,6 +140,26 @@ base["ipv6"] = False
 # 这里 GLOBAL 是纯 select 外壳，没有自动父组，统一延迟量纲买不到任何好处，
 # 反而多一个不确定变量 —— 关掉，让 url-test 的选点判定回到最原始的最小值比较。
 base["unified-delay"] = UNIFIED_DELAY
+
+# 复用已验证的路由器壳（fine_merged.yaml），保证 CDN 版 == 实际运行态（含 tun / 完整 dns）；
+# 若该文件不存在（如 CI 首次运行），退回内置精简壳（仍含 tun + fake-ip，可正常分流）。
+_SHELL_SRC = "fine_merged.yaml"
+if os.path.exists(_SHELL_SRC):
+    _shell = yaml.safe_load(io.open(_SHELL_SRC, encoding="utf-8")) or {}
+    for _k in ("dns", "tun", "experimental", "routing-mark", "secret", "external-controller"):
+        if _k in _shell:
+            base[_k] = _shell[_k]
+else:
+    base.setdefault("tun", {"enable": True, "stack": "system", "device": "utun",
+                            "auto-route": False, "auto-detect-interface": False})
+    base.setdefault("experimental", {"ignore-resolve-fail": True, "interface-name": "en0"})
+    base.setdefault("routing-mark", 7894)
+    base.setdefault("dns", {
+        "enable": True, "listen": ":1053", "use-hosts": True, "ipv6": True,
+        "default-nameserver": ["127.0.0.1"], "enhanced-mode": "fake-ip",
+        "fake-ip-range": "28.0.0.0/8", "fake-ip-range6": "fc00::/16",
+        "fake-ip-filter": ["*"], "nameserver": ["localhost"],
+    })
 
 # 产物顶部写一行 fine-override 标记（yaml.safe_dump 会丢注释，所以自己写在 dump 之前）：
 # 告诉路由器的 _fine_sync.sh「这份文件带本地调过的参数，CDN 旧参数版本不许盖回来」。

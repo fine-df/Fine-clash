@@ -1,4 +1,3 @@
-# fine-override: v4 | Bitz(url-test)=Bitz Fine(url-test)=Fine 节点选择(select)->[Fine,Bitz,DIRECT] url Bitz=https://www.ozon.ru Fine=https://play.google.com/store interval=90 timeout=10000 tolerance=50 unified-delay=False log=warning
 proxies:
 - type: ss
   cipher: aes-256-gcm
@@ -33,21 +32,6 @@ proxies:
     public-key: _aURfmVUjvCRZipDI2eqMO0VQa64BJRGYFOdlBFi1XQ
   network: tcp
 - type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
-  server: 95.85.254.245
-  port: 443
-  udp: true
-  uuid: 8f6e49e6-7f03-4f10-9da9-1716158d80ed
-  encryption: none
-  tls: true
-  servername: pol4.o4ka-internet.com
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: V2JprbR_aJkS7uX6anyU3nrswGxdvDQT2HpY4WnzuC8
-    short-id: 5629431325884ff0
-  network: tcp
-- type: vless
   name: 🇷🇴 Romania, Bucharest | [BL]
   server: 109.104.106.15
   port: 443
@@ -77,7 +61,6 @@ proxy-groups:
   - 未知 SS-73 | free-nodes
   - 未知 SS-58 | free-nodes
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
-  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
   - 🇷🇴 Romania, Bucharest | [BL]
 - name: Bitz
   type: url-test
@@ -91,7 +74,6 @@ proxy-groups:
   - 未知 SS-73 | free-nodes
   - 未知 SS-58 | free-nodes
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
-  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
   - 🇷🇴 Romania, Bucharest | [BL]
 - name: Fine
   type: url-test
@@ -105,7 +87,6 @@ proxy-groups:
   - 未知 SS-73 | free-nodes
   - 未知 SS-58 | free-nodes
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [bbec054e]
-  - 🇵🇱 Poland, Warsaw | [BL] [c04e90e6]
   - 🇷🇴 Romania, Bucharest | [BL]
 rules:
 - DOMAIN-SUFFIX,weixin.qq.com,DIRECT

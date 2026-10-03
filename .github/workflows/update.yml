@@ -53,40 +53,18 @@ jobs:
         run: |
           set -euo pipefail
           python build_final.py live_clash.yaml
+      - name: Mirror router sync-source (fine_final.yaml)
+        run: |
+          set -euo pipefail
+          # 路由器 fine_sync.sh 拉的是 fine_final.yaml（不是 live_clash.yaml），
+          # 必须把四端分流产物镜像成路由器同步源，否则 CI 重选永远传不到路由器。
+          cp live_clash.yaml fine_final.yaml
       - name: Validate generated Clash config
         run: |
           set -euo pipefail
           mihomo -t -f live_clash.yaml
-      - name: Fetch public filler pool (extra_pool.yaml) for Fine group
-        run: |
-          set -euo pipefail
-          # clashfree 大池（400+ 节点）。Bitz 组用其中 20 个，
-          # 剩下的给 Fine 组做公开兜底（专线是用户私有机场节点，公开源里 0 个，
-          # 全烂时有兜底才不会断）。取最新一个 yml 的 proxies 段。
-          pick() {
-            for p in clash20261001.yml clash20261003.yml clash20261002.yml; do
-              if curl -fsSL --compressed --max-time 90 "https://raw.githubusercontent.com/free-nodes/clashfree/main/$p" -o pool.yml; then
-                python - "$p" <<'PY'
-                import re, sys
-                t = open("pool.yml", encoding="utf-8", errors="replace").read()
-                i = t.find("proxies:")
-                if i < 0:
-                  raise SystemExit(1)
-                j = t.find("\nproxy-groups:", i)
-                seg = t[i:j if j > 0 else len(t)]
-                n = len(re.findall(r"^\s+-\s*\{?name[=:]", seg, re.M))
-                print("pool=%s nodes=%d" % (sys.argv[1], n))
-                if n < 50:
-                  raise SystemExit(1)
-                open("extra_pool.yaml", "w", encoding="utf-8", newline="").write(seg)
-                PY
-                return 0
-              fi
-            done
-            echo "warning: no public filler pool fetched; Fine group falls back to line nodes only"
-            exit 0
-          }
-          pick
+      # NOTE: extra_pool.yaml 抓取步骤已移除——build_final.py 不消费它（死代码），
+      #       Fine 组兜底由 CI discovery 产出的节点池自身保证，无需外部大池（也不会再因外部源失败而卡 CI）。
       - name: Commit outputs and history
         run: |
           set -euo pipefail
@@ -97,6 +75,7 @@ jobs:
             git reset --mixed origin/main
             git add data
             if [ -f live_clash.yaml ]; then git add live_clash.yaml; fi
+            if [ -f fine_final.yaml ]; then git add fine_final.yaml; fi
             if [ -f live_v2ray.txt ]; then git add live_v2ray.txt; fi
             if git diff --cached --quiet; then
               exit 0

@@ -1,4 +1,4 @@
-# fine-override: v4 | Bitz(url-test)=Bitz Fine(url-test)=Fine 节点选择(select)->[Fine,Bitz,DIRECT] url Bitz=https://www.ozon.ru Fine=https://gemini.google.com/ interval=90 timeout=10000 tolerance=50 unified-delay=False log=warning
+# fine-override: v4 | Bitz(url-test)=Bitz Fine(url-test)=Fine 节点选择(select)->[Fine,Bitz,DIRECT] url Bitz=https://www.ozon.ru Fine=https://play.google.com/store interval=90 timeout=10000 tolerance=50 unified-delay=False log=warning
 proxies:
 - type: ss
   cipher: aes-256-gcm
@@ -78,7 +78,7 @@ proxy-groups:
   - 🇷🇴 Romania, Bucharest | [BL]
 - name: Fine
   type: url-test
-  url: https://gemini.google.com/
+  url: https://play.google.com/store
   interval: 90
   timeout: 10000
   tolerance: 50
@@ -104,6 +104,25 @@ rules:
 - DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
 - GEOSITE,CN,DIRECT
 - GEOIP,CN,DIRECT
+- DOMAIN-SUFFIX,ozon.ru,Bitz
+- DOMAIN-SUFFIX,ozon.com,Bitz
+- DOMAIN-SUFFIX,ozon.kz,Bitz
+- DOMAIN-SUFFIX,ozon.by,Bitz
+- DOMAIN-SUFFIX,amazon.com,Bitz
+- DOMAIN-SUFFIX,amazon.co.uk,Bitz
+- DOMAIN-SUFFIX,amazon.de,Bitz
+- DOMAIN-SUFFIX,amazon.fr,Bitz
+- DOMAIN-SUFFIX,amazon.es,Bitz
+- DOMAIN-SUFFIX,amazon.it,Bitz
+- DOMAIN-SUFFIX,amazon.nl,Bitz
+- DOMAIN-SUFFIX,amazon.pl,Bitz
+- DOMAIN-SUFFIX,amazon.se,Bitz
+- DOMAIN-SUFFIX,amazon.ca,Bitz
+- DOMAIN-SUFFIX,amazon.com.au,Bitz
+- DOMAIN-SUFFIX,amazon.co.jp,Bitz
+- DOMAIN-SUFFIX,amazon.in,Bitz
+- DOMAIN-SUFFIX,amazon.com.br,Bitz
+- DOMAIN-SUFFIX,sellercentral.amazon.com,Bitz
 - DOMAIN-SUFFIX,ozon.ru,Bitz
 - DOMAIN-SUFFIX,ozon.com,Bitz
 - DOMAIN-SUFFIX,ozon.kz,Bitz

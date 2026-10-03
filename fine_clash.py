@@ -617,6 +617,27 @@ def run():
             for node in parse_subscription(response.text):
                 if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]): nodes_by_fp[fingerprint(node)]=node
         except requests.RequestException: continue
+    # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
+    #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
+    #   走和免费源完全相同的 gemini/play/深圳 实测闸门——活的才发布，过期的一样被筛掉。
+    curated_file=rules.get("curated_nodes_file")
+    if curated_file:
+        cf=ROOT/curated_file
+        if cf.is_file():
+            try:
+                raw=cf.read_text(encoding="utf-8").strip()
+                # base64（允许换行）或明文订阅文本都兼容
+                decoded=None
+                try: decoded=base64.b64decode(raw.replace("\n","").strip()+"="*(-len(raw.replace("\n","").strip())%4)).decode("utf-8","ignore")
+                except Exception: decoded=None
+                text=decoded if decoded else raw
+                cnt=0
+                for node in parse_subscription(text):
+                    if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                        nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
+                print("curated_source: loaded %d nodes from %s" % (cnt, curated_file))
+            except Exception as e:
+                print("curated_source: skip %s (%s)" % (curated_file, type(e).__name__))
     nodes=list(nodes_by_fp.values())[:int(rules["nodes"]["max_test_nodes"])]
     binary=shutil.which("mihomo") or shutil.which("clash")
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
@@ -625,6 +646,7 @@ def run():
     report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"results":[]}
     report_lookup={}
     candidate_records=[]
+    all_candidate_fps=[]
 
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
@@ -638,17 +660,21 @@ def run():
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
-        if candidate and shenzhen_cfg.get("enabled",False):
-            cached=cached_shenzhen_result(row,shenzhen_cfg)
-            candidate_records.append({"fp":fp,"node":node,"result":cached})
-        elif candidate:
-            selected.append(node)
+        if candidate:
+            all_candidate_fps.append(fp)
+            if shenzhen_cfg.get("enabled",False):
+                cached=cached_shenzhen_result(row,shenzhen_cfg)
+                candidate_records.append({"fp":fp,"node":node,"result":cached})
+            else:
+                selected.append(node)
 
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
+    fp_node={}
     for rec in candidate_records:
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
+        fp_node[fp]=node
         row=history[fp]
         result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
         if cached is None:
@@ -659,6 +685,20 @@ def run():
         entry["shenzhen_status"]=result.get("status","unknown")
         if shenzhen_passes(result,shenzhen_cfg):
             selected.append(node)
+
+    # ★ 深圳闸软化（2026-10-04 修复）：过 gemini+play+score 的候选经深圳延迟闸后仍不足
+    #   min_final_nodes 时，用「未过深圳闸」的候选按深圳延迟升序补足，避免整轮 0 发布、
+    #   旧（腐烂）的手维护配置被永久保留。深圳延迟仅作「优选」不再作「硬拒」。
+    min_final=int(rules["nodes"]["min_final_nodes"])
+    if len(selected) < min_final:
+        sel_names={n.get("name") for n in selected}
+        rest=[fp for fp in all_candidate_fps if fp_node.get(fp) and fp_node[fp].get("name") not in sel_names]
+        rest.sort(key=lambda fp: (report_lookup.get(fp,{}).get("shenzhen_ping_ms") or 9e9))
+        for fp in rest:
+            if len(selected) >= min_final: break
+            selected.append(fp_node[fp])
+        if rest:
+            print("shenzhen_topup: selected %d -> %d (min=%d)" % (len(selected)-len(rest), len(selected), min_final))
 
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)

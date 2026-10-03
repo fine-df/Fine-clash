@@ -11,6 +11,10 @@ sources:
     - 'free clash nodes in:name,description,readme archived:false stars:>=50'
     - 'free v2ray nodes in:name,description,readme archived:false stars:>=50'
 
+# 用户精选的 [BL] 优质节点池（base64 节点 URI 清单）。接进发现管线后，
+# 走与免费源相同的 gemini/play/深圳 实测闸门——活的才发布，过期的同样被筛掉。
+curated_nodes_file: 'sub_local.txt'
+
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 80

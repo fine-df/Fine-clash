@@ -154,6 +154,38 @@ def _parse_standard(uri):
         if xhttp: node["xhttp-opts"]=xhttp
     return node
 
+TESTABLE_NETWORKS = {"tcp","ws","grpc"}
+
+def mihomo_node_reject_reason(node):
+    network=str(node.get("network") or "tcp").strip().lower()
+    if network not in TESTABLE_NETWORKS:
+        return f"unsupported network: {network}"
+    reality=node.get("reality-opts")
+    if reality is None:
+        return None
+    if not isinstance(reality,dict):
+        return "invalid reality-opts"
+    pbk=str(reality.get("public-key") or "").strip()
+    if not pbk:
+        return "missing REALITY public key"
+    try:
+        padded=pbk + "=" * (-len(pbk) % 4)
+        decoded=base64.b64decode(padded.encode(),altchars=b"-_",validate=True)
+    except Exception:
+        return "invalid REALITY public key encoding"
+    if len(decoded) != 32:
+        return "invalid REALITY public key length"
+    sid=reality.get("short-id")
+    if sid is not None and str(sid).strip():
+        sid=str(sid).strip()
+        if sid.lower()=="null" or not re.fullmatch(r"(?:[0-9a-fA-F]{2}){1,8}",sid):
+            return "invalid REALITY short ID"
+    return None
+
+def mihomo_node_is_testable(node):
+    return mihomo_node_reject_reason(node) is None
+
+
 def parse_uri(uri):
     uri=uri.strip()
     return _parse_vmess(uri) if uri.lower().startswith("vmess://") else _parse_standard(uri)
@@ -729,7 +761,7 @@ def run():
         try:
             response=session.get(source["url"],timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
             for node in parse_subscription(response.text):
-                if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]): nodes_by_fp[fingerprint(node)]=node
+                if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]) and mihomo_node_is_testable(node): nodes_by_fp[fingerprint(node)]=node
         except requests.RequestException: continue
     # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
@@ -749,6 +781,8 @@ def run():
                 cnt=0
                 for node in parse_subscription(text):
                     if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                        if not mihomo_node_is_testable(node):
+                            continue
                         fp=fingerprint(node); nodes_by_fp.setdefault(fp,node); curated_fps.add(fp); cnt+=1
                 print("curated_source: loaded %d nodes from %s" % (cnt, curated_file))
             except Exception as e:
@@ -765,6 +799,8 @@ def run():
                     cnt=0
                     for node in parse_subscription(resp.text):
                         if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                            if not mihomo_node_is_testable(node):
+                                continue
                             nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
                     print("direct_url: loaded %d nodes from %s" % (cnt, url))
                 except requests.RequestException as e:

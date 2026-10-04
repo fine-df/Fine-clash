@@ -71,15 +71,15 @@ def suffix_rules(domains, group):
 
 
 def build_proxy_groups(fine_names):
-    """Build manual-select groups with an explicit auto-test member.
+    """Build automatic groups plus explicit manual-control layers.
 
-    Bitz-Auto uses include-all-providers because url-test does not health-check
-    provider nodes supplied via use:. Bitz then exposes Bitz-Auto plus every
-    provider node for manual override. Fine follows the same UI model with its
-    locally validated proxy list.
+    Normal operation stays in mode=rule: route rules choose Bitz/Fine/DIRECT,
+    and Bitz/Fine groups choose Auto or a specific node. GLOBAL is reserved
+    for explicit Mihomo global-mode override and exposes all nodes so one
+    manually selected node can carry all traffic.
     """
     return [
-        {"name": "GLOBAL", "type": "select", "proxies": ["Fine", "Bitz", "DIRECT"]},
+        {"name": "GLOBAL", "type": "select", "proxies": ["DIRECT"], "include-all": True},
         {"name": "Bitz", "type": "select",
          "proxies": ["Bitz-Auto"], "use": ["BitzPool"],
          "default-selected": "Bitz-Auto"},
@@ -99,11 +99,14 @@ def build_proxy_groups(fine_names):
 def main():
     fine_nodes = load_fine_nodes()
     fine_names = [n["name"] for n in fine_nodes]
+    # Application-specific proxy rules must precede generic CN classification.
+    # A service domain can resolve to a Chinese IP; GEOIP,CN must not steal an explicit
+    # Ozon/Amazon route that is intentionally assigned to Bitz.
     rules = (
-        LOCAL_IOT_DIRECT + PRIVATE_DIRECT + WECHAT_DIRECT + XIAOMI_DIRECT + ["GEOIP,CN,DIRECT"]
+        LOCAL_IOT_DIRECT + PRIVATE_DIRECT + WECHAT_DIRECT + XIAOMI_DIRECT
         + suffix_rules(OZON_DOMAINS, "Bitz")
         + suffix_rules(AMAZON_DOMAINS, "Bitz")
-        + ["MATCH,Fine"]
+        + ["GEOIP,CN,DIRECT", "MATCH,Fine"]
     )
     config = {
         "mixed-port": 7890,

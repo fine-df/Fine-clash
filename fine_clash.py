@@ -1,6 +1,7 @@
 from __future__ import annotations
-import base64, hashlib, ipaddress, json, os, re, shutil, subprocess, tempfile, time
+import base64, hashlib, ipaddress, json, os, re, shutil, socket, subprocess, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
+import functools
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
@@ -83,6 +84,31 @@ def is_safe_server(server):
     if value in blocked or value.endswith((".localhost",".local",".internal")): return False
     try: return ipaddress.ip_address(value).is_global
     except ValueError: return True
+
+@functools.lru_cache(maxsize=4096)
+def resolved_server_is_safe(server):
+    """Fail closed when a proxy hostname resolves to any non-global address.
+
+    Public subscription sources are untrusted input. Blocking only literal private
+    IPs is insufficient because an attacker-controlled hostname can resolve to loopback,
+    link-local, RFC1918, or other non-public addresses on the runner.
+    """
+    if not is_safe_server(server):
+        return False
+    value=str(server or "").strip().strip("[]")
+    try:
+        infos=socket.getaddrinfo(value,None,socket.AF_UNSPEC,socket.SOCK_STREAM)
+    except (socket.gaierror,UnicodeError):
+        return False
+    addresses=set()
+    for info in infos:
+        raw=str(info[4][0]).split("%",1)[0]
+        try:
+            addresses.add(ipaddress.ip_address(raw))
+        except ValueError:
+            return False
+    return bool(addresses) and all(addr.is_global for addr in addresses)
+
 
 def _parse_vmess(uri):
     payload=_decode_b64(uri[8:])
@@ -429,7 +455,7 @@ def total_score(*,gemini,google_play,google,clean,lifespan,stability):
 def source_path_sort_key(path):
     low=str(path).lower()
     dates=[int(x) for x in re.findall(r"(20\d{6})", low)]
-    versions=[int(x) for x in re.findall(r"(?:v|version)[-_]?(\\d+)", low)]
+    versions=[int(x) for x in re.findall(r"(?:v|version)[-_]?(\d+)", low)]
     date_score=max(dates) if dates else -1
     version_score=max(versions) if versions else -1
     is_readme=1 if "readme" in low else 0
@@ -787,7 +813,7 @@ def run():
         try:
             response=session.get(source["url"],timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
             for node in parse_subscription(response.text):
-                if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]) and mihomo_node_is_testable(node): nodes_by_fp[fingerprint(node)]=node
+                if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]) and mihomo_node_is_testable(node): nodes_by_fp[fingerprint(node)]=node
         except requests.RequestException: continue
     # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
@@ -806,7 +832,7 @@ def run():
                 text=decoded if decoded else raw
                 cnt=0
                 for node in parse_subscription(text):
-                    if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                    if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]):
                         if not mihomo_node_is_testable(node):
                             continue
                         fp=fingerprint(node); nodes_by_fp.setdefault(fp,node); curated_fps.add(fp); cnt+=1
@@ -866,7 +892,8 @@ def run():
         gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
         min_clean=float(rules["nodes"].get("min_clean_score", 0))
         if gate in ("reachable", "gemini_or_play"):
-            # Gemini 或 Google Play 任一可达即可进入深圳测试；Google 204 仅作辅助诊断。
+            # Current candidate gate is reachability + clean score. score_threshold is
+            # used for history/pass-day statistics, not as a hard candidate gate here.
             candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
         else:
             candidate=bool(item["gemini"] and item["google_play"] and clean >= min_clean)

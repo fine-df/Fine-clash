@@ -7,9 +7,13 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_auto_and_manual_selection():
+def test_final_proxy_groups_expose_auto_manual_and_global_override():
     groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
+
+    assert by_name["GLOBAL"]["type"] == "select"
+    assert by_name["GLOBAL"]["include-all"] is True
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT"]
 
     assert by_name["Bitz"]["type"] == "select"
     assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
@@ -26,6 +30,37 @@ def test_final_proxy_groups_expose_auto_and_manual_selection():
 
     assert by_name["Fine-Auto"]["type"] == "url-test"
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
+
+
+def test_final_config_defaults_to_rule_mode():
+    source = inspect.getsource(bf.main)
+    assert '"mode": "rule"' in source
+
+
+def test_final_route_order_prioritizes_ozon_amazon_before_cn():
+    source = inspect.getsource(bf.main)
+    ozon_pos = source.index("suffix_rules(OZON_DOMAINS")
+    amazon_pos = source.index("suffix_rules(AMAZON_DOMAINS")
+    cn_pos = source.index('"GEOIP,CN,DIRECT"')
+    match_pos = source.index('"MATCH,Fine"')
+    assert ozon_pos < cn_pos
+    assert amazon_pos < cn_pos
+    assert cn_pos < match_pos
+
+
+def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
+    monkeypatch.setattr(
+        fc.socket,
+        "getaddrinfo",
+        lambda *args, **kwargs: [(fc.socket.AF_INET, 0, 0, "", ("192.168.1.10", 0))],
+    )
+    fc.resolved_server_is_safe.cache_clear()
+    assert not fc.resolved_server_is_safe("attacker.example")
+
+
+def test_source_path_sort_key_parses_version_numbers():
+    assert fc.source_path_sort_key("clash-v2.yaml")[1] == 2
+    assert fc.source_path_sort_key("version-12.yaml")[1] == 12
 
 
 def test_parse_yaml_and_strip_untrusted_fields():

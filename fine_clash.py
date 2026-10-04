@@ -780,6 +780,22 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
         if len(picked)>=limit: break
     return picked
 
+def candidate_gate_passes(item, gate, clean, min_clean):
+    """Evaluate the configured candidate gate against endpoint reachability and cleanliness."""
+    gemini=bool(item.get("gemini"))
+    google_play=bool(item.get("google_play"))
+    google=item.get("google") or {}
+    google_ok=bool(google.get("ok"))
+    clean_ok=float(clean) >= float(min_clean)
+    gate=str(gate or "gemini_or_play").lower()
+    if gate=="reachable":
+        return bool((gemini or google_play or google_ok) and clean_ok)
+    if gate=="gemini_or_play":
+        return bool((gemini or google_play) and clean_ok)
+    if gate=="gemini_and_play":
+        return bool(gemini and google_play and clean_ok)
+    return False
+
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     live=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
@@ -850,7 +866,7 @@ def run():
                     resp=dsession.get(url,timeout=20,headers={"User-Agent":UA}); resp.raise_for_status()
                     cnt=0
                     for node in parse_subscription(resp.text):
-                        if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and is_safe_server(node["server"]):
+                        if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]):
                             if not mihomo_node_is_testable(node):
                                 continue
                             nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
@@ -889,14 +905,12 @@ def run():
         #     导致 selected=0 永远不发布。改「通外网即候选」才能保证池子真正长大。
         #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
         #   - gemini_and_play：原双过严格档（保留向后兼容）。
-        gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
-        min_clean=float(rules["nodes"].get("min_clean_score", 0))
-        if gate in ("reachable", "gemini_or_play"):
-            # Current candidate gate is reachability + clean score. score_threshold is
-            # used for history/pass-day statistics, not as a hard candidate gate here.
-            candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
-        else:
-            candidate=bool(item["gemini"] and item["google_play"] and clean >= min_clean)
+        gate=str(rules["nodes"].get("candidate_gate","gemini_or_play")).lower()
+        min_clean=float(rules["nodes"].get("min_clean_score",0))
+        # score_threshold is used for history/pass-day statistics, not as a hard
+        # candidate gate. The candidate gate itself is explicit and testable.
+        candidate=candidate_gate_passes(item,gate,clean,min_clean)
+
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
         entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
         report["results"].append(entry); report_lookup[fp]=entry

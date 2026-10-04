@@ -42,6 +42,19 @@ def test_score_and_history():
     assert row["seen_count"] == 1 and row["pass_count"] == 1
 
 
+def test_prepare_mihomo_geodata_preserves_expected_filenames(tmp_path: Path):
+    source_dir = tmp_path / "source"
+    work_dir = tmp_path / "work"
+    source_dir.mkdir()
+    work_dir.mkdir()
+    (source_dir / "geoip.dat").write_bytes(b"geoip")
+    (source_dir / "Country.mmdb").write_bytes(b"mmdb")
+    copied = fc.prepare_mihomo_geodata(work_dir, source_dir)
+    assert copied == ["Country.mmdb", "geoip.dat"]
+    assert (work_dir / "geoip.dat").read_bytes() == b"geoip"
+    assert (work_dir / "Country.mmdb").read_bytes() == b"mmdb"
+
+
 def test_mihomo_tester_uses_no_geosite_rule():
     source = inspect.getsource(fc.MihomoTester.start)
     assert "GEOSITE,CN,DIRECT" not in source

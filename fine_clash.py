@@ -496,8 +496,9 @@ def prepare_mihomo_geodata(work_dir, geo_dir):
 class MihomoTester:
     def __init__(self,binary,cfg,port_offset=0):
         self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.log_handle=None; self.session=requests.Session()
-        self.proxy_port=17890+int(port_offset)
-        self.controller_port=19090+int(port_offset)
+        self.port_offset=int(port_offset)
+        self.proxy_port=17890+self.port_offset
+        self.controller_port=19090+self.port_offset
     def start(self,nodes):
         names=[]; proxies=[]
         for idx,node in enumerate(nodes):
@@ -549,7 +550,8 @@ class MihomoTester:
         except requests.RequestException as exc:
             return {"ok":False,"status":0,"latency_ms":round((time.perf_counter()-started)*1000),"error":str(exc)[:160],"challenge":False,"data":None}
     def test_nodes(self,nodes,checks):
-        results=[]
+        if not nodes:
+            return []
         endpoint_workers=max(1,min(int(self.cfg.get("endpoint_workers",4)),4))
         endpoints=[
             ("gemini",checks["gemini_url"],False),
@@ -559,6 +561,24 @@ class MihomoTester:
         ]
         try:
             names=self.start(nodes)
+        except RuntimeError as exc:
+            # A single malformed proxy can make Mihomo reject the entire batch.
+            # Isolate the bad node(s) by splitting the batch instead of aborting the run.
+            self.stop()
+            if len(nodes)==1:
+                error=str(exc)[-1000:]
+                return [{
+                    "node":nodes[0],
+                    "gemini":False,
+                    "google_play":False,
+                    "google":{"ok":False,"status":0,"challenge":False,"error":error,"data":None},
+                    "ipinfo":None,
+                    "startup_error":error,
+                }]
+            mid=len(nodes)//2
+            return self.test_nodes(nodes[:mid],checks)+self.test_nodes(nodes[mid:],checks)
+        try:
+            results=[]
             for idx,node in enumerate(nodes):
                 self.choose(names[idx])
                 with ThreadPoolExecutor(max_workers=endpoint_workers) as executor:
@@ -572,9 +592,9 @@ class MihomoTester:
                     "google":item["google"],
                     "ipinfo":item["ipinfo"].get("data") if item["ipinfo"]["ok"] else None,
                 })
+            return results
         finally:
             self.stop()
-        return results
     def stop(self):
         if self.proc is not None:
             self.proc.terminate()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Build the only public subscription: live_clash.yaml."""
 from __future__ import annotations
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -120,7 +121,21 @@ def main():
         "rules": rules,
     }
     dumped = yaml.safe_dump(config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-    version = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    previous_version = 0
+    previous_body = None
+    if OUT.is_file():
+        try:
+            previous = OUT.read_text(encoding="utf-8")
+            m = re.match(r"^#.*?fine-clash-version:(\d+).*?\n", previous)
+            if m:
+                previous_version = int(m.group(1))
+                previous_body = previous[m.end():]
+        except OSError:
+            pass
+    if previous_body == dumped and previous_version:
+        version = str(previous_version)
+    else:
+        version = str(previous_version + 1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     header = f"# fine-clash-unified-v1 | fine-clash-version:{version} | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine\n"
     OUT.write_text(header + dumped, encoding="utf-8")
     print(f"written {OUT} with Fine={len(fine_nodes)} nodes; Bitz=remote-provider; rules={len(rules)}")

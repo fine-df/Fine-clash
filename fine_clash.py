@@ -815,14 +815,18 @@ def run():
             seen.add(s["url"]); sources.append(s)
     if not sources and cached:
         sources=cached
-    # Bound the persistent source pool so dead/obsolete URLs cannot grow without limit.
+    # Bound the persistent source pool by source quality rather than merely
+    # live-vs-cached ordering. High-star, node-rich, recently-pushed sources win.
     max_sources=int(rules["sources"].get("max_sources",120))
     if len(sources)>max_sources:
-        live_urls={s.get("url") for s in live if isinstance(s,dict)}
-        live_part=[s for s in sources if s.get("url") in live_urls]
-        cached_part=[s for s in sources if s.get("url") not in live_urls]
-        cached_part.sort(key=lambda x:(str(x.get("pushed_at") or ""),str(x.get("url") or "")),reverse=True)
-        sources=(live_part+cached_part)[:max_sources]
+        def source_quality(row):
+            return (
+                int(row.get("stars", 0) or 0),
+                int(row.get("nodes", 0) or 0),
+                str(row.get("pushed_at") or ""),
+                str(row.get("url") or ""),
+            )
+        sources=sorted(sources,key=source_quality,reverse=True)[:max_sources]
     source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
     nodes_by_fp={}; session=requests.Session()
     for source in sources:

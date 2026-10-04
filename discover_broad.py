@@ -14,6 +14,7 @@ discover_broad.py — 宽口径 GitHub 订阅源发现（2026-10-04）
 from __future__ import annotations
 import json, os, sys, time, requests
 from pathlib import Path
+from datetime import datetime, timedelta, timezone
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fine_clash as fc
 
@@ -82,32 +83,28 @@ def recent_cutoff(rules):
     return (datetime.now(timezone.utc) - timedelta(days=d)).date().isoformat()
 
 
+def dated_candidate_paths(days=7):
+    today = datetime.now(timezone.utc).date()
+    out = []
+    for i in range(days):
+        day = today - timedelta(days=i)
+        stamp = day.strftime("%Y%m%d")
+        out.extend([
+            f"clash{stamp}.yml", f"clash{stamp}.yaml",
+            f"sub{stamp}.txt", f"sub{stamp}.yaml",
+            f"v2ray{stamp}.txt", f"v2ray{stamp}.yaml",
+        ])
+    return out
+
 def try_repo(full_name):
     owner, name = full_name.split("/", 1)
     rules = fc.load_rules()
     min_nodes = int(rules["sources"].get("min_nodes_per_source", 2))
     max_bytes = int(rules["sources"].get("max_source_bytes", 8000000))
-    anchors = ["sub", "clash.yaml", "v2ray.yaml", "config.yaml", "nodes.txt"]
-    # 先探测分支：用锚点定位 main/master，避免对无效仓扫满全路径
+    paths = list(dict.fromkeys(dated_candidate_paths() + CANDIDATE_PATHS))
+    # 最近日期型订阅优先，再试固定入口；避免长期抓旧日文件。
     for branch in BRANCHES:
-        anchor_hit = False
-        for ap in anchors:
-            url = f"https://raw.githubusercontent.com/{owner}/{name}/{branch}/{ap}"
-            try:
-                r = SESSION.get(url, timeout=12, allow_redirects=True)
-                if r.status_code != 200 or len(r.content) > max_bytes:
-                    continue
-                if len(fc.parse_subscription(r.text)) >= min_nodes:
-                    return {"url": url, "repo": full_name, "path": ap, "branch": branch, "nodes": len(fc.parse_subscription(r.text))}
-                anchor_hit = True  # 有订阅文件但节点不足，仍值得扫全列表
-            except requests.RequestException:
-                continue
-        if not anchor_hit:
-            continue  # 该分支无锚点文件，换分支
-        # 该分支至少有锚点文件 → 扫全列表找更多节点
-        for path in CANDIDATE_PATHS:
-            if path in anchors:
-                continue
+        for path in paths:
             url = f"https://raw.githubusercontent.com/{owner}/{name}/{branch}/{path}"
             try:
                 r = SESSION.get(url, timeout=12, allow_redirects=True)
@@ -119,7 +116,6 @@ def try_repo(full_name):
             except requests.RequestException:
                 continue
     return None
-
 
 def main():
     repos = collect_repo_names()

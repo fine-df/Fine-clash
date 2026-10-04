@@ -59,6 +59,44 @@ jobs:
           test -s live_clash.yaml
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^proxy-providers:' live_clash.yaml
+          grep -q '^mode: rule          grep -q '^  BitzPool:' live_clash.yaml
+          grep -q '^- name: Bitz' live_clash.yaml
+          grep -q '^- name: Bitz-Auto' live_clash.yaml
+          grep -q '^- name: Fine' live_clash.yaml
+          grep -q '^- name: Fine-Auto' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
+          grep -q 'MATCH,Fine' live_clash.yaml
+          grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
+          grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
+          grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
+          # CI must never depend on remote GeoSite downloads.
+          if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
+            echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
+            exit 1
+          fi
+          if grep -Eq 'fine_final.yaml|fine-override:' live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
+          mihomo -t -f live_clash.yaml
+      - name: Publish
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git push origin HEAD:main
+ live_clash.yaml
+          grep -q '^- name: GLOBAL' live_clash.yaml
+          grep -q 'include-all: true' live_clash.yaml
           grep -q '^  BitzPool:' live_clash.yaml
           grep -q '^- name: Bitz' live_clash.yaml
           grep -q '^- name: Bitz-Auto' live_clash.yaml

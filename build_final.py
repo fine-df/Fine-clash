@@ -73,7 +73,7 @@ def main():
     fine_nodes = load_fine_nodes()
     fine_names = [n["name"] for n in fine_nodes]
     rules = (
-        LOCAL_IOT_DIRECT + WECHAT_DIRECT + XIAOMI_DIRECT + ["GEOIP,CN,DIRECT"]
+        LOCAL_IOT_DIRECT + PRIVATE_DIRECT + WECHAT_DIRECT + XIAOMI_DIRECT + ["GEOIP,CN,DIRECT"]
         + suffix_rules(OZON_DOMAINS, "Bitz")
         + suffix_rules(AMAZON_DOMAINS, "Bitz")
         + ["MATCH,Fine"]

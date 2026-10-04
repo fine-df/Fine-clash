@@ -7,9 +7,13 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_auto_and_manual_selection():
+def test_final_proxy_groups_expose_auto_manual_and_global_override():
     groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
+
+    assert by_name["GLOBAL"]["type"] == "select"
+    assert by_name["GLOBAL"]["include-all"] is True
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT"]
 
     assert by_name["Bitz"]["type"] == "select"
     assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
@@ -26,6 +30,11 @@ def test_final_proxy_groups_expose_auto_and_manual_selection():
 
     assert by_name["Fine-Auto"]["type"] == "url-test"
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
+
+
+def test_final_config_defaults_to_rule_mode():
+    source = inspect.getsource(bf.main)
+    assert '"mode": "rule"' in source
 
 
 def test_parse_yaml_and_strip_untrusted_fields():

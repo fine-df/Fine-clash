@@ -69,6 +69,33 @@ def load_fine_nodes():
 def suffix_rules(domains, group):
     return [f"DOMAIN-SUFFIX,{d},{group}" for d in domains]
 
+
+def build_proxy_groups(fine_names):
+    """Build manual-select groups with an explicit auto-test member.
+
+    Bitz-Auto uses include-all-providers because url-test does not health-check
+    provider nodes supplied via use:. Bitz then exposes Bitz-Auto plus every
+    provider node for manual override. Fine follows the same UI model with its
+    locally validated proxy list.
+    """
+    return [
+        {"name": "GLOBAL", "type": "select", "proxies": ["Fine", "Bitz", "DIRECT"]},
+        {"name": "Bitz", "type": "select",
+         "proxies": ["Bitz-Auto"], "use": ["BitzPool"],
+         "default-selected": "Bitz-Auto"},
+        {"name": "Bitz-Auto", "type": "url-test",
+         "include-all-providers": True,
+         "url": "https://www.ozon.ru/",
+         "interval": 900, "timeout": 8000, "tolerance": 100, "lazy": False},
+        {"name": "Fine", "type": "select",
+         "proxies": ["Fine-Auto"] + fine_names,
+         "default-selected": "Fine-Auto"},
+        {"name": "Fine-Auto", "type": "url-test",
+         "proxies": fine_names,
+         "url": "https://www.gstatic.com/generate_204",
+         "interval": 900, "timeout": 8000, "tolerance": 100, "lazy": False},
+    ]
+
 def main():
     fine_nodes = load_fine_nodes()
     fine_names = [n["name"] for n in fine_nodes]
@@ -96,13 +123,7 @@ def main():
             }
         },
         "proxies": fine_nodes,
-        "proxy-groups": [
-            {"name": "GLOBAL", "type": "select", "proxies": ["Fine","Bitz","DIRECT"]},
-            {"name": "Bitz", "type": "url-test", "use": ["BitzPool"], "url": "https://www.ozon.ru/",
-             "interval": 900, "timeout": 8000, "tolerance": 100, "lazy": False},
-            {"name": "Fine", "type": "url-test", "proxies": fine_names, "url": "https://www.gstatic.com/generate_204",
-             "interval": 900, "timeout": 8000, "tolerance": 100, "lazy": False},
-        ],
+        "proxy-groups": build_proxy_groups(fine_names),
         "tun": {"enable": True, "stack": "system", "auto-route": True, "auto-detect-interface": True},
         "dns": {
             "enable": True, "ipv6": False, "use-hosts": True, "enhanced-mode": "redir-host",

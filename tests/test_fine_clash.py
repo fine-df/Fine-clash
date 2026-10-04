@@ -74,7 +74,7 @@ def test_final_route_order_prioritizes_ozon_amazon_before_cn():
     ozon_pos = rules.index("DOMAIN-SUFFIX,ozon.ru,Bitz")
     amazon_pos = rules.index("DOMAIN-SUFFIX,amazon.com,Bitz")
     cn_pos = rules.index("GEOIP,CN,DIRECT")
-    match_pos = rules.index("MATCH,Fine")
+    match_pos = rules.index("MATCH,Bitz")
     assert ozon_pos < cn_pos
     assert amazon_pos < cn_pos
     assert cn_pos < match_pos
@@ -96,6 +96,12 @@ def test_final_config_makes_proxy_names_unique():
     names = [node["name"] for node in cfg["proxies"]]
     assert len(names) == len(set(names))
 
+
+def test_global_mode_contract_is_native_and_explicit():
+    cfg = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])
+    assert cfg["mode"] == "rule"
+    global_group = next(g for g in cfg["proxy-groups"] if g["name"] == "GLOBAL")
+    assert global_group["proxies"] == ["DIRECT", "Bitz-1", "Fine-1"]
 
 def test_candidate_gate_modes_are_explicit():
     item = {"gemini": False, "google_play": False, "google": {"ok": True}}

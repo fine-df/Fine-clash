@@ -7,101 +7,23 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_explicit_bitz_fine_and_global_nodes():
-    groups = bf.build_proxy_groups(["Bitz-1", "Bitz-2"], ["Fine-1", "Fine-2"])
+def test_final_proxy_groups_expose_explicit_fine_and_global_nodes():
+    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
-    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Bitz-1", "Bitz-2", "Fine-1", "Fine-2"]
-    assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
-    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto", "Bitz-1", "Bitz-2"]
-    assert by_name["Bitz-Auto"]["proxies"] == ["Bitz-1", "Bitz-2"]
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Fine-1", "Fine-2"]
     assert by_name["Fine"]["default-selected"] == "Fine-Auto"
     assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
 
-def test_bitz_is_embedded_not_provider_based():
+def test_bitz_is_removed_from_final_architecture():
     source = inspect.getsource(bf.build_config)
-    assert '"proxy-providers"' not in source
-    assert '"proxies":bitz_nodes+fine_nodes' in source.replace(" ", "")
+    assert "Bitz" not in source
 
-def test_bitz_subscription_parser_builds_explicit_nodes():
-    text = """proxies:
-  - name: Bitz-A
-    type: trojan
-    server: bitz.example.com
-    port: 443
-    password: secret
-    tls: true
-    servername: bitz.example.com
-"""
-    nodes = bf._dedupe_nodes(bf.parse_subscription(text), "Bitz | ")
-    assert len(nodes) == 1
-    assert nodes[0]["name"] == "Bitz | Bitz-A"
-
-def _mini_node(name):
-    return {"name": name, "type": "trojan", "server": "example.com", "port": 443, "password": "secret", "tls": True}
-
-def test_bitz_url_redaction_removes_query_and_fragment():
-    url = "https://cont.example.invalid/api/client.conf?token=SECRET&x=1#frag"
-    assert bf._redact_url(url) == "https://cont.example.invalid/api/client.conf"
-
-
-def test_final_config_contains_complete_domestic_direct_contract():
-    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
-    required = [
-        "DOMAIN-SUFFIX,cn,DIRECT",
-        "DOMAIN-SUFFIX,com.cn,DIRECT",
-        "DOMAIN-SUFFIX,net.cn,DIRECT",
-        "DOMAIN-SUFFIX,gov.cn,DIRECT",
-        "DOMAIN-SUFFIX,edu.cn,DIRECT",
-        "DOMAIN-SUFFIX,qq.com,DIRECT",
-        "DOMAIN-SUFFIX,weixin.qq.com,DIRECT",
-        "DOMAIN-SUFFIX,mi.com,DIRECT",
-        "DOMAIN-SUFFIX,xiaomi.com,DIRECT",
-        "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
-        "GEOIP,CN,DIRECT",
-    ]
-    for rule in required:
-        assert rule in rules
-    assert rules.index("DOMAIN-SUFFIX,ozon.ru,Bitz") < rules.index("GEOIP,CN,DIRECT")
-
-
-def test_final_config_defaults_to_rule_mode():
-    cfg = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])
+def test_final_config_is_fine_only():
+    cfg = bf.build_config([_mini_node("Fine-1")])
     assert cfg["mode"] == "rule"
-
-def test_final_route_order_prioritizes_ozon_amazon_before_cn():
-    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
-    ozon_pos = rules.index("DOMAIN-SUFFIX,ozon.ru,Bitz")
-    amazon_pos = rules.index("DOMAIN-SUFFIX,amazon.com,Bitz")
-    cn_pos = rules.index("GEOIP,CN,DIRECT")
-    match_pos = rules.index("MATCH,Bitz")
-    assert ozon_pos < cn_pos
-    assert amazon_pos < cn_pos
-    assert cn_pos < match_pos
-    assert rules[match_pos] == "MATCH,Bitz"
-
-def test_video_and_store_domains_route_to_fine():
-    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
-    assert "DOMAIN-SUFFIX,youtube.com,Fine" in rules
-    assert "DOMAIN-SUFFIX,play.google.com,Fine" in rules
-    assert "MATCH,Bitz" in rules
-    assert rules.index("DOMAIN-SUFFIX,youtube.com,Fine") < rules.index("MATCH,Bitz")
-    assert rules.index("DOMAIN-SUFFIX,play.google.com,Fine") < rules.index("MATCH,Bitz")
-
-def test_final_config_makes_proxy_names_unique():
-    cfg = bf.build_config(
-        [_mini_node("same"), dict(_mini_node("same"), server="fine2.example.com")],
-        [dict(_mini_node("same"), server="bitz.example.com")],
-    )
-    names = [node["name"] for node in cfg["proxies"]]
-    assert len(names) == len(set(names))
-
-
-def test_global_mode_contract_is_native_and_explicit():
-    cfg = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])
-    assert cfg["mode"] == "rule"
-    global_group = next(g for g in cfg["proxy-groups"] if g["name"] == "GLOBAL")
-    assert global_group["proxies"] == ["DIRECT", "Bitz-1", "Fine-1"]
+    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
+    assert "MATCH,Fine" in cfg["rules"]
 
 def test_candidate_gate_modes_are_explicit():
     item = {"gemini": False, "google_play": False, "google": {"ok": True}}

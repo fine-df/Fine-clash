@@ -17,9 +17,10 @@
 
 默认 `mode: rule`：
 
-- Ozon / Amazon → Bitz
+- Ozon / Amazon / 电商流量 → Bitz
 - 中国大陆 / 局域网 / 微信 / Xiaomi → DIRECT
-- 其他需要代理的海外流量 → Fine
+- 视频类、应用商店/大下载 → Fine
+- 其他普通海外流量 → Bitz
 
 Bitz / Fine 组均为：
 
@@ -35,6 +36,7 @@ GLOBAL 为显式手动模式：
 
 - 正常 rule 模式不引用 GLOBAL
 - 切换 Mihomo `global` 后，可在 GLOBAL 中直接选择任意具体节点
+- 选择的 GLOBAL 节点承担全部代理流量
 - 切回 `rule` 恢复自动分流
 
 ## 继承的已确认修复
@@ -67,13 +69,11 @@ Provider 方案增加了一个没有必要的中间层，并且使最终输出�
 
 ## 当前验证状态
 
-最近一次 GitHub Actions 已证明新主线的测试主体可以启动；第一次失败仅发生在两个旧测试仍按旧 `build_final.main()` 源码文本断言。
+最新一次 GitHub Actions #64 的代码主体安装、Mihomo 下载和 Secret Preflight 均成功；失败点仅为 1 条旧测试仍断言 `MATCH,Fine`，实际新规则已经是 `MATCH,Bitz`。
 
 这两个测试已经改为验证实际生成配置的行为。
 
-**当前新的完整 CI 尚未获得结果。**
-
-原因不是代码测试失败，而是本次 GitHub API 提交没有再次产生对应的 push workflow run。
+修复后需要重新跑一次完整主工作流，确认 Build Fine pool、Bitz 构建、Profile 校验和 Publish 全链路。
 
 因此当前仓库代码已经切换到新架构，但 `live_clash.yaml` 仍需要下一次成功的主工作流重新生成后，才会成为新的生产输出。
 

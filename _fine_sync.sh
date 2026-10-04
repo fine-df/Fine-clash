@@ -21,13 +21,8 @@ fi
 grep -q '^mode: rule$' "$TMP" || { echo "sync_fail_not_rule_mode"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: GLOBAL' "$TMP" || { echo "sync_fail_no_global_group"; rm -f "$TMP"; exit 1; }
 grep -q -- '- DIRECT' "$TMP" || { echo "sync_fail_global_no_direct"; rm -f "$TMP"; exit 1; }
-grep -q '^- name: Bitz' "$TMP" || { echo "sync_fail_no_bitz_group"; rm -f "$TMP"; exit 1; }
-grep -q '^- name: Bitz-Auto' "$TMP" || { echo "sync_fail_no_bitz_auto_group"; rm -f "$TMP"; exit 1; }
-grep -q '^  - Bitz | ' "$TMP" || { echo "sync_fail_no_explicit_bitz_nodes"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine-Auto' "$TMP" || { echo "sync_fail_no_fine_auto_group"; rm -f "$TMP"; exit 1; }
-grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' "$TMP" || { echo "sync_fail_no_ozon_rule"; rm -f "$TMP"; exit 1; }
-grep -q 'MATCH,Bitz' "$TMP" || { echo "sync_fail_no_match_bitz"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' "$TMP" || { echo "sync_fail_no_video_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' "$TMP" || { echo "sync_fail_no_store_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP"; exit 1; }
@@ -50,7 +45,51 @@ if grep -Eq 'cont\\.bbkcdpub\\.com|token=' "$TMP"; then
   rm -f "$TMP"
   exit 1
 fi
-if grep -Eq 'proxy-providers:|BitzPool:' "$TMP"; then
+if grep -Eq 'proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz
+  echo "sync_fail_obsolete_bitz_architecture"
+  rm -f "$TMP"
+  exit 1
+fi
+if grep -Eq 'GEOSITE,' "$TMP"; then
+  echo "sync_fail_geosite_dependency"
+  rm -f "$TMP"
+  exit 1
+fi
+REMOTE_VER=$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$TMP")
+LOCAL_VER=$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$DST" 2>/dev/null || true)
+REMOTE_VER=${REMOTE_VER:-0}
+LOCAL_VER=${LOCAL_VER:-0}
+if [ -n "$LOCAL_VER" ] && [ "$REMOTE_VER" -le "$LOCAL_VER" ]; then
+  echo "sync_keep_local_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+  rm -f "$TMP"
+  exit 0
+fi
+if grep -Eq 'fine_final.yaml|fine-override:' "$TMP"; then
+  echo "sync_fail_obsolete_profile"
+  rm -f "$TMP"
+  exit 1
+fi
+
+"$BIN" -t -d /data/clash -f "$TMP" >/dev/null 2>&1 || {
+  echo "sync_selfcheck_fail"
+  rm -f "$TMP"
+  exit 1
+}
+
+if [ -f "$DST" ] && cmp -s "$TMP" "$DST"; then
+  echo "sync_same"
+  rm -f "$TMP"
+  exit 0
+fi
+
+cp "$TMP" "$DST"
+cp "$TMP" "$TPL"
+rm -f "$TMP"
+/data/clash/start.sh stop >/dev/null 2>&1
+sleep 5
+/data/clash/start.sh start >/dev/null 2>&1
+echo "sync_updated_$(date '+%m-%d %H:%M')"
+ "$TMP"; then
   echo "sync_fail_obsolete_provider_architecture"
   rm -f "$TMP"
   exit 1

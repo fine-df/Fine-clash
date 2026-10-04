@@ -447,6 +447,20 @@ class GitHubDiscovery:
                 if source and source["url"] not in seen: seen.add(source["url"]); out.append(source)
         return out
 
+MIHOMO_GEO_FILES = ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
+
+def prepare_mihomo_geodata(work_dir, geo_dir):
+    work_dir=Path(work_dir)
+    geo_dir=Path(geo_dir)
+    copied=[]
+    for filename in MIHOMO_GEO_FILES:
+        src=geo_dir/filename
+        if src.is_file():
+            shutil.copyfile(src, work_dir/filename)
+            copied.append(filename)
+    return copied
+
+
 class MihomoTester:
     def __init__(self,binary,cfg,port_offset=0):
         self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.log_handle=None; self.session=requests.Session()
@@ -461,10 +475,7 @@ class MihomoTester:
         # Preload local Mihomo geodata into the exact filenames Mihomo expects.
         # This keeps CI startup independent of runtime GeoIP/GeoSite downloads.
         geo_dir=Path(os.environ.get("MIHOMO_GEO_DIR",str(ROOT)))
-        for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
-            src=geo_dir/geo
-            if src.is_file():
-                shutil.copyfile(src,self.tmp/geo.name)
+        prepare_mihomo_geodata(self.tmp, geo_dir)
         self.log_path=self.tmp/"mihomo.log"
         self.log_handle=self.log_path.open("w",encoding="utf-8")
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=self.log_handle,stderr=subprocess.STDOUT)

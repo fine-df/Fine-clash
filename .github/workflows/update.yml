@@ -83,7 +83,9 @@ jobs:
           grep -q '^- name: Fine-Auto' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
-          grep -q 'MATCH,Fine' live_clash.yaml
+          grep -q 'MATCH,Bitz' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
           grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml

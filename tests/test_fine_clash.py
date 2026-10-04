@@ -40,6 +40,31 @@ def test_bitz_subscription_parser_builds_explicit_nodes():
 def _mini_node(name):
     return {"name": name, "type": "trojan", "server": "example.com", "port": 443, "password": "secret", "tls": True}
 
+def test_bitz_url_redaction_removes_query_and_fragment():
+    url = "https://cont.example.invalid/api/client.conf?token=SECRET&x=1#frag"
+    assert bf._redact_url(url) == "https://cont.example.invalid/api/client.conf"
+
+
+def test_final_config_contains_complete_domestic_direct_contract():
+    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
+    required = [
+        "DOMAIN-SUFFIX,cn,DIRECT",
+        "DOMAIN-SUFFIX,com.cn,DIRECT",
+        "DOMAIN-SUFFIX,net.cn,DIRECT",
+        "DOMAIN-SUFFIX,gov.cn,DIRECT",
+        "DOMAIN-SUFFIX,edu.cn,DIRECT",
+        "DOMAIN-SUFFIX,qq.com,DIRECT",
+        "DOMAIN-SUFFIX,weixin.qq.com,DIRECT",
+        "DOMAIN-SUFFIX,mi.com,DIRECT",
+        "DOMAIN-SUFFIX,xiaomi.com,DIRECT",
+        "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
+        "GEOIP,CN,DIRECT",
+    ]
+    for rule in required:
+        assert rule in rules
+    assert rules.index("DOMAIN-SUFFIX,ozon.ru,Bitz") < rules.index("GEOIP,CN,DIRECT")
+
+
 def test_final_config_defaults_to_rule_mode():
     cfg = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])
     assert cfg["mode"] == "rule"

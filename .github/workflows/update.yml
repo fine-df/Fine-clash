@@ -1,6 +1,5 @@
 name: Fine-Clash update
 # Push-triggered CI is intentional: production code changes must self-validate before publication.
-# Re-run current architecture validation.
 
 on:
   push:
@@ -27,41 +26,47 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Download Mihomo
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          api_headers=(-H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          version="${MIHOMO_VERSION}"
-          asset="mihomo-linux-amd64-${version}.gz"
-          curl -fsSL "${api_headers[@]}" "https://github.com/MetaCubeX/mihomo/releases/download/${version}/${asset}" -o mihomo.gz
+          api_headers=(-H "Authorization: Bearer \${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+          version="\${MIHOMO_VERSION}"
+          asset="mihomo-linux-amd64-\${version}.gz"
+          curl -fsSL "\${api_headers[@]}" "https://github.com/MetaCubeX/mihomo/releases/download/\${version}/\${asset}" -o mihomo.gz
           gunzip mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/mihomo
           mihomo -v
-          # Download GeoIP data explicitly; CI must not depend on Mihomo runtime downloads.
           curl -fsSL https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat -o geoip.dat
           test -s geoip.dat
+
       - name: Test code
         run: pytest
+
       - name: Build Fine pool
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GLOBALPING_API_TOKEN: \${{ secrets.GLOBALPING_API_TOKEN }}
         run: python fine_clash.py
+
       - name: Build single public profile
-        if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
+        if: \${{ hashFiles('data/fine_pool.yaml') != '' }}
         run: python build_final.py data/fine_pool.yaml
+
       - name: Validate profile
-        if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
+        if: \${{ hashFiles('data/fine_pool.yaml') != '' }}
         run: |
           set -euo pipefail
           test -s live_clash.yaml
@@ -72,11 +77,12 @@ jobs:
           grep -q '^- name: Fine-Auto' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
-          grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
           grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
           grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
-          # CI must never depend on remote GeoSite downloads.
+          grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
+          grep -q 'MATCH,Fine' live_clash.yaml
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
@@ -90,75 +96,7 @@ jobs:
             exit 1
           fi
           mihomo -t -f live_clash.yaml
-      - name: Publish
-        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
-          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
-          if git diff --cached --quiet; then
-            echo 'no changes'
-            exit 0
-          fi
-          git commit -m 'chore: publish Fine-only subscription'
-          git push origin HEAD:main
- live_clash.yaml; then
-            echo 'obsolete router-specific markers detected'
-            exit 1
-          fi
-          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
-            echo 'subscription credential or token-bearing URL leaked into public profile'
-            exit 1
-          fi
-          mihomo -t -f live_clash.yaml
-      - name: Publish
-        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
-          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
-          if git diff --cached --quiet; then
-            echo 'no changes'
-            exit 0
-          fi
-          git commit -m 'chore: publish Fine-only subscription'
-          git push origin HEAD:main
- live_clash.yaml; then
-            echo 'obsolete router-specific markers detected'
-            exit 1
-          fi
-          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
-            echo 'subscription credential or token-bearing URL leaked into public profile'
-            exit 1
-          fi
-          mihomo -t -f live_clash.yaml
-      - name: Publish
-        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
-          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
-          if git diff --cached --quiet; then
-            echo 'no changes'
-            exit 0
-          fi
-          git commit -m 'chore: publish Fine-only subscription'
-          git push origin HEAD:main
- live_clash.yaml; then
-            echo 'obsolete router-specific markers detected'
-            exit 1
-          fi
-          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
-            echo 'subscription credential or token-bearing URL leaked into public profile'
-            exit 1
-          fi
-          mihomo -t -f live_clash.yaml
+
       - name: Publish
         if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
         run: |

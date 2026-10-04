@@ -19,7 +19,12 @@ if [ "$HTTP" != "200" ]; then
 fi
 
 grep -q '^proxy-providers:' "$TMP" || { echo "sync_fail_no_provider"; rm -f "$TMP"; exit 1; }
-grep -q '^mode: rulegrep -q '^- name: Bitz' "$TMP" || { echo "sync_fail_no_bitz_group"; rm -f "$TMP"; exit 1; }
+grep -q '^mode: rule$' "$TMP" || { echo "sync_fail_not_rule_mode"; rm -f "$TMP"; exit 1; }
+grep -q '^- name: GLOBAL' "$TMP" || { echo "sync_fail_no_global_group"; rm -f "$TMP"; exit 1; }
+grep -q 'include-all: true' "$TMP" || { echo "sync_fail_global_no_all_nodes"; rm -f "$TMP"; exit 1; }
+grep -q -- '- DIRECT' "$TMP" || { echo "sync_fail_global_no_direct"; rm -f "$TMP"; exit 1; }
+grep -q '^  BitzPool:' "$TMP" || { echo "sync_fail_no_bitz_pool"; rm -f "$TMP"; exit 1; }
+grep -q '^- name: Bitz' "$TMP" || { echo "sync_fail_no_bitz_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Bitz-Auto' "$TMP" || { echo "sync_fail_no_bitz_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine-Auto' "$TMP" || { echo "sync_fail_no_fine_auto_group"; rm -f "$TMP"; exit 1; }

@@ -37,6 +37,17 @@ def test_final_config_defaults_to_rule_mode():
     assert '"mode": "rule"' in source
 
 
+def test_final_route_order_prioritizes_ozon_amazon_before_cn():
+    source = inspect.getsource(bf.main)
+    ozon_pos = source.index("suffix_rules(OZON_DOMAINS")
+    amazon_pos = source.index("suffix_rules(AMAZON_DOMAINS")
+    cn_pos = source.index('"GEOIP,CN,DIRECT"')
+    match_pos = source.index('"MATCH,Fine"')
+    assert ozon_pos < cn_pos
+    assert amazon_pos < cn_pos
+    assert cn_pos < match_pos
+
+
 def test_parse_yaml_and_strip_untrusted_fields():
     text = """proxies:
   - name: demo

@@ -59,6 +59,8 @@ jobs:
         run: python fine_clash.py
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
+        env:
+          BITZ_SUB_URL: ${{ secrets.BITZ_SUB_URL }}
         run: python build_final.py data/fine_pool.yaml
       - name: Validate profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}

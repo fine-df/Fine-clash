@@ -71,7 +71,7 @@ def test_mihomo_startup_failure_isolated_to_bad_nodes():
 
         def start(self, nodes):
             if any(node.get("bad") for node in nodes):
-                raise RuntimeError("invalid REALITY public key")
+                raise RuntimeError("Mihomo exited during startup (rc=1): Parse config error: proxy 1: invalid REALITY public key")
             return [f"N{i:03d}" for i in range(len(nodes))]
 
         def choose(self, name):

@@ -1,5 +1,6 @@
 name: Fine-Clash update
 # Push-triggered CI is intentional: production code changes must self-validate before publication.
+# Re-run current architecture validation.
 
 on:
   schedule:

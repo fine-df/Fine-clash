@@ -55,6 +55,19 @@ def test_prepare_mihomo_geodata_preserves_expected_filenames(tmp_path: Path):
     assert (work_dir / "Country.mmdb").read_bytes() == b"mmdb"
 
 
+def test_mihomo_rejects_invalid_reality_configuration():
+    good_key = fc.base64.urlsafe_b64encode(b"x" * 32).decode().rstrip("=")
+    base = {
+        "type": "vless", "server": "example.com", "port": 443,
+        "uuid": "123e4567-e89b-12d3-a456-426614174000", "tls": True,
+        "network": "tcp",
+    }
+    assert fc.mihomo_node_is_testable(dict(base, **{"reality-opts": {"public-key": good_key, "short-id": "0123456789abcdef"}}))
+    assert not fc.mihomo_node_is_testable(dict(base, **{"reality-opts": {"public-key": "bad", "short-id": "0123"}}))
+    assert not fc.mihomo_node_is_testable(dict(base, **{"reality-opts": {"public-key": good_key, "short-id": "null"}}))
+    assert not fc.mihomo_node_is_testable(dict(base, network="xhttp"))
+
+
 def test_mihomo_tester_uses_no_geosite_rule():
     source = inspect.getsource(fc.MihomoTester.start)
     assert "GEOSITE,CN,DIRECT" not in source

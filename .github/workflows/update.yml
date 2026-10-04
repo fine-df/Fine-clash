@@ -67,7 +67,9 @@ jobs:
           grep -q 'MATCH,Fine' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
-          # CI must never depend on remote GeoSite downloads. build_final.py is intentionally GEOIP-only.
+          grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
+          grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
+          # CI must never depend on remote GeoSite downloads.
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1

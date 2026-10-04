@@ -39,7 +39,47 @@ jobs:
           chmod +x mihomo
           ./mihomo -v
 
+      - name: Install project dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest
+
       - name: Run provider group smoke test
         run: |
           set -euo pipefail
           python tools/provider_group_smoke.py --binary "$PWD/mihomo"
+
+      - name: Build and validate final profile fixture
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          cat > data/fine_pool.yaml <<'YAML'
+          proxies:
+            - name: AUDIT-FINE-NODE
+              type: socks5
+              server: 203.0.113.10
+              port: 65500
+              udp: true
+          YAML
+          python build_final.py data/fine_pool.yaml
+          mihomo -t -f live_clash.yaml
+          python - <<'PY'
+          import yaml
+          cfg = yaml.safe_load(open("live_clash.yaml", encoding="utf-8"))
+          groups = {g["name"]: g for g in cfg["proxy-groups"]}
+          assert cfg["mode"] == "rule"
+          assert groups["GLOBAL"]["include-all"] is True
+          assert groups["Bitz"]["proxies"] == ["Bitz-Auto"]
+          assert groups["Bitz"]["use"] == ["BitzPool"]
+          assert groups["Bitz-Auto"]["include-all-providers"] is True
+          assert groups["Fine"]["proxies"] == ["Fine-Auto", "AUDIT-FINE-NODE"]
+          assert groups["Fine-Auto"]["proxies"] == ["AUDIT-FINE-NODE"]
+          rules = cfg["rules"]
+          ozon = next(i for i, r in enumerate(rules) if r == "DOMAIN-SUFFIX,ozon.ru,Bitz")
+          cn = next(i for i, r in enumerate(rules) if r == "GEOIP,CN,DIRECT")
+          match = next(i for i, r in enumerate(rules) if r == "MATCH,Fine")
+          assert ozon < cn < match
+          assert not any("GEOSITE," in r for r in rules)
+          print("final_profile_fixture: PASS")
+          PY

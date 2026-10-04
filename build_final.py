@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import requests
 import yaml
-from fine_clash import fingerprint, mihomo_node_is_testable, parse_subscription
+from fine_clash import fingerprint, mihomo_node_is_testable, parse_subscription, resolved_server_is_safe, unique_node_names
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
@@ -31,12 +31,13 @@ def _dedupe_nodes(nodes,prefix):
         fp=fingerprint(node)
         if fp in seen: continue
         seen.add(fp); out.append(node)
-    return out
+    return unique_node_names(out)
 
 def load_fine_nodes():
     if not SRC.is_file(): raise SystemExit(f"FATAL: missing Fine pool: {SRC}")
     raw=yaml.safe_load(SRC.read_text(encoding="utf-8")) or {}
-    nodes=_dedupe_nodes(raw.get("proxies") or [],"")
+    parsed=raw.get("proxies") or []
+    nodes=_dedupe_nodes([node for node in parsed if isinstance(node,dict) and resolved_server_is_safe(node.get("server",""))],"")
     if not nodes: raise SystemExit("FATAL: Fine pool is empty or has no testable nodes.")
     return nodes
 
@@ -46,7 +47,8 @@ def fetch_bitz_nodes():
         r.raise_for_status()
     except requests.RequestException as exc:
         raise SystemExit(f"FATAL: Bitz subscription fetch failed: {exc}") from exc
-    nodes=_dedupe_nodes(parse_subscription(r.text),"Bitz | ")
+    parsed=parse_subscription(r.text)
+    nodes=_dedupe_nodes([node for node in parsed if resolved_server_is_safe(node.get("server",""))],"Bitz | ")
     if not nodes: raise SystemExit("FATAL: Bitz subscription returned no supported testable nodes.")
     return nodes
 

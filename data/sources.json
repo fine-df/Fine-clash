@@ -1,32 +1,5 @@
 [
   {
-    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20260929.yml",
-    "repo": "free-nodes/clashfree",
-    "path": "clash20260929.yml",
-    "stars": 16783,
-    "forks": 1373,
-    "pushed_at": "2026-10-02T21:00:21Z",
-    "nodes": 280
-  },
-  {
-    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20260930.yml",
-    "repo": "free-nodes/clashfree",
-    "path": "clash20260930.yml",
-    "stars": 16783,
-    "forks": 1373,
-    "pushed_at": "2026-10-02T21:00:21Z",
-    "nodes": 365
-  },
-  {
-    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261001.yml",
-    "repo": "free-nodes/clashfree",
-    "path": "clash20261001.yml",
-    "stars": 16783,
-    "forks": 1373,
-    "pushed_at": "2026-10-02T21:00:21Z",
-    "nodes": 404
-  },
-  {
     "url": "https://raw.githubusercontent.com/KaringX/karing/main/README_examples/clash/config.yaml",
     "repo": "KaringX/karing",
     "path": "README_examples/clash/config.yaml",
@@ -123,5 +96,20 @@
     "path": "nodes.txt",
     "branch": "main",
     "nodes": 8
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261002.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20261002.yml"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261003.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20261003.yml"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261004.yml",
+    "repo": "free-nodes/clashfree",
+    "path": "clash20261004.yml"
   }
 ]

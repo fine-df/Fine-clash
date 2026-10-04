@@ -78,6 +78,15 @@ def test_final_route_order_prioritizes_ozon_amazon_before_cn():
     assert ozon_pos < cn_pos
     assert amazon_pos < cn_pos
     assert cn_pos < match_pos
+    assert rules[match_pos] == "MATCH,Bitz"
+
+def test_video_and_store_domains_route_to_fine():
+    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
+    assert "DOMAIN-SUFFIX,youtube.com,Fine" in rules
+    assert "DOMAIN-SUFFIX,play.google.com,Fine" in rules
+    assert "MATCH,Bitz" in rules
+    assert rules.index("DOMAIN-SUFFIX,youtube.com,Fine") < rules.index("MATCH,Bitz")
+    assert rules.index("DOMAIN-SUFFIX,play.google.com,Fine") < rules.index("MATCH,Bitz")
 
 def test_final_config_makes_proxy_names_unique():
     cfg = bf.build_config(

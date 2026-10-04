@@ -562,6 +562,12 @@ class MihomoTester:
         try:
             names=self.start(nodes)
         except RuntimeError as exc:
+            # Only Mihomo's explicit config-parse failure is treated as a node-data
+            # problem. Other startup failures are systemic and must still fail loudly.
+            error=str(exc)
+            if "Parse config error:" not in error:
+                self.stop()
+                raise
             # A single malformed proxy can make Mihomo reject the entire batch.
             # Isolate the bad node(s) by splitting the batch instead of aborting the run.
             self.stop()

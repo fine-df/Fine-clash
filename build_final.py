@@ -66,8 +66,12 @@ def build_proxy_groups(bitz_names,fine_names):
     ]
 
 def build_config(fine_nodes,bitz_nodes):
+    if not fine_nodes or not bitz_nodes: raise ValueError("Fine and Bitz pools must both be non-empty")
+    combined=unique_node_names([*bitz_nodes,*fine_nodes])
+    bitz_count=len(bitz_nodes)
+    bitz_nodes=combined[:bitz_count]
+    fine_nodes=combined[bitz_count:]
     fine_names=[n["name"] for n in fine_nodes]; bitz_names=[n["name"] for n in bitz_nodes]
-    if not fine_names or not bitz_names: raise ValueError("Fine and Bitz pools must both be non-empty")
     rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(OZON_DOMAINS,"Bitz")+suffix_rules(AMAZON_DOMAINS,"Bitz")+["GEOIP,CN,DIRECT","MATCH,Fine"]
     return {
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,

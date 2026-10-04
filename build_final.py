@@ -26,6 +26,16 @@ WECHAT_DIRECT = [
     "DOMAIN-SUFFIX,tenpay.com,DIRECT","DOMAIN-SUFFIX,wechatpay.cn,DIRECT",
     "DOMAIN-SUFFIX,tencent.com,DIRECT","DOMAIN-SUFFIX,tencent-cloud.com,DIRECT",
 ]
+XIAOMI_DIRECT = [
+    "DOMAIN-SUFFIX,mi.com,DIRECT",
+    "DOMAIN-SUFFIX,xiaomi.com,DIRECT",
+    "DOMAIN-SUFFIX,miwifi.com,DIRECT",
+    "DOMAIN-SUFFIX,miui.com,DIRECT",
+]
+LOCAL_IOT_DIRECT = [
+    "IP-CIDR,224.0.0.0/4,DIRECT,no-resolve",
+    "IP-CIDR,169.254.0.0/16,DIRECT,no-resolve",
+]
 PRIVATE_DIRECT = [
     "DOMAIN-SUFFIX,lan,DIRECT","DOMAIN-SUFFIX,local,DIRECT",
     "DOMAIN-SUFFIX,localhost,DIRECT","DOMAIN-SUFFIX,cn,DIRECT",
@@ -61,7 +71,7 @@ def main():
     fine_nodes = load_fine_nodes()
     fine_names = [n["name"] for n in fine_nodes]
     rules = (
-        PRIVATE_DIRECT + WECHAT_DIRECT + ["GEOIP,CN,DIRECT"]
+        LOCAL_IOT_DIRECT + WECHAT_DIRECT + XIAOMI_DIRECT + ["GEOIP,CN,DIRECT"]
         + suffix_rules(OZON_DOMAINS, "Bitz")
         + suffix_rules(AMAZON_DOMAINS, "Bitz")
         + ["MATCH,Fine"]
@@ -95,6 +105,14 @@ def main():
         "dns": {
             "enable": True, "ipv6": False, "use-hosts": True, "enhanced-mode": "redir-host",
             "nameserver": ["223.5.5.5","119.29.29.29","1.1.1.1"],
+            "nameserver-policy": {
+                "+.mi.com": ["223.5.5.5","119.29.29.29"],
+                "+.xiaomi.com": ["223.5.5.5","119.29.29.29"],
+                "+.miwifi.com": ["223.5.5.5","119.29.29.29"],
+                "+.miui.com": ["223.5.5.5","119.29.29.29"],
+                "+.weixin.qq.com": ["223.5.5.5","119.29.29.29"],
+                "+.qq.com": ["223.5.5.5","119.29.29.29"],
+            },
             "fallback": ["https://1.1.1.1/dns-query","tls://8.8.8.8"],
             "fallback-filter": {"geoip": True, "geoip-code": "CN"},
         },

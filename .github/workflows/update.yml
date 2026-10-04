@@ -50,6 +50,7 @@ jobs:
           GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
         run: python fine_clash.py
       - name: Build single public profile
+        if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
         run: python build_final.py data/fine_pool.yaml
       - name: Validate profile
         run: |

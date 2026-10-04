@@ -37,6 +37,19 @@ WECHAT_DIRECT_RULES = [
     "DOMAIN-SUFFIX,tencent-cloud.com,DIRECT",
 ]
 
+# Xiaomi/Mi Home direct rules. Explicit domain rules take precedence over GEOIP so
+# Xiaomi IoT control/cloud traffic is not accidentally sent through the overseas proxy.
+XIAOMI_DIRECT_RULES = [
+    "DOMAIN-SUFFIX,mi.com,DIRECT",
+    "DOMAIN-SUFFIX,xiaomi.com,DIRECT",
+    "DOMAIN-SUFFIX,miwifi.com,DIRECT",
+    "DOMAIN-SUFFIX,miui.com,DIRECT",
+]
+LOCAL_IOT_DIRECT_RULES = [
+    "IP-CIDR,224.0.0.0/4,DIRECT,no-resolve",
+    "IP-CIDR,169.254.0.0/16,DIRECT,no-resolve",
+]
+
 def load_rules():
     return yaml.safe_load((ROOT/"config.yaml").read_text(encoding="utf-8"))
 
@@ -168,7 +181,26 @@ def parse_subscription(text):
     return []
 
 def fingerprint(node):
-    data="|".join(str(node.get(k,"")) for k in ("type","server","port","uuid","password"))
+    # Include transport/security parameters. server+port+credential alone is too coarse:
+    # two nodes can share the same endpoint while differing by SNI/WS/gRPC/Reality.
+    identity = {
+        "type": node.get("type"),
+        "server": node.get("server"),
+        "port": node.get("port"),
+        "uuid": node.get("uuid"),
+        "password": node.get("password"),
+        "cipher": node.get("cipher"),
+        "tls": node.get("tls"),
+        "servername": node.get("servername"),
+        "flow": node.get("flow"),
+        "client-fingerprint": node.get("client-fingerprint"),
+        "encryption": node.get("encryption"),
+        "network": node.get("network"),
+        "ws-opts": node.get("ws-opts"),
+        "grpc-opts": node.get("grpc-opts"),
+        "reality-opts": node.get("reality-opts"),
+    }
+    data=json.dumps(identity,ensure_ascii=False,sort_keys=True,separators=(",",":"))
     return hashlib.sha256(data.encode()).hexdigest()[:20]
 
 def node_to_uri(node):
@@ -223,7 +255,7 @@ def load_history(path):
         data=json.loads(path.read_text(encoding="utf-8")); return data if isinstance(data,dict) else {}
     except (OSError,json.JSONDecodeError): return {}
 
-def update_history(db,fp,result):
+def update_history(db,fp,result,score_threshold=70):
     today=date.today().isoformat()
     row=db.setdefault(fp,{"first_seen":today,"last_seen":today,"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
     if row["last_seen"]!=today:
@@ -234,7 +266,7 @@ def update_history(db,fp,result):
         # 同一自然日内重复访问：pass_count/gemini/play 计数已在当天首次访问时累加，
         # 此处不再累加，保持 pass_count 与 seen_count 同为「天数」口径，避免同天多次运行虚高。
         return row
-    if result.get("score",0)>=70: row["pass_count"]+=1
+    if result.get("score",0)>=float(score_threshold): row["pass_count"]+=1
     if result.get("gemini"): row["gemini_pass_count"]+=1
     if result.get("google_play"): row["play_pass_count"]+=1
     return row
@@ -320,7 +352,15 @@ def cached_shenzhen_result(row, cfg):
 
 def shenzhen_passes(result, cfg):
     if result.get("ok"):
-        return float(result["avg_ms"]) <= float(cfg.get("reject_above_ms",400))
+        try:
+            avg=float(result["avg_ms"])
+            loss=result.get("loss_pct")
+            max_loss=float(cfg.get("reject_loss_pct",100))
+            if loss is None:
+                return False
+            return avg <= float(cfg.get("reject_above_ms",400)) and float(loss) <= max_loss
+        except (TypeError,ValueError):
+            return False
     return not bool(cfg.get("fail_closed",False))
 
 
@@ -354,6 +394,15 @@ def total_score(*,gemini,google_play,google,clean,lifespan,stability):
     points += round(5*max(0,min(1,stability)))
     return min(100,points)
 
+def source_path_sort_key(path):
+    low=str(path).lower()
+    dates=[int(x) for x in re.findall(r"(20\\d{6})", low)]
+    versions=[int(x) for x in re.findall(r"(?:v|version)[-_]?(\\d+)", low)]
+    date_score=max(dates) if dates else -1
+    version_score=max(versions) if versions else -1
+    is_readme=1 if "readme" in low else 0
+    return (date_score,version_score,-is_readme,-len(low),low)
+
 class GitHubDiscovery:
     def __init__(self,token,cfg):
         self.cfg=cfg; self.session=requests.Session(); self.session.headers.update({"User-Agent":UA,"Accept":"application/vnd.github+json"})
@@ -362,8 +411,9 @@ class GitHubDiscovery:
         response=self.session.get(url,params=params,timeout=20); response.raise_for_status(); return response.json()
     def search_repositories(self):
         cutoff=(datetime.now(timezone.utc)-timedelta(days=int(self.cfg["recent_days"]))).date().isoformat(); repos={}
+        push_suffix=f" pushed:>={cutoff}" if self.cfg.get("require_recent_push",False) else ""
         for base_query in self.cfg["queries"]:
-            try: data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query} pushed:>={cutoff}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
+            try: data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
             except requests.RequestException: continue
             for item in data.get("items",[]):
                 if int(item.get("stargazers_count", 0)) >= int(self.cfg.get("min_stars", 30)):
@@ -378,7 +428,7 @@ class GitHubDiscovery:
             if item.get("type")!="blob": continue
             path=item.get("path",""); low=path.lower()
             if low.endswith(EXTENSIONS) and any(key in low for key in CANDIDATE_NAMES): paths.append(path)
-        paths.sort(key=lambda p:("readme" in p.lower(),len(p),p.lower()))
+        paths.sort(key=lambda p: source_path_sort_key(p), reverse=True)
         return paths[:int(self.cfg["max_candidate_files_per_repo"])]
     def fetch_and_validate(self,repo,path):
         owner,name=repo["full_name"].split("/",1); raw=f"https://raw.githubusercontent.com/{owner}/{name}/{quote(repo['default_branch'],safe='')}/{quote(path,safe='/')}"
@@ -410,8 +460,9 @@ class MihomoTester:
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
         # geo 预置(2026-10-03)：mihomo 首启会在线下载 GeoSite.dat，2.5s 启动窗口内下载不完导致控口拒绝连接；
         # 从 MIHOMO_GEO_DIR 本地缓存预拷，跳过在线下载。缺文件时退回 mihomo 自带下载行为，不影响 CI。
+        geo_dir=Path(os.environ.get("MIHOMO_GEO_DIR",str(ROOT)))
         for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
-            src=Path(os.environ.get("MIHOMO_GEO_DIR",""))/geo
+            src=geo_dir/geo
             if src.is_file(): shutil.copyfile(src,self.tmp/geo)
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(float(self.cfg["controller_startup_seconds"])); return names
     def choose(self,name):
@@ -515,7 +566,7 @@ def build_outputs(nodes, output_rules):
     nodes=[dict(node) for node in nodes if node.get("network","tcp") in COMPATIBLE_NETWORKS]
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
-    route_rules=WECHAT_DIRECT_RULES+["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,PROXY"]
+    route_rules=LOCAL_IOT_DIRECT_RULES+WECHAT_DIRECT_RULES+XIAOMI_DIRECT_RULES+["GEOIP,CN,DIRECT","MATCH,PROXY"]
     dns_config={
         "enable":True,
         "ipv6":False,
@@ -689,7 +740,7 @@ def run():
         row=history.get(fp,{"first_seen":date.today().isoformat(),"last_seen":date.today().isoformat(),"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
         life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
-        row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
+        row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]},score_threshold=rules["nodes"].get("score_threshold",70))
         # ★ 2026-10-04 策略放宽（池子做大的核心）：
         #   candidate_gate 控制「候选」门槛，分数(score)只用于排序/多样性，不再卡入选。
         #   - reachable（推荐）：代理能通外网即可（google204/gemini/play 任一可达）。
@@ -705,7 +756,7 @@ def run():
             min_clean=float(rules["nodes"].get("min_clean_score", 0))
             candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
         else:
-            candidate=bool(item["gemini"] and item["google_play"])
+            candidate=bool(item["gemini"] and item["google_play"] and clean >= min_clean)
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
         entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
         report["results"].append(entry); report_lookup[fp]=entry

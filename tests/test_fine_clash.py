@@ -48,6 +48,16 @@ def test_final_route_order_prioritizes_ozon_amazon_before_cn():
     assert cn_pos < match_pos
 
 
+def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
+    monkeypatch.setattr(
+        fc.socket,
+        "getaddrinfo",
+        lambda *args, **kwargs: [(fc.socket.AF_INET, 0, 0, "", ("192.168.1.10", 0))],
+    )
+    fc.resolved_server_is_safe.cache_clear()
+    assert not fc.resolved_server_is_safe("attacker.example")
+
+
 def test_parse_yaml_and_strip_untrusted_fields():
     text = """proxies:
   - name: demo

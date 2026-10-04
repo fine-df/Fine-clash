@@ -22,6 +22,11 @@ grep -q '^mode: rule$' "$TMP" || { echo "sync_fail_not_rule_mode"; rm -f "$TMP";
 grep -q '^- name: GLOBAL' "$TMP" || { echo "sync_fail_no_global_group"; rm -f "$TMP"; exit 1; }
 grep -q -- '- DIRECT' "$TMP" || { echo "sync_fail_global_no_direct"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP"; exit 1; }
+if grep -Eq 'proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz$' "$TMP"; then
+  echo "sync_fail_obsolete_bitz_architecture"
+  rm -f "$TMP"
+  exit 1
+fi
 grep -q '^- name: Fine-Auto' "$TMP" || { echo "sync_fail_no_fine_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' "$TMP" || { echo "sync_fail_no_video_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' "$TMP" || { echo "sync_fail_no_store_rule"; rm -f "$TMP"; exit 1; }
@@ -45,7 +50,6 @@ if grep -Eq 'cont\\.bbkcdpub\\.com|token=' "$TMP"; then
   rm -f "$TMP"
   exit 1
 fi
-if grep -Eq 'proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz
   echo "sync_fail_obsolete_bitz_architecture"
   rm -f "$TMP"
   exit 1

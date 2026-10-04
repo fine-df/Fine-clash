@@ -31,6 +31,11 @@ grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; e
 grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' "$TMP" || { echo "sync_fail_no_xiaomi_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' "$TMP" || { echo "sync_fail_no_private_lan_rule"; rm -f "$TMP"; exit 1; }
+if grep -Eq 'proxy-providers:|BitzPool:' "$TMP"; then
+  echo "sync_fail_obsolete_provider_architecture"
+  rm -f "$TMP"
+  exit 1
+fi
 if grep -Eq 'GEOSITE,' "$TMP"; then
   echo "sync_fail_geosite_dependency"
   rm -f "$TMP"

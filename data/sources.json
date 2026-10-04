@@ -67,49 +67,73 @@
     "repo": "Pawdroid/Free-servers",
     "path": "sub",
     "branch": "main",
-    "nodes": 2
+    "nodes": 2,
+    "stars": 19330,
+    "forks": 1229,
+    "pushed_at": "2026-10-04T11:00:40Z"
   },
   {
     "url": "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/sub",
     "repo": "free-nodes/v2rayfree",
     "path": "sub",
     "branch": "main",
-    "nodes": 336
+    "nodes": 336,
+    "stars": 14008,
+    "forks": 932,
+    "pushed_at": "2026-10-04T05:06:19Z"
   },
   {
     "url": "https://raw.githubusercontent.com/awesome-vpn/awesome-vpn/master/clash.yaml",
     "repo": "awesome-vpn/awesome-vpn",
     "path": "clash.yaml",
     "branch": "master",
-    "nodes": 40
+    "nodes": 40,
+    "stars": 6554,
+    "forks": 571,
+    "pushed_at": "2026-10-04T03:38:32Z"
   },
   {
     "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml",
     "repo": "hello-world-1989/cn-news",
     "path": "clash.yaml",
     "branch": "main",
-    "nodes": 2
+    "nodes": 2,
+    "stars": 608,
+    "forks": 22,
+    "pushed_at": "2026-10-04T11:34:12Z"
   },
   {
     "url": "https://raw.githubusercontent.com/zhuhaiuk/free-nodes/main/nodes.txt",
     "repo": "zhuhaiuk/free-nodes",
     "path": "nodes.txt",
     "branch": "main",
-    "nodes": 8
+    "nodes": 8,
+    "stars": 303,
+    "forks": 23,
+    "pushed_at": "2026-10-04T09:40:56Z"
   },
   {
     "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261002.yml",
     "repo": "free-nodes/clashfree",
-    "path": "clash20261002.yml"
+    "path": "clash20261002.yml",
+    "stars": 16800,
+    "forks": 1373,
+    "pushed_at": "2026-10-04T06:21:06Z"
   },
   {
     "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261003.yml",
     "repo": "free-nodes/clashfree",
-    "path": "clash20261003.yml"
+    "path": "clash20261003.yml",
+    "stars": 16800,
+    "forks": 1373,
+    "pushed_at": "2026-10-04T06:21:06Z"
   },
   {
     "url": "https://raw.githubusercontent.com/free-nodes/clashfree/main/clash20261004.yml",
     "repo": "free-nodes/clashfree",
-    "path": "clash20261004.yml"
+    "path": "clash20261004.yml",
+    "stars": 16800,
+    "forks": 1373,
+    "pushed_at": "2026-10-04T06:21:06Z"
   }
 ]

@@ -3,6 +3,9 @@ name: Fine-Clash update
 # Re-run current architecture validation.
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:
@@ -88,7 +91,7 @@ jobs:
           fi
           mihomo -t -f live_clash.yaml
       - name: Publish
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'

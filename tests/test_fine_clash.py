@@ -55,6 +55,50 @@ def test_prepare_mihomo_geodata_preserves_expected_filenames(tmp_path: Path):
     assert (work_dir / "Country.mmdb").read_bytes() == b"mmdb"
 
 
+def test_mihomo_startup_failure_isolated_to_bad_nodes():
+    class FakeTester(fc.MihomoTester):
+        def __init__(self):
+            self.cfg = {"endpoint_workers": 2}
+            self.binary = "fake"
+            self.proc = None
+            self.tmp = None
+            self.log_handle = None
+            self.session = None
+            self.port_offset = 0
+            self.proxy_port = 17890
+            self.controller_port = 19090
+
+        def start(self, nodes):
+            if any(node.get("bad") for node in nodes):
+                raise RuntimeError("invalid REALITY public key")
+            return [f"N{i:03d}" for i in range(len(nodes))]
+
+        def choose(self, name):
+            return None
+
+        def request(self, url, parse_json=False):
+            return {"ok": True, "status": 200, "challenge": False, "data": {} if parse_json else None}
+
+        def stop(self):
+            return None
+
+    nodes = [
+        {"name":"good-a", "bad":False},
+        {"name":"bad", "bad":True},
+        {"name":"good-b", "bad":False},
+    ]
+    checks = {
+        "gemini_url":"gemini", "google_play_url":"play",
+        "google_204_url":"google", "ipinfo_url":"ipinfo",
+    }
+    results = FakeTester().test_nodes(nodes, checks)
+    assert [row["node"]["name"] for row in results] == ["good-a", "bad", "good-b"]
+    bad = next(row for row in results if row["node"]["name"] == "bad")
+    assert bad["gemini"] is False
+    assert "invalid REALITY public key" in bad["startup_error"]
+    assert next(row for row in results if row["node"]["name"] == "good-a")["gemini"] is True
+
+
 def test_mihomo_rejects_invalid_reality_configuration():
     good_key = fc.base64.urlsafe_b64encode(b"x" * 32).decode().rstrip("=")
     base = {

@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.
 |---|---|
 | 中国大陆网站 / 中国内网 | DIRECT |
 | Ozon | Fine |
-| Amazon / Seller Central | Bitz |
+| Amazon / Seller Central | Fine |
 | 其他需要代理的海外流量 | Fine |
 
 - `Fine-Auto`：默认自动测速选择最优节点。

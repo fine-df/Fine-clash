@@ -53,7 +53,9 @@ jobs:
           test -s geoip.dat
 
       - name: Test code
-        run: pytest
+        run: |
+          pytest
+          sh -n _fine_sync.sh
 
       - name: Build Fine pool
         env:

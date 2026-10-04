@@ -25,6 +25,21 @@ grep -q '^  - name: Fine' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TM
 grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' "$TMP" || { echo "sync_fail_no_ozon_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; exit 1; }
 grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP"; exit 1; }
+grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' "$TMP" || { echo "sync_fail_no_xiaomi_rule"; rm -f "$TMP"; exit 1; }
+if grep -Eq 'GEOSITE,' "$TMP"; then
+  echo "sync_fail_geosite_dependency"
+  rm -f "$TMP"
+  exit 1
+fi
+REMOTE_VER=$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$TMP")
+LOCAL_VER=$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$DST" 2>/dev/null || true)
+REMOTE_VER=${REMOTE_VER:-0}
+LOCAL_VER=${LOCAL_VER:-0}
+if [ -n "$LOCAL_VER" ] && [ "$REMOTE_VER" -le "$LOCAL_VER" ]; then
+  echo "sync_keep_local_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+  rm -f "$TMP"
+  exit 0
+fi
 if grep -Eq 'fine_final.yaml|fine-override:' "$TMP"; then
   echo "sync_fail_obsolete_profile"
   rm -f "$TMP"

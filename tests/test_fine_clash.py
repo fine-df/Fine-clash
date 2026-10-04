@@ -54,6 +54,26 @@ def test_final_route_order_prioritizes_ozon_amazon_before_cn():
     assert amazon_pos < cn_pos
     assert cn_pos < match_pos
 
+def test_final_config_makes_proxy_names_unique():
+    cfg = bf.build_config(
+        [_mini_node("same"), dict(_mini_node("same"), server="fine2.example.com")],
+        [dict(_mini_node("same"), server="bitz.example.com")],
+    )
+    names = [node["name"] for node in cfg["proxies"]]
+    assert len(names) == len(set(names))
+
+
+def test_candidate_gate_modes_are_explicit():
+    item = {"gemini": False, "google_play": False, "google": {"ok": True}}
+    assert fc.candidate_gate_passes(item, "reachable", 80, 65)
+    assert not fc.candidate_gate_passes(item, "gemini_or_play", 80, 65)
+    item["google_play"] = True
+    assert fc.candidate_gate_passes(item, "gemini_or_play", 80, 65)
+    item["gemini"] = True
+    assert fc.candidate_gate_passes(item, "gemini_and_play", 80, 65)
+    assert not fc.candidate_gate_passes(item, "unknown", 80, 65)
+
+
 def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
     monkeypatch.setattr(
         fc.socket,

@@ -866,7 +866,8 @@ def run():
         gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
         min_clean=float(rules["nodes"].get("min_clean_score", 0))
         if gate in ("reachable", "gemini_or_play"):
-            # Gemini 或 Google Play 任一可达即可进入深圳测试；Google 204 仅作辅助诊断。
+            # Current candidate gate is reachability + clean score. score_threshold is
+            # used for history/pass-day statistics, not as a hard candidate gate here.
             candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
         else:
             candidate=bool(item["gemini"] and item["google_play"] and clean >= min_clean)

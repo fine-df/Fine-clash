@@ -109,7 +109,7 @@ Mihomo 官方 Issue #2970 明确记录：
 ## 其他观察项
 
 - `build_final.py` 中 Bitz subscription token 仍为源码明文，尚未处理；属于凭据管理风险。
-- CI 仍下载 Mihomo latest，尚未改成固定版本；应在兼容性测试完成后决定固定到当前路由器版本还是升级后的版本。
+- CI 已固定 Mihomo `v1.19.28`，与当前路由器兼容基线一致；后续若核心升级，应同步更新这一处。
 - `GLOBAL` 的 `include-all` 不包含其他 proxy groups，只包含 outbound proxies 与 proxy sets，符合“全节点手动选择”的目标。
 
 ## 结论

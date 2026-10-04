@@ -63,7 +63,7 @@ jobs:
               udp: true
           YAML
           python build_final.py data/fine_pool.yaml
-          mihomo -t -f live_clash.yaml
+          ./mihomo -t -f live_clash.yaml
           python - <<'PY'
           import yaml
           cfg = yaml.safe_load(open("live_clash.yaml", encoding="utf-8"))

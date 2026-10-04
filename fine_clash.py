@@ -449,14 +449,14 @@ class GitHubDiscovery:
 
 class MihomoTester:
     def __init__(self,binary,cfg,port_offset=0):
-        self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.session=requests.Session()
+        self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.log_handle=None; self.session=requests.Session()
         self.proxy_port=17890+int(port_offset)
         self.controller_port=19090+int(port_offset)
     def start(self,nodes):
         names=[]; proxies=[]
         for idx,node in enumerate(nodes):
             name=f"N{idx:03d}"; names.append(name); proxy=dict(node); proxy["name"]=name; proxies.append(proxy)
-        config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOSITE,CN,DIRECT","GEOIP,CN,DIRECT","MATCH,TEST"]}
+        config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOIP,CN,DIRECT","MATCH,TEST"]}
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
         # geo 预置(2026-10-03)：mihomo 首启会在线下载 GeoSite.dat，2.5s 启动窗口内下载不完导致控口拒绝连接；
         # 从 MIHOMO_GEO_DIR 本地缓存预拷，跳过在线下载。缺文件时退回 mihomo 自带下载行为，不影响 CI。
@@ -464,7 +464,30 @@ class MihomoTester:
         for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
             src=geo_dir/geo
             if src.is_file(): shutil.copyfile(src,self.tmp/geo)
-        self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(float(self.cfg["controller_startup_seconds"])); return names
+        self.log_handle=(self.tmp/"mihomo.log").open("w",encoding="utf-8")
+        self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=self.log_handle,stderr=subprocess.STDOUT)
+        deadline=time.time()+max(5.0,float(self.cfg.get("controller_startup_seconds",1.5))*4)
+        last_error=None
+        while time.time()<deadline:
+            if self.proc.poll() is not None:
+                self.log_handle.flush()
+                detail=self.log_handle.read_text(encoding="utf-8",errors="replace")[-4000:]
+                self.log_handle.close(); self.log_handle=None
+                raise RuntimeError(f"Mihomo exited during startup (rc={self.proc.returncode}): {detail}")
+            try:
+                response=self.session.get(f"http://127.0.0.1:{self.controller_port}/proxies",timeout=1)
+                response.raise_for_status()
+                return names
+            except requests.RequestException as exc:
+                last_error=exc
+                time.sleep(0.2)
+        detail=""
+        try:
+            self.log_handle.flush()
+            detail=self.log_handle.read_text(encoding="utf-8",errors="replace")[-4000:]
+        except Exception:
+            pass
+        raise RuntimeError(f"Mihomo controller did not become ready on {self.controller_port}: {last_error}; log={detail}")
     def choose(self,name):
         response=self.session.put(f"http://127.0.0.1:{self.controller_port}/proxies/TEST",json={"name":name},timeout=5); response.raise_for_status(); time.sleep(float(self.cfg["switch_wait_seconds"]))
     def request(self,url,parse_json=False):
@@ -507,11 +530,15 @@ class MihomoTester:
             self.stop()
         return results
     def stop(self):
-        if self.proc is None: return
-        self.proc.terminate()
-        try: self.proc.wait(timeout=5)
-        except subprocess.TimeoutExpired: self.proc.kill()
-        self.proc=None
+        if self.proc is not None:
+            self.proc.terminate()
+            try: self.proc.wait(timeout=5)
+            except subprocess.TimeoutExpired: self.proc.kill()
+            self.proc=None
+        if self.log_handle is not None:
+            try: self.log_handle.close()
+            except Exception: pass
+            self.log_handle=None
 
 def test_nodes_parallel(binary,nodes,cfg,checks):
     workers=max(1,min(int(cfg.get("validation_workers",1)),len(nodes)))

@@ -71,15 +71,15 @@ def suffix_rules(domains, group):
 
 
 def build_proxy_groups(fine_names):
-    """Build manual-select groups with an explicit auto-test member.
+    """Build automatic groups plus explicit manual-control layers.
 
-    Bitz-Auto uses include-all-providers because url-test does not health-check
-    provider nodes supplied via use:. Bitz then exposes Bitz-Auto plus every
-    provider node for manual override. Fine follows the same UI model with its
-    locally validated proxy list.
+    Normal operation stays in mode=rule: route rules choose Bitz/Fine/DIRECT,
+    and Bitz/Fine groups choose Auto or a specific node. GLOBAL is reserved
+    for explicit Mihomo global-mode override and exposes all nodes so one
+    manually selected node can carry all traffic.
     """
     return [
-        {"name": "GLOBAL", "type": "select", "proxies": ["Fine", "Bitz", "DIRECT"]},
+        {"name": "GLOBAL", "type": "select", "proxies": ["DIRECT"], "include-all": True},
         {"name": "Bitz", "type": "select",
          "proxies": ["Bitz-Auto"], "use": ["BitzPool"],
          "default-selected": "Bitz-Auto"},
@@ -109,7 +109,7 @@ def main():
         "mixed-port": 7890,
         "allow-lan": True,
         "bind-address": "*",
-        "mode": "rule",
+        "mode": "rule",  # default: automatic rule-based routing; GLOBAL is explicit override
         "log-level": "warning",
         "ipv6": False,
         "unified-delay": False,

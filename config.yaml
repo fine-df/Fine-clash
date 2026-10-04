@@ -39,7 +39,7 @@ nodes:
   test_timeout_seconds: 8
   controller_startup_seconds: 1.5
   switch_wait_seconds: 0.5
-  candidate_gate: 'reachable'
+  candidate_gate: 'gemini_or_play'
   score_threshold: 70
 shenzhen_probe:
   enabled: true

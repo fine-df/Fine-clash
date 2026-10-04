@@ -697,12 +697,12 @@ def run():
         #   - gemini_and_play：原双过严格档（保留向后兼容）。
         gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
         google_ok=bool((item.get("google") or {}).get("ok"))
-        if gate=="reachable":
-            candidate=bool(google_ok or item["gemini"] or item["google_play"])
-        elif gate=="gemini_or_play":
-            candidate=((item["gemini"] or item["google_play"]) and score>=int(rules["nodes"]["score_threshold"]))
+        if gate in ("reachable", "gemini_or_play"):
+            # 实际筛选闸门：Gemini 或 Google Play 商店任一可达即可进入深圳测试。
+            # Google 204 仅作辅助诊断，不作为“能否进入池子”的依据。
+            candidate=bool(item["gemini"] or item["google_play"])
         else:
-            candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
+            candidate=bool(item["gemini"] and item["google_play"])
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
         entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
         report["results"].append(entry); report_lookup[fp]=entry

@@ -154,7 +154,7 @@ def main() -> int:
     args = parser.parse_args()
     result = run(args.binary)
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
+    return 0 if result["all_provider_group_checks_pass"] else 1
 
 
 if __name__ == "__main__":

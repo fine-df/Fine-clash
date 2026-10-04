@@ -464,14 +464,15 @@ class MihomoTester:
         for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
             src=geo_dir/geo
             if src.is_file(): shutil.copyfile(src,self.tmp/geo)
-        self.log_handle=(self.tmp/"mihomo.log").open("w",encoding="utf-8")
+        self.log_path=self.tmp/"mihomo.log"
+        self.log_handle=self.log_path.open("w",encoding="utf-8")
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=self.log_handle,stderr=subprocess.STDOUT)
         deadline=time.time()+max(5.0,float(self.cfg.get("controller_startup_seconds",1.5))*4)
         last_error=None
         while time.time()<deadline:
             if self.proc.poll() is not None:
                 self.log_handle.flush()
-                detail=self.log_handle.read_text(encoding="utf-8",errors="replace")[-4000:]
+                detail=self.log_path.read_text(encoding="utf-8",errors="replace")[-4000:]
                 self.log_handle.close(); self.log_handle=None
                 raise RuntimeError(f"Mihomo exited during startup (rc={self.proc.returncode}): {detail}")
             try:
@@ -484,7 +485,7 @@ class MihomoTester:
         detail=""
         try:
             self.log_handle.flush()
-            detail=self.log_handle.read_text(encoding="utf-8",errors="replace")[-4000:]
+            detail=self.log_path.read_text(encoding="utf-8",errors="replace")[-4000:]
         except Exception:
             pass
         raise RuntimeError(f"Mihomo controller did not become ready on {self.controller_port}: {last_error}; log={detail}")

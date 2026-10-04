@@ -1,4 +1,4 @@
-# fine-clash-unified-v1 | fine-clash-version:20261004110000 | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v1 | fine-clash-version:20261004110001 | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -12,22 +12,281 @@ profile:
 proxy-providers:
   BitzPool:
     type: http
-    url: 'https://cont.bbkcdpub.com/api/v1/client/BitzNet.conf?token=23a7ad64b83f7b867eb75da3738184c6'
+    url: https://cont.bbkcdpub.com/api/v1/client/BitzNet.conf?token=23a7ad64b83f7b867eb75da3738184c6
     interval: 21600
 proxies:
-- name: 未知 VLESS-145 | free-nodes
-  type: vless
+- type: vless
+  name: 🇺🇸 United States, San Jose | [BL] [b681f384]
+  server: 39.109.110.12
+  port: 21263
+  udp: true
+  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  encryption: none
+  tls: true
+  servername: us1p1.xn--ghq880n3na965a.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
+    short-id: 3d31326f95
+  network: tcp
+- type: vless
+  name: 日本+V2CROSS.COM
+  server: 43.255.156.101
+  port: 21263
+  udp: true
+  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  encryption: none
+  tls: true
+  servername: us1p1.xn--ghq880n3na965a.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
+    short-id: 3d31326f95
+  network: tcp
+- type: vless
+  name: 🇺🇸 United States, San Jose | [BL] [dcc210ec]
+  server: 43.255.156.57
+  port: 21263
+  udp: true
+  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  encryption: none
+  tls: true
+  servername: us1p1.xn--ghq880n3na965a.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
+    short-id: 3d31326f95
+  network: tcp
+- type: vless
+  name: 未知 VLESS-147 | free-nodes
+  server: 89.116.250.7
+  port: 8443
+  udp: true
+  uuid: 7967bf59-57e3-4cde-9898-527b0fe60022
+  encryption: none
+  tls: true
+  servername: speed.dulacloud.store
+  network: ws
+  ws-opts:
+    path: /dula?Telegram-WangCai2fp=chrome
+    headers:
+      Host: speed.dulacloud.store
+- type: vless
+  name: 未知 VLESS-116 | free-nodes
+  server: 141.193.213.21
+  port: 8443
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+  encryption: none
+  tls: true
+  servername: u.srilankangrill.online
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: u.srilankangrill.online
+- type: vless
+  name: TW - zhuhai.uk 03
+  server: argo6.5671234.xyz
+  port: 443
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
+  encryption: none
+  tls: true
+  servername: argo6.5671234.xyz
+  network: ws
+  ws-opts:
+    path: /e8e2cecb6188f7fb
+    headers:
+      Host: argo6.5671234.xyz
+- server: yg1.ygkkk.dpdns.org
+  network: ws
+  ws-opts:
+    path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+    headers:
+      Host: jmp1.907737.xyz
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  tls: true
+  cipher: auto
+  servername: jmp1.907737.xyz
+  port: 443
+  name: 未知 VMESS-351 | free-nodes
+  alterId: 0
+  type: vmess
+- type: vless
+  name: 🇹🇼 Taiwan, Taipei | [BL]
+  server: argo6.5671234.xyz
+  port: 443
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
+  encryption: none
+  tls: true
+  servername: argo6.5671234.xyz
+  network: ws
+  ws-opts:
+    path: /e8e2cecb6188f7fb
+- type: vmess
+  name: 美国(yudou789.top 玉豆分享) [e9bd72ff]
+  server: yg1.ygkkk.dpdns.org
+  port: 443
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: jmp1.907737.xyz
+    path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+- type: vless
+  name: 未知 VLESS-148 | free-nodes
+  server: www.large-files.info
+  port: 8443
+  udp: true
+  uuid: 7c99dc89-bf49-45c9-acc5-e43f36657518
+  encryption: none
+  tls: true
+  servername: www.large-files.info
+  network: ws
+  ws-opts:
+    path: /var/www/html/video/preview/download/i8o0la
+- type: vless
+  name: 未知 VLESS-150 | free-nodes
+  server: 87.58.201.211
+  port: 443
+  udp: true
+  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
+  encryption: none
+  tls: true
+  servername: d3-nl1.cloud-cdn.xyz
+  client-fingerprint: edge
+  network: grpc
+  grpc-opts:
+    grpc-service-name: vlgrpc
+- type: vless
+  name: 未知 VLESS-146 | free-nodes
+  server: geo.shkola112.site
+  port: 443
+  udp: true
+  uuid: 76ac91c5-ea82-4046-8ee7-2ffbb563ac94
+  encryption: none
+  tls: true
+  servername: geo.shkola112.site
+  network: ws
+  ws-opts:
+    path: /api-vless
+    headers:
+      Host: geo.shkola112.site
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [740582e5]
+  server: 177.3.208.192
+  port: 443
+  udp: true
+  uuid: 61bd5829-a243-4548-97f0-a210c2069fec
+  encryption: none
+  tls: true
+  servername: news.samsung.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: vGkEBRDmmgq-5WXr8kQE6xX8ngBdMC2Nf5Q79mklQkE
+    short-id: d0a3cfea8beae643
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [fbe73182]
+  server: 177.3.208.192
+  port: 443
+  udp: true
+  uuid: 61bd5829-a243-4548-97f0-a210c2069fec
+  encryption: none
+  tls: true
+  servername: news.samsung.com
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: vGkEBRDmmgq-5WXr8kQE6xX8ngBdMC2Nf5Q79mklQkE
+    short-id: d0a3cfea8beae643
+  network: tcp
+- type: vless
+  name: 美国(yudou789.top 玉豆分享) [72d668f8]
   server: fbsv6.guardora.pro
   port: 443
+  udp: true
   uuid: bc5ec86c-3e65-4272-994c-59a924c72a68
+  encryption: none
   tls: true
   servername: fbsv6.guardora.pro
-  network: ws
   client-fingerprint: chrome
+  network: ws
   ws-opts:
     path: /ws
-    headers:
-      Host: fbsv6.guardora.pro
+- type: vless
+  name: 🇺🇸 United States | 🌐 | [BL]
+  server: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
+  port: 443
+  udp: true
+  uuid: 0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
+  encryption: none
+  tls: true
+  servername: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /ws/0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL]
+  server: polkadotnewone.failspace.top
+  port: 443
+  udp: true
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  encryption: none
+  tls: true
+  servername: polkadotnewone.failspace.top
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  network: tcp
+- type: trojan
+  name: 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  server: cz-musicc.moritech.net
+  port: 443
+  udp: true
+  password: f8b-U5TxjNRYKLvU0Js_6YeMCdj_82km
+  tls: true
+  client-fingerprint: ios
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpcbeast
+- type: vless
+  name: 🇳🇱 The Netherlands, Halfweg | [BL]
+  server: api.mediapriboy.cc
+  port: 443
+  udp: true
+  uuid: b0a05ac4-eade-4f26-a514-bdae074bd63b
+  encryption: none
+  tls: true
+  servername: api.mediapriboy.cc
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: r5WB5FnSCt4eeBC1FJMfkWHbzsMuabo0Rc6wuAhlZUs
+    short-id: a8
+  network: tcp
+- type: trojan
+  name: 🇨🇿 Czechia, Prague | [BL] [fc172a0f]
+  server: cz-musicc.moritech.net
+  port: 443
+  udp: true
+  password: f8b-U5TxjNRYKLvU0Js_6YeMCdj_82km
+  tls: true
+  client-fingerprint: chrome
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpcbeast
 proxy-groups:
 - name: GLOBAL
   type: select
@@ -47,7 +306,26 @@ proxy-groups:
 - name: Fine
   type: url-test
   proxies:
-  - 未知 VLESS-145 | free-nodes
+  - 🇺🇸 United States, San Jose | [BL] [b681f384]
+  - 日本+V2CROSS.COM
+  - 🇺🇸 United States, San Jose | [BL] [dcc210ec]
+  - 未知 VLESS-147 | free-nodes
+  - 未知 VLESS-116 | free-nodes
+  - TW - zhuhai.uk 03
+  - 未知 VMESS-351 | free-nodes
+  - 🇹🇼 Taiwan, Taipei | [BL]
+  - 美国(yudou789.top 玉豆分享) [e9bd72ff]
+  - 未知 VLESS-148 | free-nodes
+  - 未知 VLESS-150 | free-nodes
+  - 未知 VLESS-146 | free-nodes
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [740582e5]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [fbe73182]
+  - 美国(yudou789.top 玉豆分享) [72d668f8]
+  - 🇺🇸 United States | 🌐 | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  - 🇳🇱 The Netherlands, Halfweg | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [fc172a0f]
   url: https://www.gstatic.com/generate_204
   interval: 900
   timeout: 8000
@@ -66,6 +344,7 @@ dns:
   nameserver:
   - 223.5.5.5
   - 119.29.29.29
+  - 1.1.1.1
   nameserver-policy:
     +.mi.com:
     - 223.5.5.5
@@ -79,7 +358,12 @@ dns:
     +.miui.com:
     - 223.5.5.5
     - 119.29.29.29
-  - 1.1.1.1
+    +.weixin.qq.com:
+    - 223.5.5.5
+    - 119.29.29.29
+    +.qq.com:
+    - 223.5.5.5
+    - 119.29.29.29
   fallback:
   - https://1.1.1.1/dns-query
   - tls://8.8.8.8
@@ -87,13 +371,9 @@ dns:
     geoip: true
     geoip-code: CN
 rules:
-- DOMAIN-SUFFIX,lan,DIRECT
 - IP-CIDR,224.0.0.0/4,DIRECT,no-resolve
 - IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
-- DOMAIN-SUFFIX,mi.com,DIRECT
-- DOMAIN-SUFFIX,xiaomi.com,DIRECT
-- DOMAIN-SUFFIX,miwifi.com,DIRECT
-- DOMAIN-SUFFIX,miui.com,DIRECT
+- DOMAIN-SUFFIX,lan,DIRECT
 - DOMAIN-SUFFIX,local,DIRECT
 - DOMAIN-SUFFIX,localhost,DIRECT
 - DOMAIN-SUFFIX,cn,DIRECT
@@ -117,6 +397,10 @@ rules:
 - DOMAIN-SUFFIX,wechatpay.cn,DIRECT
 - DOMAIN-SUFFIX,tencent.com,DIRECT
 - DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
+- DOMAIN-SUFFIX,mi.com,DIRECT
+- DOMAIN-SUFFIX,xiaomi.com,DIRECT
+- DOMAIN-SUFFIX,miwifi.com,DIRECT
+- DOMAIN-SUFFIX,miui.com,DIRECT
 - GEOIP,CN,DIRECT
 - DOMAIN-SUFFIX,ozon.ru,Bitz
 - DOMAIN-SUFFIX,ozon.com,Bitz

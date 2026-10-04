@@ -3,6 +3,7 @@
 from __future__ import annotations
 import os
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -13,6 +14,7 @@ from fine_clash import fingerprint, mihomo_node_is_testable, parse_subscription,
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
 BITZ_SUB_URL = os.environ.get("BITZ_SUB_URL", "").strip()
+GLOBALPING_HTTP_URL = "https://api.globalping.io/v1/measurements"
 
 AMAZON_DOMAINS=["amazon.com","amazon.co.uk","amazon.de","amazon.fr","amazon.es","amazon.it","amazon.nl","amazon.pl","amazon.se","amazon.ca","amazon.com.au","amazon.co.jp","amazon.in","amazon.com.br","amazon.com.mx","amazon.sg","amazon.ae","amazon.sa","amazon.tr","sellercentral.amazon.com","amazon-adsystem.com","ssl-images-amazon.com","media-amazon.com"]
 OZON_DOMAINS=["ozon.ru","ozon.com","ozon.kz","ozon.by","ozonusercontent.com"]
@@ -51,10 +53,59 @@ def _redact_url(url):
     except Exception:
         return "<invalid-url>"
 
+def _globalping_fetch_text(url):
+    parts=urlsplit(url)
+    if not parts.hostname:
+        raise RuntimeError("invalid Bitz subscription host")
+    target=parts.hostname
+    if parts.port:
+        target=f"{target}:{parts.port}"
+    path=parts.path or "/"
+    if parts.query:
+        path += "?" + parts.query
+    payload={
+        "type":"http",
+        "target":target,
+        "locations":[{"city":"Shenzhen","limit":1}],
+        "measurementOptions":{
+            "protocol":"HTTPS" if parts.scheme.lower()=="https" else "HTTP",
+            "request":{"method":"GET","path":path},
+        },
+    }
+    headers={"User-Agent":"Fine-Clash/2.1 (+Globalping fallback)","Content-Type":"application/json"}
+    created=requests.post(GLOBALPING_HTTP_URL,json=payload,headers=headers,timeout=20)
+    created.raise_for_status()
+    body=created.json()
+    measurement_id=body.get("id")
+    if not measurement_id:
+        raise RuntimeError("Globalping returned no measurement id")
+    deadline=time.monotonic()+30
+    while time.monotonic()<deadline:
+        time.sleep(0.6)
+        response=requests.get(f"{GLOBALPING_HTTP_URL}/{measurement_id}",headers={"User-Agent":"Fine-Clash/2.1 (+Globalping fallback)"},timeout=15)
+        response.raise_for_status()
+        result=response.json()
+        if result.get("status")=="in-progress":
+            continue
+        results=result.get("results") or []
+        if not results:
+            raise RuntimeError("Globalping returned no probe result")
+        remote=results[0].get("result") or {}
+        status=int(remote.get("statusCode") or 0)
+        if status>=400:
+            raise RuntimeError(f"Bitz returned HTTP {status} from Shenzhen Globalping probe")
+        text=remote.get("rawBody")
+        if not isinstance(text,str) or not text.strip():
+            raise RuntimeError("Globalping returned an empty HTTP response body")
+        return text
+    raise RuntimeError("Globalping Bitz fetch timed out")
+
 def fetch_bitz_nodes():
     if not BITZ_SUB_URL:
         raise SystemExit("FATAL: BITZ_SUB_URL is not configured. Store the complete Bitz subscription URL in the BITZ_SUB_URL environment variable / GitHub Actions secret.")
     safe_url=_redact_url(BITZ_SUB_URL)
+    response_text=None
+    direct_error=None
     try:
         r=requests.get(
             BITZ_SUB_URL,
@@ -62,17 +113,26 @@ def fetch_bitz_nodes():
             headers={"User-Agent":"Fine-Clash/2.1","Accept":"text/plain,application/yaml,*/*"},
         )
         r.raise_for_status()
+        response_text=r.text
     except requests.HTTPError as exc:
         status=exc.response.status_code if exc.response is not None else "unknown"
-        if status in (401,403):
-            raise SystemExit(
-                f"FATAL: Bitz subscription rejected the request with HTTP {status} at {safe_url}. "
-                "The subscription URL/token or the runner's access is invalid; refresh the Bitz subscription URL/token and store it in BITZ_SUB_URL."
-            ) from exc
-        raise SystemExit(f"FATAL: Bitz subscription fetch failed with HTTP {status} at {safe_url}.") from exc
+        direct_error=f"HTTP {status}"
+        if status not in (401,403):
+            raise SystemExit(f"FATAL: Bitz subscription fetch failed with HTTP {status} at {safe_url}.") from exc
     except requests.RequestException as exc:
-        raise SystemExit(f"FATAL: Bitz subscription fetch failed at {safe_url}: {exc}") from exc
-    parsed=parse_subscription(r.text)
+        direct_error=f"network error: {type(exc).__name__}"
+    if response_text is None:
+        try:
+            print(f"Bitz direct fetch failed ({direct_error}); retrying once through a Shenzhen Globalping HTTP probe.")
+            response_text=_globalping_fetch_text(BITZ_SUB_URL)
+            print("Bitz subscription fetched successfully through Shenzhen Globalping.")
+        except Exception as exc:
+            raise SystemExit(
+                f"FATAL: Bitz subscription unavailable at {safe_url}. Direct runner fetch failed ({direct_error}); "
+                f"Shenzhen Globalping fallback also failed ({type(exc).__name__}: {str(exc)[:160]}). "
+                "The Bitz endpoint is reachable only from a network path not currently available to the build runner."
+            ) from exc
+    parsed=parse_subscription(response_text)
     nodes=_dedupe_nodes([node for node in parsed if resolved_server_is_safe(node.get("server",""))],"Bitz | ")
     if not nodes: raise SystemExit("FATAL: Bitz subscription returned no supported testable nodes.")
     return nodes

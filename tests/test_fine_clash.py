@@ -37,7 +37,7 @@ def test_score_and_history():
     score = fc.total_score(gemini=True, google_play=True, google={"ok": True}, clean=90, lifespan=30, stability=1)
     assert score >= 90
     db = {}
-    row = fc.update_history(db, "abc", {"score": score, "gemini": True, "google_play": True})
+    row = fc.update_history(db, "abc", {"score": score, "gemini": True, "google_play": True}, score_threshold=70)
     assert row["seen_count"] == 1 and row["pass_count"] == 1
 
 
@@ -45,7 +45,7 @@ def test_output_builder(tmp_path: Path):
     rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
     nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
     fc.build_outputs(nodes, rules)
-    assert "GEOSITE,CN,DIRECT" in (tmp_path / "clash.yaml").read_text()
+    assert "GEOSITE,CN,DIRECT" not in (tmp_path / "clash.yaml").read_text()
     assert base64.b64decode((tmp_path / "v2ray.txt").read_text()).decode().startswith("trojan://")
 
 
@@ -76,7 +76,9 @@ def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
     assert routes[:3] == fc.WECHAT_DIRECT_RULES[:3]
     assert "DOMAIN-SUFFIX,qpic.cn,DIRECT" in routes
     assert "DOMAIN-SUFFIX,qq.com,DIRECT" in routes
-    assert "GEOSITE,CN,DIRECT" in routes
+    assert "GEOSITE,CN,DIRECT" not in routes
+    assert "DOMAIN-SUFFIX,mi.com,DIRECT" in routes
+    assert "DOMAIN-SUFFIX,xiaomi.com,DIRECT" in routes
     assert routes[-1] == "MATCH,PROXY"
 
 
@@ -103,10 +105,12 @@ def test_output_builder_filters_xhttp_for_compatibility(tmp_path: Path):
 
 
 def test_shenzhen_latency_filter():
-    cfg = {"reject_above_ms": 400, "fail_closed": False}
-    assert fc.shenzhen_passes({"ok": True, "avg_ms": 399.9}, cfg)
-    assert fc.shenzhen_passes({"ok": True, "avg_ms": 400}, cfg)
-    assert not fc.shenzhen_passes({"ok": True, "avg_ms": 400.1}, cfg)
+    cfg = {"reject_above_ms": 400, "reject_loss_pct": 25, "fail_closed": False}
+    assert fc.shenzhen_passes({"ok": True, "avg_ms": 399.9, "loss_pct": 0}, cfg)
+    assert fc.shenzhen_passes({"ok": True, "avg_ms": 400, "loss_pct": 25}, cfg)
+    assert not fc.shenzhen_passes({"ok": True, "avg_ms": 400.1, "loss_pct": 0}, cfg)
+    assert not fc.shenzhen_passes({"ok": True, "avg_ms": 100, "loss_pct": 26}, cfg)
+    assert not fc.shenzhen_passes({"ok": True, "avg_ms": 100}, cfg)
     assert fc.shenzhen_passes({"ok": False, "status": "timeout"}, cfg)
     assert not fc.shenzhen_passes({"ok": False, "status": "timeout"}, {**cfg, "fail_closed": True})
 
@@ -186,6 +190,13 @@ def _rank_meta(node, score=80, ping=100, loss=0, stability=1, lifespan=10, org=N
         "org": org,
     }
 
+
+
+def test_fingerprint_includes_transport_identity():
+    base = _rank_node("n1", "same.example")
+    a = dict(base, **{"servername":"a.example","network":"ws","ws-opts":{"path":"/a"}})
+    b = dict(base, **{"servername":"b.example","network":"ws","ws-opts":{"path":"/b"}})
+    assert fc.fingerprint(a) != fc.fingerprint(b)
 
 def test_rank_candidates_sorts_and_limits():
     nodes = [

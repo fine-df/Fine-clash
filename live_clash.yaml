@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110003 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110004 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,37 +10,56 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: vless
-  name: 未知 VLESS-128 | free-nodes
-  server: 141.193.213.21
-  port: 8443
+- type: vmess
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
+  server: sbgfgov.vip6.wogacnmnagfwgov.com
+  port: 11206
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
   udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+- type: vless
+  name: 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
+  server: argo6.5671234.xyz
+  port: 443
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
   encryption: none
   tls: true
-  servername: u.srilankangrill.online
-  client-fingerprint: chrome
+  servername: argo6.5671234.xyz
   network: ws
   ws-opts:
-    path: /
+    path: /e8e2cecb6188f7fb
     headers:
-      Host: u.srilankangrill.online
-- server: yg1.ygkkk.dpdns.org
-  port: 443
-  network: ws
-  servername: jmp1.907737.xyz
-  alterId: 0
+      Host: argo6.5671234.xyz
+- tls: true
   name: 未知 VMESS-369 | free-nodes
-  type: vmess
-  tls: true
-  cipher: auto
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
+  cipher: auto
+  server: yg1.ygkkk.dpdns.org
+  servername: jmp1.907737.xyz
+  port: 443
+  network: ws
+  type: vmess
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  alterId: 0
+- type: vless
+  name: 🇹🇼 Taiwan, Taipei | [BL] [253182df]
+  server: argo6.5671234.xyz
+  port: 443
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
+  encryption: none
+  tls: true
+  servername: argo6.5671234.xyz
+  network: ws
+  ws-opts:
+    path: /e8e2cecb6188f7fb
 - type: vmess
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [e9bd72ff]
   server: yg1.ygkkk.dpdns.org
   port: 443
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
@@ -53,121 +72,6 @@ proxies:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
-  server: polkadotnewone.failspace.top
-  port: 443
-  udp: true
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  encryption: none
-  tls: true
-  servername: polkadotnewone.failspace.top
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  server: poland-good.failspace.top
-  port: 443
-  udp: true
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  encryption: none
-  tls: true
-  servername: poland-good.failspace.top
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  server: pol-pol-poland.failspace.top
-  port: 443
-  udp: true
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  encryption: none
-  tls: true
-  servername: pol-pol-poland.failspace.top
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  network: tcp
-- type: vless
-  name: 🇫🇮 Finland, Helsinki | [BL]
-  server: 177.3.214.52
-  port: 443
-  udp: true
-  uuid: 27407f1d-fe61-469b-a5a9-0aef7ee7476d
-  encryption: none
-  tls: true
-  servername: uehr.pashalloh.org
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  reality-opts:
-    public-key: 6bQ-L8tEd3guits_RHgfkXXArmnkB2GxFx23BgWC63c
-    short-id: da4d87fa
-  network: tcp
-- type: vless
-  name: 🇳🇴 Norway, Oslo | [BL]
-  server: dedic-norw-new2.failspace.top
-  port: 443
-  udp: true
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  encryption: none
-  tls: true
-  flow: xtls-rprx-vision
-- type: vmess
-  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
-  server: sbgfgov.vip6.wogacnmnagfwgov.com
-  port: 11206
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  server: v29.hdacd.com
-  port: 30829
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  server: silversbgfgov.vip44.wogbcnmnagfwgov.com
-  port: 11244
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  server: v35.hdacd.com
-  port: 30835
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  server: v33.hdacd.com
-  port: 30833
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
-  server: 141.193.213.20
-  port: 8443
-  udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
-  encryption: none
-  tls: true
-  servername: u.srilankangrill.online
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: u.srilankangrill.online
 - type: vless
   name: 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   server: 122.8.45.4
@@ -198,43 +102,86 @@ proxies:
   network: grpc
   grpc-opts:
     grpc-service-name: TunService
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | [BL]
+  server: polkadotnewone.failspace.top
+  port: 443
+  udp: true
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  encryption: none
+  tls: true
+  servername: polkadotnewone.failspace.top
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  network: tcp
+- type: trojan
+  name: 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  server: cz-musicc.moritech.net
+  port: 443
+  udp: true
+  password: f8b-U5TxjNRYKLvU0Js_6YeMCdj_82km
+  tls: true
+  client-fingerprint: ios
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpcbeast
+- type: vless
+  name: 🇳🇴 Norway, Oslo | [BL]
+  server: dedic-norw-new2.failspace.top
+  port: 443
+  udp: true
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  encryption: none
+  tls: true
+  flow: xtls-rprx-vision
+- type: trojan
+  name: 🇨🇿 Czechia, Prague | [BL] [a00b3606]
+  server: cz-musicc.moritech.net
+  port: 443
+  udp: true
+  password: f8b-U5TxjNRYKLvU0Js_6YeMCdj_82km
+  tls: true
+  client-fingerprint: edge
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpcbeast
 - type: vmess
-  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  name: 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  server: silversbgfgov.vip44.wogbcnmnagfwgov.com
+  port: 11244
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
   alterId: 2
   cipher: auto
   udp: true
 - type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
-  server: 8.47.69.0
-  port: 2053
+  name: 🇸🇪 Sweden, Stockholm | [BL]
+  server: 177.3.209.165
+  port: 443
   udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  uuid: a5dd2dd9-0995-449e-be67-4a409890dc42
   encryption: none
   tls: true
-  servername: fr.api-music-fa.com
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: fr.api-music-fa.com
+  servername: owkd.pashalloh.org
+  flow: xtls-rprx-vision
   client-fingerprint: chrome
+  reality-opts:
+    public-key: mYtQrGiR9EkOpUsvsI7E18AWnFZZqfOPXUdpzE3luz8
+    short-id: da4d87fa
+  network: tcp
+- type: vmess
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
+  server: cu.877774.xyz
+  port: 443
+  uuid: f3244e28-157b-49e9-9730-89832f89ebcc
+  alterId: 0
+  cipher: auto
+  udp: true
   network: ws
+  tls: true
   ws-opts:
-    path: /api/voip/updates/static/fr2035
     headers:
-      Host: fr.api-music-fa.com
+      Host: balanced-minds-carrier-demanding.trycloudflare.com
+    path: /vmess-argo
 - type: vmess
   name: 🇭🇰_HK_中国香港
   server: v10.hdacd.com
@@ -248,74 +195,59 @@ proxy-groups:
   type: select
   proxies:
   - DIRECT
-  - 未知 VLESS-128 | free-nodes
-  - 未知 VMESS-369 | free-nodes
-  - 🇭🇰 Hong Kong, Hong Kong | [BL]
-  - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
-  - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  - 🇫🇮 Finland, Helsinki | [BL]
-  - 🇳🇴 Norway, Oslo | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
+  - 未知 VMESS-369 | free-nodes
+  - 🇹🇼 Taiwan, Taipei | [BL] [253182df]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [e9bd72ff]
   - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   - 🇩🇪 Germany, Kropp | [BL]
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a00b3606]
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰_HK_中国香港
-  default-selected: 未知 VLESS-128 | free-nodes
+  default-selected: 🇨🇳_CN_中国->🇯🇵_JP_日本
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
-  - 未知 VLESS-128 | free-nodes
-  - 未知 VMESS-369 | free-nodes
-  - 🇭🇰 Hong Kong, Hong Kong | [BL]
-  - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
-  - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  - 🇫🇮 Finland, Helsinki | [BL]
-  - 🇳🇴 Norway, Oslo | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
+  - 未知 VMESS-369 | free-nodes
+  - 🇹🇼 Taiwan, Taipei | [BL] [253182df]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [e9bd72ff]
   - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   - 🇩🇪 Germany, Kropp | [BL]
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a00b3606]
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰_HK_中国香港
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
-  - 未知 VLESS-128 | free-nodes
-  - 未知 VMESS-369 | free-nodes
-  - 🇭🇰 Hong Kong, Hong Kong | [BL]
-  - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
-  - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  - 🇫🇮 Finland, Helsinki | [BL]
-  - 🇳🇴 Norway, Oslo | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
+  - 未知 VMESS-369 | free-nodes
+  - 🇹🇼 Taiwan, Taipei | [BL] [253182df]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [e9bd72ff]
   - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   - 🇩🇪 Germany, Kropp | [BL]
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇵🇱 Poland, Warsaw | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a8a5cd84]
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇿 Czechia, Prague | [BL] [a00b3606]
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇸🇪 Sweden, Stockholm | [BL]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰_HK_中国香港
   url: https://play.google.com/store
   interval: 900

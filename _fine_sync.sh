@@ -21,7 +21,9 @@ fi
 grep -q '^proxy-providers:' "$TMP" || { echo "sync_fail_no_provider"; rm -f "$TMP"; exit 1; }
 grep -q '^  BitzPool:' "$TMP" || { echo "sync_fail_no_bitz_pool"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Bitz' "$TMP" || { echo "sync_fail_no_bitz_group"; rm -f "$TMP"; exit 1; }
+grep -q '^- name: Bitz-Auto' "$TMP" || { echo "sync_fail_no_bitz_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: Fine' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP"; exit 1; }
+grep -q '^- name: Fine-Auto' "$TMP" || { echo "sync_fail_no_fine_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' "$TMP" || { echo "sync_fail_no_ozon_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; exit 1; }
 grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP"; exit 1; }

@@ -59,7 +59,11 @@ jobs:
           test -s live_clash.yaml
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^proxy-providers:' live_clash.yaml
-          grep -q '^mode: rule          grep -q '^- name: Bitz' live_clash.yaml
+          grep -q '^mode: rule$' live_clash.yaml
+          grep -q '^- name: GLOBAL' live_clash.yaml
+          grep -q 'include-all: true' live_clash.yaml
+          grep -q '^  BitzPool:' live_clash.yaml
+          grep -q '^- name: Bitz' live_clash.yaml
           grep -q '^- name: Bitz-Auto' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
           grep -q '^- name: Fine-Auto' live_clash.yaml

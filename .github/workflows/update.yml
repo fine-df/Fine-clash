@@ -50,10 +50,6 @@ jobs:
           # Download GeoIP data explicitly; CI must not depend on Mihomo runtime downloads.
           curl -fsSL https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat -o geoip.dat
           test -s geoip.dat
-        env:
-        run: |
-          set -euo pipefail
-          test -n "$BITZ_SUB_URL" || { echo 'FATAL: missing GitHub Actions secret BITZ_SUB_URL'; exit 1; }
       - name: Test code
         run: pytest
       - name: Build Fine pool
@@ -85,7 +81,8 @@ jobs:
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz$' live_clash.yaml; then
+            echo 'obsolete router-specific or Bitz markers detected'
             exit 1
           fi
           if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
@@ -128,7 +125,7 @@ jobs:
             echo 'no changes'
             exit 0
           fi
-          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git commit -m 'chore: publish Fine-only subscription'
           git push origin HEAD:main
  live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
@@ -151,7 +148,7 @@ jobs:
             echo 'no changes'
             exit 0
           fi
-          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git commit -m 'chore: publish Fine-only subscription'
           git push origin HEAD:main
  live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
@@ -174,5 +171,5 @@ jobs:
             echo 'no changes'
             exit 0
           fi
-          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git commit -m 'chore: publish Fine-only subscription'
           git push origin HEAD:main

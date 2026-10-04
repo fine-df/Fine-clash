@@ -119,7 +119,33 @@ rules:
                 else:
                     raise RuntimeError(f"controller not ready: {last_error}")
 
-                checks = {}
+                provider = None
+                provider_deadline = time.monotonic() + 8.0
+                last_provider_error = None
+                while time.monotonic() < provider_deadline:
+                    try:
+                        provider = http_json("http://127.0.0.1:19090/providers/proxies/BitzPool")
+                        provider_nodes = provider.get("proxies") or []
+                        if any(item.get("name") == NODE_NAME for item in provider_nodes):
+                            break
+                    except Exception as exc:
+                        last_provider_error = exc
+                    time.sleep(0.2)
+
+                provider_nodes = provider.get("proxies") if isinstance(provider, dict) else []
+                provider_names = [item.get("name") for item in provider_nodes if isinstance(item, dict)]
+                if NODE_NAME not in provider_names:
+                    raise RuntimeError(
+                        f"provider did not load node {NODE_NAME}; error={last_provider_error}; "
+                        f"provider_names={provider_names}"
+                    )
+
+                checks = {
+                    "provider": {
+                        "members": provider_names,
+                        "contains_provider_node": True,
+                    }
+                }
                 for group in ("Bitz", "Bitz-Auto", "GLOBAL"):
                     data = http_json(f"http://127.0.0.1:19090/proxies/{group}")
                     members = list(data.get("all") or [])
@@ -132,7 +158,8 @@ rules:
                     "version": version.get("version"),
                     "checks": checks,
                     "all_provider_group_checks_pass": all(
-                        row["contains_provider_node"] for row in checks.values()
+                        row["contains_provider_node"] for name, row in checks.items()
+                        if name != "provider"
                     ),
                 }
             finally:

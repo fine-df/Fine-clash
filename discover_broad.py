@@ -41,15 +41,19 @@ BRANCHES = ["main", "master"]
 
 
 def collect_repo_names():
+    rules = fc.load_rules()
+    min_stars = int(rules["sources"].get("min_stars", 30))
     names = {}
-    # 1) 既有 candidate_repos.json
+    # 1) 既有 candidate_repos.json：重新执行星数闸门，避免历史候选仓
+    #    绕过当前配置后继续进入宽口径扫描。
     cr = ROOT / "data" / "candidate_repos.json"
     if cr.is_file():
         try:
             for r in json.loads(cr.read_text(encoding="utf-8")):
                 fn = r.get("full_name") or r.get("name")
-                if fn and "/" in fn:
-                    names[fn.lower()] = fn
+                stars = int(r.get("stars", r.get("stargazers_count", 0)) or 0)
+                if fn and "/" in fn and stars >= min_stars:
+                    names[fn.lower()] = {"full_name": fn, "stars": stars, "pushed_at": r.get("pushed_at")}
         except Exception as e:
             print("candidate_repos read err:", e)
     # 2) 新宽查询 GitHub 搜索（限速）
@@ -66,15 +70,17 @@ def collect_repo_names():
             data = r.json()
             items = data.get("items", [])
             for it in items:
-                if int(it.get("stargazers_count", 0)) < int(rules["sources"].get("min_stars", 30)):
+                stars = int(it.get("stargazers_count", 0) or 0)
+                if stars < min_stars:
                     continue
                 fn = it.get("full_name")
-                if fn: names[fn.lower()] = fn
+                if fn:
+                    names[fn.lower()] = {"full_name": fn, "stars": stars, "pushed_at": it.get("pushed_at")}
             print("  q=%-70s -> +%d (total %d)" % (q[:70], len(items), len(names)))
         except Exception as e:
             print("  query err:", e)
         time.sleep(7)
-    return list(names.values())
+    return sorted(names.values(), key=lambda x: (int(x.get("stars", 0)), str(x.get("pushed_at") or "")), reverse=True)
 
 
 def recent_cutoff(rules):
@@ -96,7 +102,8 @@ def dated_candidate_paths(days=7):
         ])
     return out
 
-def try_repo(full_name):
+def try_repo(repo_meta):
+    full_name = repo_meta["full_name"]
     owner, name = full_name.split("/", 1)
     rules = fc.load_rules()
     min_nodes = int(rules["sources"].get("min_nodes_per_source", 2))
@@ -112,14 +119,22 @@ def try_repo(full_name):
                     continue
                 nodes = fc.parse_subscription(r.text)
                 if len(nodes) >= min_nodes:
-                    return {"url": url, "repo": full_name, "path": path, "branch": branch, "nodes": len(nodes)}
+                    return {
+                        "url": url,
+                        "repo": full_name,
+                        "path": path,
+                        "branch": branch,
+                        "nodes": len(nodes),
+                        "stars": int(repo_meta.get("stars", 0) or 0),
+                        "pushed_at": repo_meta.get("pushed_at"),
+                    }
             except requests.RequestException:
                 continue
     return None
 
 def main():
     repos = collect_repo_names()
-    MAX_REPOS = 220
+    MAX_REPOS = int(fc.load_rules()["sources"].get("broad_max_repositories", 220))
     if len(repos) > MAX_REPOS:
         repos = repos[:MAX_REPOS]
     print("total candidate repos: %d (capped %d)" % (len(repos), MAX_REPOS))
@@ -132,9 +147,9 @@ def main():
     existing_urls = {s.get("url") for s in existing if isinstance(s, dict)}
     found = list(existing)
     checked = 0
-    for fn in repos:
+    for repo_meta in repos:
         # 仓库即使已经有旧源也必须重新检查，否则每日订阅仓会永久停留在旧日期文件。
-        res = try_repo(fn)
+        res = try_repo(repo_meta)
         checked += 1
         if res:
             if res["url"] not in existing_urls:

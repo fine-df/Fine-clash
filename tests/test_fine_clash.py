@@ -1,5 +1,6 @@
 import base64
 import inspect
+import pytest
 from pathlib import Path
 
 import fine_clash as fc
@@ -110,6 +111,33 @@ def test_mihomo_rejects_invalid_reality_configuration():
     assert not fc.mihomo_node_is_testable(dict(base, **{"reality-opts": {"public-key": "bad", "short-id": "0123"}}))
     assert not fc.mihomo_node_is_testable(dict(base, **{"reality-opts": {"public-key": good_key, "short-id": "null"}}))
     assert not fc.mihomo_node_is_testable(dict(base, network="xhttp"))
+
+
+def test_mihomo_systemic_startup_failure_is_not_silenced():
+    class BrokenTester(fc.MihomoTester):
+        def __init__(self):
+            self.cfg = {"endpoint_workers": 1}
+            self.binary = "fake"
+            self.proc = None
+            self.tmp = None
+            self.log_handle = None
+            self.session = None
+            self.port_offset = 0
+            self.proxy_port = 17890
+            self.controller_port = 19090
+
+        def start(self, nodes):
+            raise RuntimeError("Mihomo binary failed to initialize")
+
+        def stop(self):
+            return None
+
+    checks = {
+        "gemini_url":"gemini", "google_play_url":"play",
+        "google_204_url":"google", "ipinfo_url":"ipinfo",
+    }
+    with pytest.raises(RuntimeError, match="failed to initialize"):
+        BrokenTester().test_nodes([{"name":"demo"}], checks)
 
 
 def test_mihomo_tester_uses_no_geosite_rule():

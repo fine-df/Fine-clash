@@ -55,6 +55,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s live_clash.yaml
+          grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^proxy-providers:' live_clash.yaml
           grep -q '^  BitzPool:' live_clash.yaml
           grep -q '^  - name: Bitz' live_clash.yaml

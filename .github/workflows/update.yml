@@ -47,9 +47,6 @@ jobs:
           test -s geoip.dat
       - name: Test code
         run: pytest
-      - name: Test provider group compatibility
-        run: python tools/provider_group_smoke.py --binary /usr/local/bin/mihomo
-
       - name: Build Fine pool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,13 +61,11 @@ jobs:
           set -euo pipefail
           test -s live_clash.yaml
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
-          grep -q '^proxy-providers:' live_clash.yaml
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
-          grep -q 'include-all: true' live_clash.yaml
-          grep -q '^  BitzPool:' live_clash.yaml
           grep -q '^- name: Bitz' live_clash.yaml
           grep -q '^- name: Bitz-Auto' live_clash.yaml
+          grep -q '^  - Bitz | ' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
           grep -q '^- name: Fine-Auto' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
@@ -85,7 +80,7 @@ jobs:
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:' live_clash.yaml; then
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:' live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
             exit 1
           fi

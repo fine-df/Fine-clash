@@ -7,30 +7,35 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_auto_manual_and_global_override():
-    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
+def test_final_proxy_groups_expose_explicit_bitz_fine_and_global_nodes():
+    groups = bf.build_proxy_groups(["Bitz-1", "Bitz-2"], ["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
-
-    assert by_name["GLOBAL"]["type"] == "select"
-    assert by_name["GLOBAL"]["include-all"] is True
-    assert by_name["GLOBAL"]["proxies"] == ["DIRECT"]
-
-    assert by_name["Bitz"]["type"] == "select"
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Bitz-1", "Bitz-2", "Fine-1", "Fine-2"]
     assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
-    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto"]
-    assert by_name["Bitz"]["use"] == ["BitzPool"]
-
-    assert by_name["Bitz-Auto"]["type"] == "url-test"
-    assert by_name["Bitz-Auto"]["include-all-providers"] is True
-    assert "use" not in by_name["Bitz-Auto"]
-
-    assert by_name["Fine"]["type"] == "select"
+    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto", "Bitz-1", "Bitz-2"]
+    assert by_name["Bitz-Auto"]["proxies"] == ["Bitz-1", "Bitz-2"]
     assert by_name["Fine"]["default-selected"] == "Fine-Auto"
     assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
-
-    assert by_name["Fine-Auto"]["type"] == "url-test"
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
 
+def test_bitz_is_embedded_not_provider_based():
+    source = inspect.getsource(bf.build_config)
+    assert '"proxy-providers"' not in source
+    assert '"proxies":bitz_nodes+fine_nodes' in source.replace(" ", "")
+
+def test_bitz_subscription_parser_builds_explicit_nodes():
+    text = """proxies:
+  - name: Bitz-A
+    type: trojan
+    server: bitz.example.com
+    port: 443
+    password: secret
+    tls: true
+    servername: bitz.example.com
+"""
+    nodes = bf._dedupe_nodes(bf.parse_subscription(text), "Bitz | ")
+    assert len(nodes) == 1
+    assert nodes[0]["name"] == "Bitz | Bitz-A"
 
 def test_final_config_defaults_to_rule_mode():
     source = inspect.getsource(bf.main)

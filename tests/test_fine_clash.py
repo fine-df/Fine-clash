@@ -58,6 +58,11 @@ def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
     assert not fc.resolved_server_is_safe("attacker.example")
 
 
+def test_source_path_sort_key_parses_version_numbers():
+    assert fc.source_path_sort_key("clash-v2.yaml")[1] == 2
+    assert fc.source_path_sort_key("version-12.yaml")[1] == 12
+
+
 def test_parse_yaml_and_strip_untrusted_fields():
     text = """proxies:
   - name: demo

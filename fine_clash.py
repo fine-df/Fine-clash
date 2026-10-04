@@ -455,7 +455,7 @@ def total_score(*,gemini,google_play,google,clean,lifespan,stability):
 def source_path_sort_key(path):
     low=str(path).lower()
     dates=[int(x) for x in re.findall(r"(20\d{6})", low)]
-    versions=[int(x) for x in re.findall(r"(?:v|version)[-_]?(\\d+)", low)]
+    versions=[int(x) for x in re.findall(r"(?:v|version)[-_]?(\d+)", low)]
     date_score=max(dates) if dates else -1
     version_score=max(versions) if versions else -1
     is_readme=1 if "readme" in low else 0

@@ -1,6 +1,6 @@
 # Fine-Clash 全链路审计 R2（2026-10-04）
 
-状态：**暂停生产合并，等待 Mihomo Provider→策略组兼容性实测。**
+状态：**静态审计完成，双版本运行回归通过；当前分支可进入最终人工验收，未修改 main。**
 
 ## 已审链路
 
@@ -106,18 +106,33 @@ Mihomo 官方 Issue #2970 明确记录：
 
 在未完成该测试前，不升级路由器、不合并生产配置。
 
+## 最终回归结果
+
+使用双版本 GitHub Actions 矩阵执行：
+- pytest：37 passed
+- Provider 聚合 smoke：v1.19.28 PASS / v1.19.31 PASS
+- build_final fixture：生成成功
+- Mihomo 配置自检：v1.19.28 PASS / v1.19.31 PASS
+- GLOBAL / Bitz / Bitz-Auto / Fine / Fine-Auto 结构断言：PASS
+- Ozon/Amazon 在 GEOIP,CN,DIRECT 前：PASS
+- 无 GEOSITE：PASS
+
+因此静态代码链路 + CI 运行回归均通过。
+
 ## 其他观察项
 
 - `build_final.py` 中 Bitz subscription token 仍为源码明文，尚未处理；属于凭据管理风险。
-- CI 已固定 Mihomo `v1.19.28`，与当前路由器兼容基线一致；后续若核心升级，应同步更新这一处。
+- CI 已固定 Mihomo `v1.19.28`，与当前路由器兼容基线一致；v1.19.31 也已验证通过，但本次不要求擅自升级路由器。
 - `GLOBAL` 的 `include-all` 不包含其他 proxy groups，只包含 outbound proxies 与 proxy sets，符合“全节点手动选择”的目标。
 
 ## 结论
 
 **代码逻辑层面：新增 GLOBAL 需求已形成正确的双模式设计。**
 
-**安全层面：发现到运行前的代理地址 SSRF 风险已补强。**
+**安全层面：公开订阅节点的 DNS→私网 SSRF 风险已补强。**
 
 **业务路由层面：Ozon/Amazon 优先级已修正。**
 
-**生产发布层面：暂不通过。唯一需要实际 Mihomo 运行验证的阻断项是 Provider 节点能否在当前/候选 Mihomo 版本中进入 Bitz、Bitz-Auto、GLOBAL。**
+**运行回归层面：v1.19.28 与 v1.19.31 均通过 Provider 聚合和最终配置自检。**
+
+**生产层面：main 尚未修改，当前分支可进入最终人工验收；不需要为了 GLOBAL 功能升级路由器核心。**

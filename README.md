@@ -15,13 +15,11 @@ https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.
 | 流量 | 出口 |
 |---|---|
 | 中国大陆网站 / 中国内网 | DIRECT |
-| Ozon | Bitz |
+| Ozon | Fine |
 | Amazon / Seller Central | Bitz |
 | 其他需要代理的海外流量 | Fine |
 
-Bitz 与 Fine 均有两级选择：
-
-- `Bitz-Auto` / `Fine-Auto`：默认自动测速选择。
+- `Fine-Auto`：默认自动测速选择最优节点。
 - 组内具体节点：需要时可人工固定该组的一个节点。
 
 另有独立的 `GLOBAL` 手动接管模式：
@@ -32,10 +30,9 @@ Bitz 与 Fine 均有两级选择：
 
 核心原则：
 
-- Bitz 是严格白名单，不承担 `MATCH`。
-- Fine 是海外默认出口。
-- YouTube、Netflix、TikTok、下载和其他大流量海外网站不会进入 Bitz，因为 `MATCH` 永远落到 Fine。
-- Bitz 节点来自独立订阅源；Fine 节点来自独立的公开节点发现与验证链。
+- Fine 是唯一代理节点池，也是全部海外代理流量的默认出口。
+- 视频、商店下载和其他大流量海外网站进入 Fine；`MATCH` 也落到 Fine。
+- Fine 节点来自 GitHub 公开源发现与验证链。
 - 不再维护第二个最终订阅文件；旧 `fine_final.yaml` 已退出生产链路。
 - 订阅按 Mihomo / Clash.Meta 兼容语法设计，避免平台专用网卡名、固定 routing-mark 等设置。
 

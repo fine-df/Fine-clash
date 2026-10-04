@@ -1,4 +1,5 @@
 import base64
+import inspect
 from pathlib import Path
 
 import fine_clash as fc
@@ -39,6 +40,11 @@ def test_score_and_history():
     db = {}
     row = fc.update_history(db, "abc", {"score": score, "gemini": True, "google_play": True}, score_threshold=70)
     assert row["seen_count"] == 1 and row["pass_count"] == 1
+
+
+def test_mihomo_tester_uses_no_geosite_rule():
+    source = inspect.getsource(fc.MihomoTester.start)
+    assert "GEOSITE,CN,DIRECT" not in source
 
 
 def test_output_builder(tmp_path: Path):

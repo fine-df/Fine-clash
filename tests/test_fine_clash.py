@@ -37,21 +37,22 @@ def test_bitz_subscription_parser_builds_explicit_nodes():
     assert len(nodes) == 1
     assert nodes[0]["name"] == "Bitz | Bitz-A"
 
-def test_final_config_defaults_to_rule_mode():
-    source = inspect.getsource(bf.main)
-    assert '"mode": "rule"' in source
+def _mini_node(name):
+    return {"name": name, "type": "trojan", "server": "example.com", "port": 443, "password": "secret", "tls": True}
 
+def test_final_config_defaults_to_rule_mode():
+    cfg = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])
+    assert cfg["mode"] == "rule"
 
 def test_final_route_order_prioritizes_ozon_amazon_before_cn():
-    source = inspect.getsource(bf.main)
-    ozon_pos = source.index("suffix_rules(OZON_DOMAINS")
-    amazon_pos = source.index("suffix_rules(AMAZON_DOMAINS")
-    cn_pos = source.index('"GEOIP,CN,DIRECT"')
-    match_pos = source.index('"MATCH,Fine"')
+    rules = bf.build_config([_mini_node("Fine-1")], [_mini_node("Bitz-1")])["rules"]
+    ozon_pos = rules.index("DOMAIN-SUFFIX,ozon.ru,Bitz")
+    amazon_pos = rules.index("DOMAIN-SUFFIX,amazon.com,Bitz")
+    cn_pos = rules.index("GEOIP,CN,DIRECT")
+    match_pos = rules.index("MATCH,Fine")
     assert ozon_pos < cn_pos
     assert amazon_pos < cn_pos
     assert cn_pos < match_pos
-
 
 def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
     monkeypatch.setattr(

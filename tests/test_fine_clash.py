@@ -73,7 +73,11 @@ def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
     fc.build_outputs(nodes, rules)
     built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
     routes = built["rules"]
-    assert routes[:3] == fc.WECHAT_DIRECT_RULES[:3]
+    # Local LAN/direct rules intentionally come before application-specific
+    # WeChat/Xiaomi rules so multicast/link-local traffic is not intercepted.
+    assert routes[:len(fc.LOCAL_IOT_DIRECT_RULES)] == fc.LOCAL_IOT_DIRECT_RULES
+    for rule in fc.WECHAT_DIRECT_RULES:
+        assert rule in routes
     assert "DOMAIN-SUFFIX,qpic.cn,DIRECT" in routes
     assert "DOMAIN-SUFFIX,qq.com,DIRECT" in routes
     assert "GEOSITE,CN,DIRECT" not in routes

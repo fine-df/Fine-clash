@@ -28,6 +28,6 @@ https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.
 
 ## 自动更新
 
-GitHub Actions 每 4 小时重新发现、验证 Fine 节点并生成 live_clash.yaml。只有最终配置通过结构校验和 Mihomo 配置测试后才发布；失败时保留上一份可用订阅。
+GitHub Actions 每 4 小时重新发现、验证 Fine 节点并生成 `live_clash.yaml`。只有最终配置通过结构校验和 Mihomo 配置测试后才发布；失败时保留上一份可用订阅。
 
 路由器同步也只认同一个 live_clash.yaml 地址。

@@ -1017,6 +1017,7 @@ def run():
         entry["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
         entry["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
         entry["shenzhen_status"]=result.get("status","unknown")
+        rec["final_result"]=result
         if shenzhen_passes(result,shenzhen_cfg):
             selected.append(node)
 
@@ -1026,8 +1027,8 @@ def run():
     premium_us_meta={}
     for rec in candidate_records:
         fp,node=rec["fp"],rec["node"]
-        result=rec["result"]
-        if not shenzhen_passes(result,shenzhen_cfg):
+        result=rec.get("final_result")
+        if not isinstance(result,dict) or not shenzhen_passes(result,shenzhen_cfg):
             continue
         entry=report_lookup.get(fp,{})
         if premium_us_passes(entry,premium_cfg):

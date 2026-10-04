@@ -504,7 +504,7 @@ class MihomoTester:
         except requests.RequestException as exc:
             return {"ok":False,"status":0,"latency_ms":round((time.perf_counter()-started)*1000),"error":str(exc)[:160],"challenge":False,"data":None}
     def test_nodes(self,nodes,checks):
-        names=self.start(nodes); results=[]
+        results=[]
         endpoint_workers=max(1,min(int(self.cfg.get("endpoint_workers",4)),4))
         endpoints=[
             ("gemini",checks["gemini_url"],False),
@@ -513,6 +513,7 @@ class MihomoTester:
             ("ipinfo",checks["ipinfo_url"],True),
         ]
         try:
+            names=self.start(nodes)
             for idx,node in enumerate(nodes):
                 self.choose(names[idx])
                 with ThreadPoolExecutor(max_workers=endpoint_workers) as executor:

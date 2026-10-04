@@ -49,14 +49,17 @@ fi
 # 内容护栏：必须是带 url-test PROXY 组的 mihomo 配置
 grep -q "type: url-test" "$TMP" || { echo "sync_fail_content"; rm -f "$TMP"; exit 1; }
 grep -q "^proxies:" "$TMP" || { echo "sync_fail_noproxies"; rm -f "$TMP"; exit 1; }
-# 节点数下限：CI 若因全源失败而吐出残缺配置，宁可沿用旧配置也不把烂池子灌进路由器
+# 节点数下限：仅防空配置（0 节点）。真实有效性交给下方 CrashCore -t 兜底。
 # 注意（踩过两次的坑）：
 #  - 别 grep "^  - name:"：build_final.py 用 yaml.safe_dump 重 dump 后，
 #    proxies 条目变成 **行首** "- 🇯🇵 Japan | [BL]"（纯字符串列表），该模式恒返回 0；
 #  - 也别 grep "^  - "：缩进是 0 不是 2。
 # 正解：从第一个顶层 ^proxies: 块内统计行首 "- " 条目数（实测 20 个节点 = 20）。
+# ★ 2026-10-04 修正（B3）：原 ≥3 在枯水期（免费节点市场常态仅 1~2 活节点）会拒绝所有
+#   合法小池，导致自动同步静默冻结在陈旧配置上。改为 ≥1（非空即视为有候选，
+#   真正的格式/可用性由 CrashCore -t 把关）。
 NPROXY=$(awk '/^proxies:/{f=1;next} /^[a-z]/{f=0} f&&/^- /{c++} END{print c+0}' "$TMP")
-[ "$NPROXY" -ge 3 ] || { echo "sync_fail_too_few_nodes=${NPROXY}"; rm -f "$TMP"; exit 1; }
+[ "$NPROXY" -ge 1 ] || { echo "sync_fail_no_nodes=${NPROXY}"; rm -f "$TMP"; exit 1; }
 # 格式闸门：只要求「当前格式标记」存在，别把值写死。
 #  - tolerance：曾经写死 tolerance: 200，新配置改成 100 后被自己拦死，自动链路静默断掉；
 #  - name: GLOBAL 已在上文作为「新版判据」（CDN 旧版没有这一行，会被挡住，本地新版不受影响）。

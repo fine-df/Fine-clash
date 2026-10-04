@@ -22,13 +22,15 @@ for s in src:
     try:
         r = sess.get(url, timeout=25)
         nodes = fc.parse_subscription(r.text) if r.status_code == 200 else []
+        _code = r.status_code
     except Exception:
         nodes = []
+        _code = "ERR"
     for n in nodes:
         key = (n.get("type"), n.get("server"), n.get("port"))
         if key not in cands:
             cands[key] = n
-    print("source %-40s http=%s nodes=%d total=%d" % (s.get("repo", "")[:40], r.status_code if 'r' in dir() else '?', len(nodes), len(cands)), flush=True)
+    print("source %-40s http=%s nodes=%d total=%d" % (s.get("repo", "")[:40], _code, len(nodes), len(cands)), flush=True)
     if len(cands) >= 400:
         break
 print("TOTAL unique candidates: %d" % len(cands), flush=True)
@@ -61,7 +63,10 @@ time.sleep(5)
 # ---------- 4. delay API 并发测活 ----------
 def probe(name):
     n = urllib.parse.quote(name)
-    url = "%s/proxies/%s/delay?url=https://play.google.com/store&timeout=8000" % (ROUTER, n)
+    # ★ 2026-10-04 修正（B4）：分类探针必须与 build_final.FINE_PROBE 一致。
+    #   原用 play.google.com/store，但 Fine 组实际探针是 youtube.com，
+    #   错位会导致「能开 play 但开不了 youtube」的节点被错放进 Fine。
+    url = "%s/proxies/%s/delay?url=https://www.youtube.com&timeout=8000" % (ROUTER, n)
     try:
         r = json.load(urllib.request.urlopen(url, timeout=12))
         return name, r.get("delay")
@@ -74,7 +79,7 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
         if dly is not None:
             live.append((nm, dly))
 live.sort(key=lambda x: x[1])
-print("LIVE nodes (play reachable): %d" % len(live), flush=True)
+print("LIVE nodes (youtube reachable): %d" % len(live), flush=True)
 for nm, dly in live[:40]:
     print("  %5d  %s" % (dly, nm[:48]), flush=True)
 
@@ -87,11 +92,11 @@ for n in final_nodes:
         continue
     seen.add(n["name"]); fnodes.append(n)
 print("FINAL pool: %d nodes (live=%d + roma=%d)" % (len(fnodes), len(final_names), len(roma)), flush=True)
-# 写分类（油管/综合 Web 可达性 + 总体可达）→ build_final.py 据其把池子切成互斥/安全 Bitz/Fine
+# 写分类（油管/youtube 可达性 + 总体可达）→ build_final.py 据其把池子切成互斥/安全 Bitz/Fine
 _final_play = set(nm for nm, _ in live[:35])
 _probes = {n["name"]: {"play": n["name"] in _final_play, "ok": n["name"] in _final_play} for n in fnodes}
 json.dump(_probes, io.open("live_probes.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-print("probes: %d nodes, play=%d ok=%d" % (len(_probes), sum(1 for v in _probes.values() if v["play"]), sum(1 for v in _probes.values() if v["ok"])), flush=True)
+print("probes: %d nodes, youtube=%d ok=%d" % (len(_probes), sum(1 for v in _probes.values() if v["play"]), sum(1 for v in _probes.values() if v["ok"])), flush=True)
 build_bare_write(fnodes)
 deploy()
 print("DONE. final nodes=%d" % len(fnodes), flush=True)

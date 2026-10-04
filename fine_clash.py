@@ -688,7 +688,6 @@ def run():
         life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
         row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]})
-        candidate=(item["gemini"] and item["google_play"] and score>=int(rules["nodes"]["score_threshold"]))
         # ★ 2026-10-04 策略放宽（池子做大的核心）：
         #   candidate_gate 控制「候选」门槛，分数(score)只用于排序/多样性，不再卡入选。
         #   - reachable（推荐）：代理能通外网即可（google204/gemini/play 任一可达）。

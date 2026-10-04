@@ -58,7 +58,13 @@ if not names:
     sys.exit(1)
 print("source:", SRC, "nodes:", len(names))
 
-if not any(g.get("name") == "PROXY" for g in base.get("proxy-groups", [])):
+_groups = base.get("proxy-groups", [])
+if not any(g.get("name") == "PROXY" for g in _groups):
+    # 已处理过的成品（无 PROXY 组）被再次跑时：识别为已构建，安全跳过，
+    # 避免"原地重写同一文件"导致的 FATAL（B2 修复：build_final 非幂等脚枪）。
+    if any(g.get("name") in ("Bitz", "Fine") for g in _groups):
+        print("skip:", SRC, "already built (has Bitz/Fine groups); nothing to do", file=sys.stderr)
+        sys.exit(0)
     print("FATAL: PROXY group not found in", SRC, file=sys.stderr)
     sys.exit(1)
 
@@ -82,12 +88,17 @@ except Exception:
     _probes = {}
 def _play(n): return bool((_probes.get(n) or {}).get("play"))
 def _ok(n):   return bool((_probes.get(n) or {}).get("ok", (_probes.get(n) or {}).get("play")))
-fine_names = [n for n in names if _play(n)]
-if not fine_names:                      # 兜底：无油管可达节点 → 用可达节点，再不行前半
-    fine_names = [n for n in names if _ok(n)] or names[:len(names)//2] or names
-bitz_names = [n for n in names if (n not in fine_names) and _ok(n)]
-if not bitz_names:                      # 安全兜底：Bitz 不能空/全死，借用 Fine 的工作节点（重叠但保 OZON 可达）
-    bitz_names = fine_names
+if _probes:
+    # 有分类数据：Fine = 油管可达；Bitz = 其余可达节点。两组零重叠（B1 修复）。
+    fine_names = [n for n in names if _play(n)]
+    bitz_names = [n for n in names if (n not in fine_names) and _ok(n)]
+    if not bitz_names:                  # 安全兜底：Bitz 不能空/全死，借用 Fine 工作节点保 OZON 可达
+        bitz_names = list(fine_names)
+else:
+    # 无分类数据（手动/遗留运行）：确定性对半切，两组互补、零重叠、不丢节点（B1 修复）。
+    _h = (len(names) + 1) // 2
+    fine_names = names[:_h]
+    bitz_names = names[_h:]
 _tag = "EXCLUSIVE" if not (set(fine_names) & set(bitz_names)) else "SAFE-OVERLAP(仅1活节点)"
 print("split: Fine(%d)=%s  Bitz(%d)=%s  [%s]" % (
     len(fine_names), "+".join(n[:18] for n in fine_names),

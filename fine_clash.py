@@ -458,12 +458,13 @@ class MihomoTester:
             name=f"N{idx:03d}"; names.append(name); proxy=dict(node); proxy["name"]=name; proxies.append(proxy)
         config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOIP,CN,DIRECT","MATCH,TEST"]}
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
-        # geo 预置(2026-10-03)：mihomo 首启会在线下载 GeoSite.dat，2.5s 启动窗口内下载不完导致控口拒绝连接；
-        # 从 MIHOMO_GEO_DIR 本地缓存预拷，跳过在线下载。缺文件时退回 mihomo 自带下载行为，不影响 CI。
+        # Preload local Mihomo geodata into the exact filenames Mihomo expects.
+        # This keeps CI startup independent of runtime GeoIP/GeoSite downloads.
         geo_dir=Path(os.environ.get("MIHOMO_GEO_DIR",str(ROOT)))
         for geo in ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat"):
             src=geo_dir/geo
-            if src.is_file(): shutil.copyfile(src,self.tmp/geo)
+            if src.is_file():
+                shutil.copyfile(src,self.tmp/geo.name)
         self.log_path=self.tmp/"mihomo.log"
         self.log_handle=self.log_path.open("w",encoding="utf-8")
         self.proc=subprocess.Popen([self.binary,"-d",str(self.tmp)],stdout=self.log_handle,stderr=subprocess.STDOUT)

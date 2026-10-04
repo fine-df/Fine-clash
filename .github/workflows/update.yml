@@ -53,6 +53,7 @@ jobs:
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
         run: python build_final.py data/fine_pool.yaml
       - name: Validate profile
+        if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
         run: |
           set -euo pipefail
           test -s live_clash.yaml

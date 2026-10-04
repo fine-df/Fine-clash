@@ -50,214 +50,35 @@ def load_fine_nodes():
     if not nodes: raise SystemExit("FATAL: Fine pool is empty or has no testable nodes.")
     return nodes
 
-def _redact_url(url):
-    try:
-        parts=urlsplit(url)
-        if not parts.scheme or not parts.netloc:
-            return "<invalid-url>"
-        return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
-    except Exception:
-        return "<invalid-url>"
-
-def _globalping_fetch_text(url):
-    parts=urlsplit(url)
-    if not parts.hostname:
-        raise RuntimeError("invalid Bitz subscription host")
-    target=parts.hostname
-    if parts.port:
-        target=f"{target}:{parts.port}"
-    path=parts.path or "/"
-    if parts.query:
-        path += "?" + parts.query
-    payload={
-        "type":"http",
-        "target":target,
-        "locations":[{"city":"Shenzhen","limit":1}],
-        "measurementOptions":{
-            "protocol":"HTTPS" if parts.scheme.lower()=="https" else "HTTP",
-            "request":{"method":"GET","path":path},
-        },
-    }
-    headers={"User-Agent":"Fine-Clash/2.1 (+Globalping fallback)","Content-Type":"application/json"}
-    created=requests.post(GLOBALPING_HTTP_URL,json=payload,headers=headers,timeout=20)
-    created.raise_for_status()
-    body=created.json()
-    measurement_id=body.get("id")
-    if not measurement_id:
-        raise RuntimeError("Globalping returned no measurement id")
-    deadline=time.monotonic()+30
-    while time.monotonic()<deadline:
-        time.sleep(0.6)
-        response=requests.get(f"{GLOBALPING_HTTP_URL}/{measurement_id}",headers={"User-Agent":"Fine-Clash/2.1 (+Globalping fallback)"},timeout=15)
-        response.raise_for_status()
-        result=response.json()
-        if result.get("status")=="in-progress":
-            continue
-        results=result.get("results") or []
-        if not results:
-            raise RuntimeError("Globalping returned no probe result")
-        remote=results[0].get("result") or {}
-        status=int(remote.get("statusCode") or 0)
-        if status>=400:
-            raise RuntimeError(f"Bitz returned HTTP {status} from Shenzhen Globalping probe")
-        text=remote.get("rawBody")
-        if not isinstance(text,str) or not text.strip():
-            raise RuntimeError("Globalping returned an empty HTTP response body")
-        return text
-    raise RuntimeError("Globalping Bitz fetch timed out")
-
-def _free_port():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(("127.0.0.1", 0))
-        return s.getsockname()[1]
-
-
-def _fetch_bitz_via_fine_proxy(url):
-    """Use already validated Fine nodes as a private bootstrap path when Bitz blocks CI IPs."""
-    fine_nodes = load_fine_nodes()
-    binary = shutil.which("mihomo") or shutil.which("clash")
-    if not binary:
-        raise RuntimeError("mihomo binary not found for Fine bootstrap")
-    last_error = None
-    for node in fine_nodes[:3]:
-        port = _free_port()
-        work = Path(tempfile.mkdtemp(prefix="fine-bitz-fetch-"))
-        cfg = {
-            "mixed-port": port,
-            "allow-lan": False,
-            "mode": "rule",
-            "log-level": "error",
-            "proxies": [node],
-            "proxy-groups": [{"name": "PROXY", "type": "select", "proxies": [node["name"]]}],
-            "rules": ["MATCH,PROXY"],
-        }
-        proc = None
-        try:
-            (work / "config.yaml").write_text(
-                yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False),
-                encoding="utf-8",
-            )
-            proc = subprocess.Popen(
-                [binary, "-d", str(work), "-f", str(work / "config.yaml")],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            deadline = time.monotonic() + 8
-            while time.monotonic() < deadline:
-                if proc.poll() is not None:
-                    raise RuntimeError(f"mihomo exited rc={proc.returncode}")
-                try:
-                    with socket.create_connection(("127.0.0.1", port), timeout=0.5):
-                        break
-                except OSError:
-                    time.sleep(0.25)
-            else:
-                raise RuntimeError("mihomo local proxy startup timeout")
-
-            proxy_url = f"http://127.0.0.1:{port}"
-            response = requests.get(
-                url,
-                timeout=25,
-                proxies={"http": proxy_url, "https": proxy_url},
-                headers={"User-Agent": "Fine-Clash/2.1", "Accept": "text/plain,application/yaml,*/*"},
-            )
-            response.raise_for_status()
-            if not response.text.strip():
-                raise RuntimeError("Bitz returned an empty response through Fine bootstrap")
-            print(f"Bitz subscription fetched through validated Fine node: {node.get('name','<unnamed>')}")
-            return response.text
-        except Exception as exc:
-            last_error = exc
-        finally:
-            if proc is not None:
-                try:
-                    proc.terminate()
-                    proc.wait(timeout=2)
-                except Exception:
-                    try:
-                        proc.kill()
-                    except Exception:
-                        pass
-            shutil.rmtree(work, ignore_errors=True)
-    raise RuntimeError(f"all Fine bootstrap nodes failed: {type(last_error).__name__}: {last_error}")
-
-
-def fetch_bitz_nodes():
-    if not BITZ_SUB_URL:
-        raise SystemExit("FATAL: BITZ_SUB_URL is not configured. Store the complete Bitz subscription URL in the BITZ_SUB_URL environment variable / GitHub Actions secret.")
-    safe_url=_redact_url(BITZ_SUB_URL)
-    response_text=None
-    direct_error=None
-    try:
-        r=requests.get(
-            BITZ_SUB_URL,
-            timeout=30,
-            headers={"User-Agent":"Fine-Clash/2.1","Accept":"text/plain,application/yaml,*/*"},
-        )
-        r.raise_for_status()
-        response_text=r.text
-    except requests.HTTPError as exc:
-        status=exc.response.status_code if exc.response is not None else "unknown"
-        direct_error=f"HTTP {status}"
-        if status not in (401,403):
-            raise SystemExit(f"FATAL: Bitz subscription fetch failed with HTTP {status} at {safe_url}.") from exc
-    except requests.RequestException as exc:
-        direct_error=f"network error: {type(exc).__name__}"
-    if response_text is None:
-        try:
-            print(f"Bitz direct fetch failed ({direct_error}); retrying through a validated Fine proxy.")
-            response_text=_fetch_bitz_via_fine_proxy(BITZ_SUB_URL)
-        except Exception as fine_exc:
-            print(f"Bitz Fine-proxy bootstrap failed ({type(fine_exc).__name__}); trying Shenzhen Globalping as final fallback.")
-            try:
-                response_text=_globalping_fetch_text(BITZ_SUB_URL)
-                print("Bitz subscription fetched successfully through Shenzhen Globalping.")
-            except Exception as gp_exc:
-                raise SystemExit(
-                    f"FATAL: Bitz subscription unavailable at {safe_url}. Direct runner fetch failed ({direct_error}); "
-                    f"Fine-proxy bootstrap failed ({type(fine_exc).__name__}: {str(fine_exc)[:120]}); "
-                    f"Shenzhen Globalping fallback failed ({type(gp_exc).__name__}: {str(gp_exc)[:120]})."
-                ) from gp_exc
-    parsed=parse_subscription(response_text)
-    nodes=_dedupe_nodes([node for node in parsed if resolved_server_is_safe(node.get("server",""))],"Bitz | ")
-    if not nodes: raise SystemExit("FATAL: Bitz subscription returned no supported testable nodes.")
-    return nodes
-
 def suffix_rules(domains,group):
     return [f"DOMAIN-SUFFIX,{d},{group}" for d in domains]
 
-def build_proxy_groups(bitz_names,fine_names):
-    all_names=bitz_names+fine_names
+def build_proxy_groups(fine_names):
     return [
-        {"name":"GLOBAL","type":"select","proxies":["DIRECT"]+all_names,"default-selected":"DIRECT"},
-        {"name":"Bitz","type":"select","proxies":["Bitz-Auto"]+bitz_names,"default-selected":"Bitz-Auto"},
-        {"name":"Bitz-Auto","type":"url-test","proxies":bitz_names,"url":"https://www.ozon.ru/","interval":900,"timeout":8000,"tolerance":100,"lazy":False},
+        {"name":"GLOBAL","type":"select","proxies":["DIRECT"]+fine_names,"default-selected":fine_names[0]},
         {"name":"Fine","type":"select","proxies":["Fine-Auto"]+fine_names,"default-selected":"Fine-Auto"},
         {"name":"Fine-Auto","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":50,"lazy":False},
     ]
 
-def build_config(fine_nodes,bitz_nodes):
-    if not fine_nodes or not bitz_nodes: raise ValueError("Fine and Bitz pools must both be non-empty")
-    combined=unique_node_names([*bitz_nodes,*fine_nodes])
-    bitz_count=len(bitz_nodes)
-    bitz_nodes=combined[:bitz_count]
-    fine_nodes=combined[bitz_count:]
-    fine_names=[n["name"] for n in fine_nodes]; bitz_names=[n["name"] for n in bitz_nodes]
-    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(OZON_DOMAINS,"Bitz")+suffix_rules(AMAZON_DOMAINS,"Bitz")+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Bitz"]
+def build_config(fine_nodes):
+    if not fine_nodes: raise ValueError("Fine pool must be non-empty")
+    fine_nodes=unique_node_names(fine_nodes)
+    fine_names=[n["name"] for n in fine_nodes]
+    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Fine"]
     return {
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
         "profile":{"store-selected":True},
-        "proxies":bitz_nodes+fine_nodes,
-        "proxy-groups":build_proxy_groups(bitz_names,fine_names),
+        "proxies":fine_nodes,
+        "proxy-groups":build_proxy_groups(fine_names),
         "tun":{"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True},
         "dns":{"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
-               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"]},
+               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.5"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"]},
                "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],"fallback-filter":{"geoip":True,"geoip-code":"CN"}},
         "rules":rules,
     }
 
 def main():
-    config=build_config(load_fine_nodes(),fetch_bitz_nodes())
+    config=build_config(load_fine_nodes())
     dumped=yaml.safe_dump(config,allow_unicode=True,sort_keys=False,default_flow_style=False)
     previous_version=0
     if OUT.is_file():
@@ -266,9 +87,8 @@ def main():
             if m: previous_version=int(m.group(1))
         except OSError: pass
     version=str(previous_version+1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    header=f"# fine-clash-unified-v2 | fine-clash-version:{version} | Bitz=embedded-pool | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine\n"
+    header=f"# fine-clash-unified-v3 | fine-clash-version:{version} | Fine=validated-pool | CN->DIRECT | MATCH->Fine\n"
     OUT.write_text(header+dumped,encoding="utf-8")
-    print(f"written {OUT}: Bitz={len(config['proxy-groups'][1]['proxies'])-1} explicit nodes; Fine={len(config['proxy-groups'][3]['proxies'])-1} validated nodes; rules={len(config['rules'])}")
+    print(f"written {OUT}: Fine={len(config['proxies'])} validated nodes; rules={len(config['rules'])}")
 
-if __name__=="__main__":
-    main()
+if __name__=="__main__": main()

@@ -65,6 +65,8 @@ def collect_repo_names():
             data = r.json()
             items = data.get("items", [])
             for it in items:
+                if int(it.get("stargazers_count", 0)) < int(rules["sources"].get("min_stars", 30)):
+                    continue
                 fn = it.get("full_name")
                 if fn: names[fn.lower()] = fn
             print("  q=%-70s -> +%d (total %d)" % (q[:70], len(items), len(names)))

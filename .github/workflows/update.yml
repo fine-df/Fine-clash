@@ -50,9 +50,7 @@ jobs:
           # Download GeoIP data explicitly; CI must not depend on Mihomo runtime downloads.
           curl -fsSL https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat -o geoip.dat
           test -s geoip.dat
-      - name: Preflight required secrets
         env:
-          BITZ_SUB_URL: ${{ secrets.BITZ_SUB_URL }}
         run: |
           set -euo pipefail
           test -n "$BITZ_SUB_URL" || { echo 'FATAL: missing GitHub Actions secret BITZ_SUB_URL'; exit 1; }
@@ -66,7 +64,6 @@ jobs:
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
         env:
-          BITZ_SUB_URL: ${{ secrets.BITZ_SUB_URL }}
         run: python build_final.py data/fine_pool.yaml
       - name: Validate profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
@@ -76,14 +73,9 @@ jobs:
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
-          grep -q '^- name: Bitz' live_clash.yaml
           grep -q '^- name: Bitz-Auto' live_clash.yaml
-          grep -q '^  - Bitz | ' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
           grep -q '^- name: Fine-Auto' live_clash.yaml
-          grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
-          grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
-          grep -q 'MATCH,Bitz' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
@@ -95,7 +87,30 @@ jobs:
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:' live_clash.yaml; then
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz
+            echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
+          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+            echo 'subscription credential or token-bearing URL leaked into public profile'
+            exit 1
+          fi
+          mihomo -t -f live_clash.yaml
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git push origin HEAD:main
+ live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
             exit 1
           fi

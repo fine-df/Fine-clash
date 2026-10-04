@@ -50,6 +50,14 @@ jobs:
           # Download GeoIP data explicitly; CI must not depend on Mihomo runtime downloads.
           curl -fsSL https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat -o geoip.dat
           test -s geoip.dat
+      - name: Preflight required secrets
+        env:
+          BITZ_SUB_URL: ${{ secrets.BITZ_SUB_URL }}
+          GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$BITZ_SUB_URL" || { echo 'FATAL: missing GitHub Actions secret BITZ_SUB_URL'; exit 1; }
+          test -n "$GLOBALPING_API_TOKEN" || { echo 'FATAL: missing GitHub Actions secret GLOBALPING_API_TOKEN'; exit 1; }
       - name: Test code
         run: pytest
       - name: Build Fine pool
@@ -89,6 +97,10 @@ jobs:
           fi
           if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:' live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
+          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+            echo 'subscription credential or token-bearing URL leaked into public profile'
             exit 1
           fi
           mihomo -t -f live_clash.yaml

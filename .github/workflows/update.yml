@@ -1,9 +1,7 @@
-name: Fine-Clash daily update
+name: Fine-Clash update
 
 on:
   schedule:
-    # 每 4 小时一次（UTC）。节点寿命以小时计，刷得太少 = 死节点长期滞留池子。
-    # 曾因 schedule 停在 '0 2 * * *'（1 次/天）导致 9 个后死节点霸占池子。
     - cron: '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:
 
@@ -11,13 +9,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: fine-clash-daily
+  group: fine-clash-update
   cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -28,101 +26,55 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Download latest Mihomo
-        shell: bash
+      - name: Download Mihomo
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          api_headers=(-H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          version=$(curl -fsSL "${api_headers[@]}" https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | python -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')
-          asset="mihomo-linux-amd64-${version}.gz"
-          curl -fsSL "${api_headers[@]}" "https://github.com/MetaCubeX/mihomo/releases/download/${version}/${asset}" -o mihomo.gz
+          api_headers=(-H "Authorization: Bearer \${GITHUB_TOKEN}" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+          version=$(curl -fsSL "\${api_headers[@]}" https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | python -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')
+          asset="mihomo-linux-amd64-\${version}.gz"
+          curl -fsSL "\${api_headers[@]}" "https://github.com/MetaCubeX/mihomo/releases/download/\${version}/\${asset}" -o mihomo.gz
           gunzip mihomo.gz
           chmod +x mihomo
           sudo mv mihomo /usr/local/bin/mihomo
           mihomo -v
       - name: Test code
         run: pytest
-      - name: Discover, test, score and publish
+      - name: Build Fine pool
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GLOBALPING_API_TOKEN: \${{ secrets.GLOBALPING_API_TOKEN }}
         run: python fine_clash.py
-      - name: Build unified four-end profile (live_clash.yaml = split config)
+      - name: Build single public profile
+        run: python build_final.py data/fine_pool.yaml
+      - name: Validate profile
         run: |
           set -euo pipefail
-          python build_final.py live_clash.yaml
-      - name: Mirror router sync-source (fine_final.yaml)
-        run: |
-          set -euo pipefail
-          # 路由器 fine_sync.sh 拉的是 fine_final.yaml（不是 live_clash.yaml），
-          # 必须把四端分流产物镜像成路由器同步源，否则 CI 重选永远传不到路由器。
-          cp live_clash.yaml fine_final.yaml
-      - name: Validate generated Clash config
-        run: |
-          set -euo pipefail
+          test -s live_clash.yaml
+          grep -q '^proxy-providers:' live_clash.yaml
+          grep -q '^  BitzPool:' live_clash.yaml
+          grep -q '^  - name: Bitz' live_clash.yaml
+          grep -q '^  - name: Fine' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
+          grep -q 'MATCH,Fine' live_clash.yaml
+          grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
+          if grep -Eq 'fine_final.yaml|fine-override:' live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
           mihomo -t -f live_clash.yaml
-      # NOTE: extra_pool.yaml 抓取步骤已移除——build_final.py 不消费它（死代码），
-      #       Fine 组兜底由 CI discovery 产出的节点池自身保证，无需外部大池（也不会再因外部源失败而卡 CI）。
-      - name: Commit outputs and history
+      - name: Publish
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git reset --mixed origin/main
-            git add data
-            if [ -f live_clash.yaml ]; then git add live_clash.yaml; fi
-            if [ -f fine_final.yaml ]; then git add fine_final.yaml; fi
-            if [ -f live_v2ray.txt ]; then git add live_v2ray.txt; fi
-            if git diff --cached --quiet; then
-              exit 0
-            fi
-            git commit -m 'chore: update verified subscriptions'
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-          done
-          echo 'Failed to publish after 3 attempts'
-          exit 1
-
-      # GitHub 会对长时间无活动的仓库冻结 schedule，
-      # 这里做兜底：距上次成功超过 22 小时就自己再触发一次。
-      - name: Self-trigger watchdog
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import os, json, time, urllib.request
-          from datetime import datetime, timezone
-          token = os.environ["GH_TOKEN"]
-          owner, repo = os.environ["GITHUB_REPOSITORY"].split("/")
-
-          def api(path, method="GET", data=None):
-              url = "https://api.github.com/repos/%s/%s%s" % (owner, repo, path)
-              req = urllib.request.Request(url, method=method, data=data)
-              req.add_header("Authorization", "Bearer " + token)
-              req.add_header("Accept", "application/vnd.github+json")
-              req.add_header("User-Agent", "fine-clash-watchdog")
-              with urllib.request.urlopen(req, timeout=25) as r:
-                  return json.load(r)
-
-          runs = api("/actions/runs?status=success&per_page=1&branch=main")
-          wr = runs.get("workflow_runs") or []
-          gap = 999.0
-          if wr:
-              # API v3 的 created_at 是 ISO 字符串，必须转 datetime 才能相减
-              t0 = datetime.fromisoformat(wr[0]["created_at"].replace("Z", "+00:00"))
-              gap = (datetime.now(timezone.utc) - t0).total_seconds() / 3600.0
-          print("last_success=%s gap_hours=%.1f" % (wr[0]["created_at"] if wr else "none", gap))
-          if gap < 22:
-              print("watchdog skip: too fresh")
-              raise SystemExit(0)
-          print("watchdog trigger: dispatch update.yml")
-          api("/actions/workflows/update.yml/dispatches", method="POST",
-              data=json.dumps({"ref": "main"}).encode())
-          PY
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git push origin HEAD:main

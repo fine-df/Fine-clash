@@ -734,20 +734,7 @@ def run():
         if shenzhen_passes(result,shenzhen_cfg):
             selected.append(node)
 
-    # ★ 深圳闸软化（2026-10-04 修复）：过 gemini+play+score 的候选经深圳延迟闸后仍不足
-    #   min_final_nodes 时，用「未过深圳闸」的候选按深圳延迟升序补足，避免整轮 0 发布、
-    #   旧（腐烂）的手维护配置被永久保留。深圳延迟仅作「优选」不再作「硬拒」。
-    min_final=int(rules["nodes"]["min_final_nodes"])
-    if len(selected) < min_final:
-        sel_names={n.get("name") for n in selected}
-        rest=[fp for fp in all_candidate_fps if fp_node.get(fp) and fp_node[fp].get("name") not in sel_names]
-        rest.sort(key=lambda fp: (report_lookup.get(fp,{}).get("shenzhen_ping_ms") or 9e9))
-        for fp in rest:
-            if len(selected) >= min_final: break
-            selected.append(fp_node[fp])
-        if rest:
-            print("shenzhen_topup: selected %d -> %d (min=%d)" % (len(selected)-len(rest), len(selected), min_final))
-
+    # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
@@ -768,12 +755,5 @@ def run():
     if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
     build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
-    # 写分类（油管/综合 Web 可达性 + 总体可达）→ build_final.py 据其把池子切成互斥/安全 Bitz/Fine
-    _probes = {r["name"]: {"play": bool(r.get("google_play")),
-                           "ok": bool((r.get("google") or {}).get("ok") or r.get("gemini") or r.get("google_play"))}
-               for r in report["results"] if r.get("name")}
-    (_probes_file:=ROOT/rules["output"].get("probe_file","live_probes.json"))
-    _probes_file.write_text(json.dumps(_probes,ensure_ascii=False,indent=2),encoding="utf-8")
-    print("live_probes: %d nodes, play=%d" % (len(_probes), sum(1 for v in _probes.values() if v["play"])))
 
 if __name__=="__main__": run()

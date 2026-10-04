@@ -1,31 +1,33 @@
 # Fine-Clash
 
+唯一对外订阅地址：
 
-Clash subscription:
+https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+
+备用原始地址：
+
 https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.yaml
 
-V2Ray subscription (Base64):
-https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_v2ray.txt
+## 固定分流逻辑
 
-Mirror (jsDelivr):
-https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
-https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_v2ray.txt
+| 流量 | 出口 |
+|---|---|
+| 中国大陆网站 / 中国内网 | DIRECT |
+| Ozon | Bitz |
+| Amazon / Seller Central | Bitz |
+| 其他全部海外流量 | Fine |
 
+核心原则：
 
-## 自动更新链路（无需人工干预）
+- Bitz 是严格白名单，不承担 MATCH。
+- Fine 是海外默认出口。
+- YouTube、Netflix、TikTok、下载和其他大流量海外网站不会进入 Bitz，因为 MATCH 永远落到 Fine。
+- Bitz 节点来自独立订阅源；Fine 节点来自独立的公开节点发现与验证链，两个池不再互相拆借。
+- 不再维护第二个最终订阅文件；fine_final.yaml 已退出生产链路。
+- 订阅按 Mihomo / Clash.Meta 兼容语法设计，避免平台专用网卡名、固定 routing-mark 等设置。
 
-```
-GitHub Actions (cron 0 2,8,14,20 * * * UTC，即北京每天 10/16/22/04 点)
-  └─ fine_clash.py  发现高星源 → 探测 → 评分 → live_clash.yaml
-  └─ build_final.py 转路由器配置 → fine_final.yaml（PROXY=url-test 探测 gemini.google.com）
-  └─ commit 到 main  ──►  jsDelivr CDN（缓存通常 1~20 分钟）
-                                      │
-小米路由器 ShellClash  ──►  /data/clash/fine_sync.sh（crontab 每 15 分钟）
-                              └─ 拉 CDN 文件 → 护栏校验（url-test / ^proxies: / CrashCore -t）
-                                 → 覆盖 /data/clash/yamls/config.yaml → 重启 CrashCore
-```
+## 自动更新
 
-- 节点池变化后，路由器最多 **~35 分钟**（CDN 缓存 ≤20 分钟 + 同步间隔 ≤15 分钟）自动生效。
-- PROXY 组为 `url-test`，只在**能连上 gemini.google.com 的节点里**自动选延迟最小的，掉线即剔除。
-- 装置保：CI 每次结束若距上次成功 >20 小时，会自己再触发一次 `workflow_dispatch`（防止 GitHub 冻结 schedule）。
-- 直连源只有 `cdn.jsdelivr.net` 在路由器可用（raw.githubusercontent / gitclone.com / ghproxy 均不可达）。
+GitHub Actions 每 4 小时重新发现、验证 Fine 节点并生成 live_clash.yaml。只有最终配置通过结构校验和 Mihomo 配置测试后才发布；失败时保留上一份可用订阅。
+
+路由器同步也只认同一个 live_clash.yaml 地址。

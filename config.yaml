@@ -5,14 +5,7 @@ sources:
   max_candidate_files_per_repo: 6
   max_source_bytes: 8000000
   min_nodes_per_source: 2
-  # ★ 2026-10-04 扩源：原 4 个窄查询（必须字面含 subscription/nodes 且 stars>=50）
-  #   漏掉大量高星仓库。现扩为「关键词查询 + topic 查询 + 低星新鲜源」三层：
-  #   ① 关键词：覆盖 clash/v2ray/free/proxy/vpn/节点/订阅/机场 等命名变体
-  #   ② topic：GitHub 话题订阅（topic:clash / topic:v2ray / topic:proxy / topic:free-proxy）
-  #   ③ 低星但新鲜：stars>=5 降低门槛，靠 pushed 新鲜度兜底（老仓节点多半已死）
-  #   排序统一 stars desc，recent_days 放宽到 30 天（3 周前 push 但订阅仍存活的仓也收）
   queries:
-    # —— 关键词（高星优先）——
     - 'clash subscription in:name,description,readme archived:false stars:>=30'
     - 'v2ray subscription in:name,description,readme archived:false stars:>=30'
     - 'free clash nodes in:name,description,readme archived:false stars:>=30'
@@ -25,45 +18,29 @@ sources:
     - '订阅 in:name,description,readme archived:false'
     - '节点 in:name,description,readme archived:false'
     - '机场 in:name,description,readme archived:false'
-    # —— topic（话题订阅，命中大量专题仓）——
     - 'topic:clash archived:false stars:>=20'
     - 'topic:v2ray archived:false stars:>=20'
     - 'topic:proxy archived:false stars:>=20'
     - 'topic:free-proxy archived:false stars:>=10'
-    # —— 低星但新鲜（兜底扩量）——
     - 'clash nodes in:name,description,readme archived:false stars:>=5'
     - 'v2ray nodes in:name,description,readme archived:false stars:>=5'
     - 'free proxy in:name,description,readme archived:false stars:>=5'
-
-# 直接订阅 URL 通道（2026-10-04 新增）：绕过 GitHub 搜索，直接拉取已知
-# 免费订阅端点（clash/v2ray base64 / yaml）。发现管线会把这些端点解析出的节点
-# 并入同一候选池，走相同的 gemini/play/深圳 实测闸门。空列表=仅用 GitHub 发现。
 direct_urls: []
-
-# 用户精选的 [BL] 优质节点池（base64 节点 URI 清单）。接进发现管线后，
-# 走与免费源相同的 gemini/play/深圳 实测闸门——活的才发布，过期的同样被筛掉。
-curated_nodes_file: 'sub_local.txt'
-
+curated_nodes_file: ''
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
-  max_test_nodes: 2000
-  min_final_nodes: 3
-  max_final_nodes: 40
-  max_per_server: 3
-  max_per_org: 4
-  validation_workers: 4
-  endpoint_workers: 4
-  test_timeout_seconds: 12
-  controller_startup_seconds: 2.5
-  switch_wait_seconds: 0.8
-  # 入选闸门（2026-10-04 放宽——池子做大的核心）：
-  #   reachable    = 代理能通外网即可（google204/gemini/play 任一可达）；分数只用于排序。
-  #                 新挖免费节点无历史，卡 70 分会把活节点全刷掉→selected=0 不发布，故默认此档。
-  #   gemini_or_play = gemini 或 play 任一通过且 score>=threshold（保守档）。
-  #   gemini_and_play = 原双过严格档（向后兼容）。
+  max_test_nodes: 400
+  min_final_nodes: 1
+  max_final_nodes: 20
+  max_per_server: 2
+  max_per_org: 3
+  validation_workers: 8
+  endpoint_workers: 6
+  test_timeout_seconds: 8
+  controller_startup_seconds: 1.5
+  switch_wait_seconds: 0.5
   candidate_gate: 'reachable'
   score_threshold: 70
-
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'
@@ -76,7 +53,6 @@ shenzhen_probe:
   max_wait_seconds: 12
   fail_closed: true
   api_token_env: 'GLOBALPING_API_TOKEN'
-
 checks:
   gemini_url: 'https://gemini.google.com/'
   google_play_url: 'https://play.google.com/store'
@@ -88,10 +64,9 @@ checks:
     - 'our systems have detected unusual traffic'
     - 'captcha'
     - 'access denied'
-
 output:
-  clash_file: 'live_clash.yaml'
-  v2ray_file: 'live_v2ray.txt'
+  clash_file: 'data/fine_pool.yaml'
+  v2ray_file: '/tmp/fine_v2ray.txt'
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
   report_file: 'data/last_run.json'

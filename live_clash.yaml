@@ -1,69 +1,109 @@
-# fine-override: v7 | Bitz(url-test)=Bitz Fine(url-test)=Fine 节点选择(select)->[Fine,Bitz,DIRECT] url Bitz=https://www.ozon.ru Fine=https://www.youtube.com interval=90 timeout=10000 tolerance=50 unified-delay=False log=warning
+# fine-clash-unified-v1 | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: warning
+ipv6: false
+unified-delay: false
+tcp-concurrent: true
+profile:
+  store-selected: true
+proxy-providers:
+  BitzPool:
+    type: http
+    url: 'https://cont.bbkcdpub.com/api/v1/client/BitzNet.conf?token=23a7ad64b83f7b867eb75da3738184c6'
+    interval: 21600
 proxies:
-- type: vless
-  name: 🇷🇴 Romania, Bucharest | [BL]
-  server: 109.104.106.15
+- name: 未知 VLESS-145 | free-nodes
+  type: vless
+  server: fbsv6.guardora.pro
   port: 443
-  udp: true
-  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
-  encryption: none
+  uuid: bc5ec86c-3e65-4272-994c-59a924c72a68
   tls: true
-  servername: d3-ro.cloud-cdn.xyz
-  flow: xtls-rprx-vision
-  client-fingerprint: ios
-  reality-opts:
-    public-key: a_v5l6R-rpVGlENLeONW4sz-GdRwIoDqISOWXGov8nw
-    short-id: 87709fed663228e5
-  network: tcp
-- server: fbsv6.guardora.pro
+  servername: fbsv6.guardora.pro
   network: ws
-  name: 未知 VLESS-145 | free-nodes
+  client-fingerprint: chrome
   ws-opts:
     path: /ws
     headers:
       Host: fbsv6.guardora.pro
-  uuid: bc5ec86c-3e65-4272-994c-59a924c72a68
-  client-fingerprint: chrome
-  type: vless
-  tls: true
-  port: 443
-  servername: fbsv6.guardora.pro
 proxy-groups:
 - name: GLOBAL
-  type: select
-  proxies:
-  - 🚀 节点选择
-- name: 🚀 节点选择
   type: select
   proxies:
   - Fine
   - Bitz
   - DIRECT
-  - 🇷🇴 Romania, Bucharest | [BL]
-  - 未知 VLESS-145 | free-nodes
 - name: Bitz
   type: url-test
-  url: https://www.ozon.ru
-  interval: 90
-  timeout: 10000
-  tolerance: 50
+  use:
+  - BitzPool
+  url: https://www.ozon.ru/
+  interval: 900
+  timeout: 8000
+  tolerance: 100
   lazy: false
-  proxies:
-  - 未知 VLESS-145 | free-nodes
 - name: Fine
   type: url-test
-  url: https://www.youtube.com
-  interval: 90
-  timeout: 10000
-  tolerance: 50
-  lazy: false
   proxies:
   - 未知 VLESS-145 | free-nodes
+  url: https://www.gstatic.com/generate_204
+  interval: 900
+  timeout: 8000
+  tolerance: 100
+  lazy: false
+tun:
+  enable: true
+  stack: system
+  auto-route: true
+  auto-detect-interface: true
+dns:
+  enable: true
+  ipv6: false
+  use-hosts: true
+  enhanced-mode: redir-host
+  nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  - 1.1.1.1
+  fallback:
+  - https://1.1.1.1/dns-query
+  - tls://8.8.8.8
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
 rules:
+- DOMAIN-SUFFIX,lan,DIRECT
+- DOMAIN-SUFFIX,local,DIRECT
+- DOMAIN-SUFFIX,localhost,DIRECT
+- DOMAIN-SUFFIX,cn,DIRECT
+- DOMAIN-SUFFIX,com.cn,DIRECT
+- DOMAIN-SUFFIX,net.cn,DIRECT
+- DOMAIN-SUFFIX,gov.cn,DIRECT
+- DOMAIN-SUFFIX,edu.cn,DIRECT
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+- DOMAIN-SUFFIX,wx.qq.com,DIRECT
+- DOMAIN-SUFFIX,wechat.com,DIRECT
+- DOMAIN-SUFFIX,qpic.cn,DIRECT
+- DOMAIN-SUFFIX,qlogo.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.cn,DIRECT
+- DOMAIN-SUFFIX,gtimg.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,tenpay.com,DIRECT
+- DOMAIN-SUFFIX,wechatpay.cn,DIRECT
+- DOMAIN-SUFFIX,tencent.com,DIRECT
+- DOMAIN-SUFFIX,tencent-cloud.com,DIRECT
+- GEOIP,CN,DIRECT
 - DOMAIN-SUFFIX,ozon.ru,Bitz
 - DOMAIN-SUFFIX,ozon.com,Bitz
 - DOMAIN-SUFFIX,ozon.kz,Bitz
 - DOMAIN-SUFFIX,ozon.by,Bitz
+- DOMAIN-SUFFIX,ozonusercontent.com,Bitz
 - DOMAIN-SUFFIX,amazon.com,Bitz
 - DOMAIN-SUFFIX,amazon.co.uk,Bitz
 - DOMAIN-SUFFIX,amazon.de,Bitz
@@ -78,162 +118,13 @@ rules:
 - DOMAIN-SUFFIX,amazon.co.jp,Bitz
 - DOMAIN-SUFFIX,amazon.in,Bitz
 - DOMAIN-SUFFIX,amazon.com.br,Bitz
+- DOMAIN-SUFFIX,amazon.com.mx,Bitz
+- DOMAIN-SUFFIX,amazon.sg,Bitz
+- DOMAIN-SUFFIX,amazon.ae,Bitz
+- DOMAIN-SUFFIX,amazon.sa,Bitz
+- DOMAIN-SUFFIX,amazon.tr,Bitz
 - DOMAIN-SUFFIX,sellercentral.amazon.com,Bitz
+- DOMAIN-SUFFIX,amazon-adsystem.com,Bitz
+- DOMAIN-SUFFIX,ssl-images-amazon.com,Bitz
+- DOMAIN-SUFFIX,media-amazon.com,Bitz
 - MATCH,Fine
-find-process-mode: 'off'
-log-level: warning
-external-controller: :9999
-external-ui: ui
-external-ui-url: ''
-authentication: []
-allow-lan: true
-mode: rule
-ipv6: false
-unified-delay: false
-tun:
-  enable: true
-  stack: system
-  device: utun
-  auto-route: false
-  auto-detect-interface: false
-experimental:
-  ignore-resolve-fail: true
-  interface-name: en0
-routing-mark: 7894
-secret: null
-dns:
-  enable: true
-  listen: :1053
-  use-hosts: true
-  ipv6: true
-  default-nameserver:
-  - 223.5.5.5
-  - 119.29.29.29
-  enhanced-mode: fake-ip
-  fake-ip-range: 28.0.0.0/8
-  fake-ip-range6: fc00::/16
-  fake-ip-filter:
-  - '*'
-  - '*.lan'
-  - '*.localdomain'
-  - '*.example'
-  - '*.invalid'
-  - '*.localhost'
-  - '*.test'
-  - '*.local'
-  - '*.home.arpa'
-  - '*.direct'
-  - time.*.com
-  - time.*.gov
-  - time.*.edu.cn
-  - time.*.apple.com
-  - time-ios.apple.com
-  - time1.*.com
-  - time2.*.com
-  - time3.*.com
-  - time4.*.com
-  - time5.*.com
-  - time6.*.com
-  - time7.*.com
-  - ntp.*.com
-  - ntp1.*.com
-  - ntp2.*.com
-  - ntp3.*.com
-  - ntp4.*.com
-  - ntp5.*.com
-  - ntp6.*.com
-  - ntp7.*.com
-  - '*.time.edu.cn'
-  - '*.ntp.org.cn'
-  - +.pool.ntp.org
-  - time1.cloud.tencent.com
-  - music.163.com
-  - '*.music.163.com'
-  - '*.126.net'
-  - musicapi.taihe.com
-  - music.taihe.com
-  - songsearch.kugou.com
-  - trackercdn.kugou.com
-  - '*.kuwo.cn'
-  - api-jooxtt.sanook.com
-  - api.joox.com
-  - joox.com
-  - y.qq.com
-  - '*.y.qq.com'
-  - streamoc.music.tc.qq.com
-  - mobileoc.music.tc.qq.com
-  - isure.stream.qqmusic.qq.com
-  - dl.stream.qqmusic.qq.com
-  - aqqmusic.tc.qq.com
-  - amobile.music.tc.qq.com
-  - '*.xiami.com'
-  - '*.music.migu.cn'
-  - music.migu.cn
-  - +.msftconnecttest.com
-  - +.msftncsi.com
-  - localhost.ptlogin2.qq.com
-  - localhost.sec.qq.com
-  - localhost.*.weixin.qq.com
-  - +.kk-rays.com
-  - +.steamcontent.com
-  - +.srv.nintendo.net
-  - '*.n.n.srv.nintendo.net'
-  - +.cdn.nintendo.net
-  - xbox.*.*.microsoft.com
-  - '*.*.xboxlive.com'
-  - xbox.*.microsoft.com
-  - xnotify.xboxlive.com
-  - +.battle.net
-  - +.battlenet.com.cn
-  - +.wotgame.cn
-  - +.wggames.cn
-  - +.wowsgame.cn
-  - +.wargaming.net
-  - proxy.golang.org
-  - +.stun.*.*
-  - +.stun.*.*.*
-  - +.stun.*.*.*.*
-  - +.stun.*.*.*.*.*
-  - heartbeat.belkin.com
-  - '*.linksys.com'
-  - '*.linksyssmartwifi.com'
-  - '*.router.asus.com'
-  - mesu.apple.com
-  - swscan.apple.com
-  - swquery.apple.com
-  - swdownload.apple.com
-  - swcdn.apple.com
-  - swdist.apple.com
-  - lens.l.google.com
-  - na.b.g-tun.com
-  - '*.square-enix.com'
-  - '*.finalfantasyxiv.com'
-  - '*.ffxiv.com'
-  - '*.ff14.sdo.com'
-  - ff.dorado.sdo.com
-  - '*.mcdn.bilivideo.cn'
-  - +.media.dssott.com
-  - shark007.net
-  - Mijia Cloud
-  - +.market.xiaomi.com
-  - +.cmbchina.com
-  - +.cmbimg.com
-  - adguardteam.github.io
-  - adrules.top
-  - anti-ad.net
-  - local.adguard.org
-  - static.adtidy.org
-  - +.sandai.net
-  - +.n0808.com
-  - +.3gppnetwork.org
-  - +.uu.163.com
-  - ps.res.netease.com
-  - +.pub.3gppnetwork.org
-  - +.oray.com
-  - +.orayimg.com
-  - +.gcloudcs.com
-  - +.gcloudsdk.com
-  - +.dynv6.net
-  nameserver:
-  - 223.5.5.5
-  - 119.29.29.29

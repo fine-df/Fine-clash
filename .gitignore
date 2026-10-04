@@ -50,7 +50,6 @@ final_check.py
 uri2mihomo.py
 
 # ============ 本地样本 / 备份（勿提交）============
-config.yaml
 permission-test.txt
 rootcerts/
 _cdn_*.y*ml
@@ -100,3 +99,6 @@ bitz_*.yaml
 fine_nodes.yaml
 router_fine_template.yaml
 _bitz_rollback/
+
+live_v2ray.txt
+data/fine_pool.yaml

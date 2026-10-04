@@ -109,7 +109,7 @@ def main():
         "mixed-port": 7890,
         "allow-lan": True,
         "bind-address": "*",
-        "mode": "rule",  # default: automatic rule-based routing; GLOBAL is explicit override
+        "mode": "rule",
         "log-level": "warning",
         "ipv6": False,
         "unified-delay": False,

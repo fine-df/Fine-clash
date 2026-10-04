@@ -1,4 +1,4 @@
-# fine-clash-unified-v1 | fine-clash-version:20261004110002 | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110003 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -9,11 +9,6 @@ unified-delay: false
 tcp-concurrent: true
 profile:
   store-selected: true
-proxy-providers:
-  BitzPool:
-    type: http
-    url: https://cont.bbkcdpub.com/api/v1/client/BitzNet.conf?token=23a7ad64b83f7b867eb75da3738184c6
-    interval: 21600
 proxies:
 - type: vless
   name: 未知 VLESS-128 | free-nodes
@@ -30,62 +25,22 @@ proxies:
     path: /
     headers:
       Host: u.srilankangrill.online
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: fr.api-music-fa.com
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
-  name: 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
-  server: argo6.5671234.xyz
+- server: yg1.ygkkk.dpdns.org
   port: 443
-  udp: true
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  encryption: none
-  tls: true
-  servername: argo6.5671234.xyz
   network: ws
-  ws-opts:
-    path: /e8e2cecb6188f7fb
-    headers:
-      Host: argo6.5671234.xyz
-- cipher: auto
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
   servername: jmp1.907737.xyz
-  port: 443
+  alterId: 0
+  name: 未知 VMESS-369 | free-nodes
   type: vmess
-  server: yg1.ygkkk.dpdns.org
   tls: true
+  cipher: auto
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
-  name: 未知 VMESS-369 | free-nodes
-  network: ws
-  alterId: 0
-- type: vless
-  name: 🇹🇼 Taiwan, Taipei | [BL] [253182df]
-  server: argo6.5671234.xyz
-  port: 443
-  udp: true
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  encryption: none
-  tls: true
-  servername: argo6.5671234.xyz
-  network: ws
-  ws-opts:
-    path: /e8e2cecb6188f7fb
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
 - type: vmess
-  name: 美国(yudou789.top 玉豆分享)
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
   server: yg1.ygkkk.dpdns.org
   port: 443
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
@@ -98,33 +53,6 @@ proxies:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-- type: vless
-  name: 未知 VLESS-167 | free-nodes
-  server: 87.58.201.211
-  port: 443
-  udp: true
-  uuid: 87fd990d-ca93-440a-bbd4-e8281c4a0910
-  encryption: none
-  tls: true
-  servername: d3-nl1.cloud-cdn.xyz
-  client-fingerprint: edge
-  network: grpc
-  grpc-opts:
-    grpc-service-name: vlgrpc
-- type: vless
-  name: 未知 VLESS-162 | free-nodes
-  server: geo.shkola112.site
-  port: 443
-  udp: true
-  uuid: 76ac91c5-ea82-4046-8ee7-2ffbb563ac94
-  encryption: none
-  tls: true
-  servername: geo.shkola112.site
-  network: ws
-  ws-opts:
-    path: /api-vless
-    headers:
-      Host: geo.shkola112.site
 - type: vless
   name: 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
   server: polkadotnewone.failspace.top
@@ -150,34 +78,6 @@ proxies:
   client-fingerprint: firefox
   network: tcp
 - type: vless
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [4876ad21]
-  server: dedic-norw-new2.failspace.top
-  port: 443
-  udp: true
-  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
-  encryption: none
-  tls: true
-  flow: xtls-rprx-vision
-- type: vmess
-  name: 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  server: silversbgfgov.vip44.wogbcnmnagfwgov.com
-  port: 11244
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vless
-  name: 未知 VLESS-164 | free-nodes
-  server: www.large-files.info
-  port: 8443
-  udp: true
-  uuid: 7c99dc89-bf49-45c9-acc5-e43f36657518
-  encryption: none
-  tls: true
-  network: ws
-  ws-opts:
-    path: /var/www/html/video/preview/download/i8o0la
-- type: vless
   name: 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
   server: pol-pol-poland.failspace.top
   port: 443
@@ -190,47 +90,6 @@ proxies:
   client-fingerprint: firefox
   network: tcp
 - type: vless
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [234b0960]
-  server: 177.3.209.165
-  port: 443
-  udp: true
-  uuid: a5dd2dd9-0995-449e-be67-4a409890dc42
-  encryption: none
-  tls: true
-  servername: owkd.pashalloh.org
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: mYtQrGiR9EkOpUsvsI7E18AWnFZZqfOPXUdpzE3luz8
-    short-id: da4d87fa
-  network: tcp
-- type: vless
-  name: 🇸🇪 Sweden, Stockholm | [BL]
-  server: 177.3.209.165
-  port: 443
-  udp: true
-  uuid: a5dd2dd9-0995-449e-be67-4a409890dc42
-  encryption: none
-  tls: true
-  servername: owkd.pashalloh.org
-  flow: xtls-rprx-vision
-  client-fingerprint: qq
-  reality-opts:
-    public-key: mYtQrGiR9EkOpUsvsI7E18AWnFZZqfOPXUdpzE3luz8
-    short-id: da4d87fa
-  network: tcp
-- type: trojan
-  name: 🇨🇿 Czechia, Prague | [BL]
-  server: cz-musicc.moritech.net
-  port: 443
-  udp: true
-  password: f8b-U5TxjNRYKLvU0Js_6YeMCdj_82km
-  tls: true
-  client-fingerprint: firefox
-  network: grpc
-  grpc-opts:
-    grpc-service-name: grpcbeast
-- type: vless
   name: 🇫🇮 Finland, Helsinki | [BL]
   server: 177.3.214.52
   port: 443
@@ -240,80 +99,228 @@ proxies:
   tls: true
   servername: uehr.pashalloh.org
   flow: xtls-rprx-vision
-  client-fingerprint: ios
+  client-fingerprint: qq
   reality-opts:
     public-key: 6bQ-L8tEd3guits_RHgfkXXArmnkB2GxFx23BgWC63c
     short-id: da4d87fa
   network: tcp
+- type: vless
+  name: 🇳🇴 Norway, Oslo | [BL]
+  server: dedic-norw-new2.failspace.top
+  port: 443
+  udp: true
+  uuid: cd3bb7d9-7df3-4644-ac05-c260990ac277
+  encryption: none
+  tls: true
+  flow: xtls-rprx-vision
+- type: vmess
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
+  server: sbgfgov.vip6.wogacnmnagfwgov.com
+  port: 11206
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  server: v29.hdacd.com
+  port: 30829
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  server: silversbgfgov.vip44.wogbcnmnagfwgov.com
+  port: 11244
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  server: v35.hdacd.com
+  port: 30835
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  server: v33.hdacd.com
+  port: 30833
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vless
+  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  server: 141.193.213.20
+  port: 8443
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+  encryption: none
+  tls: true
+  servername: u.srilankangrill.online
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: u.srilankangrill.online
+- type: vless
+  name: 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  server: 122.8.45.4
+  port: 8443
+  udp: true
+  uuid: 2d24e797-ec6c-0808-dd31-9cd22b5dfdc7
+  encryption: none
+  tls: true
+  servername: download.nvidia.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: WtLZK1KyhSpI3K-R4M3sLAHWPOgGPMgkL6RneL0OfCY
+  network: grpc
+  grpc-opts:
+    grpc-service-name: TunService
+- type: vless
+  name: 🇩🇪 Germany, Kropp | [BL]
+  server: 122.8.45.4
+  port: 8443
+  udp: true
+  uuid: 2d24e797-ec6c-0808-dd31-9cd22b5dfdc7
+  encryption: none
+  tls: true
+  servername: cdn.steamstatic.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: sRTNjrosfFSiuQX7Yt7Ub5DJvFznfHSC3nlzFQ3H2WU
+  network: grpc
+  grpc-opts:
+    grpc-service-name: TunService
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  server: v4.hdacd.com
+  port: 30804
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vless
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
+  server: 8.47.69.0
+  port: 2053
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  encryption: none
+  tls: true
+  servername: fr.api-music-fa.com
+  network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+- type: vless
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  server: 8.47.69.0
+  port: 2053
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  encryption: none
+  tls: true
+  servername: fr.api-music-fa.com
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+- type: vmess
+  name: 🇭🇰_HK_中国香港
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
 proxy-groups:
 - name: GLOBAL
   type: select
   proxies:
   - DIRECT
-  include-all: true
-- name: Bitz
-  type: select
-  proxies:
-  - Bitz-Auto
-  use:
-  - BitzPool
-  default-selected: Bitz-Auto
-- name: Bitz-Auto
-  type: url-test
-  include-all-providers: true
-  url: https://www.ozon.ru/
-  interval: 900
-  timeout: 8000
-  tolerance: 100
-  lazy: false
+  - 未知 VLESS-128 | free-nodes
+  - 未知 VMESS-369 | free-nodes
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
+  - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
+  - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
+  - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
+  - 🇫🇮 Finland, Helsinki | [BL]
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  - 🇩🇪 Germany, Kropp | [BL]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇭🇰_HK_中国香港
+  default-selected: 未知 VLESS-128 | free-nodes
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
   - 未知 VLESS-128 | free-nodes
-  - 🇫🇷 France, Roubaix | 🌐 | [BL]
-  - 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
   - 未知 VMESS-369 | free-nodes
-  - 🇹🇼 Taiwan, Taipei | [BL] [253182df]
-  - 美国(yudou789.top 玉豆分享)
-  - 未知 VLESS-167 | free-nodes
-  - 未知 VLESS-162 | free-nodes
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
   - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [4876ad21]
-  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  - 未知 VLESS-164 | free-nodes
   - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [234b0960]
-  - 🇸🇪 Sweden, Stockholm | [BL]
-  - 🇨🇿 Czechia, Prague | [BL]
   - 🇫🇮 Finland, Helsinki | [BL]
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  - 🇩🇪 Germany, Kropp | [BL]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇭🇰_HK_中国香港
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
   - 未知 VLESS-128 | free-nodes
-  - 🇫🇷 France, Roubaix | 🌐 | [BL]
-  - 🇹🇼 Taiwan, Taipei | [BL] [51919ad3]
   - 未知 VMESS-369 | free-nodes
-  - 🇹🇼 Taiwan, Taipei | [BL] [253182df]
-  - 美国(yudou789.top 玉豆分享)
-  - 未知 VLESS-167 | free-nodes
-  - 未知 VLESS-162 | free-nodes
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 🇵🇱 Poland, Warsaw | [BL] [877fb68a]
   - 🇵🇱 Poland, Warsaw | [BL] [e151d391]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [4876ad21]
-  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
-  - 未知 VLESS-164 | free-nodes
   - 🇵🇱 Poland, Warsaw | [BL] [714dd31a]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [234b0960]
-  - 🇸🇪 Sweden, Stockholm | [BL]
-  - 🇨🇿 Czechia, Prague | [BL]
   - 🇫🇮 Finland, Helsinki | [BL]
-  url: https://www.gstatic.com/generate_204
+  - 🇳🇴 Norway, Oslo | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
+  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  - 🇩🇪 Germany, Kropp | [BL]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [f599cf1c]
+  - 🇭🇰_HK_中国香港
+  url: https://play.google.com/store
   interval: 900
   timeout: 8000
-  tolerance: 100
+  tolerance: 50
   lazy: false
 tun:
   enable: true
@@ -385,33 +392,25 @@ rules:
 - DOMAIN-SUFFIX,xiaomi.com,DIRECT
 - DOMAIN-SUFFIX,miwifi.com,DIRECT
 - DOMAIN-SUFFIX,miui.com,DIRECT
-- DOMAIN-SUFFIX,ozon.ru,Bitz
-- DOMAIN-SUFFIX,ozon.com,Bitz
-- DOMAIN-SUFFIX,ozon.kz,Bitz
-- DOMAIN-SUFFIX,ozon.by,Bitz
-- DOMAIN-SUFFIX,ozonusercontent.com,Bitz
-- DOMAIN-SUFFIX,amazon.com,Bitz
-- DOMAIN-SUFFIX,amazon.co.uk,Bitz
-- DOMAIN-SUFFIX,amazon.de,Bitz
-- DOMAIN-SUFFIX,amazon.fr,Bitz
-- DOMAIN-SUFFIX,amazon.es,Bitz
-- DOMAIN-SUFFIX,amazon.it,Bitz
-- DOMAIN-SUFFIX,amazon.nl,Bitz
-- DOMAIN-SUFFIX,amazon.pl,Bitz
-- DOMAIN-SUFFIX,amazon.se,Bitz
-- DOMAIN-SUFFIX,amazon.ca,Bitz
-- DOMAIN-SUFFIX,amazon.com.au,Bitz
-- DOMAIN-SUFFIX,amazon.co.jp,Bitz
-- DOMAIN-SUFFIX,amazon.in,Bitz
-- DOMAIN-SUFFIX,amazon.com.br,Bitz
-- DOMAIN-SUFFIX,amazon.com.mx,Bitz
-- DOMAIN-SUFFIX,amazon.sg,Bitz
-- DOMAIN-SUFFIX,amazon.ae,Bitz
-- DOMAIN-SUFFIX,amazon.sa,Bitz
-- DOMAIN-SUFFIX,amazon.tr,Bitz
-- DOMAIN-SUFFIX,sellercentral.amazon.com,Bitz
-- DOMAIN-SUFFIX,amazon-adsystem.com,Bitz
-- DOMAIN-SUFFIX,ssl-images-amazon.com,Bitz
-- DOMAIN-SUFFIX,media-amazon.com,Bitz
+- DOMAIN-SUFFIX,youtube.com,Fine
+- DOMAIN-SUFFIX,youtu.be,Fine
+- DOMAIN-SUFFIX,ytimg.com,Fine
+- DOMAIN-SUFFIX,googlevideo.com,Fine
+- DOMAIN-SUFFIX,netflix.com,Fine
+- DOMAIN-SUFFIX,nflxvideo.net,Fine
+- DOMAIN-SUFFIX,nflximg.net,Fine
+- DOMAIN-SUFFIX,twitch.tv,Fine
+- DOMAIN-SUFFIX,ttvnw.net,Fine
+- DOMAIN-SUFFIX,vimeo.com,Fine
+- DOMAIN-SUFFIX,play.google.com,Fine
+- DOMAIN-SUFFIX,googleplay.com,Fine
+- DOMAIN-SUFFIX,dl.google.com,Fine
+- DOMAIN-SUFFIX,gvt1.com,Fine
+- DOMAIN-SUFFIX,gvt2.com,Fine
+- DOMAIN-SUFFIX,microsoft.com,Fine
+- DOMAIN-SUFFIX,microsoftstore.com,Fine
+- DOMAIN-SUFFIX,apps.microsoft.com,Fine
+- DOMAIN-SUFFIX,steampowered.com,Fine
+- DOMAIN-SUFFIX,steamcommunity.com,Fine
 - GEOIP,CN,DIRECT
 - MATCH,Fine

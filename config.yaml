@@ -46,6 +46,15 @@ nodes:
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
   min_clean_score: 65
+premium_us:
+  enabled: true
+  require_country: 'US'
+  min_clean_score: 80
+  max_ping_ms: 500
+  require_non_hosting: true
+  max_nodes: 8
+  max_per_server: 2
+  max_per_org: 2
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'
@@ -76,3 +85,4 @@ output:
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
   report_file: 'data/last_run.json'
+  premium_us_file: 'data/premium_us_pool.yaml'

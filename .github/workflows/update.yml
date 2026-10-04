@@ -85,6 +85,20 @@ jobs:
           grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
           grep -q 'MATCH,Fine' live_clash.yaml
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          pool = yaml.safe_load(Path('data/premium_us_pool.yaml').read_text(encoding='utf-8')) if Path('data/premium_us_pool.yaml').is_file() else {'proxies': []}
+          profile = yaml.safe_load(Path('live_clash.yaml').read_text(encoding='utf-8'))
+          premium = pool.get('proxies') or []
+          groups = {g.get('name'): g for g in profile.get('proxy-groups', []) if isinstance(g, dict)}
+          if premium:
+              assert 'Premium-US' in groups and 'Premium-US-Auto' in groups, 'Premium-US pool exists but group is missing'
+              assert len(premium) <= 8, 'Premium-US pool exceeds configured cap'
+          else:
+              assert 'Premium-US' not in groups and 'Premium-US-Auto' not in groups, 'Empty Premium-US pool must not leave stale groups'
+          print(f"Premium-US validation: {len(premium)} nodes")
+          PY
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
@@ -105,7 +119,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json data/premium_us_pool.yaml
           git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
           if git diff --cached --quiet; then
             echo 'no changes'

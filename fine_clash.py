@@ -796,6 +796,69 @@ def candidate_gate_passes(item, gate, clean, min_clean):
         return bool(gemini and google_play and clean_ok)
     return False
 
+def premium_us_passes(entry, cfg):
+    if not bool(cfg.get("enabled", True)):
+        return False
+    country = str(entry.get("country") or "").upper().strip()
+    required_country = str(cfg.get("require_country", "US")).upper().strip()
+    if country != required_country:
+        return False
+    clean = _safe_float(entry.get("clean"), 0.0)
+    if clean < _safe_float(cfg.get("min_clean_score", 80), 80.0):
+        return False
+    ping = entry.get("shenzhen_ping_ms")
+    if ping is None or _safe_float(ping, float("inf")) >= _safe_float(cfg.get("max_ping_ms", 500), 500.0):
+        return False
+    org = str(entry.get("org") or "").lower()
+    if any(marker in org for marker in CLOUD_MARKERS + HIGH_RISK_MARKERS):
+        return False
+    if bool(cfg.get("require_non_hosting", True)) and entry.get("hosting") is not False:
+        return False
+    return True
+
+
+def rank_premium_us_candidates(nodes, metadata, limit=8, max_per_server=2, max_per_org=2):
+    metadata = metadata or {}
+    limit = max(1, int(limit))
+    max_per_server = max(1, int(max_per_server))
+    max_per_org = max(1, int(max_per_org))
+    enriched=[]
+    for node in nodes:
+        fp=fingerprint(node); meta=metadata.get(fp,{})
+        enriched.append({
+            "node":node,
+            "fp":fp,
+            "clean":_safe_float(meta.get("clean"),0.0),
+            "ping":_safe_float(meta.get("shenzhen_ping_ms"),float("inf")),
+            "score":_safe_float(meta.get("score"),0.0),
+            "server":str(node.get("server") or "").strip().lower(),
+            "org":str(meta.get("org") or meta.get("asn") or "").strip().lower(),
+        })
+    enriched.sort(key=lambda e:(-e["clean"],e["ping"],-e["score"],e["fp"]))
+    seen_fp=set(); server_count={}; org_count={}; picked=[]
+    for e in enriched:
+        if e["fp"] in seen_fp:
+            continue
+        if e["server"] and server_count.get(e["server"],0) >= max_per_server:
+            continue
+        if e["org"] and org_count.get(e["org"],0) >= max_per_org:
+            continue
+        seen_fp.add(e["fp"])
+        if e["server"]: server_count[e["server"]] = server_count.get(e["server"],0) + 1
+        if e["org"]: org_count[e["org"]] = org_count.get(e["org"],0) + 1
+        picked.append(e["node"])
+        if len(picked) >= limit:
+            break
+    return picked
+
+
+def write_premium_us_pool(path, nodes):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"proxies": unique_node_names(nodes)}
+    path.write_text(yaml.safe_dump(payload, allow_unicode=True, sort_keys=False), encoding="utf-8")
+
+
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     live=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
@@ -926,7 +989,8 @@ def run():
         candidate=candidate_gate_passes(item,gate,clean,min_clean)
 
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
-        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value}
+        privacy_obj=ipinfo_data.get("privacy") if isinstance(ipinfo_data.get("privacy"),dict) else {}
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value,"country":str(ipinfo_data.get("country") or "").upper(),"hosting":privacy_obj.get("hosting") if "hosting" in privacy_obj else None}
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
@@ -957,6 +1021,35 @@ def run():
             selected.append(node)
 
     # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
+    premium_cfg=rules.get("premium_us",{}) or {}
+    premium_us_candidates=[]
+    premium_us_meta={}
+    for rec in candidate_records:
+        fp,node=rec["fp"],rec["node"]
+        result=rec["result"]
+        if not shenzhen_passes(result,shenzhen_cfg):
+            continue
+        entry=report_lookup.get(fp,{})
+        if premium_us_passes(entry,premium_cfg):
+            premium_us_candidates.append(node)
+            premium_us_meta[fp]={
+                "clean":entry.get("clean",0),
+                "shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),
+                "score":entry.get("score",0),
+                "org":entry.get("org"),
+                "asn":entry.get("asn"),
+            }
+    premium_ranked=rank_premium_us_candidates(
+        premium_us_candidates,
+        premium_us_meta,
+        limit=int(premium_cfg.get("max_nodes",8)),
+        max_per_server=int(premium_cfg.get("max_per_server",2)),
+        max_per_org=int(premium_cfg.get("max_per_org",2)),
+    ) if premium_us_candidates and bool(premium_cfg.get("enabled",True)) else []
+    premium_path=ROOT/rules.get("output",{}).get("premium_us_file","data/premium_us_pool.yaml")
+    write_premium_us_pool(premium_path,premium_ranked)
+    report["premium_us_candidates"]=len(premium_us_candidates)
+    report["premium_us_selected"]=len(premium_ranked)
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):

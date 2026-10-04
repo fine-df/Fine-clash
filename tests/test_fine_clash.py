@@ -461,3 +461,31 @@ def test_update_history_dedups_within_same_day():
     fc.update_history(db, "fp", result)
     row = fc.update_history(db, "fp", result)  # 同一自然日第二次访问
     assert row["pass_count"] == 1 and row["seen_count"] == 1
+
+
+# Premium-US optional side-pool tests
+def test_premium_us_requires_us_non_hosting_and_sub_500_ping():
+    cfg={"enabled":True,"require_country":"US","min_clean_score":80,"max_ping_ms":500,"require_non_hosting":True}
+    base={"country":"US","org":"Example Residential ISP","hosting":False,"clean":80,"shenzhen_ping_ms":499.9}
+    assert fc.premium_us_passes(base,cfg)
+    assert not fc.premium_us_passes({**base,"shenzhen_ping_ms":500},cfg)
+    assert not fc.premium_us_passes({**base,"country":"CA"},cfg)
+    assert not fc.premium_us_passes({**base,"hosting":True},cfg)
+    assert not fc.premium_us_passes({**base,"clean":79.9},cfg)
+
+def test_premium_us_group_is_optional_in_final_config():
+    fine=[{"name":"Fine-1","type":"trojan","server":"fine.example.com","port":443,"password":"secret","tls":True}]
+    premium=[{"name":"US-1","type":"trojan","server":"us.example.com","port":443,"password":"secret2","tls":True}]
+    cfg=bf.build_config(fine,premium)
+    names=[g["name"] for g in cfg["proxy-groups"]]
+    assert "Premium-US" in names and "Premium-US-Auto" in names
+    assert "US-1" in next(g for g in cfg["proxy-groups"] if g["name"]=="Premium-US")["proxies"]
+    empty=bf.build_config(fine,[])
+    empty_names=[g["name"] for g in empty["proxy-groups"]]
+    assert "Premium-US" not in empty_names and "Premium-US-Auto" not in empty_names
+
+def test_premium_us_pool_writer_allows_empty_pool(tmp_path):
+    path=tmp_path/"premium_us_pool.yaml"
+    fc.write_premium_us_pool(path,[])
+    data=fc.yaml.safe_load(path.read_text())
+    assert data=={"proxies":[]}

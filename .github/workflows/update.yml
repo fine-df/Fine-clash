@@ -63,7 +63,6 @@ jobs:
         run: python fine_clash.py
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
-        env:
         run: python build_final.py data/fine_pool.yaml
       - name: Validate profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
@@ -73,7 +72,6 @@ jobs:
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
-          grep -q '^- name: Bitz-Auto' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
           grep -q '^- name: Fine-Auto' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
@@ -88,6 +86,51 @@ jobs:
             exit 1
           fi
           if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz
+            exit 1
+          fi
+          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+            echo 'subscription credential or token-bearing URL leaked into public profile'
+            exit 1
+          fi
+          mihomo -t -f live_clash.yaml
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish Fine-only subscription'
+          git push origin HEAD:main
+ live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
+          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+            echo 'subscription credential or token-bearing URL leaked into public profile'
+            exit 1
+          fi
+          mihomo -t -f live_clash.yaml
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add -u fine_final.yaml fine_merged.yaml live_v2ray.txt live_probes.json || true
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish unified Fine/Bitz subscription'
+          git push origin HEAD:main
+ live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
             exit 1
           fi

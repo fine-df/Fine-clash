@@ -365,7 +365,9 @@ class GitHubDiscovery:
         for base_query in self.cfg["queries"]:
             try: data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query} pushed:>={cutoff}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
             except requests.RequestException: continue
-            for item in data.get("items",[]): repos[item["full_name"]]=item
+            for item in data.get("items",[]):
+                if int(item.get("stargazers_count", 0)) >= int(self.cfg.get("min_stars", 30)):
+                    repos[item["full_name"]]=item
         return sorted(repos.values(),key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),reverse=True)[:int(self.cfg["max_repositories"])]
     def candidate_files(self,repo):
         owner,name=repo["full_name"].split("/",1)

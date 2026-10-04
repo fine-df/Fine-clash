@@ -700,7 +700,8 @@ def run():
         if gate in ("reachable", "gemini_or_play"):
             # 实际筛选闸门：Gemini 或 Google Play 商店任一可达即可进入深圳测试。
             # Google 204 仅作辅助诊断，不作为“能否进入池子”的依据。
-            candidate=bool(item["gemini"] or item["google_play"])
+            min_clean=float(rules["nodes"].get("min_clean_score", 0))
+            candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
         else:
             candidate=bool(item["gemini"] and item["google_play"])
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj

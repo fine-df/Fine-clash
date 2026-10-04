@@ -7,11 +7,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 import requests
 import yaml
+from urllib.parse import urlsplit, urlunsplit
 from fine_clash import fingerprint, mihomo_node_is_testable, parse_subscription, resolved_server_is_safe, unique_node_names
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
-BITZ_SUB_URL = os.environ.get("BITZ_SUB_URL", "https://cont.bbkcdpub.com/api/v1/client/BitzNet.conf?token=23a7ad64b83f7b867eb75da3738184c6")
+BITZ_SUB_URL = os.environ.get("BITZ_SUB_URL", "").strip()
 
 AMAZON_DOMAINS=["amazon.com","amazon.co.uk","amazon.de","amazon.fr","amazon.es","amazon.it","amazon.nl","amazon.pl","amazon.se","amazon.ca","amazon.com.au","amazon.co.jp","amazon.in","amazon.com.br","amazon.com.mx","amazon.sg","amazon.ae","amazon.sa","amazon.tr","sellercentral.amazon.com","amazon-adsystem.com","ssl-images-amazon.com","media-amazon.com"]
 OZON_DOMAINS=["ozon.ru","ozon.com","ozon.kz","ozon.by","ozonusercontent.com"]
@@ -41,12 +42,36 @@ def load_fine_nodes():
     if not nodes: raise SystemExit("FATAL: Fine pool is empty or has no testable nodes.")
     return nodes
 
-def fetch_bitz_nodes():
+def _redact_url(url):
     try:
-        r=requests.get(BITZ_SUB_URL,timeout=30,headers={"User-Agent":"Fine-Clash/2.0","Accept":"text/plain,application/yaml,*/*"})
+        parts=urlsplit(url)
+        if not parts.scheme or not parts.netloc:
+            return "<invalid-url>"
+        return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
+    except Exception:
+        return "<invalid-url>"
+
+def fetch_bitz_nodes():
+    if not BITZ_SUB_URL:
+        raise SystemExit("FATAL: BITZ_SUB_URL is not configured. Store the complete Bitz subscription URL in the BITZ_SUB_URL environment variable / GitHub Actions secret.")
+    safe_url=_redact_url(BITZ_SUB_URL)
+    try:
+        r=requests.get(
+            BITZ_SUB_URL,
+            timeout=30,
+            headers={"User-Agent":"Fine-Clash/2.1","Accept":"text/plain,application/yaml,*/*"},
+        )
         r.raise_for_status()
+    except requests.HTTPError as exc:
+        status=exc.response.status_code if exc.response is not None else "unknown"
+        if status in (401,403):
+            raise SystemExit(
+                f"FATAL: Bitz subscription rejected the request with HTTP {status} at {safe_url}. "
+                "The subscription URL/token or the runner's access is invalid; refresh the Bitz subscription URL/token and store it in BITZ_SUB_URL."
+            ) from exc
+        raise SystemExit(f"FATAL: Bitz subscription fetch failed with HTTP {status} at {safe_url}.") from exc
     except requests.RequestException as exc:
-        raise SystemExit(f"FATAL: Bitz subscription fetch failed: {exc}") from exc
+        raise SystemExit(f"FATAL: Bitz subscription fetch failed at {safe_url}: {exc}") from exc
     parsed=parse_subscription(r.text)
     nodes=_dedupe_nodes([node for node in parsed if resolved_server_is_safe(node.get("server",""))],"Bitz | ")
     if not nodes: raise SystemExit("FATAL: Bitz subscription returned no supported testable nodes.")

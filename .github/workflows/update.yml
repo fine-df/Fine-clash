@@ -61,7 +61,9 @@ jobs:
           grep -q '^proxy-providers:' live_clash.yaml
           grep -q '^  BitzPool:' live_clash.yaml
           grep -q '^- name: Bitz' live_clash.yaml
+          grep -q '^- name: Bitz-Auto' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
+          grep -q '^- name: Fine-Auto' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
           grep -q 'MATCH,Fine' live_clash.yaml

@@ -769,5 +769,12 @@ def run():
     if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
     build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+    # 写分类（油管/综合 Web 可达性 + 总体可达）→ build_final.py 据其把池子切成互斥/安全 Bitz/Fine
+    _probes = {r["name"]: {"play": bool(r.get("google_play")),
+                           "ok": bool((r.get("google") or {}).get("ok") or r.get("gemini") or r.get("google_play"))}
+               for r in report["results"] if r.get("name")}
+    (_probes_file:=ROOT/rules["output"].get("probe_file","live_probes.json"))
+    _probes_file.write_text(json.dumps(_probes,ensure_ascii=False,indent=2),encoding="utf-8")
+    print("live_probes: %d nodes, play=%d" % (len(_probes), sum(1 for v in _probes.values() if v["play"])))
 
 if __name__=="__main__": run()

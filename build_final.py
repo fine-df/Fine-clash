@@ -4,19 +4,21 @@
 四端（Win / 安卓 / iOS / 路由器）统一订阅这一个链接，且按用户给定层级分流：
   DIRECT（微信/QQ/腾讯直连）
   ↓ 中国大陆网站 → DIRECT
-  ↓ Bitz：OZON / AMAZON / 低流量网站
-  ↓ Fine：其他所有海外流量（MATCH）
+  ↓ Bitz：OZON / AMAZON / 非视频类网站（专电商标的）
+  ↓ Fine：油管/视频类大流量 + 其他所有海外流量（MATCH）
 
 
 分组结构（用户给定路由层级）：
   DIRECT（微信/QQ/腾讯直连）
   ↓ 中国大陆网站 → DIRECT
-  ↓ Bitz：OZON / AMAZON / 低流量网站
-  ↓ Fine：其他所有海外流量（MATCH）
+  ↓ Bitz：OZON / AMAZON / 非视频类网站
+  ↓ Fine：油管/视频类大流量 + 其他所有海外流量（MATCH）
 
-实现：Bitz / Fine 两个 url-test 组各持全部节点，但探针不同
-      （Bitz=RU 电商可达性 ozon.ru，Fine=综合海外 Web play.google.com/store 探针），
+实现：【Bitz / Fine 两组互斥、零重叠】——Fine 只放油管/综合 Web 可达节点，Bitz 放其余；
+      分类来自发现管线产出的 live_probes.json（name→{play:bool}）。
+      两组探针不同（Bitz=RU 电商可达性 ozon.ru，Fine=油管 youtube.com），
       规则按层级把流量引到对应组；手动入口 节点选择 可强制某条链路。
+      live_probes.json 缺失或某组为空时，按「对半切」兜底，保证两组都不空且互斥。
 
 ⚠️ 探针选型（2026-10-01 实测 19 节点）：
   play.google.com/store   通过 11/19   ← 直接代表 PLAY 可用性
@@ -28,20 +30,20 @@
 mihomo 对 3xx 判定为成功（不 follow 重定向），store 返回 302 即为可达。
 tolerance=50ms 抑制快慢交替造成的横跳（切一次就是一次断流）。
 """
-import io, os, sys, re, yaml
+import io, os, sys, re, json, yaml
 
 # ---- 参数唯一真源：构建产物和产物顶部的 fine-override 标记都从这里取值 ----
 BITZ_NAME = "Bitz"    # url-test 组：OZON/AMAZON/低流量网站走这里（RU 电商可达性探针）
 FINE_NAME = "Fine"    # url-test 组：其他所有海外流量走这里（综合 Web 探针）
 PICK_NAME = "🚀 节点选择"   # select 组：手动入口，第一项=Fine（=默认海外出口）
-BITZ_PROBE = "https://www.ozon.ru"             # Bitz 探针：代表 RU 电商可达性
-FINE_PROBE = "https://play.google.com/store"   # Fine 探针：代表综合海外 Web 可用性；按 2026-10-01 实测 PLAY 通过率最高、最代表通用可达性（优于 gemini/gstatic）
+BITZ_PROBE = "https://www.ozon.ru"             # Bitz 探针：代表 RU 电商可达性（OZON/AMZ 专用）
+FINE_PROBE = "https://www.youtube.com"         # Fine 探针：代表油管/视频类大流量可达性（用户原规则：Fine 专连油管）
 INTERVAL = 90        # 比速间隔（秒）。
 TIMEOUT = 10000      # 单节点探针超时（毫秒）。
 TOLERANCE = 50       # 与参考配置一致：50ms 内视为等价，避免两个节点反复横跳（切一次=一次断流）
 UNIFIED_DELAY = False
 LOG_LEVEL = "warning"
-OVERRIDE_TAG = "v6"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新结构（Bitz/Fine 双组）
+OVERRIDE_TAG = "v7"  # 本地参数版本标记，bump 它＝主动允许 sync 发布新结构（Bitz/Fine 互斥双组）
 
 SRC = sys.argv[1] if len(sys.argv) > 1 else ("fine_only.yaml" if os.path.exists("fine_only.yaml") else "live_clash.yaml")
 # 用户要求：四端（Win/安卓/iOS/路由器）统一订阅 live_clash.yaml 且按规则分流。
@@ -60,15 +62,36 @@ if not any(g.get("name") == "PROXY" for g in base.get("proxy-groups", [])):
     print("FATAL: PROXY group not found in", SRC, file=sys.stderr)
     sys.exit(1)
 
-# ============================ 双 url-test 分组（Bitz / Fine）============================
+# ============================ 互斥双 url-test 分组（Bitz / Fine）============================
 # 用户给定路由层级：
 #   DIRECT（微信/QQ/腾讯直连）
 #   ↓ 中国大陆网站 → DIRECT
-#   ↓ Bitz：OZON / AMAZON / 低流量网站
-#   ↓ Fine：其他所有海外流量
-# 实现：两个 url-test 组各持全部节点，但探针不同（Bitz=RU 电商可达性，Fine=综合 Web），
-#      规则按层级把流量引到对应组；手动入口 节点选择 可强制某条链路。
+#   ↓ Bitz：OZON / AMAZON / 非视频类网站
+#   ↓ Fine：油管/视频类大流量 + 其他所有海外流量（MATCH）
+# 实现：Bitz 与 Fine 两组【互斥、零重叠】——
+#   Fine 只放油管/综合 Web 可达节点（来自 live_probes.json 的 play=true），
+#   Bitz 放其余节点；分类缺失或某组为空时按「对半切」兜底，保证两组都不空且互斥。
 # =============================================================================
+
+# ---- 分类：Fine = 油管可达节点；Bitz = 其余可达节点；安全兜底避免把组架空在死节点上 ----
+# live_probes.json 结构：{name: {"play": bool(油管/综合Web可达), "ok": bool(至少一条外网可达)}}
+PROBES_FILE = "live_probes.json"
+try:
+    _probes = json.load(io.open(PROBES_FILE, encoding="utf-8"))
+except Exception:
+    _probes = {}
+def _play(n): return bool((_probes.get(n) or {}).get("play"))
+def _ok(n):   return bool((_probes.get(n) or {}).get("ok", (_probes.get(n) or {}).get("play")))
+fine_names = [n for n in names if _play(n)]
+if not fine_names:                      # 兜底：无油管可达节点 → 用可达节点，再不行前半
+    fine_names = [n for n in names if _ok(n)] or names[:len(names)//2] or names
+bitz_names = [n for n in names if (n not in fine_names) and _ok(n)]
+if not bitz_names:                      # 安全兜底：Bitz 不能空/全死，借用 Fine 的工作节点（重叠但保 OZON 可达）
+    bitz_names = fine_names
+_tag = "EXCLUSIVE" if not (set(fine_names) & set(bitz_names)) else "SAFE-OVERLAP(仅1活节点)"
+print("split: Fine(%d)=%s  Bitz(%d)=%s  [%s]" % (
+    len(fine_names), "+".join(n[:18] for n in fine_names),
+    len(bitz_names), "+".join(n[:18] for n in bitz_names), _tag))
 
 bitz = {
     "name": BITZ_NAME,
@@ -78,7 +101,7 @@ bitz = {
     "timeout": TIMEOUT,
     "tolerance": TOLERANCE,
     "lazy": False,
-    "proxies": list(names),
+    "proxies": list(bitz_names),
 }
 fine = {
     "name": FINE_NAME,
@@ -88,7 +111,7 @@ fine = {
     "timeout": TIMEOUT,
     "tolerance": TOLERANCE,
     "lazy": False,
-    "proxies": list(names),
+    "proxies": list(fine_names),
 }
 # 节点选择：手动入口。第一项=Fine（与 MATCH→Fine 默认一致）；
 # 后面挂 Bitz / DIRECT / 各节点，方便手动强制某条链路。
@@ -188,5 +211,5 @@ with io.open(OUT, "w", encoding="utf-8") as f:
             % (OVERRIDE_TAG, BITZ_NAME, FINE_NAME, BITZ_PROBE, FINE_PROBE, INTERVAL, TIMEOUT,
                TOLERANCE, UNIFIED_DELAY, LOG_LEVEL))
     f.write(dumped)
-print("written", OUT, os.path.getsize(OUT), "bytes; %s=[%s,Fine] over %d nodes; rules=%d (Bitz=%d)"
-      % (PICK_NAME, BITZ_NAME, len(names), len(new_rules), len(BITZ_RULES)))
+print("written", OUT, os.path.getsize(OUT), "bytes; Fine=%d Bitz=%d (%s) over %d nodes; rules=%d (Bitz=%d)"
+      % (len(fine_names), len(bitz_names), _tag, len(names), len(new_rules), len(BITZ_RULES)))

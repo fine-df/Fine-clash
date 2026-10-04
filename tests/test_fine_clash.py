@@ -4,6 +4,28 @@ import pytest
 from pathlib import Path
 
 import fine_clash as fc
+import build_final as bf
+
+
+def test_final_proxy_groups_expose_auto_and_manual_selection():
+    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
+    by_name = {g["name"]: g for g in groups}
+
+    assert by_name["Bitz"]["type"] == "select"
+    assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
+    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto"]
+    assert by_name["Bitz"]["use"] == ["BitzPool"]
+
+    assert by_name["Bitz-Auto"]["type"] == "url-test"
+    assert by_name["Bitz-Auto"]["include-all-providers"] is True
+    assert "use" not in by_name["Bitz-Auto"]
+
+    assert by_name["Fine"]["type"] == "select"
+    assert by_name["Fine"]["default-selected"] == "Fine-Auto"
+    assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
+
+    assert by_name["Fine-Auto"]["type"] == "url-test"
+    assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
 
 
 def test_parse_yaml_and_strip_untrusted_fields():

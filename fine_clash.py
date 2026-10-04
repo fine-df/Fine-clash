@@ -810,11 +810,21 @@ def run():
     #   合并策略：live 优先，cached 中 url 不重复的追加，确保扩源成果一定进候选池。
     seen={s.get("url") for s in live if isinstance(s,dict)}
     sources=list(live)
+    min_stars=int(rules["sources"].get("min_stars",30))
     for s in cached:
-        if isinstance(s,dict) and s.get("url") and s["url"] not in seen:
-            seen.add(s["url"]); sources.append(s)
+        if not isinstance(s,dict) or not s.get("url") or s["url"] in seen:
+            continue
+        stars=s.get("stars")
+        # Cached sources must carry explicit high-star metadata. Unknown-star
+        # legacy cache entries are not allowed to bypass the current source gate.
+        try:
+            if int(stars) < min_stars:
+                continue
+        except (TypeError,ValueError):
+            continue
+        seen.add(s["url"]); sources.append(s)
     if not sources and cached:
-        sources=cached
+        sources=[s for s in cached if isinstance(s,dict) and int(s.get("stars",0) or 0)>=min_stars]
     # Bound the persistent source pool by source quality rather than merely
     # live-vs-cached ordering. High-star, node-rich, recently-pushed sources win.
     max_sources=int(rules["sources"].get("max_sources",120))

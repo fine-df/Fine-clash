@@ -4,6 +4,10 @@ from __future__ import annotations
 import os
 import re
 import time
+import socket
+import subprocess
+import tempfile
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -102,6 +106,82 @@ def _globalping_fetch_text(url):
         return text
     raise RuntimeError("Globalping Bitz fetch timed out")
 
+def _free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
+
+
+def _fetch_bitz_via_fine_proxy(url):
+    """Use already validated Fine nodes as a private bootstrap path when Bitz blocks CI IPs."""
+    fine_nodes = load_fine_nodes()
+    binary = shutil.which("mihomo") or shutil.which("clash")
+    if not binary:
+        raise RuntimeError("mihomo binary not found for Fine bootstrap")
+    last_error = None
+    for node in fine_nodes[:3]:
+        port = _free_port()
+        work = Path(tempfile.mkdtemp(prefix="fine-bitz-fetch-"))
+        cfg = {
+            "mixed-port": port,
+            "allow-lan": False,
+            "mode": "rule",
+            "log-level": "error",
+            "proxies": [node],
+            "proxy-groups": [{"name": "PROXY", "type": "select", "proxies": [node["name"]]}],
+            "rules": ["MATCH,PROXY"],
+        }
+        proc = None
+        try:
+            (work / "config.yaml").write_text(
+                yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False),
+                encoding="utf-8",
+            )
+            proc = subprocess.Popen(
+                [binary, "-d", str(work), "-f", str(work / "config.yaml")],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            deadline = time.monotonic() + 8
+            while time.monotonic() < deadline:
+                if proc.poll() is not None:
+                    raise RuntimeError(f"mihomo exited rc={proc.returncode}")
+                try:
+                    with socket.create_connection(("127.0.0.1", port), timeout=0.5):
+                        break
+                except OSError:
+                    time.sleep(0.25)
+            else:
+                raise RuntimeError("mihomo local proxy startup timeout")
+
+            proxy_url = f"http://127.0.0.1:{port}"
+            response = requests.get(
+                url,
+                timeout=25,
+                proxies={"http": proxy_url, "https": proxy_url},
+                headers={"User-Agent": "Fine-Clash/2.1", "Accept": "text/plain,application/yaml,*/*"},
+            )
+            response.raise_for_status()
+            if not response.text.strip():
+                raise RuntimeError("Bitz returned an empty response through Fine bootstrap")
+            print(f"Bitz subscription fetched through validated Fine node: {node.get('name','<unnamed>')}")
+            return response.text
+        except Exception as exc:
+            last_error = exc
+        finally:
+            if proc is not None:
+                try:
+                    proc.terminate()
+                    proc.wait(timeout=2)
+                except Exception:
+                    try:
+                        proc.kill()
+                    except Exception:
+                        pass
+            shutil.rmtree(work, ignore_errors=True)
+    raise RuntimeError(f"all Fine bootstrap nodes failed: {type(last_error).__name__}: {last_error}")
+
+
 def fetch_bitz_nodes():
     if not BITZ_SUB_URL:
         raise SystemExit("FATAL: BITZ_SUB_URL is not configured. Store the complete Bitz subscription URL in the BITZ_SUB_URL environment variable / GitHub Actions secret.")
@@ -125,15 +205,19 @@ def fetch_bitz_nodes():
         direct_error=f"network error: {type(exc).__name__}"
     if response_text is None:
         try:
-            print(f"Bitz direct fetch failed ({direct_error}); retrying once through a Shenzhen Globalping HTTP probe.")
-            response_text=_globalping_fetch_text(BITZ_SUB_URL)
-            print("Bitz subscription fetched successfully through Shenzhen Globalping.")
-        except Exception as exc:
-            raise SystemExit(
-                f"FATAL: Bitz subscription unavailable at {safe_url}. Direct runner fetch failed ({direct_error}); "
-                f"Shenzhen Globalping fallback also failed ({type(exc).__name__}: {str(exc)[:160]}). "
-                "The Bitz endpoint is reachable only from a network path not currently available to the build runner."
-            ) from exc
+            print(f"Bitz direct fetch failed ({direct_error}); retrying through a validated Fine proxy.")
+            response_text=_fetch_bitz_via_fine_proxy(BITZ_SUB_URL)
+        except Exception as fine_exc:
+            print(f"Bitz Fine-proxy bootstrap failed ({type(fine_exc).__name__}); trying Shenzhen Globalping as final fallback.")
+            try:
+                response_text=_globalping_fetch_text(BITZ_SUB_URL)
+                print("Bitz subscription fetched successfully through Shenzhen Globalping.")
+            except Exception as gp_exc:
+                raise SystemExit(
+                    f"FATAL: Bitz subscription unavailable at {safe_url}. Direct runner fetch failed ({direct_error}); "
+                    f"Fine-proxy bootstrap failed ({type(fine_exc).__name__}: {str(fine_exc)[:120]}); "
+                    f"Shenzhen Globalping fallback failed ({type(gp_exc).__name__}: {str(gp_exc)[:120]})."
+                ) from gp_exc
     parsed=parse_subscription(response_text)
     nodes=_dedupe_nodes([node for node in parsed if resolved_server_is_safe(node.get("server",""))],"Bitz | ")
     if not nodes: raise SystemExit("FATAL: Bitz subscription returned no supported testable nodes.")

@@ -1,5 +1,7 @@
 sources:
   recent_days: 30
+  min_stars: 30
+  require_recent_push: false
   repositories_per_query: 20
   max_repositories: 80
   max_candidate_files_per_repo: 6
@@ -41,6 +43,7 @@ nodes:
   switch_wait_seconds: 0.5
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
+  min_clean_score: 65
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'

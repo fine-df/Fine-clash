@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Build the single public Clash/Mihomo profile with explicit Bitz nodes."""
+"""Build the single public Clash/Mihomo profile from the validated Fine pool."""
 from __future__ import annotations
 import os
 import re
@@ -17,8 +17,6 @@ from fine_clash import fingerprint, mihomo_node_is_testable, parse_subscription,
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
-BITZ_SUB_URL = os.environ.get("BITZ_SUB_URL", "").strip()
-GLOBALPING_HTTP_URL = "https://api.globalping.io/v1/measurements"
 
 AMAZON_DOMAINS=["amazon.com","amazon.co.uk","amazon.de","amazon.fr","amazon.es","amazon.it","amazon.nl","amazon.pl","amazon.se","amazon.ca","amazon.com.au","amazon.co.jp","amazon.in","amazon.com.br","amazon.com.mx","amazon.sg","amazon.ae","amazon.sa","amazon.tr","sellercentral.amazon.com","amazon-adsystem.com","ssl-images-amazon.com","media-amazon.com"]
 OZON_DOMAINS=["ozon.ru","ozon.com","ozon.kz","ozon.by","ozonusercontent.com"]
@@ -72,7 +70,7 @@ def build_config(fine_nodes):
         "proxy-groups":build_proxy_groups(fine_names),
         "tun":{"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True},
         "dns":{"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
-               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.5"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"]},
+               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"]},
                "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],"fallback-filter":{"geoip":True,"geoip-code":"CN"}},
         "rules":rules,
     }

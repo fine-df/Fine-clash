@@ -32,7 +32,7 @@ direct_urls: []
 curated_nodes_file: ''
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
-  max_test_nodes: 400
+  max_test_nodes: 200
   min_final_nodes: 1
   max_final_nodes: 20
   max_per_server: 2

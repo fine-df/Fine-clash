@@ -18,6 +18,8 @@ GLOBALPING_HTTP_URL = "https://api.globalping.io/v1/measurements"
 
 AMAZON_DOMAINS=["amazon.com","amazon.co.uk","amazon.de","amazon.fr","amazon.es","amazon.it","amazon.nl","amazon.pl","amazon.se","amazon.ca","amazon.com.au","amazon.co.jp","amazon.in","amazon.com.br","amazon.com.mx","amazon.sg","amazon.ae","amazon.sa","amazon.tr","sellercentral.amazon.com","amazon-adsystem.com","ssl-images-amazon.com","media-amazon.com"]
 OZON_DOMAINS=["ozon.ru","ozon.com","ozon.kz","ozon.by","ozonusercontent.com"]
+VIDEO_DOMAINS=["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
+STORE_DOMAINS=["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
 WECHAT_DIRECT=["DOMAIN-SUFFIX,weixin.qq.com,DIRECT","DOMAIN-SUFFIX,wx.qq.com,DIRECT","DOMAIN-SUFFIX,wechat.com,DIRECT","DOMAIN-SUFFIX,qpic.cn,DIRECT","DOMAIN-SUFFIX,qlogo.cn,DIRECT","DOMAIN-SUFFIX,gtimg.cn,DIRECT","DOMAIN-SUFFIX,gtimg.com,DIRECT","DOMAIN-SUFFIX,qq.com,DIRECT","DOMAIN-SUFFIX,tenpay.com,DIRECT","DOMAIN-SUFFIX,wechatpay.cn,DIRECT","DOMAIN-SUFFIX,tencent.com,DIRECT","DOMAIN-SUFFIX,tencent-cloud.com,DIRECT"]
 XIAOMI_DIRECT=["DOMAIN-SUFFIX,mi.com,DIRECT","DOMAIN-SUFFIX,xiaomi.com,DIRECT","DOMAIN-SUFFIX,miwifi.com,DIRECT","DOMAIN-SUFFIX,miui.com,DIRECT"]
 LOCAL_IOT_DIRECT=["IP-CIDR,224.0.0.0/4,DIRECT,no-resolve","IP-CIDR,169.254.0.0/16,DIRECT,no-resolve"]
@@ -157,7 +159,7 @@ def build_config(fine_nodes,bitz_nodes):
     bitz_nodes=combined[:bitz_count]
     fine_nodes=combined[bitz_count:]
     fine_names=[n["name"] for n in fine_nodes]; bitz_names=[n["name"] for n in bitz_nodes]
-    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(OZON_DOMAINS,"Bitz")+suffix_rules(AMAZON_DOMAINS,"Bitz")+["GEOIP,CN,DIRECT","MATCH,Fine"]
+    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(OZON_DOMAINS,"Bitz")+suffix_rules(AMAZON_DOMAINS,"Bitz")+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Bitz"]
     return {
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
         "profile":{"store-selected":True},

@@ -133,8 +133,7 @@ def main():
     found = list(existing)
     checked = 0
     for fn in repos:
-        if fn.lower() in {s.get("repo", "").lower() for s in existing if isinstance(s, dict)}:
-            continue  # 已验证过的仓跳过
+        # 仓库即使已经有旧源也必须重新检查，否则每日订阅仓会永久停留在旧日期文件。
         res = try_repo(fn)
         checked += 1
         if res:

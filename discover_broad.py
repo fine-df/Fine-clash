@@ -57,7 +57,8 @@ def collect_repo_names():
     print("broad search: %d queries (paced 7s)" % len(queries))
     for q in queries:
         try:
-            params = {"q": f"{q} pushed:>={recent_cutoff(rules)}", "sort": "stars", "order": "desc", "per_page": rules["sources"].get("repositories_per_query", 20)}
+            suffix = f" pushed:>={recent_cutoff(rules)}" if rules["sources"].get("require_recent_push", False) else ""
+            params = {"q": f"{q}{suffix}", "sort": "stars", "order": "desc", "per_page": rules["sources"].get("repositories_per_query", 20)}
             r = SESSION.get("https://api.github.com/search/repositories", params=params, timeout=20)
             if r.status_code == 403:
                 print("  rate-limited on query, stopping search"); break
@@ -81,8 +82,9 @@ def recent_cutoff(rules):
 
 def try_repo(full_name):
     owner, name = full_name.split("/", 1)
-    min_nodes = int(fc.load_rules()["sources"].get("min_nodes_per_source", 2))
-    max_bytes = int(fc.load_rules()["sources"].get("max_source_bytes", 8000000))
+    rules = fc.load_rules()
+    min_nodes = int(rules["sources"].get("min_nodes_per_source", 2))
+    max_bytes = int(rules["sources"].get("max_source_bytes", 8000000))
     anchors = ["sub", "clash.yaml", "v2ray.yaml", "config.yaml", "nodes.txt"]
     # 先探测分支：用锚点定位 main/master，避免对无效仓扫满全路径
     for branch in BRANCHES:

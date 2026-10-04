@@ -20,7 +20,7 @@ def test_bitz_is_removed_from_final_architecture():
     assert "Bitz" not in source
 
 def test_final_config_is_fine_only():
-    cfg = bf.build_config([_mini_node("Fine-1")])
+    cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])
     assert cfg["mode"] == "rule"
     assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
     assert "MATCH,Fine" in cfg["rules"]

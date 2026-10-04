@@ -577,6 +577,10 @@ def build_outputs(nodes, output_rules):
         "nameserver-policy":{
             "+.qq.com":["223.5.5.5","119.29.29.29"],
             "+.weixin.qq.com":["223.5.5.5","119.29.29.29"],
+            "+.mi.com":["223.5.5.5","119.29.29.29"],
+            "+.xiaomi.com":["223.5.5.5","119.29.29.29"],
+            "+.miwifi.com":["223.5.5.5","119.29.29.29"],
+            "+.miui.com":["223.5.5.5","119.29.29.29"],
             "+.wx.qq.com":["223.5.5.5","119.29.29.29"],
             "+.qpic.cn":["223.5.5.5","119.29.29.29"],
             "+.qlogo.cn":["223.5.5.5","119.29.29.29"],
@@ -749,11 +753,9 @@ def run():
         #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
         #   - gemini_and_play：原双过严格档（保留向后兼容）。
         gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
-        google_ok=bool((item.get("google") or {}).get("ok"))
+        min_clean=float(rules["nodes"].get("min_clean_score", 0))
         if gate in ("reachable", "gemini_or_play"):
-            # 实际筛选闸门：Gemini 或 Google Play 商店任一可达即可进入深圳测试。
-            # Google 204 仅作辅助诊断，不作为“能否进入池子”的依据。
-            min_clean=float(rules["nodes"].get("min_clean_score", 0))
+            # Gemini 或 Google Play 任一可达即可进入深圳测试；Google 204 仅作辅助诊断。
             candidate=bool((item["gemini"] or item["google_play"]) and clean >= min_clean)
         else:
             candidate=bool(item["gemini"] and item["google_play"] and clean >= min_clean)

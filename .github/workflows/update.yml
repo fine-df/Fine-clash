@@ -113,3 +113,12 @@ jobs:
           fi
           git commit -m 'chore: publish Fine-only subscription'
           git push origin HEAD:main
+
+      - name: Purge jsDelivr cache
+        if: ${{ success() }}
+        run: |
+          set -euo pipefail
+          purge_url='https://purge.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml'
+          echo "Purging jsDelivr branch cache: ${purge_url}"
+          curl -fsSL "${purge_url}"
+          echo

@@ -2,6 +2,7 @@
 """Build the only public subscription: live_clash.yaml."""
 from __future__ import annotations
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 import yaml
 
@@ -119,7 +120,8 @@ def main():
         "rules": rules,
     }
     dumped = yaml.safe_dump(config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-    header = "# fine-clash-unified-v1 | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine\n"
+    version = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    header = f"# fine-clash-unified-v1 | fine-clash-version:{version} | Bitz=remote-provider | Fine=validated-pool | Ozon/Amazon->Bitz | CN->DIRECT | MATCH->Fine\n"
     OUT.write_text(header + dumped, encoding="utf-8")
     print(f"written {OUT} with Fine={len(fine_nodes)} nodes; Bitz=remote-provider; rules={len(rules)}")
 

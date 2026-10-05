@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import functools
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 import requests, yaml
 
 SUPPORTED = {"vmess","vless","trojan","ss"}

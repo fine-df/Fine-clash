@@ -7,23 +7,53 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_explicit_fine_and_global_nodes():
-    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
+def test_final_proxy_groups_expose_bitz_fine_auto_and_global_nodes():
+    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"], ["Bitz-1", "Bitz-2"])
     by_name = {g["name"]: g for g in groups}
-    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Fine-1", "Fine-2"]
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Bitz-1", "Bitz-2", "Fine-1", "Fine-2"]
+    assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
+    assert by_name["Bitz-Auto"]["proxies"] == ["Bitz-1", "Bitz-2"]
     assert by_name["Fine"]["default-selected"] == "Fine-Auto"
     assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
 
-def test_bitz_is_removed_from_final_architecture():
-    source = inspect.getsource(bf.build_config)
-    assert "Bitz" not in source
-
-def test_final_config_is_fine_only():
-    cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])
+def test_bitz_dual_routing_rules_include_muse_and_keep_video_on_fine():
+    bitz = [{"name":"Bitz-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}]
+    fine = [{"name":"Fine-1","type":"trojan","server":"example.org","port":443,"password":"secret","tls":True}]
+    cfg = bf.build_config(fine, bitz)
     assert cfg["mode"] == "rule"
-    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
+    assert "DOMAIN-SUFFIX,ozon.ru,Bitz" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,amazon.com,Bitz" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,muse.ai,Bitz" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,youtube.com,Fine" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,play.google.com,Fine" in cfg["rules"]
     assert "MATCH,Fine" in cfg["rules"]
+
+def test_bitz_subscription_uses_whitelisted_ua_and_parses_nodes(monkeypatch):
+    class FakeResponse:
+        text = "proxies:\n  - name: demo\n    type: trojan\n    server: example.com\n    port: 443\n    password: secret\n    tls: true\n"
+        def raise_for_status(self):
+            return None
+
+    seen = {}
+    def fake_get(url, timeout, headers):
+        seen["url"] = url
+        seen["timeout"] = timeout
+        seen["headers"] = headers
+        return FakeResponse()
+
+    monkeypatch.setenv("BITZ_SUB_URL", "https://example.invalid/sub")
+    monkeypatch.setattr(bf.requests, "get", fake_get)
+    nodes = bf.fetch_bitz_nodes()
+    assert nodes[0]["name"] == "Bitz | demo"
+    assert seen["headers"]["User-Agent"] == "Fine-Clash/2.0"
+    assert seen["headers"]["Accept"].startswith("text/plain")
+
+def test_final_config_requires_both_pools():
+    with pytest.raises(ValueError):
+        bf.build_config([], [{"name":"Bitz-1"}])
+    with pytest.raises(ValueError):
+        bf.build_config([{"name":"Fine-1"}], [])
 
 def test_candidate_gate_modes_are_explicit():
     item = {"gemini": False, "google_play": False, "google": {"ok": True}}

@@ -154,6 +154,10 @@ def fetch_bitz_nodes():
             },
         )
         response.raise_for_status()
+    except requests.HTTPError as exc:
+        status = exc.response.status_code if exc.response is not None else "unknown"
+        body = exc.response.text[:160].replace("\\n", " ") if exc.response is not None else ""
+        raise SystemExit(f"FATAL: Bitz subscription fetch failed: HTTP {status}; body={body!r}") from exc
     except requests.RequestException as exc:
         raise SystemExit(f"FATAL: Bitz subscription fetch failed: {type(exc).__name__}") from exc
 

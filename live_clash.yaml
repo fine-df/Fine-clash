@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110007 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110008 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -25,49 +25,6 @@ proxies:
     headers:
       Host: argo6.5671234.xyz
 - type: vless
-  name: 美国(yudou789.top 玉豆分享)
-  server: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
-  port: 443
-  udp: true
-  uuid: 0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
-  encryption: none
-  tls: true
-  servername: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /ws/0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
-- type: vless
-  name: 🇺🇸_US_美国
-  server: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
-  port: 443
-  udp: true
-  uuid: 0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
-  encryption: none
-  tls: true
-  servername: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /ws/0b3c3f4f-843a-5b0a-98fe-132c88fbefc0
-    headers:
-      Host: 86153507-1976-48f1-ac86-e8ab274470a8.fly.dev
-- type: vless
-  name: 🇷🇺 Russia | [*CIDR] [8d9fac6c]
-  server: 168.113.215.77
-  port: 443
-  udp: true
-  uuid: 3464a5bd-6a17-4ac3-8ca9-86a54c1aac7b
-  encryption: none
-  tls: true
-  servername: samsung.com
-  client-fingerprint: ios
-  reality-opts:
-    public-key: qxfjtrU0MD7HgM2M8-Jij33p-WGUSFLG7XnaVanRx0Y
-  network: grpc
-  grpc-opts:
-    grpc-service-name: vless-grpc
-- type: vless
   name: 🇺🇸_US_美国->🇵🇱_PL_波兰
   server: iiproxy8.iiproxy.com
   port: 8443
@@ -76,118 +33,11 @@ proxies:
   encryption: none
   tls: true
   network: ws
-- type: vless
-  name: 🇷🇺 Russia | [*CIDR] [08018db4]
-  server: 168.113.215.92
-  port: 443
-  udp: true
-  uuid: 3464a5bd-6a17-4ac3-8ca9-86a54c1aac7b
-  encryption: none
-  tls: true
-  servername: samsung.com
-  client-fingerprint: ios
-  reality-opts:
-    public-key: qxfjtrU0MD7HgM2M8-Jij33p-WGUSFLG7XnaVanRx0Y
-  network: grpc
-  grpc-opts:
-    grpc-service-name: vless-grpc
-- type: vless
-  name: 🇷🇺 Russia | [*CIDR] [ad3c4a9c]
-  server: 168.113.215.77
-  port: 443
-  udp: true
-  uuid: 3464a5bd-6a17-4ac3-8ca9-86a54c1aac7b
-  encryption: none
-  tls: true
-  servername: samsung.com
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: qxfjtrU0MD7HgM2M8-Jij33p-WGUSFLG7XnaVanRx0Y
-  network: grpc
-  grpc-opts:
-    grpc-service-name: vless-grpc
-- type: vless
-  name: 🇵🇱 Poland | 🌐 | [BL] [efc6d85c]
-  server: 81.90.20.200
-  port: 443
-  udp: true
-  uuid: 51c14658-8873-4454-9383-c41fc80bde4b
-  encryption: none
-  tls: true
-  servername: pl.pupoe.sbs
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland | 🌐 | [BL] [2fbc09b5]
-  server: 81.90.20.200
-  port: 443
-  udp: true
-  uuid: 51c14658-8873-4454-9383-c41fc80bde4b
-  encryption: none
-  tls: true
-  servername: pl.pupoe.sbs
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  network: tcp
-- type: vless
-  name: 🇧🇪 Belgium | [*CIDR] [80348bbd]
-  server: 45.144.31.76
-  port: 443
-  udp: true
-  uuid: 9b5bc0f3-4e1b-4ea8-92ff-6ba32a5c3830
-  encryption: none
-  tls: true
-  servername: free01.tunnely.space
-  flow: xtls-rprx-vision
-  client-fingerprint: safari
-  reality-opts:
-    public-key: mChFHtaRmeuO2aDuDPqZvBFaCz6f34sVJIKuJcAR130
-    short-id: d1694c220d4b13e7
-  network: tcp
-- type: vless
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
-  server: e7q.internet-booster.online
-  port: 2443
-  udp: true
-  uuid: 0ab2bb4f-c8ad-4c52-a94f-7a69c71d76f5
-  encryption: none
-  tls: true
-  servername: ads.x5.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: edge
-  reality-opts:
-    public-key: AuLWE8R3WD4DwnDxVHgqEcNjyge1btt5PdaUUArdCVk
-    short-id: 2b03d7853fc8faa6
-  network: tcp
 - type: vmess
   name: 🇨🇳_CN_中国->🇯🇵_JP_日本
   server: sbgfgov.vip6.wogacnmnagfwgov.com
   port: 11206
   uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vless
-  name: 🇧🇪 Belgium | [*CIDR] [f3b59e6e]
-  server: 45.144.31.76
-  port: 443
-  udp: true
-  uuid: 9b5bc0f3-4e1b-4ea8-92ff-6ba32a5c3830
-  encryption: none
-  tls: true
-  servername: free01.tunnely.space
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: mChFHtaRmeuO2aDuDPqZvBFaCz6f34sVJIKuJcAR130
-    short-id: d1694c220d4b13e7
-  network: tcp
-- type: vmess
-  name: 🇭🇰_HK_中国香港
-  server: v10.hdacd.com
-  port: 30807
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
   alterId: 2
   cipher: auto
   udp: true
@@ -197,56 +47,23 @@ proxy-groups:
   proxies:
   - DIRECT
   - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 美国(yudou789.top 玉豆分享)
-  - 🇺🇸_US_美国
-  - 🇷🇺 Russia | [*CIDR] [8d9fac6c]
   - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇷🇺 Russia | [*CIDR] [08018db4]
-  - 🇷🇺 Russia | [*CIDR] [ad3c4a9c]
-  - 🇵🇱 Poland | 🌐 | [BL] [efc6d85c]
-  - 🇵🇱 Poland | 🌐 | [BL] [2fbc09b5]
-  - 🇧🇪 Belgium | [*CIDR] [80348bbd]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇧🇪 Belgium | [*CIDR] [f3b59e6e]
-  - 🇭🇰_HK_中国香港
   default-selected: 🇺🇸_US_美国->🇹🇼_TW_中国台湾
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
   - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 美国(yudou789.top 玉豆分享)
-  - 🇺🇸_US_美国
-  - 🇷🇺 Russia | [*CIDR] [8d9fac6c]
   - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇷🇺 Russia | [*CIDR] [08018db4]
-  - 🇷🇺 Russia | [*CIDR] [ad3c4a9c]
-  - 🇵🇱 Poland | 🌐 | [BL] [efc6d85c]
-  - 🇵🇱 Poland | 🌐 | [BL] [2fbc09b5]
-  - 🇧🇪 Belgium | [*CIDR] [80348bbd]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇧🇪 Belgium | [*CIDR] [f3b59e6e]
-  - 🇭🇰_HK_中国香港
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 美国(yudou789.top 玉豆分享)
-  - 🇺🇸_US_美国
-  - 🇷🇺 Russia | [*CIDR] [8d9fac6c]
   - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇷🇺 Russia | [*CIDR] [08018db4]
-  - 🇷🇺 Russia | [*CIDR] [ad3c4a9c]
-  - 🇵🇱 Poland | 🌐 | [BL] [efc6d85c]
-  - 🇵🇱 Poland | 🌐 | [BL] [2fbc09b5]
-  - 🇧🇪 Belgium | [*CIDR] [80348bbd]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇧🇪 Belgium | [*CIDR] [f3b59e6e]
-  - 🇭🇰_HK_中国香港
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

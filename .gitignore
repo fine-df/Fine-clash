@@ -74,7 +74,6 @@ build_router_cfg.py
 extra_pool.yaml
 
 # ============ 排障遗留 / 一次性脚本（勿提交，2026-10-03 已归档至 D:/Temp/Fine-clash_archive_20261003）============
-_bitz_*
 _dual_*
 _build_*
 _deploy_*
@@ -95,10 +94,8 @@ btest*.yaml
 ftest.yaml
 gtest.yaml
 dual_final*.yaml
-bitz_*.yaml
 fine_nodes.yaml
 router_fine_template.yaml
-_bitz_rollback/
 
 live_v2ray.txt
 data/fine_pool.yaml

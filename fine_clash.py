@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import functools
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from urllib.parse import parse_qs, quote, unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 import requests, yaml
 
 SUPPORTED = {"vmess","vless","trojan","ss"}
@@ -260,52 +260,6 @@ def fingerprint(node):
     }
     data=json.dumps(identity,ensure_ascii=False,sort_keys=True,separators=(",",":"))
     return hashlib.sha256(data.encode()).hexdigest()[:20]
-
-def node_to_uri(node):
-    kind,server,port=node.get("type"),node.get("server"),node.get("port")
-    if not server or not port: return None
-    name=quote(str(node.get("name") or "node"),safe="")
-    host=f"[{server}]" if ":" in str(server) and not str(server).startswith("[") else str(server)
-    if kind=="vless":
-        q=[]
-        reality=node.get("reality-opts")
-        if reality: q.append("security=reality")
-        elif node.get("tls"): q.append("security=tls")
-        if node.get("encryption"): q.append("encryption="+quote(str(node["encryption"]),safe=""))
-        if node.get("servername"): q.append("sni="+quote(str(node["servername"]),safe=""))
-        if node.get("flow"): q.append("flow="+quote(str(node["flow"]),safe=""))
-        if node.get("client-fingerprint"): q.append("fp="+quote(str(node["client-fingerprint"]),safe=""))
-        if reality and reality.get("public-key"): q.append("pbk="+quote(str(reality["public-key"]),safe=""))
-        if reality and reality.get("short-id"): q.append("sid="+quote(str(reality["short-id"]),safe=""))
-        if node.get("network"): q.append("type="+quote(str(node["network"]),safe=""))
-        if node.get("network")=="ws" and node.get("ws-opts",{}).get("path"): q.append("path="+quote(str(node["ws-opts"]["path"]),safe=""))
-        if node.get("network")=="ws" and node.get("ws-opts",{}).get("headers",{}).get("Host"): q.append("host="+quote(str(node["ws-opts"]["headers"]["Host"]),safe=""))
-        if node.get("network")=="grpc" and node.get("grpc-opts",{}).get("grpc-service-name"): q.append("serviceName="+quote(str(node["grpc-opts"]["grpc-service-name"]),safe=""))
-        return f"vless://{quote(str(node.get('uuid','')),safe='')}@{host}:{port}?{'&'.join(q)}#{name}"
-    if kind=="trojan":
-        q=["security=tls"]
-        if node.get("servername"): q.append("sni="+quote(str(node["servername"]),safe=""))
-        if node.get("network"): q.append("type="+quote(str(node["network"]),safe=""))
-        if node.get("network")=="ws":
-            ws=node.get("ws-opts",{})
-            if ws.get("path"): q.append("path="+quote(str(ws["path"]),safe=""))
-            if ws.get("headers",{}).get("Host"): q.append("host="+quote(str(ws["headers"]["Host"]),safe=""))
-        elif node.get("network")=="grpc":
-            service=node.get("grpc-opts",{}).get("grpc-service-name")
-            if service: q.append("serviceName="+quote(str(service),safe=""))
-        return f"trojan://{quote(str(node.get('password','')),safe='')}@{host}:{port}?{'&'.join(q)}#{name}"
-    if kind=="ss":
-        raw=f"{node.get('cipher','chacha20-ietf-poly1305')}:{node.get('password','')}@{host}:{port}"
-        return f"ss://{base64.urlsafe_b64encode(raw.encode()).decode().rstrip('=')}#{name}"
-    if kind=="vmess":
-        ws=node.get("ws-opts",{})
-        network=node.get("network","tcp")
-        payload={"v":"2","ps":node.get("name","vmess"),"add":server,"port":str(port),"id":node.get("uuid",""),"aid":str(node.get("alterId",0)),"scy":node.get("cipher","auto"),"net":network,"type":"none","host":ws.get("headers",{}).get("Host",""),"path":ws.get("path",""),"tls":"tls" if node.get("tls") else ""}
-        if network=="grpc" and node.get("grpc-opts",{}).get("grpc-service-name"):
-            payload["path"]=node["grpc-opts"]["grpc-service-name"]
-        if node.get("servername"): payload["sni"]=node["servername"]
-        return "vmess://"+base64.b64encode(json.dumps(payload,ensure_ascii=False,separators=(",",":")).encode()).decode()
-    return None
 
 def load_history(path):
     if not path.exists(): return {}
@@ -724,8 +678,6 @@ def build_outputs(nodes, output_rules):
     }
     config={"mixed-port":7890,"allow-lan":True,"mode":"rule","dns":dns_config,"proxies":nodes,"proxy-groups":[{"name":"PROXY","type":"select","proxies":names+["DIRECT"]}],"rules":route_rules}
     clash_path=ROOT/output_rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
-    uris=[uri for node in nodes if (uri:=node_to_uri(node))]
-    v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
 
 def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_org=3):
     """Rank verified nodes by score and diversity, returning the top `limit`.

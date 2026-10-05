@@ -37,8 +37,8 @@ if grep -Eq 'GEOSITE,' "$TMP"; then
   rm -f "$TMP"
   exit 1
 fi
-if grep -Eq 'proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz$' "$TMP"; then
-  echo "sync_fail_obsolete_bitz_architecture"
+if grep -Eq 'proxy-providers:' "$TMP"; then
+  echo "sync_fail_obsolete_provider_architecture"
   rm -f "$TMP"
   exit 1
 fi

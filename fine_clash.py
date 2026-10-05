@@ -740,7 +740,57 @@ def build_outputs(nodes, output_rules):
     uris=[uri for node in nodes if (uri:=node_to_uri(node))]
     v2ray_path=ROOT/output_rules["output"]["v2ray_file"]; v2ray_path.parent.mkdir(parents=True,exist_ok=True); v2ray_path.write_text(base64.b64encode("\n".join(uris).encode()).decode()+"\n",encoding="utf-8")
 
-def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_org=3):
+def node_type_counts(nodes):
+    counts={}
+    for node in nodes:
+        kind=str(node.get("type") or "unknown").lower()
+        counts[kind]=counts.get(kind,0)+1
+    return dict(sorted(counts.items()))
+
+
+def prioritize_protocol_diversity(nodes, limit, cfg):
+    """Ensure the pre-test set contains multiple protocol families when available.
+
+    This does not lower any quality gate. It only prevents max_test_nodes from
+    accidentally testing 200 VLESS nodes while never testing available VMess/
+    Trojan/SS nodes that may be needed by older clients.
+    """
+    if not bool((cfg or {}).get("enabled", True)):
+        return list(nodes)[:max(1,int(limit))]
+    limit=max(1,int(limit))
+    preferred=[str(x).lower() for x in ((cfg or {}).get("preferred_non_vless_types") or ["vmess","trojan","ss"])]
+    reserve=max(0,int((cfg or {}).get("min_test_non_vless",0) or 0))
+    ordered=list(nodes)
+    selected=[]; selected_fp=set()
+    # First take one node from each preferred protocol, preserving source order.
+    for kind in preferred:
+        if len(selected)>=min(reserve,limit):
+            break
+        for node in ordered:
+            fp=fingerprint(node)
+            if fp in selected_fp or str(node.get("type") or "").lower() != kind:
+                continue
+            selected.append(node); selected_fp.add(fp); break
+    # Then fill remaining reserved non-VLESS slots from available non-VLESS nodes.
+    if len(selected)<min(reserve,limit):
+        for node in ordered:
+            fp=fingerprint(node)
+            if fp in selected_fp or str(node.get("type") or "").lower()=="vless":
+                continue
+            selected.append(node); selected_fp.add(fp)
+            if len(selected)>=min(reserve,limit):
+                break
+    for node in ordered:
+        if len(selected)>=limit:
+            break
+        fp=fingerprint(node)
+        if fp in selected_fp:
+            continue
+        selected.append(node); selected_fp.add(fp)
+    return selected[:limit]
+
+
+def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_org=3, min_non_vless=0, preferred_non_vless_types=None):
     """Rank verified nodes by score and diversity, returning the top `limit`.
 
     Sorting priority (higher first unless noted):
@@ -755,6 +805,8 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
       - duplicate fingerprint -> keep only the highest-scored node
       - same server -> keep at most `max_per_server`
       - same org/ASN -> keep at most `max_per_org`
+      - when `min_non_vless` > 0, reserve that many verified non-VLESS nodes
+        before filling the remaining slots, preferring the configured protocol order.
 
     `metadata` is a fingerprint -> dict lookup (score, shenzhen_ping_ms,
     shenzhen_loss_pct, stability, lifespan, org, asn). Missing fields fall back
@@ -781,15 +833,39 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
             "org":str(meta.get("org") or meta.get("asn") or "").strip().lower(),
         })
     enriched.sort(key=lambda e:(-e["score"],e["ping"],e["loss"],-e["stability"],-e["lifespan"],e["fp"]))
+    preferred=[str(x).lower() for x in (preferred_non_vless_types or ["vmess","trojan","ss"])]
+    reserve=max(0,min(int(min_non_vless or 0),limit))
     seen_fp=set(); server_count={}; org_count={}; picked=[]
-    for e in enriched:
-        if e["fp"] in seen_fp: continue
-        if e["server"] and server_count.get(e["server"],0)>=max_per_server: continue
-        if e["org"] and org_count.get(e["org"],0)>=max_per_org: continue
+
+    def can_pick(e):
+        if e["fp"] in seen_fp: return False
+        if e["server"] and server_count.get(e["server"],0)>=max_per_server: return False
+        if e["org"] and org_count.get(e["org"],0)>=max_per_org: return False
+        return True
+
+    def pick(e):
         seen_fp.add(e["fp"])
         if e["server"]: server_count[e["server"]]=server_count.get(e["server"],0)+1
         if e["org"]: org_count[e["org"]]=org_count.get(e["org"],0)+1
         picked.append(e["node"])
+
+    if reserve:
+        for kind in preferred:
+            if len(picked)>=reserve: break
+            for e in enriched:
+                if e["node"].get("type","").lower()!=kind or not can_pick(e): continue
+                pick(e); break
+        if len(picked)<reserve:
+            for e in enriched:
+                if len(picked)>=reserve: break
+                if e["node"].get("type","").lower()=="vless" or not can_pick(e): continue
+                pick(e)
+
+    for e in enriched:
+        if e["fp"] in seen_fp: continue
+        if e["server"] and server_count.get(e["server"],0)>=max_per_server: continue
+        if e["org"] and org_count.get(e["org"],0)>=max_per_org: continue
+        pick(e)
         if len(picked)>=limit: break
     return picked
 
@@ -825,7 +901,9 @@ def premium_us_passes(entry, cfg):
     org = str(entry.get("org") or "").lower()
     if any(marker in org for marker in CLOUD_MARKERS + HIGH_RISK_MARKERS):
         return False
-    if bool(cfg.get("require_non_hosting", True)) and entry.get("hosting") is not False:
+    # IPInfo may return hosting=null. Reject explicit hosting=true, while obvious
+    # cloud/high-risk organizations are still excluded above.
+    if bool(cfg.get("reject_hosting", True)) and entry.get("hosting") is True:
         return False
     return True
 
@@ -972,12 +1050,15 @@ def run():
     #   排序：curated 优先，其余按发现顺序；再截断到上限。
     cap=int(rules["nodes"]["max_test_nodes"])
     ordered=[n for fp,n in nodes_by_fp.items() if fp in curated_fps]+[n for fp,n in nodes_by_fp.items() if fp not in curated_fps]
-    nodes=ordered[:cap]
+    protocol_cfg=rules["nodes"].get("protocol_diversity",{}) or {}
+    discovered_protocol_counts=node_type_counts(ordered)
+    nodes=prioritize_protocol_diversity(ordered,cap,protocol_cfg)
+    tested_protocol_counts=node_type_counts(nodes)
     binary=shutil.which("mihomo") or shutil.which("clash")
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
-    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"results":[]}
+    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"protocol_counts_discovered":discovered_protocol_counts,"protocol_counts_tested":tested_protocol_counts,"results":[]}
     prev_streak=zero_publish_streak(report_path)
     report_lookup={}
     candidate_records=[]
@@ -1076,7 +1157,17 @@ def run():
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
         ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn")}
-    ranked=rank_candidates(selected,limit=int(rules["nodes"].get("max_final_nodes",20)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
+    protocol_cfg=rules["nodes"].get("protocol_diversity",{}) or {}
+    ranked=rank_candidates(
+        selected,
+        limit=int(rules["nodes"].get("max_final_nodes",20)),
+        metadata=ranking_meta,
+        max_per_server=int(rules["nodes"].get("max_per_server",2)),
+        max_per_org=int(rules["nodes"].get("max_per_org",3)),
+        min_non_vless=int(protocol_cfg.get("min_final_non_vless",0) or 0) if bool(protocol_cfg.get("enabled",True)) else 0,
+        preferred_non_vless_types=protocol_cfg.get("preferred_non_vless_types"),
+    )
+    report["selected_protocol_counts"]=node_type_counts(ranked)
     report["ranking"]=[]
     for i,node in enumerate(ranked,1):
         entry=report_lookup.get(fingerprint(node),{})

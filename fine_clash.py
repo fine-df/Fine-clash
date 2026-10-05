@@ -333,6 +333,14 @@ def lifespan_days(row):
     try: return max(0,(date.today()-date.fromisoformat(row["first_seen"])).days)
     except Exception: return 0
 
+def zero_publish_streak(report_path):
+    """Consecutive runs that published nothing (fail-closed gates)."""
+    try:
+        prev=json.loads(Path(report_path).read_text(encoding="utf-8"))
+        return int(prev.get("consecutive_zero_publish",0) or 0)
+    except Exception:
+        return 0
+
 class GlobalpingShenzhenProbe:
     def __init__(self, cfg):
         self.cfg=cfg
@@ -578,7 +586,7 @@ class MihomoTester:
     def test_nodes(self,nodes,checks):
         if not nodes:
             return []
-        endpoint_workers=max(1,min(int(self.cfg.get("endpoint_workers",4)),4))
+        endpoint_workers=max(1,int(self.cfg.get("endpoint_workers",4)))
         endpoints=[
             ("gemini",checks["gemini_url"],False),
             ("google_play",checks["google_play_url"],False),
@@ -616,6 +624,11 @@ class MihomoTester:
                 with ThreadPoolExecutor(max_workers=endpoint_workers) as executor:
                     futures=[executor.submit(self.request,url,parse_json) for _,url,parse_json in endpoints]
                     checks_out=[future.result() for future in futures]
+                # Retry Gemini once on transient failure: free nodes flap, and a
+                # single bad probe should not kill an otherwise good node.
+                if not checks_out[0].get("ok"):
+                    time.sleep(1.0)
+                    checks_out[0]=self.request(checks["gemini_url"],False)
                 item=dict(zip((name for name,_,_ in endpoints),checks_out))
                 results.append({
                     "node":node,
@@ -965,6 +978,7 @@ def run():
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
     report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"results":[]}
+    prev_streak=zero_publish_streak(report_path)
     report_lookup={}
     candidate_records=[]
     all_candidate_fps=[]
@@ -1054,7 +1068,10 @@ def run():
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return
+        report["published"]=False; report["selected"]=len(selected); report["consecutive_zero_publish"]=prev_streak+1
+        report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved.")
+        if prev_streak+1>=3: print(f"WARNING: {prev_streak+1} consecutive runs published nothing - check ipinfo/Globalping availability and source health.")
+        return
     ranking_meta={}
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
@@ -1069,7 +1086,10 @@ def run():
         ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
         print(f"{r['rank']:>4} | {r['score']:>5} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
     if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
-    build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+        report["published"]=False; report["selected"]=len(ranked); report["consecutive_zero_publish"]=prev_streak+1
+        report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved.")
+        if prev_streak+1>=3: print(f"WARNING: {prev_streak+1} consecutive runs published nothing - check ipinfo/Globalping availability and source health.")
+        return
+    build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report["consecutive_zero_publish"]=0; report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

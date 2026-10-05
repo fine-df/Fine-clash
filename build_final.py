@@ -4,7 +4,6 @@ from __future__ import annotations
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-import requests
 import yaml
 from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
 

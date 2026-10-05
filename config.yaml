@@ -4,7 +4,6 @@ sources:
   require_recent_push: false
   repositories_per_query: 20
   max_repositories: 80
-  broad_max_repositories: 220
   max_sources: 120
   max_candidate_files_per_repo: 6
   max_source_bytes: 8000000

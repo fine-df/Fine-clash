@@ -38,6 +38,11 @@ nodes:
   max_final_nodes: 20
   max_per_server: 2
   max_per_org: 3
+  protocol_diversity:
+    enabled: true
+    preferred_non_vless_types: [vmess, trojan, ss]
+    min_test_non_vless: 4
+    min_final_non_vless: 2
   validation_workers: 8
   endpoint_workers: 6
   test_timeout_seconds: 8
@@ -51,7 +56,7 @@ premium_us:
   require_country: 'US'
   min_clean_score: 80
   max_ping_ms: 500
-  require_non_hosting: true
+  reject_hosting: true
   max_nodes: 8
   max_per_server: 2
   max_per_org: 2

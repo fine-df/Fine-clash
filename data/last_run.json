@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T23:27:14.506887+00:00",
+  "generated_at": "2026-10-05T23:47:22.267195+00:00",
   "sources": 15,
   "nodes_discovered": 200,
   "results": [
@@ -132,9 +132,9 @@
     {
       "fingerprint": "b79adf03a3ac8e70256c",
       "name": "🇺🇸 United States, Wilmington | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -168,7 +168,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -202,9 +202,9 @@
     {
       "fingerprint": "143b1460634abb1415b9",
       "name": "🌐 Anycast-IP | 🇩🇪 🇮🇪 | [BL]",
-      "score": 62,
+      "score": 82,
       "gemini": true,
-      "google_play": false,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -238,7 +238,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS4837 CHINA UNICOM China169 Backbone",
+      "org": null,
       "asn": null
     },
     {
@@ -560,15 +560,15 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
       "fingerprint": "e2cf45f938506ad0064a",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -854,7 +854,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -882,7 +882,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -916,9 +916,9 @@
     {
       "fingerprint": "5d39e221beecb91a6b98",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1232,7 +1232,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -1266,9 +1266,9 @@
     {
       "fingerprint": "a163ab6e5ef6fa835ea1",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1280,14 +1280,14 @@
     {
       "fingerprint": "eb7b81b6230b531f65f2",
       "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 62,
+      "score": 86,
       "gemini": true,
       "google_play": true,
-      "clean": 60,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "not-tested",
+      "shenzhen_status": "timeout",
       "org": "AS45102 Alibaba (US) Technology Co., Ltd.",
       "asn": null
     },
@@ -1434,15 +1434,15 @@
     {
       "fingerprint": "1ed2cd3296b95b3b5ece",
       "name": "未知 VLESS-187 | free-nodes",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
-      "clean": 60,
+      "score": 86,
+      "gemini": true,
+      "google_play": true,
+      "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "not-tested",
-      "org": null,
+      "shenzhen_status": "timeout",
+      "org": "AS213520 Senko Digital LLC",
       "asn": null
     },
     {
@@ -1476,15 +1476,15 @@
     {
       "fingerprint": "bdeb614bae9944b382f5",
       "name": "🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]",
-      "score": 86,
+      "score": 82,
       "gemini": true,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 167.8,
-      "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "cached",
-      "org": "AS63949 Akamai Connected Cloud",
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
@@ -1610,15 +1610,15 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
       "fingerprint": "cfd4f3956cfbe2272e55",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1630,8 +1630,8 @@
     {
       "fingerprint": "03ad4e3c7aad2e74f6f1",
       "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 81,
-      "gemini": true,
+      "score": 56,
+      "gemini": false,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 1,
@@ -1904,7 +1904,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -1918,7 +1918,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -1960,15 +1960,15 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
       "fingerprint": "a9526abfc0abeb402310",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -2120,8 +2120,8 @@
     {
       "fingerprint": "195675bef7019cf072f1",
       "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 61,
-      "gemini": false,
+      "score": 86,
+      "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
@@ -2568,9 +2568,9 @@
     {
       "fingerprint": "a6019a6e322a233c6f94",
       "name": "🇺🇸 United States, Wilmington | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -2666,7 +2666,7 @@
     {
       "fingerprint": "72341136fb5e1738f44b",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 52,
+      "score": 32,
       "gemini": false,
       "google_play": true,
       "clean": 60,
@@ -2833,17 +2833,17 @@
     {
       "rank": 4,
       "score": 86,
-      "shenzhen_ping_ms": 167.8,
+      "shenzhen_ping_ms": 196.4,
       "shenzhen_loss_pct": 0.0,
-      "server": "141.193.213.20",
+      "server": "45.95.96.170",
       "type": "vless"
     },
     {
       "rank": 5,
       "score": 86,
-      "shenzhen_ping_ms": 196.4,
+      "shenzhen_ping_ms": 201.5,
       "shenzhen_loss_pct": 0.0,
-      "server": "45.95.96.170",
+      "server": "45.95.96.182",
       "type": "vless"
     },
     {
@@ -2896,21 +2896,13 @@
     },
     {
       "rank": 12,
-      "score": 81,
+      "score": 56,
       "shenzhen_ping_ms": 50.71,
       "shenzhen_loss_pct": 0.0,
       "server": "cu.877774.xyz",
       "type": "vmess"
-    },
-    {
-      "rank": 13,
-      "score": 61,
-      "shenzhen_ping_ms": 201.5,
-      "shenzhen_loss_pct": 0.0,
-      "server": "45.95.96.182",
-      "type": "vless"
     }
   ],
   "published": true,
-  "selected": 13
+  "selected": 12
 }

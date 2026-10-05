@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110012 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110013 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -49,20 +49,6 @@ proxies:
     headers:
       Host: asia.csmaster.site
 - type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
-  server: 141.193.213.20
-  port: 8443
-  udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
-  encryption: none
-  tls: true
-  servername: u.srilankangrill.online
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: u.srilankangrill.online
-- type: vless
   name: 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
   server: 45.95.96.170
   port: 443
@@ -76,6 +62,21 @@ proxies:
   reality-opts:
     public-key: cucAz_3afM4ykkSl8IqlW9LPzQNH2fnQx9tAZTyr0yA
     short-id: f6d23c76d0362796
+  network: tcp
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
+  server: 45.95.96.182
+  port: 443
+  udp: true
+  uuid: a47f8110-de83-4c37-b6a7-16010535aef4
+  encryption: none
+  tls: true
+  servername: ai.yump.online
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: fpYQ3Ml1YhTM0tbf4Ixxx03gxMtOno3iGaq3uoxIszs
+    short-id: a7268acdcfef5862
   network: tcp
 - type: vless
   name: 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
@@ -183,21 +184,6 @@ proxies:
     headers:
       Host: balanced-minds-carrier-demanding.trycloudflare.com
     path: /vmess-argo
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
-  server: 45.95.96.182
-  port: 443
-  udp: true
-  uuid: a47f8110-de83-4c37-b6a7-16010535aef4
-  encryption: none
-  tls: true
-  servername: ai.yump.online
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: fpYQ3Ml1YhTM0tbf4Ixxx03gxMtOno3iGaq3uoxIszs
-    short-id: a7268acdcfef5862
-  network: tcp
 proxy-groups:
 - name: GLOBAL
   type: select
@@ -206,8 +192,8 @@ proxy-groups:
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
   - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
   - 🇳🇱 The Netherlands, Amsterdam | [BL]
@@ -215,7 +201,6 @@ proxy-groups:
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   default-selected: 🇫🇷 France, Paris | [BL] [cac46dd7]
 - name: Fine
   type: select
@@ -224,8 +209,8 @@ proxy-groups:
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
   - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
   - 🇳🇱 The Netherlands, Amsterdam | [BL]
@@ -233,7 +218,6 @@ proxy-groups:
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
@@ -241,8 +225,8 @@ proxy-groups:
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
   - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
   - 🇳🇱 The Netherlands, Amsterdam | [BL]
@@ -250,7 +234,6 @@ proxy-groups:
   - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

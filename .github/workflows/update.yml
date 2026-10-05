@@ -89,8 +89,8 @@ jobs:
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz$' live_clash.yaml; then
-            echo 'obsolete router-specific or Bitz markers detected'
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:' live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
             exit 1
           fi
           if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then

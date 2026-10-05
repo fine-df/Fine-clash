@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110011 | Fine=validated-pool | Premium-US=empty | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110012 | Fine=validated-pool | Premium-US=optional | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,368 +10,240 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: vless
-  name: 🇺🇸 United States, San Jose | [BL]
-  server: 43.255.157.106
-  port: 21263
+- type: vmess
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
+  server: sbgfgov.vip6.wogacnmnagfwgov.com
+  port: 11206
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
   udp: true
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  server: v29.hdacd.com
+  port: 30829
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  server: v33.hdacd.com
+  port: 30833
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  server: v4.hdacd.com
+  port: 30804
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  server: 45.142.126.231
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
   encryption: none
   tls: true
-  servername: us1p1.xn--ghq880n3na965a.com
+  servername: x.m-90.xyz
+  client-fingerprint: android
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  server: 103.11.77.104
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  server: 103.11.77.104
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
+  server: 81.90.20.200
+  port: 443
+  udp: true
+  uuid: 51c14658-8873-4454-9383-c41fc80bde4b
+  encryption: none
+  tls: true
+  servername: pl.pupoe.sbs
   flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
-    short-id: 3d31326f95
+  client-fingerprint: ios
   network: tcp
 - type: vless
-  name: 🇻🇳 Vietnam, Hà Đông | [BL]
-  server: 45.153.130.119
-  port: 44988
+  name: 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
+  server: 81.90.20.200
+  port: 443
   udp: true
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  uuid: 51c14658-8873-4454-9383-c41fc80bde4b
   encryption: none
   tls: true
-  servername: www.tesla.com
+  servername: pl.pupoe.sbs
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
+  server: 2.27.211.38
+  port: 443
+  udp: true
+  uuid: 86037609-3790-4901-bd2f-c698092fb1fc
+  encryption: none
+  tls: true
+  servername: po.skfv-mirror.ru
   flow: xtls-rprx-vision
   client-fingerprint: random
   reality-opts:
-    public-key: f6Tj8-uvWsLv3V-lGLuPciArp5oKqUImBg-U7-WJ-0A
-    short-id: bb82c8
+    public-key: 9Pg_ecqFPMfzOvJrmxE05FmLUDXbY9Mo1r2MgxFzYEQ
+    short-id: cd57a927f6b72d81
   network: tcp
 - type: vless
-  name: 🇹🇷 Turkey, Istanbul | [BL]
-  server: 103.214.173.39
-  port: 50821
+  name: 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
+  server: 2.27.211.38
+  port: 443
   udp: true
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  uuid: 86037609-3790-4901-bd2f-c698092fb1fc
   encryption: none
   tls: true
-  servername: iosapps.itunes.apple.com
+  servername: po.skfv-mirror.ru
   flow: xtls-rprx-vision
-  client-fingerprint: firefox
+  client-fingerprint: ios
   reality-opts:
-    public-key: dDf2TcDNn3Kk8pAp4EnNC4ZUAmGkzAapRFGFe-41IEk
-    short-id: 86f6705960e3e3
+    public-key: 9Pg_ecqFPMfzOvJrmxE05FmLUDXbY9Mo1r2MgxFzYEQ
+    short-id: cd57a927f6b72d81
   network: tcp
 - type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: fr.api-music-fa.com
-  client-fingerprint: qq
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: vless.api-music-fa.com
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
-  name: 🇩🇪 Germany, Maisach | [BL] [cc07f036]
-  server: de-1-2.imnotgay.party
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
+  server: 104.245.103.36
   port: 443
   udp: true
-  uuid: 65616081-1772-49d7-a793-42bc13d22f69
+  uuid: 30141a8e-1b78-4f4b-88d3-1b0c90042256
   encryption: none
   tls: true
-  servername: de-1-2.imnotgay.party
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: gS0qvWKumWcOVoAgf8SHt6Sm3tqpBw07c5sA_Clb1hg
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [1cb00e0d]
-  server: 45.95.96.176
-  port: 443
-  udp: true
-  uuid: 635ac0f9-5e30-4f1d-a74b-604cbbfcf05c
-  encryption: none
-  tls: true
-  servername: chat.rtnode.site
+  servername: portal.citygrainla.com
   flow: xtls-rprx-vision
-  client-fingerprint: qq
+  client-fingerprint: ios
   reality-opts:
-    public-key: fpYQ3Ml1YhTM0tbf4Ixxx03gxMtOno3iGaq3uoxIszs
-    short-id: a7268acdcfef5862
+    public-key: BlSccfT5tvDIOS7v9VaPd0ulUNhUdvlMjGiNzDNDUHE
+    short-id: 051f20c2344a2dfd
   network: tcp
 - type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [98ba2465]
-  server: 45.95.96.176
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  server: 104.245.103.36
   port: 443
   udp: true
-  uuid: 635ac0f9-5e30-4f1d-a74b-604cbbfcf05c
+  uuid: 30141a8e-1b78-4f4b-88d3-1b0c90042256
   encryption: none
   tls: true
-  servername: chat.rtnode.site
+  servername: portal.citygrainla.com
   flow: xtls-rprx-vision
   client-fingerprint: edge
   reality-opts:
-    public-key: fpYQ3Ml1YhTM0tbf4Ixxx03gxMtOno3iGaq3uoxIszs
-    short-id: a7268acdcfef5862
+    public-key: BlSccfT5tvDIOS7v9VaPd0ulUNhUdvlMjGiNzDNDUHE
+    short-id: 051f20c2344a2dfd
   network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Maisach | [BL] [b06180c6]
-  server: 212.232.18.134
-  port: 443
-  udp: true
-  uuid: 65616081-1772-49d7-a793-42bc13d22f69
-  encryption: none
-  tls: true
-  servername: de-1-2.imnotgay.party
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: gS0qvWKumWcOVoAgf8SHt6Sm3tqpBw07c5sA_Clb1hg
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Maisach | [BL] [f58bd34a]
-  server: 212.232.18.134
-  port: 443
-  udp: true
-  uuid: 65616081-1772-49d7-a793-42bc13d22f69
-  encryption: none
-  tls: true
-  servername: de-1-2.imnotgay.party
-  client-fingerprint: random
-  reality-opts:
-    public-key: gS0qvWKumWcOVoAgf8SHt6Sm3tqpBw07c5sA_Clb1hg
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [5b94883d]
-  server: 144.31.62.242
-  port: 443
-  udp: true
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  encryption: none
-  tls: true
-  servername: de2.srv.vbuste.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  network: tcp
-- type: vless
-  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
-  server: 157.228.150.34
-  port: 443
-  udp: true
-  uuid: df53b6c2-8005-475c-9eb9-74e1be785dc8
-  encryption: none
-  tls: true
-  servername: addons.mozilla.org
-  flow: xtls-rprx-vision
-  client-fingerprint: randomized
-  reality-opts:
-    public-key: NOw-idkk3OCn-N0IRS93leujH4ik-E749O2T5BYJQ0M
-    short-id: 3cef317b
-  network: tcp
-- type: vless
-  name: 🇳🇱 The Netherlands, Eygelshoven | [BL] [1d8be845]
-  server: 31.77.114.200
-  port: 443
-  udp: true
-  uuid: 79ccb156-bfc6-11f1-9811-525400d1d4f7
-  encryption: none
-  tls: true
-  servername: tradingview.com
-  flow: xtls-rprx-vision
-  client-fingerprint: safari
-  reality-opts:
-    public-key: USxaWDRKvJlZ-aHR-OGBT2XwVas2j4_1rhZCCfVNCBY
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Düsseldorf | [BL] [5597364d]
-  server: de2.srv.vbuste.ru
-  port: 443
-  udp: true
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  encryption: none
-  tls: true
-  servername: de2.srv.vbuste.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  network: tcp
-- type: vless
-  name: 🇳🇱 The Netherlands, Eygelshoven | [BL] [be7d44eb]
-  server: 31.77.114.200
-  port: 443
-  udp: true
-  uuid: 79ccb156-bfc6-11f1-9811-525400d1d4f7
-  encryption: none
-  tls: true
-  servername: tradingview.com
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: USxaWDRKvJlZ-aHR-OGBT2XwVas2j4_1rhZCCfVNCBY
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [72d9725b]
-  server: 149.50.116.171
-  port: 443
-  udp: true
-  uuid: 65616081-1772-49d7-a793-42bc13d22f69
-  encryption: none
-  tls: true
-  servername: pl-1-1.imnotgay.party
-  client-fingerprint: random
-  reality-opts:
-    public-key: gS0qvWKumWcOVoAgf8SHt6Sm3tqpBw07c5sA_Clb1hg
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Düsseldorf | [BL] [b5471a64]
-  server: 151.242.17.8
-  port: 443
-  udp: true
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  encryption: none
-  tls: true
-  servername: de2.srv.vbuste.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  network: tcp
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
-  server: 144.31.62.170
-  port: 443
-  udp: true
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  encryption: none
-  tls: true
-  servername: de2.srv.vbuste.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
-  server: pl-1-1.imnotgay.party
-  port: 443
-  udp: true
-  uuid: 65616081-1772-49d7-a793-42bc13d22f69
-  encryption: none
-  tls: true
-  servername: pl-1-1.imnotgay.party
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: gS0qvWKumWcOVoAgf8SHt6Sm3tqpBw07c5sA_Clb1hg
-  network: tcp
-- type: vless
-  name: 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
-  server: node75.tomalgopas.fun
-  port: 443
-  udp: true
-  uuid: 3464a5bd-6a17-4ac3-8ca9-86a54c1aac7b
-  encryption: none
-  tls: true
-  servername: samsung.com
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: tKAYeVSM4yLXiOdKLMFP751fhII6YyqfbMXy_MSuejI
-  network: grpc
-  grpc-opts:
-    grpc-service-name: vless-grpc
 proxy-groups:
 - name: GLOBAL
   type: select
   proxies:
   - DIRECT
-  - 🇺🇸 United States, San Jose | [BL]
-  - 🇻🇳 Vietnam, Hà Đông | [BL]
-  - 🇹🇷 Turkey, Istanbul | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
-  - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [1cb00e0d]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [98ba2465]
-  - 🇩🇪 Germany, Maisach | [BL] [b06180c6]
-  - 🇩🇪 Germany, Maisach | [BL] [f58bd34a]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [5b94883d]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [1d8be845]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [5597364d]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [be7d44eb]
-  - 🇵🇱 Poland, Warsaw | [BL] [72d9725b]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [b5471a64]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
-  - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
-  - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
-  default-selected: 🇺🇸 United States, San Jose | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
+  - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  default-selected: 🇨🇳_CN_中国->🇯🇵_JP_日本
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
-  - 🇺🇸 United States, San Jose | [BL]
-  - 🇻🇳 Vietnam, Hà Đông | [BL]
-  - 🇹🇷 Turkey, Istanbul | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
-  - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [1cb00e0d]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [98ba2465]
-  - 🇩🇪 Germany, Maisach | [BL] [b06180c6]
-  - 🇩🇪 Germany, Maisach | [BL] [f58bd34a]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [5b94883d]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [1d8be845]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [5597364d]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [be7d44eb]
-  - 🇵🇱 Poland, Warsaw | [BL] [72d9725b]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [b5471a64]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
-  - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
-  - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
+  - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
-  - 🇺🇸 United States, San Jose | [BL]
-  - 🇻🇳 Vietnam, Hà Đông | [BL]
-  - 🇹🇷 Turkey, Istanbul | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
-  - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [1cb00e0d]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [98ba2465]
-  - 🇩🇪 Germany, Maisach | [BL] [b06180c6]
-  - 🇩🇪 Germany, Maisach | [BL] [f58bd34a]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [5b94883d]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [1d8be845]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [5597364d]
-  - 🇳🇱 The Netherlands, Eygelshoven | [BL] [be7d44eb]
-  - 🇵🇱 Poland, Warsaw | [BL] [72d9725b]
-  - 🇩🇪 Germany, Düsseldorf | [BL] [b5471a64]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
-  - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
-  - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
+  - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
+  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
   url: https://play.google.com/store
+  interval: 900
+  timeout: 8000
+  tolerance: 50
+  lazy: false
+- name: Premium-US
+  type: select
+  proxies:
+  - Premium-US-Auto
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  default-selected: Premium-US-Auto
+- name: Premium-US-Auto
+  type: url-test
+  proxies:
+  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000
   tolerance: 50

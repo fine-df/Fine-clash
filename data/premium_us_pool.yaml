@@ -1,1 +1,39 @@
-proxies: []
+proxies:
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
+  server: v29.hdacd.com
+  port: 30829
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [2920e936]
+  server: 45.142.126.231
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: android
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
+  server: 103.11.77.104
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz

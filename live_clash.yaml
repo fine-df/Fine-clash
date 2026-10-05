@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110010 | Fine=validated-pool | Premium-US=empty | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110011 | Fine=validated-pool | Premium-US=empty | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -24,6 +24,36 @@ proxies:
   reality-opts:
     public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
     short-id: 3d31326f95
+  network: tcp
+- type: vless
+  name: 🇻🇳 Vietnam, Hà Đông | [BL]
+  server: 45.153.130.119
+  port: 44988
+  udp: true
+  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  encryption: none
+  tls: true
+  servername: www.tesla.com
+  flow: xtls-rprx-vision
+  client-fingerprint: random
+  reality-opts:
+    public-key: f6Tj8-uvWsLv3V-lGLuPciArp5oKqUImBg-U7-WJ-0A
+    short-id: bb82c8
+  network: tcp
+- type: vless
+  name: 🇹🇷 Turkey, Istanbul | [BL]
+  server: 103.214.173.39
+  port: 50821
+  udp: true
+  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
+  encryption: none
+  tls: true
+  servername: iosapps.itunes.apple.com
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: dDf2TcDNn3Kk8pAp4EnNC4ZUAmGkzAapRFGFe-41IEk
+    short-id: 86f6705960e3e3
   network: tcp
 - type: vless
   name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
@@ -267,40 +297,14 @@ proxies:
   network: grpc
   grpc-opts:
     grpc-service-name: vless-grpc
-- type: vless
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  server: 172.86.105.222
-  port: 443
-  udp: true
-  uuid: 67a544a2-bfc6-11f1-9c3e-52540030ba36
-  encryption: none
-  tls: true
-  servername: www.nvidia.com
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: n25FmewpAEsvLl9Vr0bRFcz044f4IE7orWeWOzu8rwk
-  network: tcp
-- type: vless
-  name: 🇸🇪 Sweden, Stockholm | [BL]
-  server: 143.246.199.124
-  port: 443
-  udp: true
-  uuid: 79ccb156-bfc6-11f1-9811-525400d1d4f7
-  encryption: none
-  tls: true
-  servername: www.blocket.se
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: wSjV1yR_rhDUdoNbM9zIXNGLASLp9RorComnyoayo2c
-  network: tcp
 proxy-groups:
 - name: GLOBAL
   type: select
   proxies:
   - DIRECT
   - 🇺🇸 United States, San Jose | [BL]
+  - 🇻🇳 Vietnam, Hà Đông | [BL]
+  - 🇹🇷 Turkey, Istanbul | [BL]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
   - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
@@ -318,14 +322,14 @@ proxy-groups:
   - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
   - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
   - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  - 🇸🇪 Sweden, Stockholm | [BL]
   default-selected: 🇺🇸 United States, San Jose | [BL]
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
   - 🇺🇸 United States, San Jose | [BL]
+  - 🇻🇳 Vietnam, Hà Đông | [BL]
+  - 🇹🇷 Turkey, Istanbul | [BL]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
   - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
@@ -343,13 +347,13 @@ proxy-groups:
   - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
   - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
   - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  - 🇸🇪 Sweden, Stockholm | [BL]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇺🇸 United States, San Jose | [BL]
+  - 🇻🇳 Vietnam, Hà Đông | [BL]
+  - 🇹🇷 Turkey, Istanbul | [BL]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
   - 🇩🇪 Germany, Maisach | [BL] [cc07f036]
@@ -367,8 +371,6 @@ proxy-groups:
   - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL] [34fbbb4c]
   - 🇵🇱 Poland, Warsaw | [BL] [c1873e55]
   - 🇵🇱 Poland, Warsaw | [BL] [a0cf8b01]
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  - 🇸🇪 Sweden, Stockholm | [BL]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

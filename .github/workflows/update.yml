@@ -125,7 +125,7 @@ jobs:
             echo 'no changes'
             exit 0
           fi
-          git commit -m 'chore: publish Fine-only subscription'
+          git commit -m 'chore: publish Fine-only subscription [skip ci]'
           git push origin HEAD:main
 
       - name: Purge jsDelivr cache

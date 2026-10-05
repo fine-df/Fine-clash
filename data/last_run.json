@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-05T22:56:41.633650+00:00",
+  "generated_at": "2026-10-05T23:14:04.007975+00:00",
   "sources": 15,
   "nodes_discovered": 200,
   "results": [
@@ -20,7 +20,7 @@
     {
       "fingerprint": "a39695e33c63dca71db7",
       "name": "🇫🇷 France, Roubaix | 🌐 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -34,7 +34,7 @@
     {
       "fingerprint": "c3da62280c350591ffb4",
       "name": "未知 VLESS-182 | free-nodes",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -118,7 +118,7 @@
     {
       "fingerprint": "f9b7ef7aa682142ec680",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -132,9 +132,9 @@
     {
       "fingerprint": "b79adf03a3ac8e70256c",
       "name": "🇺🇸 United States, Wilmington | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -182,13 +182,13 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
       "fingerprint": "b853618508bc7e8c76a8",
       "name": "🌐 Anycast-IP | 🇨🇦 🇮🇱 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -216,7 +216,7 @@
     {
       "fingerprint": "63c96627547d7a490c4a",
       "name": "🌐 Anycast-IP | 🇮🇪 🇮🇶 🇳🇱 🇺🇸 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -272,14 +272,14 @@
     {
       "fingerprint": "df1495754de4fd952744",
       "name": "🇫🇷 France, Paris | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 167.4,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS12876 Scaleway SAS",
       "asn": null
     },
@@ -340,16 +340,16 @@
       "asn": null
     },
     {
-      "fingerprint": "6a8d4d56594ad5d8a7ff",
-      "name": "🌐 Anycast-IP | 🇩🇪 [SNI-RU] www.yandex.ru",
-      "score": 81,
+      "fingerprint": "eb21af0fd221b7771b3d",
+      "name": "🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru",
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 228.6,
+      "shenzhen_ping_ms": 260.3,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
@@ -370,7 +370,7 @@
     {
       "fingerprint": "bf97a787580524033858",
       "name": "🇫🇷 France, Roubaix | 🌐 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -384,7 +384,7 @@
     {
       "fingerprint": "026ce4da1bf282542e1d",
       "name": "🇩🇪 Germany, Frankfurt am Main (Bergen-Enkheim) | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -398,7 +398,7 @@
     {
       "fingerprint": "20425c5e954cd62bbbcd",
       "name": "🇩🇪 Germany, Nuremberg | 🌐 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -426,7 +426,7 @@
     {
       "fingerprint": "0e8c9aead3b79d1d2424",
       "name": "🇸🇬 Singapore, Singapore | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -454,7 +454,7 @@
     {
       "fingerprint": "f6e7a56c509b15768f7a",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -532,7 +532,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -560,7 +560,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -690,16 +690,16 @@
       "asn": null
     },
     {
-      "fingerprint": "eb21af0fd221b7771b3d",
+      "fingerprint": "34f0bc1917056298d6e6",
       "name": "🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 260.3,
+      "shenzhen_ping_ms": 217.6,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
@@ -734,7 +734,7 @@
     {
       "fingerprint": "4dd5716bc021f8ab204c",
       "name": "🇩🇪 Germany, Frankfurt am Main (Bergen-Enkheim) | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -854,7 +854,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -882,7 +882,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -902,7 +902,7 @@
     {
       "fingerprint": "e6b7b129a6478ed6fed3",
       "name": "🌐 Anycast-IP | 🇩🇪 🇮🇪 🇺🇸 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -916,9 +916,9 @@
     {
       "fingerprint": "5d39e221beecb91a6b98",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1040,16 +1040,16 @@
       "asn": null
     },
     {
-      "fingerprint": "34f0bc1917056298d6e6",
-      "name": "🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru",
-      "score": 81,
+      "fingerprint": "5f1d2b59ab5e0959ee71",
+      "name": "🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru",
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 217.6,
+      "shenzhen_ping_ms": 284.2,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
@@ -1070,28 +1070,28 @@
     {
       "fingerprint": "5597364d8c95923c862a",
       "name": "🇩🇪 Germany, Düsseldorf | [BL]",
-      "score": 86,
+      "score": 82,
       "gemini": true,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 1,
-      "shenzhen_ping_ms": 226.9,
-      "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
-      "org": "AS202051 NETGRID HOST LTD",
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
       "fingerprint": "9c671302d437279c99a1",
-      "name": "🇩🇪 Germany | [SNI-RU] www.yandex.ru",
-      "score": 81,
+      "name": "🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru",
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 226.9,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
@@ -1126,14 +1126,14 @@
     {
       "fingerprint": "2dc97471be5a9dd7bbde",
       "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 166.1,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS63949 Akamai Connected Cloud",
       "asn": null
     },
@@ -1154,7 +1154,7 @@
     {
       "fingerprint": "8bce6c2ecdad582f2dc1",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -1204,7 +1204,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -1224,7 +1224,7 @@
     {
       "fingerprint": "a1a6c7f1ebb97e072f91",
       "name": "🌐 Anycast-IP | 🇨🇦 🇭🇰 🇮🇪 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -1266,8 +1266,8 @@
     {
       "fingerprint": "a163ab6e5ef6fa835ea1",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 17,
-      "gemini": false,
+      "score": 42,
+      "gemini": true,
       "google_play": false,
       "clean": 60,
       "lifespan_days": 0,
@@ -1280,7 +1280,7 @@
     {
       "fingerprint": "eb7b81b6230b531f65f2",
       "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -1390,14 +1390,14 @@
       "asn": null
     },
     {
-      "fingerprint": "5f1d2b59ab5e0959ee71",
+      "fingerprint": "d921bd89b522987f8d6a",
       "name": "🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 284.2,
+      "shenzhen_ping_ms": 209.8,
       "shenzhen_loss_pct": 0.0,
       "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
@@ -1434,15 +1434,15 @@
     {
       "fingerprint": "1ed2cd3296b95b3b5ece",
       "name": "未知 VLESS-187 | free-nodes",
-      "score": 81,
-      "gemini": true,
-      "google_play": true,
-      "clean": 80,
+      "score": 17,
+      "gemini": false,
+      "google_play": false,
+      "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
-      "shenzhen_status": "timeout",
-      "org": "AS213520 Senko Digital LLC",
+      "shenzhen_status": "not-tested",
+      "org": null,
       "asn": null
     },
     {
@@ -1504,7 +1504,7 @@
     {
       "fingerprint": "bd3ecdb5d93bdf75b64b",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -1518,9 +1518,9 @@
     {
       "fingerprint": "0650c687259bcbb064f7",
       "name": "🇺🇸 United States | 🌐 | [BL]",
-      "score": 52,
+      "score": 12,
       "gemini": false,
-      "google_play": true,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1532,7 +1532,7 @@
     {
       "fingerprint": "e53178a8bd32d75112a1",
       "name": "🌐 Anycast-IP | 🇦🇷 🇯🇵 🇰🇷 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -1554,7 +1554,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -1588,7 +1588,7 @@
     {
       "fingerprint": "251241a1277ddb298f24",
       "name": "🌐 Anycast-IP | 🇨🇦 🇸🇬 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -1616,9 +1616,9 @@
     {
       "fingerprint": "cfd4f3956cfbe2272e55",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -1630,14 +1630,14 @@
     {
       "fingerprint": "03ad4e3c7aad2e74f6f1",
       "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 61,
+      "score": 81,
       "gemini": true,
-      "google_play": false,
+      "google_play": true,
       "clean": 80,
       "lifespan_days": 1,
       "shenzhen_ping_ms": 50.71,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS154107 DigitalLink Global Network Limited",
       "asn": null
     },
@@ -1749,7 +1749,7 @@
       "lifespan_days": 0,
       "shenzhen_ping_ms": 217.5,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
@@ -1770,14 +1770,14 @@
     {
       "fingerprint": "c27d3b290c177d82053e",
       "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 196.4,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS197354 DigitalEra Tech OU",
       "asn": null
     },
@@ -1904,7 +1904,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS13335 Cloudflare, Inc.",
       "asn": null
     },
     {
@@ -1918,7 +1918,7 @@
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS13335 Cloudflare, Inc.",
+      "org": null,
       "asn": null
     },
     {
@@ -1980,14 +1980,14 @@
     {
       "fingerprint": "ee03cbbab249549a2eaf",
       "name": "🇭🇰 Hong Kong, Hong Kong | [BL]",
-      "score": 81,
-      "gemini": true,
+      "score": 32,
+      "gemini": false,
       "google_play": true,
-      "clean": 80,
+      "clean": 60,
       "lifespan_days": 1,
-      "shenzhen_ping_ms": 49.75,
-      "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_ping_ms": null,
+      "shenzhen_loss_pct": null,
+      "shenzhen_status": "not-tested",
       "org": "AS154107 DigitalLink Global Network Limited",
       "asn": null
     },
@@ -2008,14 +2008,14 @@
     {
       "fingerprint": "cac46dd7bedea77445ef",
       "name": "🇫🇷 France, Paris | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 155.6,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS12876 Scaleway SAS",
       "asn": null
     },
@@ -2090,14 +2090,14 @@
       "asn": null
     },
     {
-      "fingerprint": "866aec47228730971cdf",
+      "fingerprint": "06e078a41215520dec7c",
       "name": "🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 246.3,
+      "shenzhen_ping_ms": 241.3,
       "shenzhen_loss_pct": 0.0,
       "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
@@ -2120,21 +2120,21 @@
     {
       "fingerprint": "195675bef7019cf072f1",
       "name": "🇩🇪 Germany, Frankfurt am Main | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 201.5,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS197354 DigitalEra Tech OU",
       "asn": null
     },
     {
       "fingerprint": "6d4bc7a9bcc508c5c0e9",
       "name": "🇩🇪 Germany, Nuremberg | 🌐 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -2204,7 +2204,7 @@
     {
       "fingerprint": "a799e086785ad4b3f6d7",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -2260,7 +2260,7 @@
     {
       "fingerprint": "18ed274bf4a68dae2ad8",
       "name": "🌐 Anycast-IP | 🇨🇦 🇪🇪 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -2316,21 +2316,21 @@
     {
       "fingerprint": "a2eceefc80aed7f843d3",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 12,
-      "gemini": false,
-      "google_play": false,
+      "score": 77,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": null,
+      "org": "AS31898 Oracle Corporation",
       "asn": null
     },
     {
       "fingerprint": "7715132e5971083d750c",
       "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -2358,14 +2358,14 @@
     {
       "fingerprint": "565291166d9d02e0504a",
       "name": "🇫🇷 France, Paris | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 160.2,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS12876 Scaleway SAS",
       "asn": null
     },
@@ -2440,14 +2440,14 @@
       "asn": null
     },
     {
-      "fingerprint": "06e078a41215520dec7c",
+      "fingerprint": "866aec47228730971cdf",
       "name": "🌐 Anycast-IP | 🇮🇷 [SNI-RU] www.yandex.ru",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 241.3,
+      "shenzhen_ping_ms": 246.3,
       "shenzhen_loss_pct": 0.0,
       "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
@@ -2456,7 +2456,7 @@
     {
       "fingerprint": "ab5219059c730fb2e9b8",
       "name": "🇫🇷 France, Roubaix | 🌐 | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -2470,7 +2470,7 @@
     {
       "fingerprint": "ce2675da53915f70fc4f",
       "name": "🇩🇪 Germany, Frankfurt am Main (Bergen-Enkheim) | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -2554,7 +2554,7 @@
     {
       "fingerprint": "98b4b0d483539b14691a",
       "name": "🇹🇼 Taiwan, Taipei | [BL]",
-      "score": 77,
+      "score": 82,
       "gemini": true,
       "google_play": true,
       "clean": 60,
@@ -2568,9 +2568,9 @@
     {
       "fingerprint": "a6019a6e322a233c6f94",
       "name": "🇺🇸 United States, Wilmington | [BL]",
-      "score": 17,
-      "gemini": false,
-      "google_play": false,
+      "score": 82,
+      "gemini": true,
+      "google_play": true,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
@@ -2666,8 +2666,8 @@
     {
       "fingerprint": "72341136fb5e1738f44b",
       "name": "🌐 Anycast-IP | 🇺🇸 | [BL]",
-      "score": 12,
-      "gemini": false,
+      "score": 37,
+      "gemini": true,
       "google_play": false,
       "clean": 60,
       "lifespan_days": 0,
@@ -2680,7 +2680,7 @@
     {
       "fingerprint": "8a267f752f688f3466cc",
       "name": "🇸🇬 Singapore, Singapore | 🌐 | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
@@ -2708,14 +2708,14 @@
     {
       "fingerprint": "dcb47930b4a97c48120e",
       "name": "🇫🇷 France, Paris | [BL]",
-      "score": 81,
+      "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
       "shenzhen_ping_ms": 169.1,
       "shenzhen_loss_pct": 0.0,
-      "shenzhen_status": "ok",
+      "shenzhen_status": "cached",
       "org": "AS12876 Scaleway SAS",
       "asn": null
     },
@@ -2776,31 +2776,31 @@
       "asn": null
     },
     {
-      "fingerprint": "d921bd89b522987f8d6a",
-      "name": "🇮🇷 Iran | [SNI-RU] www.yandex.ru",
+      "fingerprint": "6a8d4d56594ad5d8a7ff",
+      "name": "🌐 Anycast-IP | 🇩🇪 [SNI-RU] www.yandex.ru",
       "score": 86,
       "gemini": true,
       "google_play": true,
       "clean": 80,
       "lifespan_days": 0,
-      "shenzhen_ping_ms": 209.8,
+      "shenzhen_ping_ms": 228.6,
       "shenzhen_loss_pct": 0.0,
       "shenzhen_status": "cached",
       "org": "AS219506 Vladislav Doniy",
       "asn": null
     },
     {
-      "fingerprint": "0b6a9b745b6039bb92e8",
+      "fingerprint": "f054c3d7b9cf32076c58",
       "name": ".𖥔 ݁ ˖ִ🛸༄˖°. | [*CIDR]",
-      "score": 32,
+      "score": 12,
       "gemini": false,
-      "google_play": true,
+      "google_play": false,
       "clean": 60,
       "lifespan_days": 0,
       "shenzhen_ping_ms": null,
       "shenzhen_loss_pct": null,
       "shenzhen_status": "not-tested",
-      "org": "AS9123 JSC TIMEWEB",
+      "org": null,
       "asn": null
     }
   ],
@@ -2809,13 +2809,37 @@
     {
       "rank": 1,
       "score": 86,
+      "shenzhen_ping_ms": 155.6,
+      "shenzhen_loss_pct": 0.0,
+      "server": "www.calmlunch.com",
+      "type": "trojan"
+    },
+    {
+      "rank": 2,
+      "score": 86,
+      "shenzhen_ping_ms": 160.2,
+      "shenzhen_loss_pct": 0.0,
+      "server": "www.calmlunch.com",
+      "type": "trojan"
+    },
+    {
+      "rank": 3,
+      "score": 86,
+      "shenzhen_ping_ms": 166.1,
+      "shenzhen_loss_pct": 0.0,
+      "server": "170.114.52.22",
+      "type": "vless"
+    },
+    {
+      "rank": 4,
+      "score": 86,
       "shenzhen_ping_ms": 167.1,
       "shenzhen_loss_pct": 0.0,
       "server": "141.193.213.21",
       "type": "vless"
     },
     {
-      "rank": 2,
+      "rank": 5,
       "score": 86,
       "shenzhen_ping_ms": 167.8,
       "shenzhen_loss_pct": 0.0,
@@ -2823,15 +2847,23 @@
       "type": "vless"
     },
     {
-      "rank": 3,
+      "rank": 6,
       "score": 86,
-      "shenzhen_ping_ms": 167.8,
+      "shenzhen_ping_ms": 196.4,
       "shenzhen_loss_pct": 0.0,
-      "server": "141.193.213.20",
+      "server": "45.95.96.170",
       "type": "vless"
     },
     {
-      "rank": 4,
+      "rank": 7,
+      "score": 86,
+      "shenzhen_ping_ms": 201.5,
+      "shenzhen_loss_pct": 0.0,
+      "server": "45.95.96.182",
+      "type": "vless"
+    },
+    {
+      "rank": 8,
       "score": 86,
       "shenzhen_ping_ms": 209.8,
       "shenzhen_loss_pct": 0.0,
@@ -2839,7 +2871,15 @@
       "type": "vless"
     },
     {
-      "rank": 5,
+      "rank": 9,
+      "score": 86,
+      "shenzhen_ping_ms": 217.6,
+      "shenzhen_loss_pct": 0.0,
+      "server": "31.59.210.25",
+      "type": "vless"
+    },
+    {
+      "rank": 10,
       "score": 86,
       "shenzhen_ping_ms": 222.0,
       "shenzhen_loss_pct": 0.0,
@@ -2847,72 +2887,16 @@
       "type": "vless"
     },
     {
-      "rank": 6,
+      "rank": 11,
       "score": 86,
       "shenzhen_ping_ms": 226.9,
-      "shenzhen_loss_pct": 0.0,
-      "server": "de2.srv.vbuste.ru",
-      "type": "vless"
-    },
-    {
-      "rank": 7,
-      "score": 86,
-      "shenzhen_ping_ms": 241.3,
-      "shenzhen_loss_pct": 0.0,
-      "server": "31.59.210.26",
-      "type": "vless"
-    },
-    {
-      "rank": 8,
-      "score": 81,
-      "shenzhen_ping_ms": 49.75,
-      "shenzhen_loss_pct": 0.0,
-      "server": "cu.877774.xyz",
-      "type": "vmess"
-    },
-    {
-      "rank": 9,
-      "score": 81,
-      "shenzhen_ping_ms": 155.6,
-      "shenzhen_loss_pct": 0.0,
-      "server": "www.calmlunch.com",
-      "type": "trojan"
-    },
-    {
-      "rank": 10,
-      "score": 81,
-      "shenzhen_ping_ms": 160.2,
-      "shenzhen_loss_pct": 0.0,
-      "server": "www.calmlunch.com",
-      "type": "trojan"
-    },
-    {
-      "rank": 11,
-      "score": 81,
-      "shenzhen_ping_ms": 196.4,
-      "shenzhen_loss_pct": 0.0,
-      "server": "45.95.96.170",
-      "type": "vless"
-    },
-    {
-      "rank": 12,
-      "score": 81,
-      "shenzhen_ping_ms": 201.5,
-      "shenzhen_loss_pct": 0.0,
-      "server": "45.95.96.182",
-      "type": "vless"
-    },
-    {
-      "rank": 13,
-      "score": 81,
-      "shenzhen_ping_ms": 217.6,
       "shenzhen_loss_pct": 0.0,
       "server": "31.59.210.25",
       "type": "vless"
     },
     {
-      "rank": 14,
-      "score": 61,
+      "rank": 12,
+      "score": 81,
       "shenzhen_ping_ms": 50.71,
       "shenzhen_loss_pct": 0.0,
       "server": "cu.877774.xyz",
@@ -2920,5 +2904,5 @@
     }
   ],
   "published": true,
-  "selected": 14
+  "selected": 12
 }

@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110010 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110011 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,6 +10,44 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
+- type: trojan
+  name: 🇫🇷 France, Paris | [BL] [cac46dd7]
+  server: www.calmlunch.com
+  port: 443
+  udp: true
+  password: humanity
+  tls: true
+  network: ws
+  ws-opts:
+    path: /assignment
+    headers:
+      Host: www.calmlunch.com
+- type: trojan
+  name: 🇫🇷 France, Paris | [BL] [56529116]
+  server: www.calmlunch.com
+  port: 443
+  udp: true
+  password: humanity
+  tls: true
+  servername: www.calmlunch.com
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /assignment
+- type: vless
+  name: 🇸🇬 Singapore, Singapore | 🌐 | [BL]
+  server: 170.114.52.22
+  port: 443
+  udp: true
+  uuid: a853e120-3570-462b-aec1-e8f3d4f92d24
+  encryption: none
+  tls: true
+  servername: asia.csmaster.site
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    headers:
+      Host: asia.csmaster.site
 - type: vless
   name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
   server: 141.193.213.21
@@ -41,119 +79,6 @@ proxies:
     headers:
       Host: u.srilankangrill.online
 - type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [bdeb614b]
-  server: 141.193.213.20
-  port: 8443
-  udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
-  encryption: none
-  tls: true
-  servername: u.srilankangrill.online
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: u.srilankangrill.online
-- type: vless
-  name: 🇮🇷 Iran | [SNI-RU] www.yandex.ru
-  server: 31.59.210.26
-  port: 2088
-  udp: true
-  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
-  encryption: none
-  tls: true
-  servername: www.yandex.ru
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: Eq3c19Y0WGB1APWMADQB-oxCvZFSVFAQxG5L6b8EkUg
-    short-id: b1ad165f903c62fe
-  network: grpc
-  grpc-opts:
-    grpc-service-name: astracat
-- type: vless
-  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
-  server: 62.84.99.145
-  port: 443
-  udp: true
-  uuid: 053682f4-c584-46df-ad81-069dec5f64f0
-  encryption: none
-  tls: true
-  client-fingerprint: safari
-  network: ws
-  ws-opts:
-    path: /cdnws
-    headers:
-      Host: no.gokonstantin.com
-- type: vless
-  name: 🇩🇪 Germany, Düsseldorf | [BL]
-  server: de2.srv.vbuste.ru
-  port: 443
-  udp: true
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  encryption: none
-  tls: true
-  servername: de2.srv.vbuste.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  network: tcp
-- type: vless
-  name: 🌐 Anycast-IP | 🇮🇷 [SNI-RU] www.yandex.ru
-  server: 31.59.210.26
-  port: 2088
-  udp: true
-  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
-  encryption: none
-  tls: true
-  servername: www.yandex.ru
-  client-fingerprint: safari
-  reality-opts:
-    public-key: Eq3c19Y0WGB1APWMADQB-oxCvZFSVFAQxG5L6b8EkUg
-    short-id: b1ad165f903c62fe
-  network: grpc
-  grpc-opts:
-    grpc-service-name: astracat
-- type: vmess
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
-  server: cu.877774.xyz
-  port: 443
-  uuid: f3244e28-157b-49e9-9730-89832f89ebcc
-  alterId: 0
-  cipher: auto
-  udp: true
-  network: ws
-  tls: true
-  ws-opts:
-    headers:
-      Host: balanced-minds-carrier-demanding.trycloudflare.com
-    path: /vmess-argo
-- type: trojan
-  name: 🇫🇷 France, Paris | [BL] [cac46dd7]
-  server: www.calmlunch.com
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  network: ws
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.calmlunch.com
-- type: trojan
-  name: 🇫🇷 France, Paris | [BL] [56529116]
-  server: www.calmlunch.com
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.calmlunch.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /assignment
-- type: vless
   name: 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
   server: 45.95.96.170
   port: 443
@@ -184,7 +109,23 @@ proxies:
     short-id: a7268acdcfef5862
   network: tcp
 - type: vless
-  name: 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru
+  name: 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  server: 31.59.210.26
+  port: 2088
+  udp: true
+  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
+  encryption: none
+  tls: true
+  servername: www.yandex.ru
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: Eq3c19Y0WGB1APWMADQB-oxCvZFSVFAQxG5L6b8EkUg
+    short-id: b1ad165f903c62fe
+  network: grpc
+  grpc-opts:
+    grpc-service-name: astracat
+- type: vless
+  name: 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
   server: 31.59.210.25
   port: 2087
   udp: true
@@ -199,8 +140,38 @@ proxies:
   network: grpc
   grpc-opts:
     grpc-service-name: astracat
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
+  server: 62.84.99.145
+  port: 443
+  udp: true
+  uuid: 053682f4-c584-46df-ad81-069dec5f64f0
+  encryption: none
+  tls: true
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: /cdnws
+    headers:
+      Host: no.gokonstantin.com
+- type: vless
+  name: 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
+  server: 31.59.210.25
+  port: 2087
+  udp: true
+  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
+  encryption: none
+  tls: true
+  servername: www.yandex.ru
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: KDBhxT2YMtMjDEC9VdoDEISdCwxd6KFrSE8uyUaHcTY
+    short-id: ed435c242097fd05
+  network: grpc
+  grpc-opts:
+    grpc-service-name: astracat
 - type: vmess
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
   server: cu.877774.xyz
   port: 443
   uuid: f3244e28-157b-49e9-9730-89832f89ebcc
@@ -219,57 +190,51 @@ proxy-groups:
   type: select
   proxies:
   - DIRECT
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [bdeb614b]
-  - 🇮🇷 Iran | [SNI-RU] www.yandex.ru
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇩🇪 Germany, Düsseldorf | [BL]
-  - 🌐 Anycast-IP | 🇮🇷 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
+  - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
-  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
-  default-selected: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
+  default-selected: 🇫🇷 France, Paris | [BL] [cac46dd7]
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [bdeb614b]
-  - 🇮🇷 Iran | [SNI-RU] www.yandex.ru
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇩🇪 Germany, Düsseldorf | [BL]
-  - 🌐 Anycast-IP | 🇮🇷 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
+  - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
-  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [bdeb614b]
-  - 🇮🇷 Iran | [SNI-RU] www.yandex.ru
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
-  - 🇩🇪 Germany, Düsseldorf | [BL]
-  - 🌐 Anycast-IP | 🇮🇷 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [ee03cbba]
   - 🇫🇷 France, Paris | [BL] [cac46dd7]
   - 🇫🇷 France, Paris | [BL] [56529116]
+  - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
   - 🇩🇪 Germany, Frankfurt am Main | [BL] [195675be]
-  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru
-  - 🇭🇰 Hong Kong, Hong Kong | [BL] [03ad4e3c]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [34f0bc19]
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🌐 Anycast-IP | 🇩🇪 🇮🇩 [SNI-RU] www.yandex.ru [9c671302]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110012 | Fine=validated-pool | Premium-US=optional | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110013 | Fine=validated-pool | Premium-US=empty | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -19,74 +19,13 @@ proxies:
   cipher: auto
   udp: true
 - type: vmess
-  name: 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  server: v29.hdacd.com
-  port: 30829
+  name: 🇭🇰_HK_中国香港->🇫🇷_FR_法国
+  server: v35.hdacd.com
+  port: 30835
   uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
   alterId: 2
   cipher: auto
   udp: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  server: v33.hdacd.com
-  port: 30833
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  server: v4.hdacd.com
-  port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  cipher: auto
-  udp: true
-- type: vless
-  name: 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  server: 45.142.126.231
-  port: 443
-  udp: true
-  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
-  encryption: none
-  tls: true
-  servername: x.m-90.xyz
-  client-fingerprint: android
-  network: ws
-  ws-opts:
-    path: t.me/TEAMNETGRATISCOL
-    headers:
-      Host: x.m-90.xyz
-- type: vless
-  name: 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  server: 103.11.77.104
-  port: 443
-  udp: true
-  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
-  encryption: none
-  tls: true
-  servername: x.m-90.xyz
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: t.me/TEAMNETGRATISCOL
-    headers:
-      Host: x.m-90.xyz
-- type: vless
-  name: 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
-  server: 103.11.77.104
-  port: 443
-  udp: true
-  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
-  encryption: none
-  tls: true
-  servername: x.m-90.xyz
-  client-fingerprint: ios
-  network: ws
-  ws-opts:
-    path: t.me/TEAMNETGRATISCOL
-    headers:
-      Host: x.m-90.xyz
 - type: vless
   name: 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
   server: 81.90.20.200
@@ -111,38 +50,81 @@ proxies:
   flow: xtls-rprx-vision
   client-fingerprint: qq
   network: tcp
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  server: v4.hdacd.com
+  port: 30804
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
 - type: vless
-  name: 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
-  server: 2.27.211.38
+  name: 🇲🇩 Moldova, Tohatin | [BL] [d85c8c39]
+  server: 89.35.14.43
   port: 443
   udp: true
-  uuid: 86037609-3790-4901-bd2f-c698092fb1fc
+  uuid: 6d257a71-6d98-42d2-983a-34363b6dedcd
   encryption: none
   tls: true
-  servername: po.skfv-mirror.ru
-  flow: xtls-rprx-vision
+  servername: md7.mediacorp.fyi
+  client-fingerprint: firefox
+  network: grpc
+  grpc-opts:
+    grpc-service-name: mobile.api.Event
+- type: vless
+  name: 🇲🇩 Moldova, Tohatin | [BL] [7e79e5ff]
+  server: 89.35.14.43
+  port: 443
+  udp: true
+  uuid: 6d257a71-6d98-42d2-983a-34363b6dedcd
+  encryption: none
+  tls: true
+  servername: md7.mediacorp.fyi
   client-fingerprint: random
-  reality-opts:
-    public-key: 9Pg_ecqFPMfzOvJrmxE05FmLUDXbY9Mo1r2MgxFzYEQ
-    short-id: cd57a927f6b72d81
-  network: tcp
+  network: grpc
+  grpc-opts:
+    grpc-service-name: mobile.api.Event
 - type: vless
-  name: 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
-  server: 2.27.211.38
-  port: 443
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
+  server: e7q.internet-booster.online
+  port: 2443
   udp: true
-  uuid: 86037609-3790-4901-bd2f-c698092fb1fc
+  uuid: 0ab2bb4f-c8ad-4c52-a94f-7a69c71d76f5
   encryption: none
   tls: true
-  servername: po.skfv-mirror.ru
+  servername: ads.x5.ru
   flow: xtls-rprx-vision
-  client-fingerprint: ios
+  client-fingerprint: edge
   reality-opts:
-    public-key: 9Pg_ecqFPMfzOvJrmxE05FmLUDXbY9Mo1r2MgxFzYEQ
-    short-id: cd57a927f6b72d81
+    public-key: AuLWE8R3WD4DwnDxVHgqEcNjyge1btt5PdaUUArdCVk
+    short-id: 2b03d7853fc8faa6
   network: tcp
+- type: vmess
+  name: 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  server: silversbgfgov.vip44.wogbcnmnagfwgov.com
+  port: 11244
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  server: v33.hdacd.com
+  port: 30833
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
 - type: vless
-  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [ff6eda21]
   server: 104.245.103.36
   port: 443
   udp: true
@@ -157,7 +139,7 @@ proxies:
     short-id: 051f20c2344a2dfd
   network: tcp
 - type: vless
-  name: 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [bc35f204]
   server: 104.245.103.36
   port: 443
   udp: true
@@ -177,73 +159,54 @@ proxy-groups:
   proxies:
   - DIRECT
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
   - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇲🇩 Moldova, Tohatin | [BL] [d85c8c39]
+  - 🇲🇩 Moldova, Tohatin | [BL] [7e79e5ff]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [ff6eda21]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [bc35f204]
   default-selected: 🇨🇳_CN_中国->🇯🇵_JP_日本
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
   - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇲🇩 Moldova, Tohatin | [BL] [d85c8c39]
+  - 🇲🇩 Moldova, Tohatin | [BL] [7e79e5ff]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [ff6eda21]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [bc35f204]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  - 🇺🇸 United States, Wilmington | [BL] [54dfc02c]
+  - 🇭🇰_HK_中国香港->🇫🇷_FR_法国
   - 🇵🇱 Poland | 🌐 | [BL] [77c6a095]
   - 🇵🇱 Poland | 🌐 | [BL] [528fe4dd]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [34a9ce02]
-  - 🇵🇱 Poland, Warsaw | 🌐 | [BL] [579e6983]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [ff6eda21]
-  - 🇳🇱 The Netherlands, Amsterdam | [BL] [bc35f204]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇲🇩 Moldova, Tohatin | [BL] [d85c8c39]
+  - 🇲🇩 Moldova, Tohatin | [BL] [7e79e5ff]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [SNI-RU] ads.x5.ru
+  - 🇨🇳_CN_中国->🇵🇭_PH_菲律宾
+  - 🇭🇰_HK_中国香港->🇩🇪_DE_德国
+  - 🇭🇰_HK_中国香港
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [ff6eda21]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL] [bc35f204]
   url: https://play.google.com/store
-  interval: 900
-  timeout: 8000
-  tolerance: 50
-  lazy: false
-- name: Premium-US
-  type: select
-  proxies:
-  - Premium-US-Auto
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  default-selected: Premium-US-Auto
-- name: Premium-US-Auto
-  type: url-test
-  proxies:
-  - 🇭🇰_HK_中国香港->🇺🇸_US_美国
-  - 🇺🇸 United States, Wilmington | [BL] [2920e936]
-  - 🇺🇸 United States, Wilmington | [BL] [2f2bbe48]
-  url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000
   tolerance: 50

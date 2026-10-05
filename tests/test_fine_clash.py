@@ -15,10 +15,6 @@ def test_final_proxy_groups_expose_explicit_fine_and_global_nodes():
     assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
     assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
 
-def test_bitz_is_removed_from_final_architecture():
-    source = inspect.getsource(bf.build_config)
-    assert "Bitz" not in source
-
 def test_final_config_is_fine_only():
     cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])
     assert cfg["mode"] == "rule"

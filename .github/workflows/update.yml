@@ -65,7 +65,12 @@ jobs:
 
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
-        run: python build_final.py data/fine_pool.yaml
+        env:
+          BITZ_SUB_URL: ${{ secrets.BITZ_SUB_URL }}
+        run: |
+          set -euo pipefail
+          test -n "${BITZ_SUB_URL}"
+          python build_final.py data/fine_pool.yaml
 
       - name: Validate profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
@@ -75,8 +80,13 @@ jobs:
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
+          grep -q '^- name: Bitz' live_clash.yaml
+          grep -q '^- name: Bitz-Auto' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
           grep -q '^- name: Fine-Auto' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,ozon.ru,Bitz' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,amazon.com,Bitz' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,muse.ai,Bitz' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml
@@ -99,12 +109,29 @@ jobs:
               assert 'Premium-US' not in groups and 'Premium-US-Auto' not in groups, 'Empty Premium-US pool must not leave stale groups'
           print(f"Premium-US validation: {len(premium)} nodes")
           PY
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+          profile = yaml.safe_load(Path('live_clash.yaml').read_text(encoding='utf-8'))
+          groups = {g.get('name'): g for g in profile.get('proxy-groups', []) if isinstance(g, dict)}
+          assert set(groups) >= {'GLOBAL', 'Bitz', 'Bitz-Auto', 'Fine', 'Fine-Auto'}
+          global_nodes = set(groups['GLOBAL'].get('proxies') or [])
+          assert 'DIRECT' in global_nodes
+          assert 'Bitz-Auto' not in global_nodes and 'Fine-Auto' not in global_nodes
+          assert any(name.startswith('Bitz | ') for name in global_nodes), 'GLOBAL must expose Bitz nodes'
+          assert any(name != 'DIRECT' and not name.startswith('Bitz | ') and name != 'Premium-US-Auto' for name in global_nodes), 'GLOBAL must expose Fine nodes'
+          assert groups['Bitz']['default-selected'] == 'Bitz-Auto'
+          assert groups['Fine']['default-selected'] == 'Fine-Auto'
+          assert set(groups['Bitz-Auto']['proxies']) == {name for name in global_nodes if name.startswith('Bitz | ')}
+          assert set(groups['Fine-Auto']['proxies']).issubset(global_nodes)
+          print('Dual-routing validation: GLOBAL + Bitz-Auto + Fine-Auto OK')
+          PY
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:|Bitz-Auto|^- name: Bitz$' live_clash.yaml; then
-            echo 'obsolete router-specific or Bitz markers detected'
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:|BitzPool:' live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
             exit 1
           fi
           if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then

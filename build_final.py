@@ -359,7 +359,7 @@ def main():
     OUT.write_text(header + dumped, encoding="utf-8")
     print(
         f"written {OUT}: Bitz={len(bitz_nodes)}; Fine={len(fine_nodes)}; "
-        f"Premium-US={'yes' if premium_names else 'empty'}; "
+        f"Premium-US={'yes' if premium_nodes else 'empty'}; "
         f"total proxies={len(config['proxies'])}; rules={len(config['rules'])}"
     )
 

@@ -71,7 +71,6 @@ checks:
     - 'access denied'
 output:
   clash_file: 'data/fine_pool.yaml'
-  v2ray_file: '/tmp/fine_v2ray.txt'
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
   report_file: 'data/last_run.json'

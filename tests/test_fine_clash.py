@@ -193,15 +193,14 @@ def test_mihomo_tester_uses_no_geosite_rule():
 
 
 def test_output_builder(tmp_path: Path):
-    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml")}}
     nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
     fc.build_outputs(nodes, rules)
     assert "GEOSITE,CN,DIRECT" not in (tmp_path / "clash.yaml").read_text()
-    assert base64.b64decode((tmp_path / "v2ray.txt").read_text()).decode().startswith("trojan://")
 
 
 def test_output_builder_deduplicates_proxy_names(tmp_path: Path):
-    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml")}}
     nodes = [
         {"name":"same","type":"trojan","server":"one.example","port":443,"password":"one","tls":True},
         {"name":"same","type":"trojan","server":"two.example","port":443,"password":"two","tls":True},
@@ -219,7 +218,7 @@ def test_output_builder_deduplicates_proxy_names(tmp_path: Path):
 
 
 def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
-    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml")}}
     nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
     fc.build_outputs(nodes, rules)
     built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
@@ -242,14 +241,10 @@ def test_vless_reality_is_normalized_for_mihomo():
     node = fc.parse_subscription(uri)[0]
     assert node["reality-opts"] == {"public-key": "PUBLICKEY", "short-id": "SHORTID"}
     assert "public-key" not in node and "short-id" not in node
-    assert fc.node_to_uri(node).startswith("vless://")
-    assert "security=reality" in fc.node_to_uri(node)
-    assert "pbk=PUBLICKEY" in fc.node_to_uri(node)
-    assert "sid=SHORTID" in fc.node_to_uri(node)
 
 
 def test_output_builder_filters_xhttp_for_compatibility(tmp_path: Path):
-    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml")}}
     nodes = [
         {"name":"xhttp","type":"vless","server":"x.example","port":443,"uuid":"u","tls":True,"network":"xhttp","xhttp-opts":{"path":"/x"}},
         {"name":"ws","type":"vless","server":"w.example","port":443,"uuid":"u2","tls":True,"network":"ws"},
@@ -282,47 +277,13 @@ def test_cached_shenzhen_result(tmp_path: Path):
 
 
 def test_output_builder_configures_wechat_friendly_dns(tmp_path: Path):
-    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml"), "v2ray_file": str(tmp_path / "v2ray.txt")}}
+    rules = {"output": {"clash_file": str(tmp_path / "clash.yaml")}}
     nodes = [{"name":"demo","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True,"servername":"example.com"}]
     fc.build_outputs(nodes, rules)
     built = fc.yaml.safe_load((tmp_path / "clash.yaml").read_text())
     assert built["dns"]["enhanced-mode"] == "redir-host"
     assert built["dns"]["nameserver-policy"]["+.qq.com"] == ["223.5.5.5", "119.29.29.29"]
     assert built["dns"]["direct-nameserver-follow-policy"] is True
-
-
-def test_trojan_grpc_v2ray_uri_preserves_transport_options():
-    node = {
-        "name":"grpc",
-        "type":"trojan",
-        "server":"example.com",
-        "port":443,
-        "password":"secret",
-        "tls":True,
-        "servername":"example.com",
-        "network":"grpc",
-        "grpc-opts":{"grpc-service-name":"edge"},
-    }
-    uri = fc.node_to_uri(node)
-    assert "type=grpc" in uri
-    assert "serviceName=edge" in uri
-
-
-def test_vmess_grpc_v2ray_uri_preserves_service_name():
-    node = {
-        "name":"vmess-grpc",
-        "type":"vmess",
-        "server":"example.com",
-        "port":443,
-        "uuid":"123e4567-e89b-12d3-a456-426614174000",
-        "tls":True,
-        "network":"grpc",
-        "grpc-opts":{"grpc-service-name":"edge"},
-    }
-    uri = fc.node_to_uri(node)
-    payload = fc.base64.b64decode(uri[len("vmess://"):]).decode()
-    assert '"net":"grpc"' in payload
-    assert '"path":"edge"' in payload
 
 
 def test_globalping_token_is_applied(monkeypatch):

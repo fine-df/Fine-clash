@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110008 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110009 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -11,59 +11,351 @@ profile:
   store-selected: true
 proxies:
 - type: vless
-  name: 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  server: argo6.5671234.xyz
-  port: 443
-  udp: true
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  encryption: none
-  tls: true
-  servername: argo6.5671234.xyz
-  network: ws
-  ws-opts:
-    path: /e8e2cecb6188f7fb
-    headers:
-      Host: argo6.5671234.xyz
-- type: vless
-  name: 🇺🇸_US_美国->🇵🇱_PL_波兰
-  server: iiproxy8.iiproxy.com
+  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  server: 141.193.213.21
   port: 8443
   udp: true
-  uuid: 806fa224-44f7-4c1b-b7a3-05bfdfdfbf87
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
   encryption: none
   tls: true
+  servername: u.srilankangrill.online
+  client-fingerprint: chrome
   network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: u.srilankangrill.online
+- type: vless
+  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
+  server: news.zoom.us
+  port: 8443
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+  encryption: none
+  tls: true
+  servername: u.srilankangrill.online
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: u.srilankangrill.online
+- type: vless
+  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
+  server: news.zoom.us
+  port: 8443
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+  encryption: none
+  tls: true
+  servername: u.srilankangrill.online
+  client-fingerprint: qq
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: u.srilankangrill.online
 - type: vmess
-  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
-  server: sbgfgov.vip6.wogacnmnagfwgov.com
-  port: 11206
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+  server: yg1.ygkkk.dpdns.org
+  port: 443
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: jmp1.907737.xyz
+    path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+- network: ws
+  alterId: 0
+  servername: jmp1.907737.xyz
+  name: 未知 VMESS-369 | free-nodes
+  cipher: auto
+  type: vmess
+  ws-opts:
+    path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+    headers:
+      Host: jmp1.907737.xyz
+  server: yg1.ygkkk.dpdns.org
+  tls: true
+  port: 443
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [a6019a6e]
+  server: 104.168.202.51
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  server: 31.59.210.26
+  port: 2088
+  udp: true
+  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
+  encryption: none
+  tls: true
+  servername: www.yandex.ru
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: Eq3c19Y0WGB1APWMADQB-oxCvZFSVFAQxG5L6b8EkUg
+    short-id: b1ad165f903c62fe
+  network: grpc
+  grpc-opts:
+    grpc-service-name: astracat
+- type: vless
+  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
+  server: 62.84.99.145
+  port: 443
+  udp: true
+  uuid: 053682f4-c584-46df-ad81-069dec5f64f0
+  encryption: none
+  tls: true
+  client-fingerprint: safari
+  network: ws
+  ws-opts:
+    path: /cdnws
+    headers:
+      Host: no.gokonstantin.com
+- type: vless
+  name: 🇹🇷 Turkey, Sancaktepe | [BL] [a035ad28]
+  server: tr.xelnivo.ir
+  port: 5589
+  udp: true
+  uuid: e40131eb-087a-48e1-9d0d-c7db5049ce1f
+  encryption: none
+  tls: true
+  servername: play.google.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: rlWw1txOKfyTIegqGc5YUQo1CxqZEXBPeQZppA6H014
+    short-id: 8f798d413a5dbf01
+  network: tcp
+- type: vless
+  name: 🇩🇪 Germany | [*CIDR] [52b00f10]
+  server: 189.74.106.116
+  port: 443
+  udp: true
+  uuid: 684a58f3-e942-4486-a3a1-effd2f277b25
+  encryption: none
+  tls: true
+  servername: api.setevoyprostor.cc
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: r5WB5FnSCt4eeBC1FJMfkWHbzsMuabo0Rc6wuAhlZUs
+    short-id: a8
+  network: tcp
+- type: vless
+  name: 🇩🇪 Germany | [*CIDR] [92df1b3b]
+  server: 189.74.106.150
+  port: 443
+  udp: true
+  uuid: 684a58f3-e942-4486-a3a1-effd2f277b25
+  encryption: none
+  tls: true
+  servername: api.setevoyprostor.cc
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: r5WB5FnSCt4eeBC1FJMfkWHbzsMuabo0Rc6wuAhlZUs
+    short-id: a8
+  network: tcp
+- type: vless
+  name: 🇩🇪 Germany | [*CIDR] [7811b3d6]
+  server: 189.74.106.150
+  port: 443
+  udp: true
+  uuid: 684a58f3-e942-4486-a3a1-effd2f277b25
+  encryption: none
+  tls: true
+  servername: api.setevoyprostor.cc
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: r5WB5FnSCt4eeBC1FJMfkWHbzsMuabo0Rc6wuAhlZUs
+    short-id: a8
+  network: tcp
+- type: vless
+  name: 🇹🇷 Turkey, Sancaktepe | [BL] [b68805ba]
+  server: tr.xelnivo.ir
+  port: 5589
+  udp: true
+  uuid: e40131eb-087a-48e1-9d0d-c7db5049ce1f
+  encryption: none
+  tls: true
+  servername: play.google.com
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: rlWw1txOKfyTIegqGc5YUQo1CxqZEXBPeQZppA6H014
+    short-id: 8f798d413a5dbf01
+  network: tcp
+- type: vless
+  name: 🌐 Anycast-IP | 🇮🇩 🇮🇷 | [SNI-RU] www.yandex.ru
+  server: 31.59.210.26
+  port: 2088
+  udp: true
+  uuid: 5413edfb-08d6-4fba-b51c-809c04feb127
+  encryption: none
+  tls: true
+  servername: www.yandex.ru
+  client-fingerprint: safari
+  reality-opts:
+    public-key: Eq3c19Y0WGB1APWMADQB-oxCvZFSVFAQxG5L6b8EkUg
+    short-id: b1ad165f903c62fe
+  network: grpc
+  grpc-opts:
+    grpc-service-name: astracat
+- type: vless
+  name: 🇺🇸 United States, Wilmington | [BL] [b79adf03]
+  server: 46.36.221.203
+  port: 443
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
+  encryption: none
+  tls: true
+  servername: x.m-90.xyz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: t.me/TEAMNETGRATISCOL
+    headers:
+      Host: x.m-90.xyz
+- type: vless
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  server: 64.188.115.219
+  port: 443
+  udp: true
+  uuid: 1ef3cfdd-a0b7-4584-87b4-2b217d8a4581
+  encryption: none
+  tls: true
+  servername: www.swift.com
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: 2tjr1gP8eecWi9xlKFB1SmPKOzRgDt40NBQcxhjaKCA
+    short-id: 270b5417f8ecb723
+  network: tcp
+- type: vmess
+  name: 🇭🇰_HK_中国香港
+  server: v10.hdacd.com
+  port: 30807
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
   alterId: 2
   cipher: auto
   udp: true
+- type: vless
+  name: 🇵🇱 Poland | [*CIDR] [1ba9d027]
+  server: 185.229.9.176
+  port: 44400
+  udp: true
+  uuid: a5893c8b-28a2-4947-9a1c-708db25506c3
+  encryption: none
+  tls: true
+  servername: lk.x5.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: ANDYlOa4x99lm7WhCOtgGVHz4ton0bHDC7S84VI_mwA
+    short-id: fa7e
+  network: tcp
+- type: vless
+  name: 🇵🇱 Poland | [*CIDR] [d352a836]
+  server: 185.229.9.176
+  port: 44400
+  udp: true
+  uuid: a5893c8b-28a2-4947-9a1c-708db25506c3
+  encryption: none
+  tls: true
+  servername: lk.x5.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ANDYlOa4x99lm7WhCOtgGVHz4ton0bHDC7S84VI_mwA
+    short-id: fa7e
+  network: tcp
 proxy-groups:
 - name: GLOBAL
   type: select
   proxies:
   - DIRECT
-  - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  default-selected: 🇺🇸_US_美国->🇹🇼_TW_中国台湾
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
+  - 未知 VMESS-369 | free-nodes
+  - 🇺🇸 United States, Wilmington | [BL] [a6019a6e]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [a035ad28]
+  - 🇩🇪 Germany | [*CIDR] [52b00f10]
+  - 🇩🇪 Germany | [*CIDR] [92df1b3b]
+  - 🇩🇪 Germany | [*CIDR] [7811b3d6]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [b68805ba]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 | [SNI-RU] www.yandex.ru
+  - 🇺🇸 United States, Wilmington | [BL] [b79adf03]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇭🇰_HK_中国香港
+  - 🇵🇱 Poland | [*CIDR] [1ba9d027]
+  - 🇵🇱 Poland | [*CIDR] [d352a836]
+  default-selected: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
-  - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
+  - 未知 VMESS-369 | free-nodes
+  - 🇺🇸 United States, Wilmington | [BL] [a6019a6e]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [a035ad28]
+  - 🇩🇪 Germany | [*CIDR] [52b00f10]
+  - 🇩🇪 Germany | [*CIDR] [92df1b3b]
+  - 🇩🇪 Germany | [*CIDR] [7811b3d6]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [b68805ba]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 | [SNI-RU] www.yandex.ru
+  - 🇺🇸 United States, Wilmington | [BL] [b79adf03]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇭🇰_HK_中国香港
+  - 🇵🇱 Poland | [*CIDR] [1ba9d027]
+  - 🇵🇱 Poland | [*CIDR] [d352a836]
   default-selected: Fine-Auto
 - name: Fine-Auto
   type: url-test
   proxies:
-  - 🇺🇸_US_美国->🇹🇼_TW_中国台湾
-  - 🇺🇸_US_美国->🇵🇱_PL_波兰
-  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
+  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
+  - 🇭🇰 Hong Kong, Hong Kong | [BL]
+  - 未知 VMESS-369 | free-nodes
+  - 🇺🇸 United States, Wilmington | [BL] [a6019a6e]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 [SNI-RU] www.yandex.ru
+  - 🇳🇱 The Netherlands, Amsterdam | [BL]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [a035ad28]
+  - 🇩🇪 Germany | [*CIDR] [52b00f10]
+  - 🇩🇪 Germany | [*CIDR] [92df1b3b]
+  - 🇩🇪 Germany | [*CIDR] [7811b3d6]
+  - 🇹🇷 Turkey, Sancaktepe | [BL] [b68805ba]
+  - 🌐 Anycast-IP | 🇮🇩 🇮🇷 | [SNI-RU] www.yandex.ru
+  - 🇺🇸 United States, Wilmington | [BL] [b79adf03]
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  - 🇭🇰_HK_中国香港
+  - 🇵🇱 Poland | [*CIDR] [1ba9d027]
+  - 🇵🇱 Poland | [*CIDR] [d352a836]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

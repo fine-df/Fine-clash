@@ -535,11 +535,12 @@ def test_premium_us_requires_us_non_hosting_and_sub_500_ping():
 def test_premium_us_group_is_optional_in_final_config():
     fine=[{"name":"Fine-1","type":"trojan","server":"fine.example.com","port":443,"password":"secret","tls":True}]
     premium=[{"name":"US-1","type":"trojan","server":"us.example.com","port":443,"password":"secret2","tls":True}]
-    cfg=bf.build_config(fine,premium)
+    bitz=[{"name":"Bitz-1","type":"trojan","server":"bitz.example.com","port":443,"password":"secret3","tls":True}]
+    cfg=bf.build_config(fine,bitz,premium)
     names=[g["name"] for g in cfg["proxy-groups"]]
     assert "Premium-US" in names and "Premium-US-Auto" in names
     assert "US-1" in next(g for g in cfg["proxy-groups"] if g["name"]=="Premium-US")["proxies"]
-    empty=bf.build_config(fine,[])
+    empty=bf.build_config(fine,bitz,[])
     empty_names=[g["name"] for g in empty["proxy-groups"]]
     assert "Premium-US" not in empty_names and "Premium-US-Auto" not in empty_names
 

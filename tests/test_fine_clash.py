@@ -351,6 +351,34 @@ def test_fingerprint_includes_transport_identity():
     b = dict(base, **{"servername":"b.example","network":"ws","ws-opts":{"path":"/b"}})
     assert fc.fingerprint(a) != fc.fingerprint(b)
 
+def test_prioritize_protocol_diversity_reserves_non_vless():
+    nodes=[
+        {"name":"v1","type":"vless","server":"v1.example","port":443},
+        {"name":"v2","type":"vless","server":"v2.example","port":443},
+        {"name":"vm","type":"vmess","server":"vm.example","port":443},
+        {"name":"tj","type":"trojan","server":"tj.example","port":443},
+    ]
+    picked=fc.prioritize_protocol_diversity(nodes,4,{"enabled":True,"preferred_non_vless_types":["vmess","trojan","ss"],"min_test_non_vless":2})
+    assert [n["type"] for n in picked[:2]] == ["vmess","trojan"]
+    assert len(picked)==4
+
+
+def test_rank_candidates_reserves_non_vless_types():
+    vm={"name":"vm","type":"vmess","server":"vm.example","port":443,"uuid":"u"}
+    tr={"name":"tr","type":"trojan","server":"tr.example","port":443,"password":"p","tls":True}
+    v1={"name":"v1","type":"vless","server":"v1.example","port":443,"uuid":"u1"}
+    v2={"name":"v2","type":"vless","server":"v2.example","port":443,"uuid":"u2"}
+    nodes=[v1,v2,tr,vm]
+    meta={
+        fc.fingerprint(v1):_rank_meta(v1,score=100,ping=20),
+        fc.fingerprint(v2):_rank_meta(v2,score=99,ping=30),
+        fc.fingerprint(tr):_rank_meta(tr,score=70,ping=100),
+        fc.fingerprint(vm):_rank_meta(vm,score=69,ping=110),
+    }
+    ranked=fc.rank_candidates(nodes,limit=4,metadata=meta,min_non_vless=2,preferred_non_vless_types=["vmess","trojan","ss"])
+    assert {n["type"] for n in ranked[:2]} == {"vmess","trojan"}
+
+
 def test_rank_candidates_sorts_and_limits():
     nodes = [
         _rank_node("low", "a.example"),
@@ -465,12 +493,13 @@ def test_update_history_dedups_within_same_day():
 
 # Premium-US optional side-pool tests
 def test_premium_us_requires_us_non_hosting_and_sub_500_ping():
-    cfg={"enabled":True,"require_country":"US","min_clean_score":80,"max_ping_ms":500,"require_non_hosting":True}
+    cfg={"enabled":True,"require_country":"US","min_clean_score":80,"max_ping_ms":500,"reject_hosting":True}
     base={"country":"US","org":"Example Residential ISP","hosting":False,"clean":80,"shenzhen_ping_ms":499.9}
     assert fc.premium_us_passes(base,cfg)
     assert not fc.premium_us_passes({**base,"shenzhen_ping_ms":500},cfg)
     assert not fc.premium_us_passes({**base,"country":"CA"},cfg)
     assert not fc.premium_us_passes({**base,"hosting":True},cfg)
+    assert fc.premium_us_passes({**base,"hosting":None},cfg)
     assert not fc.premium_us_passes({**base,"clean":79.9},cfg)
 
 def test_premium_us_group_is_optional_in_final_config():

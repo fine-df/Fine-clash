@@ -846,14 +846,25 @@ def run():
     #   核心资产，必须始终排在测试集最前、绝不被 max_test_nodes 截断丢弃。否则会出现
     #   「免费 204 节点挤掉唯一通 Gemini 的 [BL] 节点」的净亏（实测发生过：Gemini 从 200 掉到 000）。
     #   排序：curated 优先，其余按发现顺序；再截断到上限。
+    retention_cfg=rules.get("retention",{}) or {}
+    previous_profile_nodes=load_previous_published_nodes(ROOT / "live_clash.yaml", retention_cfg.get("max_previous_nodes",5) if retention_cfg.get("enabled",True) else 0)
+    previous_fps={fingerprint(n) for n in previous_profile_nodes}
+    # Previously published nodes are re-tested first, but never bypass current gates.
     cap=int(rules["nodes"]["max_test_nodes"])
-    ordered=[n for fp,n in nodes_by_fp.items() if fp in curated_fps]+[n for fp,n in nodes_by_fp.items() if fp not in curated_fps]
-    nodes=ordered[:cap]
+    ordered=previous_profile_nodes[:]
+    ordered.extend([n for fp,n in nodes_by_fp.items() if fp in curated_fps and fingerprint(n) not in previous_fps])
+    ordered.extend([n for fp,n in nodes_by_fp.items() if fp not in curated_fps and fingerprint(n) not in previous_fps])
+    dedup_ordered=[]; ordered_seen=set()
+    for node in ordered:
+        fp=fingerprint(node)
+        if fp in ordered_seen: continue
+        ordered_seen.add(fp); dedup_ordered.append(node)
+    nodes=dedup_ordered[:cap]
     binary=shutil.which("mihomo") or shutil.which("clash")
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
-    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"results":[]}
+    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"previous_profile_candidates":len(previous_profile_nodes),"results":[]}
     report_lookup={}
     candidate_records=[]
     all_candidate_fps=[]
@@ -917,7 +928,15 @@ def run():
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
         ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn")}
-    ranked=rank_candidates(selected,limit=int(rules["nodes"].get("max_final_nodes",20)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
+    max_final=int(rules["nodes"].get("max_final_nodes",20))
+    # Reserve slots for previously published nodes that still pass all current gates.
+    selected_fps={fingerprint(x) for x in selected}
+    retained_previous=[n for n in previous_profile_nodes if fingerprint(n) in selected_fps][:min(len(previous_profile_nodes),max_final)]
+    retained_fps={fingerprint(n) for n in retained_previous}
+    fresh_selected=[n for n in selected if fingerprint(n) not in retained_fps]
+    retained_previous_ranked=rank_candidates(retained_previous,limit=len(retained_previous),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
+    fresh_ranked=rank_candidates(fresh_selected,limit=max(0,max_final-len(retained_previous_ranked)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
+    ranked=retained_previous_ranked+fresh_ranked
     report["ranking"]=[]
     for i,node in enumerate(ranked,1):
         entry=report_lookup.get(fingerprint(node),{})

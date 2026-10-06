@@ -76,9 +76,57 @@ jobs:
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
-          grep -q '^- name: AUTO' live_clash.yaml
-          grep -q '  - AUTO' live_clash.yaml
-          grep -q '  - DIRECT' live_clash.yaml
+          if grep -Eq '^- name: AUTO$|  - AUTO
+          grep -q 'reject_above_ms: 350' config.yaml
+          grep -q 'reject_loss_pct: 10' config.yaml
+          grep -q "candidate_gate: 'gemini_and_play'" config.yaml
+          grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
+          grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
+          grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
+          grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
+          grep -q 'MATCH,Fine' live_clash.yaml
+          if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
+            echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
+            exit 1
+          fi
+          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:' live_clash.yaml; then
+            echo 'obsolete router-specific markers detected'
+            exit 1
+          fi
+          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+            echo 'subscription credential or token-bearing URL leaked into public profile'
+            exit 1
+          fi
+          mihomo -t -f live_clash.yaml
+
+      - name: Publish
+        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          if git diff --cached --quiet; then
+            echo 'no changes'
+            exit 0
+          fi
+          git commit -m 'chore: publish Fine-only subscription'
+          git push origin HEAD:main
+
+      - name: Purge jsDelivr cache
+        if: ${{ success() }}
+        run: |
+          set -euo pipefail
+          purge_url='https://purge.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml'
+          echo "Purging jsDelivr branch cache: ${purge_url}"
+          curl -fsSL "${purge_url}"
+          echo
+ live_clash.yaml; then echo 'obsolete AUTO subgroup detected'; exit 1; fi
+          grep -q '  type: url-test' live_clash.yaml
+          grep -q 'url: https://gemini.google.com/' live_clash.yaml
           grep -q 'reject_above_ms: 350' config.yaml
           grep -q 'reject_loss_pct: 10' config.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml

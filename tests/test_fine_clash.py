@@ -7,16 +7,15 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_use_single_fine_group_with_auto_and_direct():
+def test_final_proxy_groups_use_single_fine_auto_group_without_nested_auto():
     groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
-    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Fine-1", "Fine-2"]
-    assert by_name["Fine"]["default-selected"] == "AUTO"
-    assert by_name["Fine"]["proxies"] == ["AUTO", "DIRECT", "Fine-1", "Fine-2"]
-    assert by_name["AUTO"]["proxies"] == ["Fine-1", "Fine-2"]
-    assert by_name["AUTO"]["type"] == "url-test"
-    assert by_name["AUTO"]["hidden"] is True
-    assert by_name["AUTO"]["tolerance"] == 250
+    assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Fine"]
+    assert by_name["Fine"]["type"] == "url-test"
+    assert by_name["Fine"]["proxies"] == ["Fine-1", "Fine-2"]
+    assert by_name["Fine"]["url"] == "https://gemini.google.com/"
+    assert by_name["Fine"]["tolerance"] == 250
+    assert "AUTO" not in by_name
 
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
@@ -72,6 +71,11 @@ def test_candidate_gate_modes_are_explicit():
     item["gemini"] = True
     assert fc.candidate_gate_passes(item, "gemini_and_play", 80, 65)
     assert not fc.candidate_gate_passes(item, "unknown", 80, 65)
+
+    strict_item = {"gemini": False, "google_play": True, "google": {"ok": True}}
+    assert not fc.candidate_gate_passes(strict_item, "gemini_and_play", 80, 65)
+    strict_item["gemini"] = True
+    assert fc.candidate_gate_passes(strict_item, "gemini_and_play", 80, 65)
 
 
 def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):

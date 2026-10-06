@@ -45,13 +45,16 @@ nodes:
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
   min_clean_score: 65
+retention:
+  enabled: true
+  max_previous_nodes: 5
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'
   protocol: 'TCP'
   packets: 4
-  reject_above_ms: 400
-  reject_loss_pct: 25
+  reject_above_ms: 350
+  reject_loss_pct: 10
   cache_days: 1
   workers: 6
   poll_interval_seconds: 1

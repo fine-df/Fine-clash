@@ -16,6 +16,7 @@ def test_final_proxy_groups_use_single_fine_group_with_auto_and_direct():
     assert by_name["AUTO"]["proxies"] == ["Fine-1", "Fine-2"]
     assert by_name["AUTO"]["type"] == "url-test"
     assert by_name["AUTO"]["hidden"] is True
+    assert by_name["AUTO"]["tolerance"] == 250
 
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
@@ -52,7 +53,7 @@ def test_shenzhen_quality_gates_are_tightened():
     assert cfg["shenzhen_probe"]["reject_above_ms"] == 350
     assert cfg["shenzhen_probe"]["reject_loss_pct"] == 10
     assert cfg["retention"]["enabled"] is True
-    assert cfg["retention"]["max_previous_nodes"] == 5
+    assert cfg["retention"]["max_previous_nodes"] == 20
 
 def test_final_config_is_fine_only():
     cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])

@@ -46,7 +46,7 @@ def build_proxy_groups(fine_names):
     return [
         {"name":"GLOBAL","type":"select","proxies":["DIRECT"]+fine_names,"default-selected":fine_names[0]},
         {"name":"Fine","type":"select","proxies":["AUTO","DIRECT"]+fine_names,"default-selected":"AUTO"},
-        {"name":"AUTO","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":50,"lazy":False,"hidden":True},
+        {"name":"AUTO","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
     ]
 
 def build_config(fine_nodes):

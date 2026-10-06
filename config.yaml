@@ -47,7 +47,7 @@ nodes:
   min_clean_score: 65
 retention:
   enabled: true
-  max_previous_nodes: 5
+  max_previous_nodes: 20
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'

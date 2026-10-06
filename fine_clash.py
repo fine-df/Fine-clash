@@ -287,6 +287,24 @@ def lifespan_days(row):
     try: return max(0,(date.today()-date.fromisoformat(row["first_seen"])).days)
     except Exception: return 0
 
+
+def load_previous_published_nodes(path, max_nodes=5):
+    """Load a small continuity reserve from the previous published profile."""
+    try: limit=max(0,int(max_nodes))
+    except (TypeError,ValueError): limit=5
+    if limit<=0 or not path.is_file(): return []
+    try: nodes=parse_subscription(path.read_text(encoding="utf-8"))
+    except OSError: return []
+    out=[]; seen=set()
+    for node in nodes:
+        fp=fingerprint(node)
+        if fp in seen or node.get("type") not in SUPPORTED: continue
+        server=node.get("server")
+        if not server or not resolved_server_is_safe(server) or not mihomo_node_is_testable(node): continue
+        seen.add(fp); out.append(node)
+        if len(out)>=limit: break
+    return out
+
 class GlobalpingShenzhenProbe:
     def __init__(self, cfg):
         self.cfg=cfg

@@ -42,7 +42,7 @@ nodes:
   test_timeout_seconds: 8
   controller_startup_seconds: 1.5
   switch_wait_seconds: 0.5
-  candidate_gate: 'gemini_or_play'
+  candidate_gate: 'gemini_and_play'
   score_threshold: 70
   min_clean_score: 65
 retention:

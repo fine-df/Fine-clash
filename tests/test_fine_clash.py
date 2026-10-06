@@ -7,13 +7,15 @@ import fine_clash as fc
 import build_final as bf
 
 
-def test_final_proxy_groups_expose_explicit_fine_and_global_nodes():
+def test_final_proxy_groups_use_single_fine_group_with_auto_and_direct():
     groups = bf.build_proxy_groups(["Fine-1", "Fine-2"])
     by_name = {g["name"]: g for g in groups}
     assert by_name["GLOBAL"]["proxies"] == ["DIRECT", "Fine-1", "Fine-2"]
-    assert by_name["Fine"]["default-selected"] == "Fine-Auto"
-    assert by_name["Fine"]["proxies"] == ["Fine-Auto", "Fine-1", "Fine-2"]
-    assert by_name["Fine-Auto"]["proxies"] == ["Fine-1", "Fine-2"]
+    assert by_name["Fine"]["default-selected"] == "AUTO"
+    assert by_name["Fine"]["proxies"] == ["AUTO", "DIRECT", "Fine-1", "Fine-2"]
+    assert by_name["AUTO"]["proxies"] == ["Fine-1", "Fine-2"]
+    assert by_name["AUTO"]["type"] == "url-test"
+    assert by_name["AUTO"]["hidden"] is True
 
 def test_final_config_is_fine_only():
     cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])

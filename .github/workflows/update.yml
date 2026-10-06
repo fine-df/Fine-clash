@@ -76,7 +76,9 @@ jobs:
           grep -q '^mode: rule$' live_clash.yaml
           grep -q '^- name: GLOBAL' live_clash.yaml
           grep -q '^- name: Fine' live_clash.yaml
-          grep -q '^- name: Fine-Auto' live_clash.yaml
+          grep -q '^- name: AUTO' live_clash.yaml
+          grep -q '  - AUTO' live_clash.yaml
+          grep -q '  - DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml

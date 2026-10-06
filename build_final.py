@@ -4,11 +4,14 @@ from __future__ import annotations
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+import json
 import yaml
-from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
+from fine_clash import fingerprint, load_rules, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
+
+VALIDATION_REPORT=Path("data/last_run.json")
 
 VIDEO_DOMAINS=["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
 STORE_DOMAINS=["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
@@ -33,20 +36,46 @@ def _dedupe_nodes(nodes,prefix):
 
 def load_fine_nodes():
     if not SRC.is_file(): raise SystemExit(f"FATAL: missing Fine pool: {SRC}")
+    if not VALIDATION_REPORT.is_file(): raise SystemExit(f"FATAL: missing validation report: {VALIDATION_REPORT}")
     raw=yaml.safe_load(SRC.read_text(encoding="utf-8")) or {}
     parsed=raw.get("proxies") or []
     nodes=_dedupe_nodes([node for node in parsed if isinstance(node,dict) and resolved_server_is_safe(node.get("server",""))],"")
     if not nodes: raise SystemExit("FATAL: Fine pool is empty or has no testable nodes.")
-    return nodes
+    try:
+        report=json.loads(VALIDATION_REPORT.read_text(encoding="utf-8"))
+        by_fp={row.get("fingerprint"):row for row in report.get("results",[]) if isinstance(row,dict) and row.get("fingerprint")}
+    except Exception as exc:
+        raise SystemExit(f"FATAL: unreadable validation report: {exc}")
+    shenzhen=load_rules().get("shenzhen_probe",{}) or {}
+    reject_ms=float(shenzhen.get("reject_above_ms",350))
+    reject_loss=float(shenzhen.get("reject_loss_pct",10))
+    validated=[]
+    for node in nodes:
+        row=by_fp.get(fingerprint(node))
+        if not row or not row.get("gemini") or not row.get("google_play"):
+            continue
+        if str(row.get("shenzhen_status")) not in {"cached","ok"}:
+            continue
+        ping=row.get("shenzhen_ping_ms")
+        loss=row.get("shenzhen_loss_pct")
+        if ping is None or loss is None:
+            continue
+        try:
+            if float(ping)>reject_ms or float(loss)>reject_loss:
+                continue
+        except (TypeError,ValueError):
+            continue
+        validated.append(node)
+    if not validated: raise SystemExit("FATAL: no nodes passed final Gemini/Play/Quality validation.")
+    return validated
 
 def suffix_rules(domains,group):
     return [f"DOMAIN-SUFFIX,{d},{group}" for d in domains]
 
 def build_proxy_groups(fine_names):
     return [
-        {"name":"GLOBAL","type":"select","proxies":["DIRECT"]+fine_names,"default-selected":fine_names[0]},
-        {"name":"Fine","type":"select","proxies":["AUTO","DIRECT"]+fine_names,"default-selected":"AUTO"},
-        {"name":"AUTO","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
+        {"name":"GLOBAL","type":"select","proxies":["DIRECT","Fine"],"default-selected":"Fine"},
+        {"name":"Fine","type":"url-test","proxies":fine_names,"url":"https://gemini.google.com/","interval":900,"timeout":8000,"tolerance":250,"lazy":False},
     ]
 
 def build_config(fine_nodes):

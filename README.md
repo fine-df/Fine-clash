@@ -20,9 +20,9 @@ https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.
 | 其他需要代理的海外流量 | Fine |
 
 - `Fine`：唯一主操作组。
-- `AUTO`：Fine 内部隐藏的自动测速子组，选择 `Fine -> AUTO` 时自动测速选优。
-- `DIRECT`：直接加入 Fine，选择 `Fine -> DIRECT` 时强制直连。
-- Fine 内的具体节点：需要时可人工固定某个节点。
+- `Fine`：唯一代理主组，本身就是自动测速组，以 Gemini 可用性作为主要测速目标，并保持 250ms 切换容差。
+- `DIRECT`：中国大陆网站和 Ozon 等按规则直连；不再在 Fine 组里嵌套第二个 AUTO 子组。
+- Fine 内的节点由自动测速机制选择，不再暴露 AUTO 作为独立节点组。
 - 定期更新时，上一版完整优质节点池会进入连续性保留位，仍需通过当轮完整验证；合格的旧节点优先保留，不会因源刷新直接消失；新节点只在旧节点失效退出后补入。
 
 另有独立的 `GLOBAL` 手动接管模式：

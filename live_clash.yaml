@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110016 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261004110017 | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -13,286 +13,286 @@ proxies:
 - port: 2053
   client-fingerprint: qq
   tls: true
-  server: 8.47.69.0
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
+  encryption: none
+  server: 8.47.69.0
   servername: fr.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
   name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
 - port: 2053
   client-fingerprint: firefox
   tls: true
-  server: 8.47.69.0
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
+  encryption: none
+  server: 8.47.69.0
   servername: fr.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
   name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
 - port: 443
   client-fingerprint: chrome
   tls: true
-  server: 170.114.52.22
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     headers:
       Host: asia.csmaster.site
+  encryption: none
+  server: 170.114.52.22
   servername: asia.csmaster.site
-  uuid: a853e120-3570-462b-aec1-e8f3d4f92d24
   name: 🇸🇬 Singapore, Singapore | 🌐 | [BL] [2dc97471]
-  type: vless
+  network: ws
+  udp: true
+  uuid: a853e120-3570-462b-aec1-e8f3d4f92d24
 - port: 8443
   client-fingerprint: chrome
   tls: true
-  server: 141.193.213.21
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /
     headers:
       Host: u.srilankangrill.online
+  encryption: none
+  server: 141.193.213.21
   servername: u.srilankangrill.online
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
   name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
 - port: 8443
   client-fingerprint: safari
   tls: true
-  server: news.zoom.us
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /
     headers:
       Host: u.srilankangrill.online
+  encryption: none
+  server: news.zoom.us
   servername: u.srilankangrill.online
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
   name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [d4c5114b]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
 - port: 443
   tls: true
-  server: www.calmlunch.com
-  name: 🇫🇷 France, Paris | [BL] [ef1573ff]
-  udp: true
+  type: trojan
   ws-opts:
     path: /assignment
+  server: www.calmlunch.com
+  name: 🇫🇷 France, Paris | [BL] [ef1573ff]
   network: ws
+  udp: true
   password: humanity
-  type: trojan
 - port: 8443
   client-fingerprint: chrome
   tls: true
-  server: news.zoom.us
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     headers:
       Host: asia.csmaster.site
+  encryption: none
+  server: news.zoom.us
   servername: asia.csmaster.site
-  uuid: 799b1006-3255-4e36-8ea0-64fe24d2bfa7
   name: 🇸🇬 Singapore, Singapore | 🌐 | [BL] [8c4cf367]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 799b1006-3255-4e36-8ea0-64fe24d2bfa7
 - port: 443
   tls: true
-  server: www.calmlunch.com
-  name: 🇫🇷 France, Paris | [BL] [4b11587e]
-  udp: true
+  type: trojan
   ws-opts:
     path: /assignment
+  server: www.calmlunch.com
   servername: www.calmlunch.com
+  name: 🇫🇷 France, Paris | [BL] [4b11587e]
   network: ws
+  udp: true
   password: humanity
-  type: trojan
 - port: 2053
   client-fingerprint: edge
   tls: true
-  server: 8.47.69.0
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
+  encryption: none
+  server: 8.47.69.0
   servername: fr.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
   name: 🇫🇷 France, Roubaix | 🌐 | [BL] [c5e5f551]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
 - port: 2053
   tls: true
-  server: 8.47.69.0
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
+  encryption: none
+  server: 8.47.69.0
   servername: vless.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
   name: 🇫🇷 France, Roubaix | 🌐 | [BL] [529c9b7b]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
 - port: 8443
   tls: true
-  server: 141.193.213.20
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /
     headers:
       Host: u.srilankangrill.online
+  encryption: none
+  server: 141.193.213.20
   servername: u.srilankangrill.online
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
   name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [bdeb614b]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
 - port: 8443
   client-fingerprint: qq
   tls: true
-  server: news.zoom.us
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /
     headers:
       Host: u.srilankangrill.online
+  encryption: none
+  server: news.zoom.us
   servername: u.srilankangrill.online
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
   name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
 - port: 443
   client-fingerprint: chrome
   tls: true
-  server: 104.168.202.51
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: t.me/TEAMNETGRATISCOL
     headers:
       Host: x.m-90.xyz
+  encryption: none
+  server: 104.168.202.51
   servername: x.m-90.xyz
-  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
   name: 🇺🇸 United States, Wilmington | [BL]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 489f1717-d3c7-4940-ad68-bdbdbab857f4
 - port: 443
   client-fingerprint: chrome
   tls: true
-  server: argo6.5671234.xyz
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /e8e2cecb6188f7fb
+  encryption: none
+  server: argo6.5671234.xyz
   servername: argo6.5671234.xyz
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
   name: 🇹🇼 Taiwan, Taipei | [BL] [0070a1b8]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
 - port: 443
   tls: true
-  alterId: 0
-  server: yg1.ygkkk.dpdns.org
-  network: ws
-  cipher: auto
-  udp: true
+  type: vmess
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  server: yg1.ygkkk.dpdns.org
+  cipher: auto
   name: 🇭🇰 Hong Kong, Hong Kong | [BL]
-  type: vmess
+  udp: true
+  network: ws
+  alterId: 0
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
 - port: 443
   client-fingerprint: chrome
   tls: true
-  server: argo6.5671234.xyz
-  network: ws
-  encryption: none
-  udp: true
+  type: vless
   ws-opts:
     path: /e8e2cecb6188f7fb
     headers:
       Host: argo6.5671234.xyz
+  encryption: none
+  server: argo6.5671234.xyz
   servername: argo6.5671234.xyz
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
   name: 🇹🇼 Taiwan, Taipei | [BL] [37851830]
-  type: vless
+  network: ws
+  udp: true
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
 - port: 443
   client-fingerprint: chrome
   tls: true
+  type: vless
+  encryption: none
+  server: 45.95.96.170
+  servername: ai.rtnode.site
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [2ad96824]
+  flow: xtls-rprx-vision
   reality-opts:
     public-key: cucAz_3afM4ykkSl8IqlW9LPzQNH2fnQx9tAZTyr0yA
     short-id: f6d23c76d0362796
-  server: 45.95.96.170
   network: tcp
-  flow: xtls-rprx-vision
-  encryption: none
   udp: true
-  servername: ai.rtnode.site
   uuid: a47f8110-de83-4c37-b6a7-16010535aef4
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [2ad96824]
-  type: vless
 - port: 443
   tls: true
-  alterId: 0
-  server: yg1.ygkkk.dpdns.org
-  network: ws
-  cipher: auto
+  type: vmess
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
+  server: yg1.ygkkk.dpdns.org
+  cipher: auto
   servername: jmp1.907737.xyz
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
   name: 未知 VMESS-369 | free-nodes
-  type: vmess
+  network: ws
+  alterId: 0
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
 - port: 443
   client-fingerprint: firefox
   tls: true
+  type: vless
+  encryption: none
+  server: 45.95.96.170
+  servername: ai.rtnode.site
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
+  flow: xtls-rprx-vision
   reality-opts:
     public-key: cucAz_3afM4ykkSl8IqlW9LPzQNH2fnQx9tAZTyr0yA
     short-id: f6d23c76d0362796
-  server: 45.95.96.170
   network: tcp
-  flow: xtls-rprx-vision
-  encryption: none
   udp: true
-  servername: ai.rtnode.site
   uuid: a47f8110-de83-4c37-b6a7-16010535aef4
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [c27d3b29]
-  type: vless
 - port: 1443
   client-fingerprint: edge
   tls: true
+  type: vless
+  encryption: none
+  server: 93.123.101.19
+  servername: xyeta.cloude.one
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [efa18dbc]
+  flow: xtls-rprx-vision
   reality-opts:
     public-key: 2V705nBMsH_w0dWqRNfD_bjOJhp5Opc1ELgrfiPFggQ
     short-id: 9ecdbcce4f70a126
-  server: 93.123.101.19
   network: tcp
-  flow: xtls-rprx-vision
-  encryption: none
   udp: true
-  servername: xyeta.cloude.one
   uuid: d77ad0b7-f73d-48b6-a37f-df435cabe889
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [efa18dbc]
-  type: vless
 - type: vless
   name: 🇫🇷 France, Roubaix | 🌐 | [BL]
   server: 8.47.69.0

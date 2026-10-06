@@ -39,7 +39,7 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
         "    server: old.example\n"
         "    port: 443\n"
         "    password: secret\n"
-        "    tls: true\n"
+        "    tls: true\n",
         encoding="utf-8",
     )
     monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)

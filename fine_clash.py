@@ -952,7 +952,7 @@ def run():
     retained_previous=[n for n in previous_profile_nodes if fingerprint(n) in selected_fps][:min(len(previous_profile_nodes),max_final)]
     retained_fps={fingerprint(n) for n in retained_previous}
     fresh_selected=[n for n in selected if fingerprint(n) not in retained_fps]
-    retained_previous_ranked=rank_candidates(retained_previous,limit=len(retained_previous),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
+    retained_previous_ranked=retained_previous[:max_final]
     fresh_ranked=rank_candidates(fresh_selected,limit=max(0,max_final-len(retained_previous_ranked)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)))
     ranked=retained_previous_ranked+fresh_ranked
     report["ranking"]=[]

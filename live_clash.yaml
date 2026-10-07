@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110034 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
+# fine-clash-unified-v4 | fine-clash-version:20261004110035 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,101 +10,72 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- udp: true
+- uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  cipher: auto
+  tls: true
   name: 🇭🇰 Hong Kong, Hong Kong | [BL]
   type: vmess
-  tls: true
+  udp: true
+  alterId: 0
+  server: yg1.ygkkk.dpdns.org
+  network: ws
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
   port: 443
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
   cipher: auto
-  alterId: 0
-  server: yg1.ygkkk.dpdns.org
-  network: ws
-- name: 未知 VMESS-369 | free-nodes
+  tls: true
+  name: 未知 VMESS-369 | free-nodes
   type: vmess
-  tls: true
+  alterId: 0
+  server: yg1.ygkkk.dpdns.org
+  network: ws
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
   port: 443
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
-  cipher: auto
-  alterId: 0
-  server: yg1.ygkkk.dpdns.org
-  network: ws
   servername: jmp1.907737.xyz
-- udp: true
-  name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  type: vless
-  tls: true
-  network: tcp
-  port: 443
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  client-fingerprint: safari
-  reality-opts:
-    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
-    short-id: ae64c9b46bff174a
-  server: 91.208.92.210
-  encryption: none
-  flow: xtls-rprx-vision
-  servername: uk1.sky-vault.top
-- udp: true
-  name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
-  type: vless
-  tls: true
-  network: tcp
-  port: 443
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  client-fingerprint: qq
-  reality-opts:
-    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
-    short-id: ae64c9b46bff174a
-  server: 91.208.92.210
-  encryption: none
-  flow: xtls-rprx-vision
-  servername: uk1.sky-vault.top
-- udp: true
+- uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  cipher: auto
   name: 🇨🇳_CN_中国->🇯🇵_JP_日本
   type: vmess
-  port: 11206
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  cipher: auto
+  udp: true
   alterId: 2
   server: sbgfgov.vip6.wogacnmnagfwgov.com
-- udp: true
-  name: 🇪🇪 Estonia, Tallinn | [BL]
-  type: vless
-  tls: true
-  network: tcp
-  port: 443
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  client-fingerprint: firefox
+  port: 11206
+- uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
-  server: 5.175.178.30
-  encryption: none
-  flow: xtls-rprx-vision
-  servername: ee1.sky-vault.top
-- type: vless
-  name: 未知 VLESS-195 | free-nodes
-  server: pl-waw.dontblockmepls.com
-  port: 2063
+  tls: true
+  client-fingerprint: firefox
+  name: 🇪🇪 Estonia, Tallinn | [BL]
+  type: vless
   udp: true
-  uuid: b18d5990-96eb-4587-a386-7f8ef7591e6a
+  server: 5.175.178.30
+  network: tcp
+  port: 443
+  encryption: none
+  servername: ee1.sky-vault.top
+  flow: xtls-rprx-vision
+- type: vless
+  name: 🇸🇬 Singapore | 🌐 | [BL]
+  server: support.zoom.us
+  port: 8443
+  udp: true
+  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
   encryption: none
   tls: true
-  servername: rusbid.de
-  flow: xtls-rprx-vision
+  servername: primelinelk.me
   client-fingerprint: chrome
-  reality-opts:
-    public-key: MMpt_jWc4J3oySBdf5sPDVRkiWlZmOObth6A1scM9BM
-  network: tcp
+  network: ws
+  ws-opts:
+    path: /xprolk-primeline
+    headers:
+      Host: primelinelk.me
 - name: 🇺🇸 美国-广东专线 BGP 1
   type: trojan
   server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
@@ -286,22 +257,18 @@ proxy-groups:
   - DIRECT
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
   - 🇪🇪 Estonia, Tallinn | [BL]
-  - 未知 VLESS-195 | free-nodes
+  - 🇸🇬 Singapore | 🌐 | [BL]
   default-selected: 🇭🇰 Hong Kong, Hong Kong | [BL]
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
   - 🇪🇪 Estonia, Tallinn | [BL]
-  - 未知 VLESS-195 | free-nodes
+  - 🇸🇬 Singapore | 🌐 | [BL]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

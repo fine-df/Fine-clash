@@ -1,12 +1,4 @@
-# Fine-Clash
 
-唯一对外订阅地址：
-
-https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
-
-备用原始地址：
-
-https://raw.githubusercontent.com/fine-df/Fine-clash/refs/heads/main/live_clash.yaml
 
 ## 默认分流与手动控制
 

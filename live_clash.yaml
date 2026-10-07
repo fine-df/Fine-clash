@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261004110029 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v4 | fine-clash-version:20261004110030 | Bitz=disabled(no-subscription-url) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,344 +10,254 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- server: yg1.ygkkk.dpdns.org
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+- name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+  udp: true
+  server: yg1.ygkkk.dpdns.org
+  type: vmess
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
-  alterId: 0
   port: 443
   network: ws
-  tls: true
-  type: vmess
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-  udp: true
-  cipher: auto
-- server: yg1.ygkkk.dpdns.org
-  name: 未知 VMESS-369 | free-nodes
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
   alterId: 0
-  port: 443
-  network: ws
+  cipher: auto
   tls: true
+- name: 未知 VMESS-369 | free-nodes
+  server: yg1.ygkkk.dpdns.org
+  type: vmess
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  port: 443
   servername: jmp1.907737.xyz
-  type: vmess
+  network: ws
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
+  alterId: 0
   cipher: auto
-- encryption: none
-  server: 150.241.79.232
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL]
-  uuid: 318c935d-c195-41d3-99ad-9bbcfdab3386
-  port: 443
-  network: tcp
   tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: 0-or5ogGhYbBgsVSrSC2Fhxyp2BN97Y9pqIdg61Qd08
-    short-id: 4be4110078ebed4a
-  servername: de2.srv.vbuste.ru
-  type: vless
-  client-fingerprint: chrome
-  udp: true
 - encryption: none
-  server: 78.17.32.23
   name: 🇳🇱 The Netherlands, Amsterdam | [BL]
-  uuid: 04baafc3-0fea-4a8a-bfa8-22d759ed82ca
-  port: 443
-  network: tcp
-  tls: true
+  udp: true
   flow: xtls-rprx-vision
   reality-opts:
     public-key: Duc0G2dfUivCCBsAkZSY58E_qGkSTTZYcESGMDvXR0g
     short-id: 2ad5dc4b
+  server: 78.17.32.23
+  type: vless
+  uuid: 04baafc3-0fea-4a8a-bfa8-22d759ed82ca
+  port: 443
   servername: www.tradingview.com
-  type: vless
+  network: tcp
   client-fingerprint: safari
-  udp: true
+  tls: true
 - encryption: none
-  server: 91.208.92.210
   name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  port: 443
-  network: tcp
-  tls: true
+  udp: true
   flow: xtls-rprx-vision
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
-  servername: uk1.sky-vault.top
-  type: vless
-  client-fingerprint: safari
-  udp: true
-- encryption: none
-  server: 144.31.123.247
-  name: 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [15fa7aae]
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  servername: nl-root.sworkingvpn.com
-  type: vless
-  client-fingerprint: firefox
-  udp: true
-- encryption: none
   server: 91.208.92.210
-  name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
+  type: vless
   uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
   port: 443
+  servername: uk1.sky-vault.top
   network: tcp
+  client-fingerprint: safari
   tls: true
+- encryption: none
+  name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
+  udp: true
   flow: xtls-rprx-vision
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
+  server: 91.208.92.210
+  type: vless
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
+  port: 443
   servername: uk1.sky-vault.top
-  type: vless
+  network: tcp
   client-fingerprint: qq
-  udp: true
+  tls: true
 - encryption: none
-  server: 144.31.123.247
   name: 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
-  tls: true
+  udp: true
   flow: xtls-rprx-vision
   reality-opts:
     public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
     short-id: 15bcc0a77c3cacdf
+  server: 144.31.123.247
+  type: vless
+  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
+  port: 443
   servername: nl-root.sworkingvpn.com
-  type: vless
+  network: tcp
   client-fingerprint: chrome
-  udp: true
-- encryption: none
-  server: 95.85.242.166
-  name: 🇪🇪 Estonia, Tallinn | [BL] [5815cb22]
-  uuid: 2b781b4a-5942-0018-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
   tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  servername: ee-root.sworkingvpn.com
-  type: vless
-  client-fingerprint: chrome
-  udp: true
 - encryption: none
-  server: 87.120.216.137
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0c3459b6]
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  servername: de-root.sworkingvpn.com
-  type: vless
-  client-fingerprint: safari
-  udp: true
-- encryption: none
-  server: 31.129.22.141
-  name: 🇵🇹 Portugal, Viana do Castelo | [BL] [6547be5d]
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  servername: pt-root.sworkingvpn.com
-  type: vless
-  client-fingerprint: firefox
-  udp: true
-- encryption: none
-  server: 31.129.22.141
-  name: 🇵🇹 Portugal, Viana do Castelo | [BL] [edb645ba]
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  servername: pt-root.sworkingvpn.com
-  type: vless
-  client-fingerprint: edge
-  udp: true
-- server: v6.hdacd.com
-  name: 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
-  port: 30806
-  type: vmess
-  udp: true
-  cipher: auto
-- encryption: none
-  server: 38.150.33.232
   name: 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
-  port: 12329
-  network: tcp
-  tls: true
+  udp: true
   flow: xtls-rprx-vision
   reality-opts:
     public-key: dpG1tE9V93FM9IJeYC5-n_7RJxX7jOwrWLbQJgZpFFo
+  server: 38.150.33.232
+  type: vless
+  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
+  port: 12329
   servername: www.amazon.com
-  type: vless
+  network: tcp
   client-fingerprint: chrome
-  udp: true
+  tls: true
 - encryption: none
-  server: 8.47.69.0
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  port: 2053
-  network: ws
-  tls: true
-  servername: fr.api-music-fa.com
-  type: vless
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  client-fingerprint: firefox
-  udp: true
-- encryption: none
-  server: 8.47.69.0
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  port: 2053
-  network: ws
-  tls: true
-  servername: fr.api-music-fa.com
-  type: vless
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  client-fingerprint: qq
-  udp: true
-- encryption: none
-  server: 8.47.69.0
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [c5e5f551]
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  port: 2053
-  network: ws
-  tls: true
-  servername: fr.api-music-fa.com
-  type: vless
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  client-fingerprint: edge
-  udp: true
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: fr.api-music-fa.com
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
   name: 未知 VLESS-142 | free-nodes
-  server: argo6.5671234.xyz
-  port: 443
   udp: true
+  server: argo6.5671234.xyz
+  type: vless
   uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  encryption: none
-  tls: true
+  port: 443
   servername: argo6.5671234.xyz
   network: ws
   ws-opts:
     path: /e8e2cecb6188f7fb
     headers:
       Host: argo6.5671234.xyz
-- type: vless
+  tls: true
+- encryption: none
   name: 🇹🇼 Taiwan, Taipei | [BL]
+  udp: true
   server: argo6.5671234.xyz
+  type: vless
+  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
+  port: 443
+  servername: argo6.5671234.xyz
+  network: ws
+  ws-opts:
+    path: /e8e2cecb6188f7fb
+    headers:
+      Host: argo6.5671234.xyz
+  client-fingerprint: chrome
+  tls: true
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  server: v4.hdacd.com
+  port: 30804
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
+- type: vless
+  name: 🇳🇱 The Netherlands | [*CIDR] VK
+  server: 37.139.42.221
   port: 443
   udp: true
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
+  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
   encryption: none
   tls: true
-  servername: argo6.5671234.xyz
+  servername: apis.stroymatdv.cc
   client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /e8e2cecb6188f7fb
+    path: /amsws
     headers:
-      Host: argo6.5671234.xyz
+      Host: apis.stroymatdv.cc
+- type: vless
+  name: 🇺🇸 United States, Chicago | [BL]
+  server: 91.103.140.187
+  port: 443
+  udp: true
+  uuid: 698b212d-ca12-4794-8256-252a6e1b4533
+  encryption: none
+  tls: true
+  servername: q4x8.vpnpolar.online
+  network: ws
+  ws-opts:
+    path: /beeline
+    headers:
+      Host: q4x8.vpnpolar.online
+- type: vless
+  name: 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
+  server: apis.stroymatdv.cc
+  port: 443
+  udp: true
+  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
+  encryption: none
+  tls: true
+  servername: apis.stroymatdv.cc
+  client-fingerprint: firefox
+  network: ws
+  ws-opts:
+    path: /amsws
+    headers:
+      Host: apis.stroymatdv.cc
+- type: vless
+  name: 🇳🇱 The Netherlands [*CIDR] VK [62438300]
+  server: apis.stroymatdv.cc
+  port: 443
+  udp: true
+  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
+  encryption: none
+  tls: true
+  servername: apis.stroymatdv.cc
+  client-fingerprint: qq
+  network: ws
+  ws-opts:
+    path: /amsws
+    headers:
+      Host: apis.stroymatdv.cc
+- type: trojan
+  name: 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  server: nl.zhabulik.ru
+  port: 443
+  udp: true
+  password: WFer-5gN21nfHbVB2N8s71Z74EPUfzVj
+  tls: true
+  servername: nl.zhabulik.ru
+  client-fingerprint: chrome
+  network: tcp
 proxy-groups:
 - name: Fine
   type: select
   proxies:
-  - AUTO
+  - Fine-Auto
   - DIRECT
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL]
   - 🇳🇱 The Netherlands, Amsterdam | [BL]
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [15fa7aae]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
-  - 🇪🇪 Estonia, Tallinn | [BL] [5815cb22]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0c3459b6]
-  - 🇵🇹 Portugal, Viana do Castelo | [BL] [6547be5d]
-  - 🇵🇹 Portugal, Viana do Castelo | [BL] [edb645ba]
-  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c5e5f551]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
   - 未知 VLESS-142 | free-nodes
   - 🇹🇼 Taiwan, Taipei | [BL]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇳🇱 The Netherlands | [*CIDR] VK
+  - 🇺🇸 United States, Chicago | [BL]
+  - 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
+  - 🇳🇱 The Netherlands [*CIDR] VK [62438300]
+  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   default-selected: 🇭🇰 Hong Kong, Hong Kong | [BL]
-- name: AUTO
+- name: Fine-Auto
   type: url-test
   proxies:
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | 🌐 | [BL]
   - 🇳🇱 The Netherlands, Amsterdam | [BL]
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [15fa7aae]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
-  - 🇪🇪 Estonia, Tallinn | [BL] [5815cb22]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [0c3459b6]
-  - 🇵🇹 Portugal, Viana do Castelo | [BL] [6547be5d]
-  - 🇵🇹 Portugal, Viana do Castelo | [BL] [edb645ba]
-  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c5e5f551]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [c113bbd0]
   - 未知 VLESS-142 | free-nodes
   - 🇹🇼 Taiwan, Taipei | [BL]
+  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  - 🇳🇱 The Netherlands | [*CIDR] VK
+  - 🇺🇸 United States, Chicago | [BL]
+  - 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
+  - 🇳🇱 The Netherlands [*CIDR] VK [62438300]
+  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

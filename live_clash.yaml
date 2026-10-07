@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110030 | Bitz=disabled(no-subscription-url) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v4 | fine-clash-version:20261004110031 | Bitz=disabled(no-subscription-url) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,214 +10,116 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- name: 🇭🇰 Hong Kong, Hong Kong | [BL]
-  udp: true
-  server: yg1.ygkkk.dpdns.org
-  type: vmess
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  tls: true
   port: 443
-  network: ws
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-  alterId: 0
-  cipher: auto
-  tls: true
-- name: 未知 VMESS-369 | free-nodes
-  server: yg1.ygkkk.dpdns.org
-  type: vmess
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
-  port: 443
-  servername: jmp1.907737.xyz
   network: ws
+  server: yg1.ygkkk.dpdns.org
+  cipher: auto
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+  alterId: 0
+  udp: true
+  type: vmess
+- servername: jmp1.907737.xyz
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  tls: true
+  port: 443
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
-  alterId: 0
+  network: ws
+  server: yg1.ygkkk.dpdns.org
   cipher: auto
+  name: 未知 VMESS-369 | free-nodes
+  alterId: 0
+  type: vmess
+- servername: uk1.sky-vault.top
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
   tls: true
-- encryption: none
-  name: 🇳🇱 The Netherlands, Amsterdam | [BL]
-  udp: true
+  port: 443
   flow: xtls-rprx-vision
-  reality-opts:
-    public-key: Duc0G2dfUivCCBsAkZSY58E_qGkSTTZYcESGMDvXR0g
-    short-id: 2ad5dc4b
-  server: 78.17.32.23
-  type: vless
-  uuid: 04baafc3-0fea-4a8a-bfa8-22d759ed82ca
-  port: 443
-  servername: www.tradingview.com
-  network: tcp
   client-fingerprint: safari
-  tls: true
-- encryption: none
+  network: tcp
+  server: 91.208.92.210
+  reality-opts:
+    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
+    short-id: ae64c9b46bff174a
   name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
   udp: true
+  encryption: none
+  type: vless
+- servername: uk1.sky-vault.top
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
+  tls: true
+  port: 443
   flow: xtls-rprx-vision
+  client-fingerprint: qq
+  network: tcp
+  server: 91.208.92.210
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
-  server: 91.208.92.210
-  type: vless
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  port: 443
-  servername: uk1.sky-vault.top
-  network: tcp
-  client-fingerprint: safari
-  tls: true
-- encryption: none
   name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   udp: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
-    short-id: ae64c9b46bff174a
-  server: 91.208.92.210
+  encryption: none
   type: vless
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  port: 443
-  servername: uk1.sky-vault.top
-  network: tcp
-  client-fingerprint: qq
+- servername: www.amazon.com
+  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
   tls: true
-- encryption: none
-  name: 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
-  udp: true
+  port: 12329
   flow: xtls-rprx-vision
-  reality-opts:
-    public-key: AhLy7ha7FF2EQfu-3SxOFKUwExyHActYPHtyv82KNCI
-    short-id: 15bcc0a77c3cacdf
-  server: 144.31.123.247
-  type: vless
-  uuid: 2b781b4a-5942-48e0-a7f3-5a07b7b488c1
-  port: 443
-  servername: nl-root.sworkingvpn.com
-  network: tcp
   client-fingerprint: chrome
-  tls: true
-- encryption: none
-  name: 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  udp: true
-  flow: xtls-rprx-vision
+  network: tcp
+  server: 38.150.33.232
   reality-opts:
     public-key: dpG1tE9V93FM9IJeYC5-n_7RJxX7jOwrWLbQJgZpFFo
-  server: 38.150.33.232
-  type: vless
-  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
-  port: 12329
-  servername: www.amazon.com
-  network: tcp
-  client-fingerprint: chrome
-  tls: true
-- encryption: none
-  name: 未知 VLESS-142 | free-nodes
+  name: 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
   udp: true
-  server: argo6.5671234.xyz
+  encryption: none
   type: vless
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  port: 443
-  servername: argo6.5671234.xyz
-  network: ws
-  ws-opts:
-    path: /e8e2cecb6188f7fb
-    headers:
-      Host: argo6.5671234.xyz
-  tls: true
-- encryption: none
-  name: 🇹🇼 Taiwan, Taipei | [BL]
-  udp: true
-  server: argo6.5671234.xyz
-  type: vless
-  uuid: 08aaab35-a42d-4755-a03e-20c18cb1b3e8
-  port: 443
-  servername: argo6.5671234.xyz
-  network: ws
-  ws-opts:
-    path: /e8e2cecb6188f7fb
-    headers:
-      Host: argo6.5671234.xyz
-  client-fingerprint: chrome
-  tls: true
-- type: vmess
-  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  server: v4.hdacd.com
+- uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
   port: 30804
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  alterId: 2
+  server: v4.hdacd.com
   cipher: auto
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  alterId: 2
   udp: true
-- type: vless
-  name: 🇳🇱 The Netherlands | [*CIDR] VK
-  server: 37.139.42.221
-  port: 443
-  udp: true
-  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
-  encryption: none
-  tls: true
-  servername: apis.stroymatdv.cc
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /amsws
-    headers:
-      Host: apis.stroymatdv.cc
-- type: vless
-  name: 🇺🇸 United States, Chicago | [BL]
-  server: 91.103.140.187
-  port: 443
-  udp: true
+  type: vmess
+- servername: q4x8.vpnpolar.online
   uuid: 698b212d-ca12-4794-8256-252a6e1b4533
-  encryption: none
   tls: true
-  servername: q4x8.vpnpolar.online
-  network: ws
+  port: 443
   ws-opts:
     path: /beeline
     headers:
       Host: q4x8.vpnpolar.online
-- type: vless
-  name: 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
-  server: apis.stroymatdv.cc
-  port: 443
-  udp: true
-  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
-  encryption: none
-  tls: true
-  servername: apis.stroymatdv.cc
-  client-fingerprint: firefox
   network: ws
-  ws-opts:
-    path: /amsws
-    headers:
-      Host: apis.stroymatdv.cc
-- type: vless
-  name: 🇳🇱 The Netherlands [*CIDR] VK [62438300]
-  server: apis.stroymatdv.cc
-  port: 443
+  server: 91.103.140.187
+  name: 🇺🇸 United States, Chicago | [BL]
   udp: true
-  uuid: 3a8b464f-3701-40ed-b6b6-b612019e34c1
   encryption: none
-  tls: true
-  servername: apis.stroymatdv.cc
-  client-fingerprint: qq
-  network: ws
-  ws-opts:
-    path: /amsws
-    headers:
-      Host: apis.stroymatdv.cc
-- type: trojan
-  name: 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
-  server: nl.zhabulik.ru
-  port: 443
+  type: vless
+- type: vmess
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
+  server: sbgfgov.vip6.wogacnmnagfwgov.com
+  port: 11206
+  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
+  alterId: 2
+  cipher: auto
   udp: true
-  password: WFer-5gN21nfHbVB2N8s71Z74EPUfzVj
-  tls: true
-  servername: nl.zhabulik.ru
-  client-fingerprint: chrome
-  network: tcp
+- type: vmess
+  name: 🇭🇰_HK_中国香港->🇯🇵_JP_日本
+  server: v6.hdacd.com
+  port: 30806
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  alterId: 2
+  cipher: auto
+  udp: true
 proxy-groups:
 - name: Fine
   type: select
@@ -226,38 +128,26 @@ proxy-groups:
   - DIRECT
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 未知 VLESS-142 | free-nodes
-  - 🇹🇼 Taiwan, Taipei | [BL]
   - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇳🇱 The Netherlands | [*CIDR] VK
   - 🇺🇸 United States, Chicago | [BL]
-  - 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
-  - 🇳🇱 The Netherlands [*CIDR] VK [62438300]
-  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   default-selected: 🇭🇰 Hong Kong, Hong Kong | [BL]
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇭🇰 Hong Kong, Hong Kong | [BL]
   - 未知 VMESS-369 | free-nodes
-  - 🇳🇱 The Netherlands, Amsterdam | [BL]
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Centrum) | [BL] [8d3d3c6e]
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 未知 VLESS-142 | free-nodes
-  - 🇹🇼 Taiwan, Taipei | [BL]
   - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  - 🇳🇱 The Netherlands | [*CIDR] VK
   - 🇺🇸 United States, Chicago | [BL]
-  - 🇳🇱 The Netherlands [*CIDR] VK [7ad16e7e]
-  - 🇳🇱 The Netherlands [*CIDR] VK [62438300]
-  - 🇦🇪 United Arab Emirates, Abu Dhabi | [BL]
+  - 🇨🇳_CN_中国->🇯🇵_JP_日本
+  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

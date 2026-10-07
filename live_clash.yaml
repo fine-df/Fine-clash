@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110031 | Bitz=disabled(no-subscription-url) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v4 | fine-clash-version:20261004110032 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,116 +10,304 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- type: vmess
+  server: yg1.ygkkk.dpdns.org
+  network: ws
+  alterId: 0
   tls: true
   port: 443
+  cipher: auto
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
-  network: ws
-  server: yg1.ygkkk.dpdns.org
-  cipher: auto
+  udp: true
   name: 🇭🇰 Hong Kong, Hong Kong | [BL]
-  alterId: 0
-  udp: true
-  type: vmess
-- servername: jmp1.907737.xyz
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- type: vmess
+  servername: jmp1.907737.xyz
+  server: yg1.ygkkk.dpdns.org
+  network: ws
+  alterId: 0
   tls: true
   port: 443
+  cipher: auto
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
-  network: ws
-  server: yg1.ygkkk.dpdns.org
-  cipher: auto
   name: 未知 VMESS-369 | free-nodes
-  alterId: 0
-  type: vmess
-- servername: uk1.sky-vault.top
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  tls: true
-  port: 443
-  flow: xtls-rprx-vision
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+- type: vless
+  encryption: none
   client-fingerprint: safari
-  network: tcp
+  servername: uk1.sky-vault.top
   server: 91.208.92.210
+  network: tcp
+  flow: xtls-rprx-vision
+  tls: true
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
-  name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  udp: true
-  encryption: none
-  type: vless
-- servername: uk1.sky-vault.top
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-  tls: true
   port: 443
-  flow: xtls-rprx-vision
+  udp: true
+  name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
+- type: vless
+  encryption: none
   client-fingerprint: qq
-  network: tcp
+  servername: uk1.sky-vault.top
   server: 91.208.92.210
+  network: tcp
+  flow: xtls-rprx-vision
+  tls: true
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
-  name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
+  port: 443
   udp: true
+  name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
+- type: vless
   encryption: none
-  type: vless
-- servername: www.amazon.com
-  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
-  tls: true
-  port: 12329
-  flow: xtls-rprx-vision
   client-fingerprint: chrome
-  network: tcp
+  servername: www.amazon.com
   server: 38.150.33.232
+  network: tcp
+  flow: xtls-rprx-vision
+  tls: true
   reality-opts:
     public-key: dpG1tE9V93FM9IJeYC5-n_7RJxX7jOwrWLbQJgZpFFo
+  port: 12329
+  udp: true
   name: 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  udp: true
-  encryption: none
-  type: vless
-- uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-  port: 30804
+  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
+- type: vmess
   server: v4.hdacd.com
-  cipher: auto
-  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
   alterId: 2
+  port: 30804
+  cipher: auto
   udp: true
-  type: vmess
-- servername: q4x8.vpnpolar.online
-  uuid: 698b212d-ca12-4794-8256-252a6e1b4533
+  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+- type: vless
+  encryption: none
+  servername: q4x8.vpnpolar.online
+  server: 91.103.140.187
+  network: ws
   tls: true
   port: 443
   ws-opts:
     path: /beeline
     headers:
       Host: q4x8.vpnpolar.online
-  network: ws
-  server: 91.103.140.187
+  udp: true
   name: 🇺🇸 United States, Chicago | [BL]
-  udp: true
-  encryption: none
-  type: vless
+  uuid: 698b212d-ca12-4794-8256-252a6e1b4533
 - type: vmess
-  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
   server: sbgfgov.vip6.wogacnmnagfwgov.com
+  alterId: 2
   port: 11206
+  cipher: auto
+  udp: true
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
   uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  alterId: 2
-  cipher: auto
-  udp: true
 - type: vmess
-  name: 🇭🇰_HK_中国香港->🇯🇵_JP_日本
   server: v6.hdacd.com
-  port: 30806
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
   alterId: 2
+  port: 30806
   cipher: auto
   udp: true
+  name: 🇭🇰_HK_中国香港->🇯🇵_JP_日本
+  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+- type: vless
+  name: 美国(yudou99.com 玉豆分享)
+  server: 157.228.128.59
+  port: 443
+  udp: true
+  uuid: df53b6c2-8005-475c-9eb9-74e1be785dc8
+  encryption: none
+  tls: true
+  servername: addons.mozilla.org
+  flow: xtls-rprx-vision
+  client-fingerprint: randomized
+  reality-opts:
+    public-key: QnxkyscHouhaLDJHT47beyenVd4LHi62yfJIeRV01Ws
+    short-id: 06e00e7c
+  network: tcp
+- name: 🇺🇸 美国-广东专线 BGP 1
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32001
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇺🇸 美国-广东专线 BGP 2
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32028
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇺🇸 美国-直连线路 BGP
+  type: vless
+  server: 348b6100-99c5-4183-b34e-24c66d00d54d.bnsepserv.com
+  port: 32501
+  uuid: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  tls: true
+  udp: true
+  servername: minor-api-os.hoyoverse.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: Ray45IC5uMaT58fkQG7tBMTCRbA1UeitKNqkWgCFVn4
+    short-id: 76a1da15
+- name: 🇹🇼 台湾-广东专线 NeaRoute
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32003
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇷🇺 俄罗斯-广东专线 PQ
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32008
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇫🇷 法国-广东专线 BGP
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32009
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇬🇧 英国-广东专线 BGP
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32010
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇬🇧 英国-广东专线 Scaleblade
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32047
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇨🇦 加拿大-广东专线 BGP
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32039
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇩🇪 德国-广东专线 BGP
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32011
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇦🇺 澳大利亚-广东专线 VUAU
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32012
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇲🇾 马来西亚-广东专线 Shin
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32038
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇹🇭 泰国-广东专线 Bangmod
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32043
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇹🇷 土耳其-广东专线 Kapteyan
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32014
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇹🇷 土耳其-广东专线 GCore
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32026
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇦🇷 阿根廷-广东专线 DonWeb
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32015
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇳🇬 尼日利亚-广东专线 Melbicom
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32034
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇺🇦 乌克兰-广东专线 Vik
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32019
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇧🇷 巴西-广东专线 GCore 1
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32016
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇮🇳 印度-广东专线 DOIN
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32017
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
+- name: 🇸🇦 沙特-广东专线 STC
+  type: trojan
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  port: 32035
+  password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
+  udp: true
+  skip-cert-verify: true
+  sni: v18-music-ncdn.douyinstatic.com
 proxy-groups:
 - name: Fine
   type: select
@@ -135,6 +323,7 @@ proxy-groups:
   - 🇺🇸 United States, Chicago | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
   - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
+  - 美国(yudou99.com 玉豆分享)
   default-selected: 🇭🇰 Hong Kong, Hong Kong | [BL]
 - name: Fine-Auto
   type: url-test
@@ -148,7 +337,66 @@ proxy-groups:
   - 🇺🇸 United States, Chicago | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
   - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
+  - 美国(yudou99.com 玉豆分享)
   url: https://play.google.com/store
+  interval: 900
+  timeout: 8000
+  tolerance: 250
+  lazy: false
+  hidden: true
+- name: Bitz
+  type: select
+  proxies:
+  - Bitz-Auto
+  - DIRECT
+  - Fine
+  - 🇺🇸 美国-广东专线 BGP 1
+  - 🇺🇸 美国-广东专线 BGP 2
+  - 🇺🇸 美国-直连线路 BGP
+  - 🇹🇼 台湾-广东专线 NeaRoute
+  - 🇷🇺 俄罗斯-广东专线 PQ
+  - 🇫🇷 法国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 Scaleblade
+  - 🇨🇦 加拿大-广东专线 BGP
+  - 🇩🇪 德国-广东专线 BGP
+  - 🇦🇺 澳大利亚-广东专线 VUAU
+  - 🇲🇾 马来西亚-广东专线 Shin
+  - 🇹🇭 泰国-广东专线 Bangmod
+  - 🇹🇷 土耳其-广东专线 Kapteyan
+  - 🇹🇷 土耳其-广东专线 GCore
+  - 🇦🇷 阿根廷-广东专线 DonWeb
+  - 🇳🇬 尼日利亚-广东专线 Melbicom
+  - 🇺🇦 乌克兰-广东专线 Vik
+  - 🇧🇷 巴西-广东专线 GCore 1
+  - 🇮🇳 印度-广东专线 DOIN
+  - 🇸🇦 沙特-广东专线 STC
+  default-selected: Bitz-Auto
+- name: Bitz-Auto
+  type: url-test
+  proxies:
+  - 🇺🇸 美国-广东专线 BGP 1
+  - 🇺🇸 美国-广东专线 BGP 2
+  - 🇺🇸 美国-直连线路 BGP
+  - 🇹🇼 台湾-广东专线 NeaRoute
+  - 🇷🇺 俄罗斯-广东专线 PQ
+  - 🇫🇷 法国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 BGP
+  - 🇬🇧 英国-广东专线 Scaleblade
+  - 🇨🇦 加拿大-广东专线 BGP
+  - 🇩🇪 德国-广东专线 BGP
+  - 🇦🇺 澳大利亚-广东专线 VUAU
+  - 🇲🇾 马来西亚-广东专线 Shin
+  - 🇹🇭 泰国-广东专线 Bangmod
+  - 🇹🇷 土耳其-广东专线 Kapteyan
+  - 🇹🇷 土耳其-广东专线 GCore
+  - 🇦🇷 阿根廷-广东专线 DonWeb
+  - 🇳🇬 尼日利亚-广东专线 Melbicom
+  - 🇺🇦 乌克兰-广东专线 Vik
+  - 🇧🇷 巴西-广东专线 GCore 1
+  - 🇮🇳 印度-广东专线 DOIN
+  - 🇸🇦 沙特-广东专线 STC
+  url: https://www.gstatic.com/generate_204
   interval: 900
   timeout: 8000
   tolerance: 250
@@ -261,4 +509,4 @@ rules:
 - DOMAIN-SUFFIX,steampowered.com,Fine
 - DOMAIN-SUFFIX,steamcommunity.com,Fine
 - GEOIP,CN,DIRECT
-- MATCH,Fine
+- MATCH,Bitz

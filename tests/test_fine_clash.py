@@ -79,8 +79,6 @@ def test_final_config_is_fine_only():
     cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])
     assert cfg["mode"] == "rule"
     assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
-    assert "DOMAIN-SUFFIX,ozon.ru,DIRECT" in cfg["rules"]
-    assert cfg["rules"].index("DOMAIN-SUFFIX,ozon.ru,DIRECT") < cfg["rules"].index("MATCH,Fine")
     assert "MATCH,Fine" in cfg["rules"]
 
 def test_candidate_gate_modes_are_explicit():

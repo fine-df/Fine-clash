@@ -12,7 +12,6 @@ SRC = Path("data/fine_pool.yaml")
 
 VIDEO_DOMAINS=["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
 STORE_DOMAINS=["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
-OZON_DIRECT=["DOMAIN-SUFFIX,ozon.ru,DIRECT"]
 WECHAT_DIRECT=["DOMAIN-SUFFIX,weixin.qq.com,DIRECT","DOMAIN-SUFFIX,wx.qq.com,DIRECT","DOMAIN-SUFFIX,wechat.com,DIRECT","DOMAIN-SUFFIX,qpic.cn,DIRECT","DOMAIN-SUFFIX,qlogo.cn,DIRECT","DOMAIN-SUFFIX,gtimg.cn,DIRECT","DOMAIN-SUFFIX,gtimg.com,DIRECT","DOMAIN-SUFFIX,qq.com,DIRECT","DOMAIN-SUFFIX,tenpay.com,DIRECT","DOMAIN-SUFFIX,wechatpay.cn,DIRECT","DOMAIN-SUFFIX,tencent.com,DIRECT","DOMAIN-SUFFIX,tencent-cloud.com,DIRECT","DOMAIN-SUFFIX,myqcloud.com,DIRECT","DOMAIN-SUFFIX,tencentcos.cn,DIRECT"]
 XIAOMI_DIRECT=["DOMAIN-SUFFIX,mi.com,DIRECT","DOMAIN-SUFFIX,xiaomi.com,DIRECT","DOMAIN-SUFFIX,miwifi.com,DIRECT","DOMAIN-SUFFIX,miui.com,DIRECT","DOMAIN-SUFFIX,mijia.com,DIRECT","DOMAIN-SUFFIX,xiaomi.cn,DIRECT"]
 LOCAL_IOT_DIRECT=["IP-CIDR,224.0.0.0/4,DIRECT,no-resolve","IP-CIDR,169.254.0.0/16,DIRECT,no-resolve"]
@@ -63,7 +62,7 @@ def build_config(fine_nodes):
     if not fine_nodes: raise ValueError("Fine pool must be non-empty")
     fine_nodes=unique_node_names(fine_nodes)
     fine_names=[n["name"] for n in fine_nodes]
-    rules=OZON_DIRECT+LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Fine"]
+    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Fine"]
     return {
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
         "profile":{"store-selected":True},
@@ -71,7 +70,7 @@ def build_config(fine_nodes):
         "proxy-groups":build_proxy_groups(fine_names),
         "tun":{"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True},
         "dns":{"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
-               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"],"+.ozon.ru":["223.5.5.5","119.29.29.29"]},
+               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"]},
                "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],"fallback-filter":{"geoip":True,"geoip-code":"CN"}},
         "rules":rules,
     }
@@ -86,7 +85,7 @@ def main():
             if m: previous_version=int(m.group(1))
         except OSError: pass
     version=str(previous_version+1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    header=f"# fine-clash-unified-v3 | fine-clash-version:{version} | Fine=validated-pool | Ozon->DIRECT | CN->DIRECT | MATCH->Fine\n"
+    header=f"# fine-clash-unified-v3 | fine-clash-version:{version} | Fine=validated-pool | CN->DIRECT | MATCH->Fine\n"
     OUT.write_text(header+dumped,encoding="utf-8")
     print(f"written {OUT}: Fine={len(config['proxies'])} validated nodes; rules={len(config['rules'])}")
 

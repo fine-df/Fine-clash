@@ -19,8 +19,7 @@ if [ "$HTTP" != "200" ]; then
 fi
 
 grep -q '^mode: rule$' "$TMP" || { echo "sync_fail_not_rule_mode"; rm -f "$TMP"; exit 1; }
-grep -q '^- name: GLOBAL' "$TMP" || { echo "sync_fail_no_global_group"; rm -f "$TMP"; exit 1; }
-grep -q -- '- DIRECT' "$TMP" || { echo "sync_fail_global_no_direct"; rm -f "$TMP"; exit 1; }
+# 自 build_final 移除 GLOBAL 内置组后，订阅不再含 GLOBAL（mihomo 运行态会自动生成内置 GLOBAL）
 grep -q '^- name: Fine$' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP"; exit 1; }
 grep -q '^- name: AUTO$' "$TMP" || { echo "sync_fail_no_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q '  - AUTO' "$TMP" || { echo "sync_fail_fine_no_auto"; rm -f "$TMP"; exit 1; }

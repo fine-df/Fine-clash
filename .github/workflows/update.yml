@@ -66,6 +66,13 @@ jobs:
 
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
+        env:
+          # Unset today, so builds stay Fine-only. Populating the URL secret alone
+          # is NOT enough: build_final.py refuses any host missing from the
+          # approval list, and refuses URLs that embed a credential. The greps
+          # below are a second line of defence, not the first.
+          FINE_BITZ_SUBSCRIPTION_URL: ${{ secrets.FINE_BITZ_SUBSCRIPTION_URL }}
+          FINE_BITZ_ALLOWED_HOSTS: ${{ secrets.FINE_BITZ_ALLOWED_HOSTS }}
         run: python build_final.py data/fine_pool.yaml
 
       - name: Validate profile
@@ -75,9 +82,9 @@ jobs:
           test -s live_clash.yaml
           grep -q 'fine-clash-version:[0-9][0-9]*' live_clash.yaml
           grep -q '^mode: rule$' live_clash.yaml
-          grep -q '^- name: Fine' live_clash.yaml
-          grep -q '^- name: AUTO' live_clash.yaml
-          grep -q '  - AUTO' live_clash.yaml
+          grep -q '^- name: Fine$' live_clash.yaml
+          grep -q '^- name: Fine-Auto' live_clash.yaml
+          grep -q '  - Fine-Auto' live_clash.yaml
           grep -q '  - DIRECT' live_clash.yaml
           if grep -Eq '^- name: GLOBAL' live_clash.yaml; then
             echo 'GLOBAL group must be absent (built-in to mihomo; a defined GLOBAL is redundant)'
@@ -92,20 +99,37 @@ jobs:
           grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
           grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
-          grep -q 'MATCH,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,myqcloud.com,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,tencentcos.cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mijia.com,DIRECT' live_clash.yaml
           grep -q 'default-selected' live_clash.yaml
+          # Two supported layouts: Fine-only (default public build) or symmetric
+          # Fine + Bitz where Bitz carries every remaining proxy-bound destination.
+          # Either way MATCH must resolve to a group that actually exists.
+          if grep -Eq '^- name: Bitz$' live_clash.yaml; then
+            grep -q '^  BitzPool:' live_clash.yaml
+            grep -q '^- name: Bitz-Auto$' live_clash.yaml
+            grep -q '  - Bitz-Auto' live_clash.yaml
+            grep -q 'MATCH,Bitz' live_clash.yaml
+          else
+            grep -q 'MATCH,Fine' live_clash.yaml
+          fi
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:' live_clash.yaml; then
+          if grep -Eq 'fine_final.yaml|fine-override:' live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
             exit 1
           fi
-          if grep -Eq 'cont\\.bbkcdpub\\.com|token=' live_clash.yaml; then
+          # proxy-providers is only legitimate alongside the Bitz layout.
+          if ! grep -Eq '^- name: Bitz$' live_clash.yaml && grep -Eq '^proxy-providers:' live_clash.yaml; then
+            echo 'proxy providers present without a Bitz group'
+            exit 1
+          fi
+          # Hard guard from the 2026-10-04 incident: a paid upstream credential must
+          # never reach the publicly distributed profile.
+          if grep -Eq 'cont\.bbkcdpub\.com|token=' live_clash.yaml; then
             echo 'subscription credential or token-bearing URL leaked into public profile'
             exit 1
           fi

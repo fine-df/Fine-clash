@@ -1,5 +1,6 @@
 import base64
 import inspect
+import re
 import pytest
 from pathlib import Path
 
@@ -7,21 +8,25 @@ import fine_clash as fc
 import build_final as bf
 
 
+def _fine_node(name="Fine-1"):
+    return {"name": name, "type": "trojan", "server": "example.com", "port": 443, "password": "secret", "tls": True}
+
+
 def test_final_proxy_groups_single_fine_with_direct():
     fine_names = ["Fine-1", "Fine-2"]
     groups = bf.build_proxy_groups(fine_names)
     by_name = {g["name"]: g for g in groups}
-    # Only the Fine group is user-visible; AUTO is a hidden url-test subgroup
-    # embedded in Fine for one-tap latency auto-selection (GLOBAL was removed).
-    assert set(by_name) == {"Fine", "AUTO"}
+    # Bitz stays absent unless its subscription URL is supplied by the
+    # environment; the public profile must stay Fine-only by default.
+    assert set(by_name) == {"Fine", "Fine-Auto"}
     # Sticky-first: the first (quality-ranked) node is pinned as default-selected.
     assert by_name["Fine"]["default-selected"] == fine_names[0]
-    # AUTO (auto-select) and DIRECT are selectable alongside every node.
-    assert by_name["Fine"]["proxies"] == ["AUTO", "DIRECT"] + fine_names
-    # AUTO itself is a hidden url-test group so it stays out of the UI list.
-    assert by_name["AUTO"]["type"] == "url-test"
-    assert by_name["AUTO"]["hidden"] is True
-    assert by_name["AUTO"]["proxies"] == fine_names
+    # Fine-Auto (auto-select) and DIRECT are selectable alongside every node.
+    assert by_name["Fine"]["proxies"] == ["Fine-Auto", "DIRECT"] + fine_names
+    # Fine-Auto itself is a hidden url-test group so it stays out of the UI list.
+    assert by_name["Fine-Auto"]["type"] == "url-test"
+    assert by_name["Fine-Auto"]["hidden"] is True
+    assert by_name["Fine-Auto"]["proxies"] == fine_names
 
 def test_sticky_primary_is_pinned_as_default_selected():
     # The pool is intentionally ordered quality-first by fine_clash.py's sticky
@@ -32,10 +37,127 @@ def test_sticky_primary_is_pinned_as_default_selected():
     groups = bf.build_proxy_groups(fine_names)
     by_name = {g["name"]: g for g in groups}
     assert by_name["Fine"]["default-selected"] == "Fine-KEPT"
-    # AUTO url-test subgroup is embedded in Fine for auto-selection, but the
-    # sticky primary (not AUTO) remains the default so the connection persists.
-    assert "AUTO" in by_name
-    assert by_name["Fine"]["default-selected"] != "AUTO"
+    # Fine-Auto url-test subgroup is embedded in Fine for auto-selection, but the
+    # sticky primary (not Fine-Auto) remains the default so the connection persists.
+    assert "Fine-Auto" in by_name
+    assert by_name["Fine"]["default-selected"] != "Fine-Auto"
+
+
+def test_final_config_is_fine_only(monkeypatch):
+    # A public build has no Bitz credential available, so it must degrade to a
+    # fully self-contained Fine-only profile rather than referencing a group
+    # that would never be populated.
+    monkeypatch.delenv(bf.BITZ_URL_ENV, raising=False)
+    cfg = bf.build_config([_fine_node()])
+    assert cfg["mode"] == "rule"
+    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
+    assert "proxy-providers" not in cfg
+    assert "global-ua" not in cfg
+    assert cfg["rules"][-1] == "MATCH,Fine"
+    assert {g["name"] for g in cfg["proxy-groups"]} == {"Fine", "Fine-Auto"}
+
+
+def test_final_config_leaves_mihomo_default_ua_untouched_without_bitz(monkeypatch):
+    # Without Bitz there is no reason to spoof anything, so mihomo keeps its own UA.
+    monkeypatch.delenv(bf.BITZ_URL_ENV, raising=False)
+    cfg = bf.build_config([_fine_node()])
+    assert "global-ua" not in cfg
+
+
+def test_final_config_enables_bitz_from_environment(monkeypatch):
+    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "upstream.example")
+    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://upstream.example/api/v1/client/sub.conf")
+    cfg = bf.build_config([_fine_node()])
+    provider = cfg["proxy-providers"]["BitzPool"]
+    assert provider["type"] == "http"
+    assert provider["url"] == "https://upstream.example/api/v1/client/sub.conf"
+    # The upstream refuses every non-official client. Mihomo ignores provider-level
+    # headers, so the UA has to be set globally or the fetch comes back 403.
+    assert cfg["global-ua"] == bf.BITZ_USER_AGENT
+    # Bulk video/store traffic keeps using the validated Fine pool...
+    assert "DOMAIN-SUFFIX,youtube.com,Fine" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,play.google.com,Fine" in cfg["rules"]
+    # ...everything else falls through to Bitz.
+    assert cfg["rules"][-1] == "MATCH,Bitz"
+    # Domestic direct rules must survive the Bitz rollout untouched.
+    assert "DOMAIN-SUFFIX,qq.com,DIRECT" in cfg["rules"]
+    assert "DOMAIN-SUFFIX,mi.com,DIRECT" in cfg["rules"]
+    assert "GEOIP,CN,DIRECT" in cfg["rules"]
+
+
+def test_final_config_bitz_groups_are_symmetric(monkeypatch):
+    fine_names = ["Fine-1", "Fine-2"]
+    groups = bf.build_proxy_groups(fine_names, bitz_enabled=True)
+    by_name = {g["name"]: g for g in groups}
+    assert {"Fine", "Fine-Auto", "Bitz", "Bitz-Auto"} <= set(by_name)
+    # Both groups expose their own Auto + DIRECT so each stays manually selectable.
+    for name in ("Fine", "Bitz"):
+        assert by_name[name]["type"] == "select"
+        assert by_name[name]["proxies"][0] == f"{name}-Auto"
+        assert "DIRECT" in by_name[name]["proxies"]
+    # Fine keeps listing every validated node; Bitz pulls the provider's nodes.
+    assert by_name["Fine"]["proxies"] == ["Fine-Auto", "DIRECT"] + fine_names
+    # Fine is kept inside Bitz purely as the escape hatch for a dead provider.
+    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto", "DIRECT", "Fine"]
+    assert by_name["Bitz"]["use"] == ["BitzPool"]
+    assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
+    assert by_name["Bitz-Auto"]["type"] == "url-test"
+    assert by_name["Bitz-Auto"]["include-all-providers"] is True
+    assert by_name["Bitz-Auto"]["url"] == bf.BITZ_HEALTH_CHECK_URL
+
+
+def test_repository_contains_no_credential_bearing_url():
+    # Regression guard for the 2026-10-04 incident, where a paid upstream URL with
+    # its token was committed into the publicly published profile. Rather than
+    # free-text scanning (a node's ws path can be 16 hex chars and looks identical
+    # to a secret), this extracts URLs and reuses the production detector so the
+    # two can never drift apart.
+    repo_root = Path(bf.__file__).resolve().parent
+    paid_host = "cont." + "bbkcdpub" + ".com"
+    url_re = re.compile(r"https?://[^\s\"'<>]+")
+    patterns = ("*.py", "*.yml", "*.yaml", "*.sh", "*.md", "*.json", "*.toml")
+    offenders = []
+    for path in sorted(p for pat in patterns for p in repo_root.rglob(pat)):
+        # This file intentionally holds credential-shaped fixtures for the tests below.
+        if path.name == Path(__file__).name:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if paid_host in text:
+            offenders.append(f"{path.relative_to(repo_root)}: paid upstream host")
+        for url in url_re.findall(text):
+            if bf.bitz_url_carries_credential(url):
+                offenders.append(f"{path.relative_to(repo_root)}: {url[:72]}")
+    assert offenders == []
+
+
+def test_bitz_url_is_refused_when_host_is_not_approved(monkeypatch):
+    # Publishing runs through a public repo, so an unapproved host must fail the
+    # build rather than silently shipping whatever URL was configured.
+    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://paid-upstream.example.net/api/v1/client/sub.conf")
+    monkeypatch.delenv(bf.BITZ_ALLOWED_HOSTS_ENV, raising=False)
+    with pytest.raises(SystemExit, match="refusing to publish"):
+        bf.build_config([_fine_node()])
+
+
+def test_bitz_url_is_refused_when_it_carries_a_credential(monkeypatch):
+    # The grep-based gates downstream only recognise `token=`. A path-style or
+    # UUID-style credential slips past them, so the build has to reject it here.
+    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "relay.example")
+    for url in (
+        "https://relay.example/sub?token=PLACEHOLDER0000",
+        "https://relay.example/api/v1/client/subscribe/7f3a9c2e5b1d4086aaaaaaaaaaaaaaaa",
+        "https://relay.example/sub?key=abcd1234abcd1234",
+    ):
+        monkeypatch.setenv(bf.BITZ_URL_ENV, url)
+        with pytest.raises(SystemExit, match="embeds a credential"):
+            bf.build_config([_fine_node()])
+
+
+def test_approved_tokenless_bitz_url_is_accepted(monkeypatch):
+    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "relay.example")
+    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://relay.example/sub")
+    cfg = bf.build_config([_fine_node()])
+    assert cfg["proxy-providers"]["BitzPool"]["url"] == "https://relay.example/sub"
 
 
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
@@ -74,12 +196,6 @@ def test_shenzhen_quality_gates_are_tightened():
     assert cfg["shenzhen_probe"]["reject_loss_pct"] == 10
     assert cfg["retention"]["enabled"] is True
     assert cfg["retention"]["max_previous_nodes"] == 20
-
-def test_final_config_is_fine_only():
-    cfg = bf.build_config([{"name":"Fine-1","type":"trojan","server":"example.com","port":443,"password":"secret","tls":True}])
-    assert cfg["mode"] == "rule"
-    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
-    assert "MATCH,Fine" in cfg["rules"]
 
 def test_candidate_gate_modes_are_explicit():
     item = {"gemini": False, "google_play": False, "google": {"ok": True}}

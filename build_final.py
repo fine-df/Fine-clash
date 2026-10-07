@@ -309,13 +309,16 @@ def main():
             if m: previous_version=int(m.group(1))
         except OSError: pass
     version=str(previous_version+1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    bitz_count=len(config.get("proxy-groups",[{}])[-1]["proxies"])-3 if bitz_enabled else 0
+    bitz_group=next((g for g in config["proxy-groups"] if g["name"]=="Bitz"), None)
+    bitz_enabled=bitz_group is not None
+    # Members beyond the fixed Auto / DIRECT / Fine entries are the fetched nodes.
+    bitz_count=len(bitz_group["proxies"])-3 if bitz_group else 0
     fallback="Bitz" if bitz_enabled else "Fine"
     bitz_note=f"Bitz=inline({bitz_count}) | " if bitz_enabled else "Bitz=disabled(none-fetched) | "
     header=(f"# fine-clash-unified-v4 | fine-clash-version:{version} | "
             f"{bitz_note}Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->{fallback}\n")
     OUT.write_text(header+dumped,encoding="utf-8")
     print(f"written {OUT}: Fine={len(config['proxies'])} validated nodes; "
-          f"Bitz={'remote-provider' if bitz_enabled else 'disabled'}; rules={len(config['rules'])}")
+          f"Bitz=inline({bitz_count})" if bitz_enabled else "Bitz=disabled")
 
 if __name__=="__main__": main()

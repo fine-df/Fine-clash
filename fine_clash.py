@@ -516,7 +516,7 @@ class MihomoTester:
         # 运行时分配独立空闲端口，杜绝并行 worker 间及与机器残留 mihomo 的端口冲突
         self.controller_port=self._alloc_port()
         self.proxy_port=self._alloc_port()
-        config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"error","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOIP,CN,DIRECT","MATCH,TEST"]}
+        config={"mixed-port":self.proxy_port,"allow-lan":False,"mode":"rule","log-level":"warning","external-controller":f"127.0.0.1:{self.controller_port}","proxies":proxies,"proxy-groups":[{"name":"TEST","type":"select","proxies":names}],"rules":["GEOIP,CN,DIRECT","MATCH,TEST"]}
         self.tmp=Path(tempfile.mkdtemp(prefix="fine-clash-")); (self.tmp/"config.yaml").write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
         # Preload local Mihomo geodata into the exact filenames Mihomo expects.
         # This keeps CI startup independent of runtime GeoIP/GeoSite downloads.
@@ -546,12 +546,20 @@ class MihomoTester:
                 test_resp=self.session.get(f"http://127.0.0.1:{self.controller_port}/proxies/TEST",timeout=2)
                 test_resp.raise_for_status()
             except requests.RequestException as exc:
+                present=None
+                try:
+                    present=sorted((self.session.get(f"http://127.0.0.1:{self.controller_port}/proxies",timeout=2).json().get("proxies") or {}).keys())
+                except Exception:
+                    pass
                 detail=""
                 try:
                     detail=self.log_path.read_text(encoding="utf-8",errors="replace")[-4000:]
                 except Exception:
                     pass
-                raise RuntimeError(f"mihomo@{self.controller_port} responded but /proxies/TEST missing (wrong instance or config not loaded): {exc}; log={detail}")
+                # `present` tells the two failure modes apart: seeing only DIRECT/REJECT/GLOBAL
+                # means every node in this batch was rejected (a node-data problem), while a
+                # foreign set of groups means we hit someone else's controller (port collision).
+                raise RuntimeError(f"mihomo@{self.controller_port} /proxies/TEST missing: nodes={len(nodes)} present={present}; {exc}; log={detail}")
             return names
         detail=""
         try:
@@ -588,10 +596,12 @@ class MihomoTester:
         try:
             names=self.start(nodes)
         except RuntimeError as exc:
-            # Only Mihomo's explicit config-parse failure is treated as a node-data
-            # problem. Other startup failures are systemic and must still fail loudly.
             error=str(exc)
-            if "Parse config error:" not in error:
+            # A single malformed node can make Mihomo drop the whole TEST group, which
+            # surfaces as `Parse config error:` or as `/proxies/TEST missing`. Both are
+            # node-data problems: isolate them by splitting instead of aborting the run.
+            # Anything else is systemic ("Mihomo exited", ports, etc.) and fails loudly.
+            if "Parse config error:" not in error and "/proxies/TEST missing" not in error:
                 self.stop()
                 raise
             # A single malformed proxy can make Mihomo reject the entire batch.

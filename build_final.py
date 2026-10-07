@@ -2,10 +2,15 @@
 """Build the single public Clash/Mihomo profile from the validated Fine pool."""
 from __future__ import annotations
 import os
+import json
 import re
+import shutil
+import subprocess
+from base64 import b64decode
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
+from urllib.request import Request, urlopen
 import yaml
 from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
 
@@ -32,6 +37,12 @@ BITZ_ALLOWED_HOSTS_ENV = "FINE_BITZ_ALLOWED_HOSTS"
 # so it is safe today; revisit if another upstream ever starts caring.
 BITZ_USER_AGENT = "BBGen2UA"
 BITZ_HEALTH_CHECK_URL = "https://www.gstatic.com/generate_204"
+# Set to 1/true/yes to acknowledge that a credential-bearing URL will be used
+# to fetch nodes at BUILD time. The published profile then contains the paid
+# nodes themselves (server + password/uuid), which is equivalent to publishing
+# the token: whoever downloads the profile can use the paid service.
+# The owner accepted this trade-off on 2026-10-07.
+BITZ_PUBLIC_ENV = "FINE_BITZ_ALLOW_PUBLIC_CREDENTIAL"
 
 
 # Query keys that carry a credential when present with a value.
@@ -80,12 +91,114 @@ def bitz_subscription_url():
             f"Only add it to {BITZ_ALLOWED_HOSTS_ENV} once you have confirmed the "
             f"URL contains no credential, because everything here is public."
         )
-    if bitz_url_carries_credential(url):
+    if bitz_url_carries_credential(url) and not bitz_public_credential_allowed():
         raise SystemExit(
             f"FATAL: {BITZ_URL_ENV} looks like it embeds a credential; the "
-            f"published profile must never carry one."
+            f"published profile must never carry one. Set {BITZ_PUBLIC_ENV}=1 "
+            f"to accept that the fetched nodes will be published in the clear."
         )
     return url
+
+
+def bitz_public_credential_allowed():
+    """True when the owner has accepted publishing the paid nodes in the clear."""
+    return (os.environ.get(BITZ_PUBLIC_ENV) or "").strip().lower() in ("1", "true", "yes")
+
+
+def proxy_from_uri(line, fallback_name="Bitz"):
+    """Turn one share URI into a structural mihomo proxy, or None if unknown.
+
+    Mihomo rejects a bare URI string under `proxies:`, so every node has to be
+    expanded into its fields before it can be written into the profile.
+    """
+    if "#" in line:
+        base, frag = line.split("#", 1)
+        name = unquote(frag).strip() or fallback_name
+    else:
+        base, name = line, fallback_name
+    scheme, _, rest = base.partition("://")
+    scheme = scheme.lower()
+    if scheme == "vmess":
+        try:
+            info = json.loads(b64decode(rest + "=" * (-len(rest) % 4)).decode("utf-8"))
+        except Exception:  # noqa: BLE001 - malformed node, skip it
+            return None
+        return {"name": name, "type": "vmess", "server": info.get("add", ""),
+                "port": int(info.get("port", 443)), "uuid": info.get("id", ""),
+                "alterId": int(info.get("aid", 0)), "cipher": info.get("scy", "auto"),
+                "udp": True, "tls": info.get("tls") in ("tls", True),
+                "servername": info.get("sni") or info.get("host") or ""}
+    cred, hostport = rest.rsplit("@", 1) if "@" in rest else ("", rest)
+    netloc, _, query = hostport.partition("?")
+    server, _, port = netloc.rpartition(":")
+    try:
+        port = int(port)
+    except ValueError:
+        return None
+    q = parse_qs(query)
+    get = lambda key, default=None: q.get(key, [default])[0]
+    if scheme == "trojan":
+        node = {"name": name, "type": "trojan", "server": server, "port": port,
+                "password": unquote(cred), "udp": True,
+                "skip-cert-verify": get("allowInsecure", "0") == "1"}
+        if get("sni"):
+            node["sni"] = get("sni")
+        return node
+    if scheme == "vless":
+        node = {"name": name, "type": "vless", "server": server, "port": port,
+                "uuid": unquote(cred), "tls": True, "udp": True,
+                "servername": get("sni", ""), "flow": get("flow", ""),
+                "client-fingerprint": get("fp", "chrome")}
+        if get("security") == "reality":
+            node["reality-opts"] = {"public-key": get("pbk", ""), "short-id": get("sid", "")}
+        return node
+    if scheme == "ss":
+        method, _, password = unquote(cred).partition(":")
+        return {"name": name, "type": "ss", "server": server, "port": port,
+                "cipher": method or "aes-256-gcm", "password": password, "udp": True}
+    return None
+
+
+def fetch_bitz_nodes(url, timeout=30):
+    """Download the upstream subscription and return its nodes as proxy dicts.
+
+    Nodes get embedded directly rather than referenced through
+    `proxy-providers`, because that extension only exists in mihomo: this way
+    the same public file also loads in Shadowrocket, Clash for Android and
+    v2rayN, which is what "usable on all four clients" requires.
+    """
+    text = _download_text(url, timeout)
+    if "://" not in text:
+        text = b64decode(text + "=" * (-len(text) % 4)).decode("utf-8", "replace")
+    nodes = []
+    for index, line in enumerate(text.splitlines(), 1):
+        line = line.strip()
+        if "://" not in line:
+            continue
+        proxy = proxy_from_uri(line, f"Bitz-{index}")
+        if proxy:
+            nodes.append(proxy)
+    return nodes
+
+
+def _download_text(url, timeout):
+    """Fetch with curl when present.
+
+    The upstream drops the TLS handshake for Python's OpenSSL client
+    (verified locally: urllib -> SSLEOFError while curl returns HTTP 200 in
+    9s), so curl is preferred and urllib is only the fallback.
+    """
+    curl = shutil.which("curl")
+    if curl:
+        result = subprocess.run(
+            [curl, "-sS", "-A", BITZ_USER_AGENT, "-m", str(timeout), url],
+            capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if result.returncode != 0:
+            raise RuntimeError(f"curl exit {result.returncode}: {result.stderr.strip()[:200]}")
+        return result.stdout.strip()
+    request = Request(url, headers={"User-Agent": BITZ_USER_AGENT})
+    with urlopen(request, timeout=timeout) as response:
+        return response.read().decode("utf-8", "replace").strip()
 
 VIDEO_DOMAINS=["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
 STORE_DOMAINS=["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
@@ -118,7 +231,7 @@ def load_fine_nodes():
 def suffix_rules(domains,group):
     return [f"DOMAIN-SUFFIX,{d},{group}" for d in domains]
 
-def build_proxy_groups(fine_names, bitz_enabled=False):
+def build_proxy_groups(fine_names, bitz_names=None):
     """Build symmetric Fine / Bitz groups, each usable manually and via Auto.
 
     2026-10-07 调整：
@@ -138,16 +251,15 @@ def build_proxy_groups(fine_names, bitz_enabled=False):
         {"name":"Fine","type":"select","proxies":["Fine-Auto","DIRECT"]+fine_names,"default-selected":primary},
         {"name":"Fine-Auto","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
     ]
-    if bitz_enabled:
-        # `Fine` is listed inside Bitz on purpose: if the upstream provider ever
-        # fails to load (expired credential, dead relay, upstream outage) the
-        # Bitz group would otherwise be empty and every MATCH-bound connection
-        # would blackhole. Keeping Fine selectable gives the panel a working
-        # exit instead. `DIRECT` and `Bitz-Auto` stay ahead so nothing changes
-        # during normal operation.
+    if bitz_names:
+        # Every upstream node is listed explicitly: that is what makes the file
+        # load in Shadowrocket / Clash for Android / v2rayN, none of which know
+        # about mihomo's `proxy-providers`. `Fine` stays listed too, so a future
+        # build whose fetch failed still leaves a working exit in the group
+        # instead of a MATCH blackhole.
         groups += [
-            {"name":"Bitz","type":"select","proxies":["Bitz-Auto","DIRECT","Fine"],"use":["BitzPool"],"default-selected":"Bitz-Auto"},
-            {"name":"Bitz-Auto","type":"url-test","include-all-providers":True,"url":BITZ_HEALTH_CHECK_URL,"interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
+            {"name":"Bitz","type":"select","proxies":["Bitz-Auto","DIRECT","Fine"]+bitz_names,"default-selected":"Bitz-Auto"},
+            {"name":"Bitz-Auto","type":"url-test","proxies":bitz_names,"url":BITZ_HEALTH_CHECK_URL,"interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
         ]
     return groups
 
@@ -156,7 +268,15 @@ def build_config(fine_nodes):
     fine_nodes=unique_node_names(fine_nodes)
     fine_names=[n["name"] for n in fine_nodes]
     bitz_url=bitz_subscription_url()
-    bitz_enabled=bool(bitz_url)
+    bitz_nodes=[]
+    if bitz_url:
+        try:
+            bitz_nodes=fetch_bitz_nodes(bitz_url)
+        except Exception as exc:  # noqa: BLE001 - never let a fetch failure ship a broken profile
+            print(f"WARNING: could not fetch Bitz nodes ({exc!r}); degrading to Fine-only.")
+    # A group with zero members would swallow every MATCH-bound connection, so
+    # Bitz only takes over the fallback when nodes actually arrived.
+    bitz_enabled=bool(bitz_nodes)
     # Bulk traffic (video / app stores) stays on Fine, the validated free pool.
     # Every other proxy-bound destination falls through to Bitz. When Bitz is
     # not configured the profile must never lose its fallback, so MATCH stays
@@ -168,17 +288,10 @@ def build_config(fine_nodes):
         "profile":{"store-selected":True},
     }
     if bitz_enabled:
-        # Must sit next to the provider fetch, not inside `http-opts`: mihomo
-        # silently ignores per-provider headers (see BITZ_USER_AGENT note).
-        config["global-ua"]=BITZ_USER_AGENT
-        config["proxy-providers"]={"BitzPool":{
-            "type":"http",
-            "url":bitz_url,
-            "interval":21600,
-            "health-check":{"enable":True,"url":BITZ_HEALTH_CHECK_URL,"interval":300},
-        }}
-    config["proxies"]=fine_nodes
-    config["proxy-groups"]=build_proxy_groups(fine_names,bitz_enabled)
+        bitz_nodes=unique_node_names(bitz_nodes)
+    bitz_names=[n["name"] for n in bitz_nodes]
+    config["proxies"]=fine_nodes+bitz_nodes
+    config["proxy-groups"]=build_proxy_groups(fine_names,bitz_names)
     config["tun"]={"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True}
     config["dns"]={"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
                "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"]},
@@ -196,9 +309,9 @@ def main():
             if m: previous_version=int(m.group(1))
         except OSError: pass
     version=str(previous_version+1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    bitz_enabled="BitzPool" in (config.get("proxy-providers") or {})
+    bitz_count=len(config.get("proxy-groups",[{}])[-1]["proxies"])-3 if bitz_enabled else 0
     fallback="Bitz" if bitz_enabled else "Fine"
-    bitz_note=f"Bitz=remote-provider(UA={BITZ_USER_AGENT}) | " if bitz_enabled else "Bitz=disabled(no-subscription-url) | "
+    bitz_note=f"Bitz=inline({bitz_count}) | " if bitz_enabled else "Bitz=disabled(none-fetched) | "
     header=(f"# fine-clash-unified-v4 | fine-clash-version:{version} | "
             f"{bitz_note}Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->{fallback}\n")
     OUT.write_text(header+dumped,encoding="utf-8")

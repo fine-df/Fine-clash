@@ -36,10 +36,12 @@ grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP
 # 两种布局都必须保证 MATCH 指向一个真实存在的组，避免落到空组导致断网。
 if grep -q '^- name: Bitz$' "$TMP"; then BITZ_LAYOUT=1; else BITZ_LAYOUT=0; fi
 if [ "$BITZ_LAYOUT" = 1 ]; then
-  grep -q '^  BitzPool:' "$TMP" || { echo "sync_fail_no_bitz_pool"; rm -f "$TMP"; exit 1; }
   grep -q '^- name: Bitz-Auto$' "$TMP" || { echo "sync_fail_no_bitz_auto_group"; rm -f "$TMP"; exit 1; }
   grep -q '  - Bitz-Auto' "$TMP" || { echo "sync_fail_bitz_no_auto"; rm -f "$TMP"; exit 1; }
   grep -q 'MATCH,Bitz' "$TMP" || { echo "sync_fail_no_match_bitz"; rm -f "$TMP"; exit 1; }
+  # 节点是内联的，不再有 proxy-provider 段。Bitz 组若没成员，MATCH 会落空组导致全断网。
+  MEM=$(awk '/^- name: Bitz$/{f=1;next} /^- name:/{f=0} f&&/^    - /{c++} END{print c+0}' "$TMP")
+  [ "$MEM" -ge 4 ] || { echo "sync_fail_empty_bitz_group"; rm -f "$TMP"; exit 1; }
 else
   grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; exit 1; }
 fi
@@ -55,8 +57,9 @@ if [ "$BITZ_LAYOUT" = 0 ] && grep -Eq '^proxy-providers:' "$TMP"; then
   rm -f "$TMP"
   exit 1
 fi
-# 硬红线：付费上游凭证绝不能以明文出现在公开订阅里（2026-10-04 事故后的护栏）。
-# 因此 Bitz 若要上线，其 provider URL 必须是不含 token 的中继地址。
+# 硬红线：订阅 URL / 明文 token 不得出现在公开订阅里（2026-10-04 事故后的护栏）。
+# 2026-10-07 起 Bitz 走「构建期内联节点」：token 只存在 CI Secret 里，
+# 出现在订阅中的是已展开的节点（server/password/uuid）——业主已接受该公开尺度。
 if grep -Eq 'cont\.bbkcdpub\.com|token=' "$TMP"; then
   echo "sync_fail_public_profile_contains_token"
   rm -f "$TMP"

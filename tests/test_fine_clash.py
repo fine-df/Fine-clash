@@ -64,16 +64,21 @@ def test_final_config_leaves_mihomo_default_ua_untouched_without_bitz(monkeypatc
     assert "global-ua" not in cfg
 
 
+def _bitz_node():
+    return {"name": "Bitz-1", "type": "trojan", "server": "bitz.example", "port": 443,
+            "password": "pw", "udp": True}
+
+
 def test_final_config_enables_bitz_from_environment(monkeypatch):
     monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "upstream.example")
     monkeypatch.setenv(bf.BITZ_URL_ENV, "https://upstream.example/api/v1/client/sub.conf")
+    monkeypatch.setattr(bf, "fetch_bitz_nodes", lambda url, timeout=30: [_bitz_node()])
     cfg = bf.build_config([_fine_node()])
-    provider = cfg["proxy-providers"]["BitzPool"]
-    assert provider["type"] == "http"
-    assert provider["url"] == "https://upstream.example/api/v1/client/sub.conf"
-    # The upstream refuses every non-official client. Mihomo ignores provider-level
-    # headers, so the UA has to be set globally or the fetch comes back 403.
-    assert cfg["global-ua"] == bf.BITZ_USER_AGENT
+    # Nodes are embedded rather than referenced through `proxy-providers`, because
+    # only mihomo understands that extension while this profile must also load in
+    # Shadowrocket / Clash for Android / v2rayN.
+    assert "proxy-providers" not in cfg
+    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1", "Bitz-1"]
     # Bulk video/store traffic keeps using the validated Fine pool...
     assert "DOMAIN-SUFFIX,youtube.com,Fine" in cfg["rules"]
     assert "DOMAIN-SUFFIX,play.google.com,Fine" in cfg["rules"]
@@ -87,7 +92,7 @@ def test_final_config_enables_bitz_from_environment(monkeypatch):
 
 def test_final_config_bitz_groups_are_symmetric(monkeypatch):
     fine_names = ["Fine-1", "Fine-2"]
-    groups = bf.build_proxy_groups(fine_names, bitz_enabled=True)
+    groups = bf.build_proxy_groups(fine_names, ["Bitz-1", "Bitz-2"])
     by_name = {g["name"]: g for g in groups}
     assert {"Fine", "Fine-Auto", "Bitz", "Bitz-Auto"} <= set(by_name)
     # Both groups expose their own Auto + DIRECT so each stays manually selectable.
@@ -95,15 +100,37 @@ def test_final_config_bitz_groups_are_symmetric(monkeypatch):
         assert by_name[name]["type"] == "select"
         assert by_name[name]["proxies"][0] == f"{name}-Auto"
         assert "DIRECT" in by_name[name]["proxies"]
-    # Fine keeps listing every validated node; Bitz pulls the provider's nodes.
+    # Fine keeps listing every validated node; Bitz lists the fetched nodes.
     assert by_name["Fine"]["proxies"] == ["Fine-Auto", "DIRECT"] + fine_names
-    # Fine is kept inside Bitz purely as the escape hatch for a dead provider.
-    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto", "DIRECT", "Fine"]
-    assert by_name["Bitz"]["use"] == ["BitzPool"]
+    # Fine stays inside Bitz as the escape hatch for a failed upstream fetch.
+    assert by_name["Bitz"]["proxies"] == ["Bitz-Auto", "DIRECT", "Fine", "Bitz-1", "Bitz-2"]
     assert by_name["Bitz"]["default-selected"] == "Bitz-Auto"
     assert by_name["Bitz-Auto"]["type"] == "url-test"
-    assert by_name["Bitz-Auto"]["include-all-providers"] is True
+    # Real names instead of `include-all-providers`, so non-mihomo clients can
+    # read the same file.
+    assert by_name["Bitz-Auto"]["proxies"] == ["Bitz-1", "Bitz-2"]
     assert by_name["Bitz-Auto"]["url"] == bf.BITZ_HEALTH_CHECK_URL
+
+
+def test_bitz_fetch_failure_degrades_to_fine_only(monkeypatch):
+    # A half-built profile must never point MATCH at an empty group.
+    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "upstream.example")
+    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://upstream.example/sub")
+    monkeypatch.setattr(bf, "fetch_bitz_nodes", lambda url, timeout=30: (_ for _ in ()).throw(RuntimeError("upstream down")))
+    cfg = bf.build_config([_fine_node()])
+    assert cfg["rules"][-1] == "MATCH,Fine"
+    assert {g["name"] for g in cfg["proxy-groups"]} == {"Fine", "Fine-Auto"}
+
+
+def test_proxy_from_uri_expands_the_protocols_the_upstream_serves():
+    trojan = bf.proxy_from_uri("trojan://pw@h.example:443?sni=s.example&allowInsecure=1#节点")
+    assert trojan["name"] == "节点"
+    assert trojan["type"] == "trojan" and trojan["password"] == "pw"
+    assert trojan["sni"] == "s.example" and trojan["skip-cert-verify"] is True
+    vless = bf.proxy_from_uri("vless://11111111-2222-3333-4444-555555555555@h.example:443?security=reality&pbk=k&sid=1&flow=xtls-rprx-vision#v")
+    assert vless["type"] == "vless" and vless["uuid"] == "11111111-2222-3333-4444-555555555555"
+    assert vless["reality-opts"] == {"public-key": "k", "short-id": "1"}
+    assert bf.proxy_from_uri("http://nope") is None
 
 
 def test_repository_contains_no_credential_bearing_url():
@@ -156,8 +183,22 @@ def test_bitz_url_is_refused_when_it_carries_a_credential(monkeypatch):
 def test_approved_tokenless_bitz_url_is_accepted(monkeypatch):
     monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "relay.example")
     monkeypatch.setenv(bf.BITZ_URL_ENV, "https://relay.example/sub")
+    seen = []
+    monkeypatch.setattr(bf, "fetch_bitz_nodes", lambda url, timeout=30: (seen.append(url), [_bitz_node()])[1])
     cfg = bf.build_config([_fine_node()])
-    assert cfg["proxy-providers"]["BitzPool"]["url"] == "https://relay.example/sub"
+    assert seen == ["https://relay.example/sub"]
+    assert cfg["rules"][-1] == "MATCH,Bitz"
+
+
+def test_credential_bearing_url_is_allowed_once_accepted(monkeypatch):
+    # Owner decision 2026-10-07: usability over secrecy. Publishing the fetched
+    # nodes is equivalent to publishing the token, and that risk was accepted.
+    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "relay.example")
+    monkeypatch.setenv(bf.BITZ_PUBLIC_ENV, "1")
+    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://relay.example/sub?token=PLACEHOLDER0000")
+    monkeypatch.setattr(bf, "fetch_bitz_nodes", lambda url, timeout=30: [_bitz_node()])
+    cfg = bf.build_config([_fine_node()])
+    assert cfg["rules"][-1] == "MATCH,Bitz"
 
 
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):

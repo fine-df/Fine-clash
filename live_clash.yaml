@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110032 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
+# fine-clash-unified-v4 | fine-clash-version:20261004110033 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,130 +10,150 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: vmess
-  server: yg1.ygkkk.dpdns.org
-  network: ws
-  alterId: 0
-  tls: true
-  port: 443
-  cipher: auto
+- server: yg1.ygkkk.dpdns.org
   ws-opts:
     headers:
       Host: jmp1.907737.xyz
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
+  type: vmess
+  network: ws
+  alterId: 0
+  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
+  port: 443
+  tls: true
   udp: true
-  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
-  uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
-- type: vmess
-  servername: jmp1.907737.xyz
-  server: yg1.ygkkk.dpdns.org
-  network: ws
-  alterId: 0
-  tls: true
-  port: 443
   cipher: auto
+  name: 🇭🇰 Hong Kong, Hong Kong | [BL]
+- server: yg1.ygkkk.dpdns.org
   ws-opts:
     path: /b2ba4a73-3123-479e-aa96-5973a9ecd0c0-vm
     headers:
       Host: jmp1.907737.xyz
-  name: 未知 VMESS-369 | free-nodes
+  type: vmess
+  network: ws
+  servername: jmp1.907737.xyz
+  alterId: 0
   uuid: b2ba4a73-3123-479e-aa96-5973a9ecd0c0
-- type: vless
-  encryption: none
-  client-fingerprint: safari
-  servername: uk1.sky-vault.top
-  server: 91.208.92.210
-  network: tcp
-  flow: xtls-rprx-vision
-  tls: true
-  reality-opts:
-    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
-    short-id: ae64c9b46bff174a
   port: 443
+  tls: true
+  cipher: auto
+  name: 未知 VMESS-369 | free-nodes
+- server: 91.208.92.210
+  flow: xtls-rprx-vision
+  type: vless
+  network: tcp
+  encryption: none
+  servername: uk1.sky-vault.top
+  client-fingerprint: safari
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
+  port: 443
+  tls: true
   udp: true
   name: 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-- type: vless
-  encryption: none
-  client-fingerprint: qq
-  servername: uk1.sky-vault.top
-  server: 91.208.92.210
-  network: tcp
-  flow: xtls-rprx-vision
-  tls: true
   reality-opts:
     public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
     short-id: ae64c9b46bff174a
+- server: 91.208.92.210
+  flow: xtls-rprx-vision
+  type: vless
+  network: tcp
+  encryption: none
+  servername: uk1.sky-vault.top
+  client-fingerprint: qq
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
   port: 443
+  tls: true
   udp: true
   name: 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
-  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
-- type: vless
-  encryption: none
-  client-fingerprint: chrome
-  servername: www.amazon.com
-  server: 38.150.33.232
-  network: tcp
-  flow: xtls-rprx-vision
-  tls: true
   reality-opts:
-    public-key: dpG1tE9V93FM9IJeYC5-n_7RJxX7jOwrWLbQJgZpFFo
+    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
+    short-id: ae64c9b46bff174a
+- server: 38.150.33.232
+  flow: xtls-rprx-vision
+  type: vless
+  network: tcp
+  encryption: none
+  servername: www.amazon.com
+  client-fingerprint: chrome
+  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
   port: 12329
+  tls: true
   udp: true
   name: 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  uuid: 6faa980b-4a0f-4b4d-99f2-03b468da8541
-- type: vmess
-  server: v4.hdacd.com
-  alterId: 2
-  port: 30804
-  cipher: auto
-  udp: true
-  name: 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
-- type: vless
-  encryption: none
-  servername: q4x8.vpnpolar.online
-  server: 91.103.140.187
-  network: ws
-  tls: true
-  port: 443
+  reality-opts:
+    public-key: dpG1tE9V93FM9IJeYC5-n_7RJxX7jOwrWLbQJgZpFFo
+- server: 91.103.140.187
   ws-opts:
     path: /beeline
     headers:
       Host: q4x8.vpnpolar.online
+  type: vless
+  network: ws
+  encryption: none
+  servername: q4x8.vpnpolar.online
+  uuid: 698b212d-ca12-4794-8256-252a6e1b4533
+  port: 443
+  tls: true
   udp: true
   name: 🇺🇸 United States, Chicago | [BL]
-  uuid: 698b212d-ca12-4794-8256-252a6e1b4533
-- type: vmess
-  server: sbgfgov.vip6.wogacnmnagfwgov.com
+- server: sbgfgov.vip6.wogacnmnagfwgov.com
+  type: vmess
   alterId: 2
-  port: 11206
-  cipher: auto
-  udp: true
-  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
   uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-- type: vmess
-  server: v6.hdacd.com
-  alterId: 2
-  port: 30806
-  cipher: auto
+  port: 11206
   udp: true
-  name: 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484
+  cipher: auto
+  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
 - type: vless
-  name: 美国(yudou99.com 玉豆分享)
-  server: 157.228.128.59
+  name: 🇪🇪 Estonia, Tallinn | [BL]
+  server: 5.175.178.30
   port: 443
   udp: true
-  uuid: df53b6c2-8005-475c-9eb9-74e1be785dc8
+  uuid: 8fc806fa-350b-4548-937a-2bf35f7fe7eb
   encryption: none
   tls: true
-  servername: addons.mozilla.org
+  servername: ee1.sky-vault.top
   flow: xtls-rprx-vision
-  client-fingerprint: randomized
+  client-fingerprint: firefox
   reality-opts:
-    public-key: QnxkyscHouhaLDJHT47beyenVd4LHi62yfJIeRV01Ws
-    short-id: 06e00e7c
+    public-key: _KTsOFhGnC0W28ZqO8_FApozMp7tJ9cVBTLKLAA_OR0
+    short-id: ae64c9b46bff174a
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands | [*CIDR]
+  server: 196.240.125.5
+  port: 8443
+  udp: true
+  uuid: a3dcd62b-deb8-453a-8adf-efbc1464a527
+  encryption: none
+  tls: true
+  servername: api-v1-6ac60b55.vmagnum.win
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands | 🌐 | [*CIDR] [f63f32fb]
+  server: nl.alpheratzz.org
+  port: 8443
+  udp: true
+  uuid: a3dcd62b-deb8-453a-8adf-efbc1464a527
+  encryption: none
+  tls: true
+  servername: api-v1-6ac60b55.vmagnum.win
+  flow: xtls-rprx-vision
+  client-fingerprint: edge
+  network: tcp
+- type: vless
+  name: 🇳🇱 The Netherlands | 🌐 | [*CIDR] [c97dcd57]
+  server: nl.alpheratzz.org
+  port: 8443
+  udp: true
+  uuid: a3dcd62b-deb8-453a-8adf-efbc1464a527
+  encryption: none
+  tls: true
+  servername: api-v1-6ac60b55.vmagnum.win
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
   network: tcp
 - name: 🇺🇸 美国-广东专线 BGP 1
   type: trojan
@@ -319,11 +339,12 @@ proxy-groups:
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
   - 🇺🇸 United States, Chicago | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  - 美国(yudou99.com 玉豆分享)
+  - 🇪🇪 Estonia, Tallinn | [BL]
+  - 🇳🇱 The Netherlands | [*CIDR]
+  - 🇳🇱 The Netherlands | 🌐 | [*CIDR] [f63f32fb]
+  - 🇳🇱 The Netherlands | 🌐 | [*CIDR] [c97dcd57]
   default-selected: 🇭🇰 Hong Kong, Hong Kong | [BL]
 - name: Fine-Auto
   type: url-test
@@ -333,11 +354,12 @@ proxy-groups:
   - 🇬🇧 United Kingdom, Solihull | [BL] [3f20e63f]
   - 🇬🇧 United Kingdom, Solihull | [BL] [f593b511]
   - 🇺🇸 United States, Los Angeles (Central-Alameda) | [BL]
-  - 🇭🇰_HK_中国香港->🇮🇪_IE_爱尔兰
   - 🇺🇸 United States, Chicago | [BL]
   - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇭🇰_HK_中国香港->🇯🇵_JP_日本
-  - 美国(yudou99.com 玉豆分享)
+  - 🇪🇪 Estonia, Tallinn | [BL]
+  - 🇳🇱 The Netherlands | [*CIDR]
+  - 🇳🇱 The Netherlands | 🌐 | [*CIDR] [f63f32fb]
+  - 🇳🇱 The Netherlands | 🌐 | [*CIDR] [c97dcd57]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

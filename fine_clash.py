@@ -16,8 +16,9 @@ ALLOWED_FIELDS = {
 }
 URI_RE = re.compile(r"(?:(?:vmess|vless|trojan|ss)://[^\s\"'<>]+)")
 UA="Fine-Clash/1.0"
-CANDIDATE_NAMES=("sub","subscribe","subscription","clash","v2ray","proxy","nodes","free")
-EXTENSIONS=(".yaml",".yml",".txt",".conf",".base64")
+CANDIDATE_NAMES=("sub","subscribe","subscription","clash","v2ray","proxy","nodes","node","free","config","export","pool","link","links","readme")
+CANDIDATE_BASENAMES={"sub","subscribe","subscription","clash","v2ray","nodes","node","free"}
+EXTENSIONS=(".yaml",".yml",".txt",".conf",".base64",".list",".lst",".json",".json5",".md")
 ROOT=Path(__file__).resolve().parent
 
 # High-priority direct routes for WeChat/Tencent infrastructure. These sit above
@@ -289,21 +290,43 @@ def lifespan_days(row):
 
 
 def load_previous_published_nodes(path, max_nodes=5):
-    """Load a small continuity reserve from the previous published profile."""
-    try: limit=max(0,int(max_nodes))
-    except (TypeError,ValueError): limit=5
-    if limit<=0 or not path.is_file(): return []
-    try: nodes=parse_subscription(path.read_text(encoding="utf-8"))
-    except OSError: return []
+    """Load only the previous Fine pool, not Bitz/upstream nodes, as the continuity reserve."""
+    try:
+        limit=max(0,int(max_nodes))
+    except (TypeError,ValueError):
+        limit=5
+    if limit<=0 or not path.is_file():
+        return []
+    try:
+        text=path.read_text(encoding="utf-8")
+        parsed=parse_subscription(text)
+        raw=yaml.safe_load(text) or {}
+    except (OSError,yaml.YAMLError):
+        return []
+    fine_names=[]
+    for group in raw.get("proxy-groups",[]) if isinstance(raw,dict) else []:
+        if isinstance(group,dict) and group.get("name")=="Fine":
+            fine_names=[name for name in (group.get("proxies") or []) if isinstance(name,str)]
+            break
+    if fine_names:
+        by_name={node.get("name"):node for node in parsed if isinstance(node,dict)}
+        nodes=[by_name[name] for name in fine_names if name in by_name]
+    else:
+        nodes=parsed
     out=[]; seen=set()
     for node in nodes:
         fp=fingerprint(node)
-        if fp in seen or node.get("type") not in SUPPORTED: continue
+        if fp in seen or node.get("type") not in SUPPORTED:
+            continue
         server=node.get("server")
-        if not server or not resolved_server_is_safe(server) or not mihomo_node_is_testable(node): continue
-        seen.add(fp); out.append(node)
-        if len(out)>=limit: break
+        if not server or not resolved_server_is_safe(server) or not mihomo_node_is_testable(node):
+            continue
+        seen.add(fp)
+        out.append(node)
+        if len(out)>=limit:
+            break
     return out
+
 
 class GlobalpingShenzhenProbe:
     def __init__(self, cfg):
@@ -435,46 +458,110 @@ def source_path_sort_key(path):
 
 class GitHubDiscovery:
     def __init__(self,token,cfg):
-        self.cfg=cfg; self.session=requests.Session(); self.session.headers.update({"User-Agent":UA,"Accept":"application/vnd.github+json"})
-        if token: self.session.headers["Authorization"]=f"Bearer {token}"
+        self.cfg=cfg
+        self.session=requests.Session()
+        self.session.headers.update({"User-Agent":UA,"Accept":"application/vnd.github+json"})
+        if token:
+            self.session.headers["Authorization"]=f"Bearer {token}"
+        self.stats={"queries":0,"query_failures":0,"repos_found":0,"tree_failures":0,"source_fetch_failures":0,"sources_found":0}
+
     def _get_json(self,url,params=None):
-        response=self.session.get(url,params=params,timeout=20); response.raise_for_status(); return response.json()
+        response=self.session.get(url,params=params,timeout=20)
+        response.raise_for_status()
+        return response.json()
+
     def search_repositories(self):
-        cutoff=(datetime.now(timezone.utc)-timedelta(days=int(self.cfg["recent_days"]))).date().isoformat(); repos={}
+        cutoff=(datetime.now(timezone.utc)-timedelta(days=int(self.cfg["recent_days"]))).date().isoformat()
+        repos={}
         push_suffix=f" pushed:>={cutoff}" if self.cfg.get("require_recent_push",False) else ""
         for base_query in self.cfg["queries"]:
-            try: data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
-            except requests.RequestException: continue
+            self.stats["queries"]+=1
+            try:
+                data=self._get_json(
+                    "https://api.github.com/search/repositories",
+                    {"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":int(self.cfg["repositories_per_query"])}
+                )
+            except requests.RequestException as exc:
+                self.stats["query_failures"]+=1
+                print(f"source_search_skip: {type(exc).__name__}: {str(exc)[:180]}")
+                continue
             for item in data.get("items",[]):
-                if int(item.get("stargazers_count", 0)) >= int(self.cfg.get("min_stars", 30)):
+                if int(item.get("stargazers_count",0) or 0) >= int(self.cfg.get("min_stars",30)):
                     repos[item["full_name"]]=item
-        return sorted(repos.values(),key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),reverse=True)[:int(self.cfg["max_repositories"])]
+        self.stats["repos_found"]=len(repos)
+        return sorted(
+            repos.values(),
+            key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),
+            reverse=True
+        )[:int(self.cfg["max_repositories"])]
+
     def candidate_files(self,repo):
         owner,name=repo["full_name"].split("/",1)
-        try: tree=self._get_json(f"https://api.github.com/repos/{owner}/{name}/git/trees/{repo['default_branch']}",{"recursive":"1"})
-        except requests.RequestException: return []
+        try:
+            tree=self._get_json(
+                f"https://api.github.com/repos/{owner}/{name}/git/trees/{repo['default_branch']}",
+                {"recursive":"1"}
+            )
+        except requests.RequestException as exc:
+            self.stats["tree_failures"]+=1
+            print(f"source_tree_skip: {repo['full_name']}: {type(exc).__name__}")
+            return []
         paths=[]
         for item in tree.get("tree",[]):
-            if item.get("type")!="blob": continue
-            path=item.get("path",""); low=path.lower()
-            if low.endswith(EXTENSIONS) and any(key in low for key in CANDIDATE_NAMES): paths.append(path)
+            if item.get("type")!="blob":
+                continue
+            path=item.get("path","")
+            low=path.lower()
+            basename=low.rsplit("/",1)[-1]
+            extension_match=low.endswith(EXTENSIONS) and any(key in low for key in CANDIDATE_NAMES)
+            basename_match=basename in CANDIDATE_BASENAMES
+            if extension_match or basename_match:
+                paths.append(path)
         paths.sort(key=lambda p: source_path_sort_key(p), reverse=True)
         return paths[:int(self.cfg["max_candidate_files_per_repo"])]
+
     def fetch_and_validate(self,repo,path):
-        owner,name=repo["full_name"].split("/",1); raw=f"https://raw.githubusercontent.com/{owner}/{name}/{quote(repo['default_branch'],safe='')}/{quote(path,safe='/')}"
+        owner,name=repo["full_name"].split("/",1)
+        raw=f"https://raw.githubusercontent.com/{owner}/{name}/{quote(repo['default_branch'],safe='')}/{quote(path,safe='/')}"
         try:
-            response=self.session.get(raw,timeout=20,allow_redirects=True); response.raise_for_status()
-            if len(response.content)>int(self.cfg["max_source_bytes"]): return None
-        except requests.RequestException: return None
+            response=self.session.get(raw,timeout=20,allow_redirects=True)
+            response.raise_for_status()
+            if len(response.content)>int(self.cfg["max_source_bytes"]):
+                return None
+        except requests.RequestException:
+            self.stats["source_fetch_failures"]+=1
+            return None
         nodes=parse_subscription(response.text)
-        if len(nodes)<int(self.cfg["min_nodes_per_source"]): return None
-        return {"url":raw,"repo":repo["full_name"],"path":path,"stars":repo.get("stargazers_count",0),"forks":repo.get("forks_count",0),"pushed_at":repo.get("pushed_at"),"nodes":len(nodes)}
+        if len(nodes)<int(self.cfg["min_nodes_per_source"]):
+            return None
+        return {
+            "url":raw,
+            "repo":repo["full_name"],
+            "path":path,
+            "stars":repo.get("stargazers_count",0),
+            "forks":repo.get("forks_count",0),
+            "pushed_at":repo.get("pushed_at"),
+            "nodes":len(nodes)
+        }
+
     def discover(self):
-        out=[]; seen=set()
+        out=[]
+        seen=set()
         for repo in self.search_repositories():
             for path in self.candidate_files(repo):
                 source=self.fetch_and_validate(repo,path)
-                if source and source["url"] not in seen: seen.add(source["url"]); out.append(source)
+                if source and source["url"] not in seen:
+                    seen.add(source["url"])
+                    out.append(source)
+        self.stats["sources_found"]=len(out)
+        print(
+            "source_discovery: queries=%d query_failures=%d repos=%d tree_failures=%d "
+            "source_fetch_failures=%d sources=%d"
+            % (
+                self.stats["queries"],self.stats["query_failures"],self.stats["repos_found"],
+                self.stats["tree_failures"],self.stats["source_fetch_failures"],self.stats["sources_found"]
+            )
+        )
         return out
 
 MIHOMO_GEO_FILES = ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
@@ -877,16 +964,18 @@ def candidate_gate_passes(item, gate, clean, min_clean):
 
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
-    live=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
+    discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
+    live=discovery.discover()
     cached=[]
     if source_path.is_file():
         try:
             cached=json.loads(source_path.read_text(encoding="utf-8"))
             if not isinstance(cached,list): cached=[]
         except Exception: cached=[]
-    # ★ 2026-10-04：始终合并缓存源（data/sources.json）。匿名 GitHub API 限额时 live 可能很少，
-    #   而 data/sources.json 由 discover_broad.py 预先用 raw 路径绕过 tree 限流挖出大量含订阅的仓库。
-    #   合并策略：live 优先，cached 中 url 不重复的追加，确保扩源成果一定进候选池。
+    # Keep the previous validated source cache as a continuity fallback. Live discovery
+    # remains authoritative and is merged ahead of cached entries.
+    if not live and cached:
+        print("WARNING: live source discovery returned 0 sources; using cached source pool.")
     seen={s.get("url") for s in live if isinstance(s,dict)}
     sources=list(live)
     min_stars=int(rules["sources"].get("min_stars",30))
@@ -991,10 +1080,18 @@ def run():
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
-    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"previous_profile_candidates":len(previous_profile_nodes),"results":[]}
+    report={
+        "generated_at":datetime.now(timezone.utc).isoformat(),
+        "sources":len(sources),
+        "source_discovery":discovery.stats,
+        "nodes_discovered":len(nodes),
+        "previous_profile_candidates":len(previous_profile_nodes),
+        "results":[]
+    }
     report_lookup={}
     candidate_records=[]
-    all_candidate_fps=[]
+    clean_floor_passed=0
+    candidate_gate_passed=0
 
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
@@ -1009,8 +1106,10 @@ def run():
         #     导致 selected=0 永远不发布。改「通外网即候选」才能保证池子真正长大。
         #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
         #   - gemini_and_play：原双过严格档（保留向后兼容）。
-        gate=str(rules["nodes"].get("candidate_gate","gemini_or_play")).lower()
+        gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
         min_clean=float(rules["nodes"].get("min_clean_score",0))
+        if clean >= min_clean:
+            clean_floor_passed += 1
         # score_threshold is used for history/pass-day statistics, not as a hard
         # candidate gate. The candidate gate itself is explicit and testable.
         candidate=candidate_gate_passes(item,gate,clean,min_clean)
@@ -1021,13 +1120,17 @@ def run():
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
         if candidate:
-            all_candidate_fps.append(fp)
+            candidate_gate_passed += 1
             if shenzhen_cfg.get("enabled",False):
                 cached=cached_shenzhen_result(row,shenzhen_cfg)
                 candidate_records.append({"fp":fp,"node":node,"result":cached})
             else:
                 selected.append(node)
 
+    report["clean_floor_passed"]=clean_floor_passed
+    report["candidate_gate_passed"]=candidate_gate_passed
+    report["candidate_gate"]=gate
+    report["candidate_clean_floor"]=min_clean
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
@@ -1046,6 +1149,11 @@ def run():
         if shenzhen_passes(result,shenzhen_cfg):
             selected.append(node)
 
+    report["shenzhen_passed"]=len(selected)
+    report["shenzhen_status_counts"]={}
+    for result in report["results"]:
+        status=result.get("shenzhen_status","unknown")
+        report["shenzhen_status_counts"][status]=report["shenzhen_status_counts"].get(status,0)+1
     # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
@@ -1064,6 +1172,9 @@ def run():
     retained_previous_ranked=retained_previous[:max_final]
     fresh_ranked=rank_candidates(fresh_selected,limit=max(0,max_final-len(retained_previous_ranked)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)),min_final_score=int(rules["nodes"].get("min_final_score",0)))
     ranked=retained_previous_ranked+fresh_ranked
+    report["ranking_input"]=len(fresh_selected)
+    report["ranking_output"]=len(fresh_ranked)
+    report["ranking_dropped"]=max(0,len(fresh_selected)-len(fresh_ranked))
     # ★ 粘性优质节点（2026-10-06）：订阅更新时保持当前优秀节点为首选，
     #   仅当其深圳 PING>=keep_ping_ms 或掉包率>keep_loss_pct 时才让位给新优质节点。
     sticky_cfg=rules.get("sticky", {}) or {}

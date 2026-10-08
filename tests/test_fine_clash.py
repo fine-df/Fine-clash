@@ -201,6 +201,57 @@ def test_credential_bearing_url_is_allowed_once_accepted(monkeypatch):
     assert cfg["rules"][-1] == "MATCH,Bitz"
 
 
+
+
+def test_load_previous_published_nodes_ignores_bitz_group(tmp_path, monkeypatch):
+    profile = tmp_path / "live_clash.yaml"
+    profile.write_text(
+        "proxies:\n"
+        "  - name: fine-1\n"
+        "    type: trojan\n"
+        "    server: fine.example\n"
+        "    port: 443\n"
+        "    password: fine\n"
+        "    tls: true\n"
+        "  - name: bitz-1\n"
+        "    type: trojan\n"
+        "    server: bitz.example\n"
+        "    port: 443\n"
+        "    password: bitz\n"
+        "    tls: true\n"
+        "proxy-groups:\n"
+        "  - name: Fine\n"
+        "    type: select\n"
+        "    proxies: [Fine-Auto, DIRECT, fine-1]\n"
+        "  - name: Bitz\n"
+        "    type: select\n"
+        "    proxies: [Bitz-Auto, DIRECT, bitz-1]\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
+    nodes = fc.load_previous_published_nodes(profile, max_nodes=5)
+    assert [node["name"] for node in nodes] == ["fine-1"]
+
+def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
+    discovery = fc.GitHubDiscovery(None, {
+        "queries": [], "recent_days": 30, "require_recent_push": True,
+        "repositories_per_query": 20, "max_repositories": 20,
+        "max_candidate_files_per_repo": 8,
+    })
+    monkeypatch.setattr(
+        discovery,
+        "_get_json",
+        lambda url, params=None: {"tree": [
+            {"type": "blob", "path": "sub"},
+            {"type": "blob", "path": "README.md"},
+            {"type": "blob", "path": "notes.log"},
+        ]},
+    )
+    files = discovery.candidate_files({"full_name":"x/y","default_branch":"main"})
+    assert "sub" in files
+    assert "README.md" in files
+    assert "notes.log" not in files
+
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
     profile.write_text(
@@ -231,8 +282,12 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
     assert [node["name"] for node in nodes] == ["old-1", "old-2"]
 
 
-def test_shenzhen_quality_gates_are_tightened():
+def test_pool_build_gates_are_expanded_without_relaxing_shenzhen():
     cfg = fc.load_rules()
+    assert cfg["nodes"]["candidate_gate"] == "reachable"
+    assert cfg["nodes"]["min_clean_score"] == 60
+    assert cfg["nodes"]["max_per_server"] == 3
+    assert cfg["nodes"]["max_per_org"] == 6
     assert cfg["shenzhen_probe"]["reject_above_ms"] == 350
     assert cfg["shenzhen_probe"]["reject_loss_pct"] == 10
     assert cfg["retention"]["enabled"] is True

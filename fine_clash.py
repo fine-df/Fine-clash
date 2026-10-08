@@ -1099,13 +1099,11 @@ def run():
         life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
         row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]},score_threshold=rules["nodes"].get("score_threshold",70))
-        # ★ 2026-10-04 策略放宽（池子做大的核心）：
-        #   candidate_gate 控制「候选」门槛，分数(score)只用于排序/多样性，不再卡入选。
-        #   - reachable（推荐）：代理能通外网即可（google204/gemini/play 任一可达）。
-        #     新挖到的免费节点无历史(lifespan/stability=0)，硬卡 70 分会把仅过单探针的活节点全刷掉，
-        #     导致 selected=0 永远不发布。改「通外网即候选」才能保证池子真正长大。
-        #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
-        #   - gemini_and_play：原双过严格档（保留向后兼容）。
+        # candidate_gate 控制「候选」门槛；score_threshold 仅用于历史稳定性统计，
+        # 不再作为候选硬门槛。
+        #   - reachable：Google 204 / Gemini / Play 任一可达，并满足洁净度下限。
+        #   - gemini_or_play：Gemini 或 Play 任一通过，并满足洁净度下限。
+        #   - gemini_and_play：Gemini 与 Play 均通过，并满足洁净度下限。
         gate=str(rules["nodes"].get("candidate_gate","reachable")).lower()
         min_clean=float(rules["nodes"].get("min_clean_score",0))
         if clean >= min_clean:

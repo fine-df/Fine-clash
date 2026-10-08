@@ -235,7 +235,7 @@ def build_proxy_groups(fine_names, bitz_names=None):
     """Build symmetric Fine / Bitz groups, each usable manually and via Auto.
 
     2026-10-07 调整：
-      - 恢复 Bitz 组（付费上游），其节点来自 proxy-provider `BitzPool`。
+      - 恢复 Bitz 组（付费上游），节点在构建期直接展开进最终 proxies。
       - 两组结构对称：`<组>-Auto`(url-test 自动测速选优) + DIRECT(强制直连)
         + 组内具体节点，全部可手动点选。
       - Fine 保持不变，仍是 validated-free-pool；大流量规则仍指向 Fine。

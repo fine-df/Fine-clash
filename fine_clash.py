@@ -39,6 +39,15 @@ WECHAT_DIRECT_RULES = [
     "DOMAIN-SUFFIX,tencent-cloud.com,DIRECT",
 ]
 
+# WPS Office / Kingsoft Docs direct routes. Explicitly cover service and CDN domains.
+WPS_DIRECT_RULES = [
+    "DOMAIN-SUFFIX,wps.cn,DIRECT",
+    "DOMAIN-SUFFIX,wps.com,DIRECT",
+    "DOMAIN-SUFFIX,kdocs.cn,DIRECT",
+    "DOMAIN-SUFFIX,wpscdn.cn,DIRECT",
+    "DOMAIN-SUFFIX,wpscdn.com,DIRECT",
+]
+
 # Xiaomi/Mi Home direct rules. Explicit domain rules take precedence over GEOIP so
 # Xiaomi IoT control/cloud traffic is not accidentally sent through the overseas proxy.
 XIAOMI_DIRECT_RULES = [
@@ -579,9 +588,8 @@ def prepare_mihomo_geodata(work_dir, geo_dir):
 
 
 class MihomoTester:
-    def __init__(self,binary,cfg,port_offset=0):
+    def __init__(self,binary,cfg):
         self.binary=binary; self.cfg=cfg; self.proc=None; self.tmp=None; self.log_handle=None; self.session=requests.Session()
-        self.port_offset=int(port_offset)
         # 端口改由 start() 运行时经 OS 分配空闲端口（见 _alloc_port），
         # 避免 test_nodes_parallel 多 worker 固定 idx*10 端口与机器上残留/其它 mihomo 冲突。
         self.proxy_port=None
@@ -741,7 +749,7 @@ def test_nodes_parallel(binary,nodes,cfg,checks):
         return MihomoTester(binary,cfg).test_nodes(nodes,checks)
     batches=[nodes[i::workers] for i in range(workers) if nodes[i::workers]]
     with ThreadPoolExecutor(max_workers=workers) as executor:
-        futures=[executor.submit(MihomoTester(binary,cfg,port_offset=idx*10).test_nodes,batch,checks) for idx,batch in enumerate(batches)]
+        futures=[executor.submit(MihomoTester(binary,cfg).test_nodes,batch,checks) for idx,batch in enumerate(batches)]
         results=[]
         for future in futures:
             results.extend(future.result())
@@ -788,7 +796,7 @@ def build_outputs(nodes, output_rules):
     nodes=[dict(node) for node in nodes if node.get("network","tcp") in COMPATIBLE_NETWORKS]
     nodes=unique_node_names(nodes)
     names=[node["name"] for node in nodes]
-    route_rules=LOCAL_IOT_DIRECT_RULES+WECHAT_DIRECT_RULES+XIAOMI_DIRECT_RULES+["GEOIP,CN,DIRECT","MATCH,PROXY"]
+    route_rules=LOCAL_IOT_DIRECT_RULES+WPS_DIRECT_RULES+WECHAT_DIRECT_RULES+XIAOMI_DIRECT_RULES+["GEOIP,CN,DIRECT","MATCH,PROXY"]
     dns_config={
         "enable":True,
         "ipv6":False,
@@ -799,6 +807,11 @@ def build_outputs(nodes, output_rules):
         "nameserver-policy":{
             "+.qq.com":["223.5.5.5","119.29.29.29"],
             "+.weixin.qq.com":["223.5.5.5","119.29.29.29"],
+            "+.wps.cn":["223.5.5.5","119.29.29.29"],
+            "+.wps.com":["223.5.5.5","119.29.29.29"],
+            "+.kdocs.cn":["223.5.5.5","119.29.29.29"],
+            "+.wpscdn.cn":["223.5.5.5","119.29.29.29"],
+            "+.wpscdn.com":["223.5.5.5","119.29.29.29"],
             "+.mi.com":["223.5.5.5","119.29.29.29"],
             "+.xiaomi.com":["223.5.5.5","119.29.29.29"],
             "+.miwifi.com":["223.5.5.5","119.29.29.29"],
@@ -1132,10 +1145,8 @@ def run():
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
-    fp_node={}
     for rec in candidate_records:
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
-        fp_node[fp]=node
         row=history[fp]
         result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
         if cached is None:

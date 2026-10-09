@@ -12,7 +12,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 from urllib.request import Request, urlopen
 import yaml
-from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
+from fine_clash import WPS_DIRECT_RULES, fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
@@ -281,7 +281,7 @@ def build_config(fine_nodes):
     # Every other proxy-bound destination falls through to Bitz. When Bitz is
     # not configured the profile must never lose its fallback, so MATCH stays
     # on Fine instead of pointing at a group that does not exist.
-    rules=LOCAL_IOT_DIRECT+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT"]
+    rules=LOCAL_IOT_DIRECT+WPS_DIRECT_RULES+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT"]
     rules.append("MATCH,Bitz" if bitz_enabled else "MATCH,Fine")
     config={
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
@@ -294,7 +294,7 @@ def build_config(fine_nodes):
     config["proxy-groups"]=build_proxy_groups(fine_names,bitz_names)
     config["tun"]={"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True}
     config["dns"]={"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
-               "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"]},
+               "nameserver-policy":{"+.wps.cn":["223.5.5.5","119.29.29.29"],"+.wps.com":["223.5.5.5","119.29.29.29"],"+.kdocs.cn":["223.5.5.5","119.29.29.29"],"+.wpscdn.cn":["223.5.5.5","119.29.29.29"],"+.wpscdn.com":["223.5.5.5","119.29.29.29"],"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"]},
                "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],"fallback-filter":{"geoip":True,"geoip-code":"CN"}}
     config["rules"]=rules
     return config

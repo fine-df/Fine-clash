@@ -97,6 +97,11 @@ jobs:
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,wps.cn,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,wps.com,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,kdocs.cn,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,wpscdn.cn,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' live_clash.yaml
           grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
           grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml

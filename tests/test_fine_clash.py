@@ -55,6 +55,11 @@ def test_final_config_is_fine_only(monkeypatch):
     assert "global-ua" not in cfg
     assert cfg["rules"][-1] == "MATCH,Fine"
     assert {g["name"] for g in cfg["proxy-groups"]} == {"Fine", "Fine-Auto"}
+    for rule in bf.WPS_DIRECT_RULES:
+        assert rule in cfg["rules"]
+    assert cfg["rules"].index("DOMAIN-SUFFIX,wps.cn,DIRECT") < cfg["rules"].index("DOMAIN-SUFFIX,cn,DIRECT")
+    for domain in ("+.wps.cn", "+.wps.com", "+.kdocs.cn", "+.wpscdn.cn", "+.wpscdn.com"):
+        assert domain in cfg["dns"]["nameserver-policy"]
 
 
 def test_final_config_leaves_mihomo_default_ua_untouched_without_bitz(monkeypatch):
@@ -492,6 +497,8 @@ def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
     # Local LAN/direct rules intentionally come before application-specific
     # WeChat/Xiaomi rules so multicast/link-local traffic is not intercepted.
     assert routes[:len(fc.LOCAL_IOT_DIRECT_RULES)] == fc.LOCAL_IOT_DIRECT_RULES
+    for rule in fc.WPS_DIRECT_RULES:
+        assert rule in routes
     for rule in fc.WECHAT_DIRECT_RULES:
         assert rule in routes
     assert "DOMAIN-SUFFIX,qpic.cn,DIRECT" in routes
@@ -499,6 +506,8 @@ def test_output_builder_has_wechat_direct_rules(tmp_path: Path):
     assert "GEOSITE,CN,DIRECT" not in routes
     assert "DOMAIN-SUFFIX,mi.com,DIRECT" in routes
     assert "DOMAIN-SUFFIX,xiaomi.com,DIRECT" in routes
+    for domain in ("+.wps.cn", "+.wps.com", "+.kdocs.cn", "+.wpscdn.cn", "+.wpscdn.com"):
+        assert domain in built["dns"]["nameserver-policy"]
     assert routes[-1] == "MATCH,PROXY"
 
 

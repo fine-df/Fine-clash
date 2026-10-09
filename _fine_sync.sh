@@ -127,8 +127,7 @@ rm -f "$BACKUP"
 if [ -f "$TPL" ]; then
   cp "$TPL" "$BACKUP" || { echo "sync_fail_backup_template"; rm -f "$TMP"; exit 1; }
 fi
-/data/clash/start.sh stop >/dev/null 2>&1
-rm -f "$TMP"
+cp "$TMP" "$TPL" || { echo "sync_fail_write_template"; rm -f "$TMP" "$BACKUP"; exit 1; }
 /data/clash/start.sh stop >/dev/null 2>&1
 sleep 5
 /data/clash/start.sh start >/dev/null 2>&1
@@ -142,8 +141,9 @@ if ! runtime_profile_ok; then
     /data/clash/start.sh start >/dev/null 2>&1
   fi
   rm -f "$BACKUP"
+  rm -f "$TMP" "$BACKUP"
   exit 1
 fi
 cp "$TMP" "$DST" || { echo "sync_fail_save_checkpoint"; rm -f "$BACKUP"; exit 1; }
-rm -f "$BACKUP"
+rm -f "$TMP" "$BACKUP"
 echo "sync_updated_$(date '+%m-%d %H:%M')"

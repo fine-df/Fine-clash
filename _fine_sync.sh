@@ -33,6 +33,7 @@ grep -q 'DOMAIN-SUFFIX,qq.com,DIRECT' "$TMP" || { echo "sync_fail_no_qq_rule"; r
 grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' "$TMP" || { echo "sync_fail_no_xiaomi_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,wps.cn,DIRECT' "$TMP" || { echo "sync_fail_no_wps_cn_direct"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,wps.com,DIRECT' "$TMP" || { echo "sync_fail_no_wps_com_direct"; rm -f "$TMP"; exit 1; }
+grep -q 'DOMAIN-SUFFIX,wps365.com,DIRECT' "$TMP" || { echo "sync_fail_no_wps365_com_direct"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,kdocs.cn,DIRECT' "$TMP" || { echo "sync_fail_no_kdocs_direct"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,wpscdn.cn,DIRECT' "$TMP" || { echo "sync_fail_no_wpscdn_cn_direct"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' "$TMP" || { echo "sync_fail_no_wpscdn_com_direct"; rm -f "$TMP"; exit 1; }
@@ -94,6 +95,7 @@ runtime_profile_ok() {
   grep -q '^- name: Fine-Auto$' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wps.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wps.com,DIRECT' "$ACTIVE" || return 1
+  grep -Fq 'DOMAIN-SUFFIX,wps365.com,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,kdocs.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wpscdn.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' "$ACTIVE" || return 1
@@ -140,10 +142,9 @@ if ! runtime_profile_ok; then
     sleep 5
     /data/clash/start.sh start >/dev/null 2>&1
   fi
-  rm -f "$BACKUP"
   rm -f "$TMP" "$BACKUP"
   exit 1
 fi
-cp "$TMP" "$DST" || { echo "sync_fail_save_checkpoint"; rm -f "$BACKUP"; exit 1; }
+cp "$TMP" "$DST" || { echo "sync_fail_save_checkpoint"; rm -f "$TMP" "$BACKUP"; exit 1; }
 rm -f "$TMP" "$BACKUP"
 echo "sync_updated_$(date '+%m-%d %H:%M')"

@@ -99,6 +99,7 @@ jobs:
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,wps.cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,wps.com,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,wps365.com,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,kdocs.cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,wpscdn.cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' live_clash.yaml

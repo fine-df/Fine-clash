@@ -58,7 +58,7 @@ def test_final_config_is_fine_only(monkeypatch):
     for rule in bf.WPS_DIRECT_RULES:
         assert rule in cfg["rules"]
     assert cfg["rules"].index("DOMAIN-SUFFIX,wps.cn,DIRECT") < cfg["rules"].index("DOMAIN-SUFFIX,cn,DIRECT")
-    for domain in ("+.wps.cn", "+.wps.com", "+.kdocs.cn", "+.wpscdn.cn", "+.wpscdn.com"):
+    for domain in ("+.wps.cn", "+.wps.com", "+.wps365.com", "+.kdocs.cn", "+.wpscdn.cn", "+.wpscdn.com"):
         assert domain in cfg["dns"]["nameserver-policy"]
 
 

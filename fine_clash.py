@@ -43,6 +43,7 @@ WECHAT_DIRECT_RULES = [
 WPS_DIRECT_RULES = [
     "DOMAIN-SUFFIX,wps.cn,DIRECT",
     "DOMAIN-SUFFIX,wps.com,DIRECT",
+    "DOMAIN-SUFFIX,wps365.com,DIRECT",
     "DOMAIN-SUFFIX,kdocs.cn,DIRECT",
     "DOMAIN-SUFFIX,wpscdn.cn,DIRECT",
     "DOMAIN-SUFFIX,wpscdn.com,DIRECT",
@@ -809,6 +810,7 @@ def build_outputs(nodes, output_rules):
             "+.weixin.qq.com":["223.5.5.5","119.29.29.29"],
             "+.wps.cn":["223.5.5.5","119.29.29.29"],
             "+.wps.com":["223.5.5.5","119.29.29.29"],
+            "+.wps365.com":["223.5.5.5","119.29.29.29"],
             "+.kdocs.cn":["223.5.5.5","119.29.29.29"],
             "+.wpscdn.cn":["223.5.5.5","119.29.29.29"],
             "+.wpscdn.com":["223.5.5.5","119.29.29.29"],

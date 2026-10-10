@@ -1134,6 +1134,22 @@ def round_robin_fingerprints(source_buckets):
     return out
 
 
+def parse_curated_source_text(raw):
+    """Parse YAML/URI curated candidates first; fall back to a base64 subscription."""
+    if not raw:
+        return []
+    nodes=parse_subscription(raw)
+    if nodes:
+        return nodes
+    decoded=_decode_b64(raw)
+    if not decoded:
+        return []
+    try:
+        return parse_subscription(decoded.decode("utf-8","ignore"))
+    except (UnicodeError,ValueError):
+        return []
+
+
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
@@ -1241,13 +1257,8 @@ def run():
         if cf.is_file():
             try:
                 raw=cf.read_text(encoding="utf-8").strip()
-                # base64（允许换行）或明文订阅文本都兼容
-                decoded=None
-                try: decoded=base64.b64decode(raw.replace("\n","").strip()+"="*(-len(raw.replace("\n","").strip())%4)).decode("utf-8","ignore")
-                except Exception: decoded=None
-                text=decoded if decoded else raw
                 cnt=0
-                for node in parse_subscription(text):
+                for node in parse_curated_source_text(raw):
                     if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]):
                         if not mihomo_node_is_testable(node):
                             continue

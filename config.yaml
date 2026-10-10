@@ -39,8 +39,8 @@ sources:
     - 'residential proxy in:name,description,readme archived:false stars:>=50'
 # 非 GIT 免费高质量订阅源可在此扩展（验证稳定性后补充）；禁止付费机场。
 direct_urls: []
-# 手工筛选的稳定节点文件（免费源）；禁止付费。
-curated_nodes_file: ''
+# 历史上曾通过完整质量门槛的 Fine 节点作为候选种子；每轮仍重新实测，禁止包含付费节点。
+curated_nodes_file: 'data/known_good_fine_nodes.yaml'
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200

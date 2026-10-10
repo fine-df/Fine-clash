@@ -659,7 +659,7 @@ class GitHubDiscovery:
             )
         )
         return out
- ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
+MIHOMO_GEO_FILES = ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
 
 def prepare_mihomo_geodata(work_dir, geo_dir):
     work_dir=Path(work_dir)

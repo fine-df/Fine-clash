@@ -961,6 +961,19 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
         if len(picked)>=limit: break
     return picked
 
+
+def rank_final_nodes(candidates, metadata, cfg):
+    """Rank all passing candidates; previous-pool membership never bypasses caps."""
+    return rank_candidates(
+        candidates,
+        limit=int(cfg.get("max_final_nodes", 20)),
+        metadata=metadata,
+        max_per_server=int(cfg.get("max_per_server", 2)),
+        max_per_org=int(cfg.get("max_per_org", 3)),
+        min_final_score=int(cfg.get("min_final_score", 0)),
+    )
+
+
 def candidate_gate_passes(item, gate, clean, min_clean):
     """Evaluate the configured candidate gate against endpoint reachability and cleanliness."""
     gemini=bool(item.get("gemini"))
@@ -1174,18 +1187,12 @@ def run():
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
         ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
-    max_final=int(rules["nodes"].get("max_final_nodes",20))
-    # Reserve slots for previously published nodes that still pass all current gates.
-    selected_fps={fingerprint(x) for x in selected}
-    retained_previous=[n for n in previous_profile_nodes if fingerprint(n) in selected_fps][:min(len(previous_profile_nodes),max_final)]
-    retained_fps={fingerprint(n) for n in retained_previous}
-    fresh_selected=[n for n in selected if fingerprint(n) not in retained_fps]
-    retained_previous_ranked=retained_previous[:max_final]
-    fresh_ranked=rank_candidates(fresh_selected,limit=max(0,max_final-len(retained_previous_ranked)),metadata=ranking_meta,max_per_server=int(rules["nodes"].get("max_per_server",2)),max_per_org=int(rules["nodes"].get("max_per_org",3)),min_final_score=int(rules["nodes"].get("min_final_score",0)))
-    ranked=retained_previous_ranked+fresh_ranked
-    report["ranking_input"]=len(fresh_selected)
-    report["ranking_output"]=len(fresh_ranked)
-    report["ranking_dropped"]=max(0,len(fresh_selected)-len(fresh_ranked))
+    # Rank the entire currently passing pool. Previous nodes were already prioritized
+    # for re-testing above; they must not reserve final slots or bypass diversity caps.
+    ranked=rank_final_nodes(selected, ranking_meta, rules["nodes"])
+    report["ranking_input"]=len(selected)
+    report["ranking_output"]=len(ranked)
+    report["ranking_dropped"]=max(0,len(selected)-len(ranked))
     # ★ 粘性优质节点（2026-10-06）：订阅更新时保持当前优秀节点为首选，
     #   仅当其深圳 PING>=keep_ping_ms 或掉包率>keep_loss_pct 时才让位给新优质节点。
     sticky_cfg=rules.get("sticky", {}) or {}

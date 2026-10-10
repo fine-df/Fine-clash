@@ -293,8 +293,9 @@ def test_pool_build_gates_are_expanded_without_relaxing_shenzhen():
     assert cfg["nodes"]["min_clean_score"] == 60
     assert cfg["nodes"]["max_per_server"] == 3
     assert cfg["nodes"]["max_per_org"] == 6
-    assert cfg["shenzhen_probe"]["reject_above_ms"] == 350
-    assert cfg["shenzhen_probe"]["reject_loss_pct"] == 10
+    assert cfg["shenzhen_probe"]["reject_above_ms"] == 250
+    assert cfg["shenzhen_probe"]["reject_loss_pct"] == 0
+    assert cfg["shenzhen_probe"]["cache_days"] == 0.25
     assert cfg["retention"]["enabled"] is True
     assert cfg["retention"]["max_previous_nodes"] == 20
 
@@ -624,6 +625,46 @@ def test_rank_candidates_dedups_fingerprint():
     meta = {fc.fingerprint(node): _rank_meta(node, score=88)}
     ranked = fc.rank_candidates(nodes, metadata=meta)
     assert len(ranked) == 1
+
+
+def test_rank_final_nodes_applies_diversity_to_previous_and_new_candidates():
+    # Formerly retained previous nodes filled final slots before rank_candidates
+    # ran, so same-server duplicates bypassed the diversity cap.
+    old_nodes = [
+        _rank_node(f"old-{i}", "old.example", password=f"old-{i}")
+        for i in range(5)
+    ]
+    fresh_nodes = [
+        _rank_node("fresh-a", "fresh-a.example"),
+        _rank_node("fresh-b", "fresh-b.example"),
+        _rank_node("fresh-c", "fresh-c.example"),
+    ]
+    candidates = old_nodes + fresh_nodes
+    metadata = {
+        fc.fingerprint(node): _rank_meta(node, score=96 - i, ping=80 + i)
+        for i, node in enumerate(old_nodes)
+    }
+    metadata.update({
+        fc.fingerprint(node): _rank_meta(node, score=90 - i, ping=60 + i)
+        for i, node in enumerate(fresh_nodes)
+    })
+
+    ranked = fc.rank_final_nodes(
+        candidates,
+        metadata,
+        {
+            "max_final_nodes": 4,
+            "max_per_server": 2,
+            "max_per_org": 10,
+            "min_final_score": 55,
+        },
+    )
+
+    servers = [node["server"] for node in ranked]
+    assert len(ranked) == 4
+    assert servers.count("old.example") == 2
+    assert "fresh-a.example" in servers
+    assert "fresh-b.example" in servers
 
 
 def test_rank_candidates_caps_same_server():

@@ -65,9 +65,11 @@ shenzhen_probe:
   city: 'Shenzhen'
   protocol: 'TCP'
   packets: 4
-  reject_above_ms: 350
-  reject_loss_pct: 10
-  cache_days: 1
+  # Quality gate: reject slow free nodes rather than filling the pool with marginal results.
+  reject_above_ms: 250
+  reject_loss_pct: 0
+  # Cache for 6 hours; the workflow runs every 4 hours so stale results are refreshed quickly.
+  cache_days: 0.25
   # workers 6->12（2026-10-06 C 方向）：提高探测并行度，减少 pending 积压，
   # 降低因 CI 时段内未测完导致的 not-tested/timeout 失真。
   workers: 12

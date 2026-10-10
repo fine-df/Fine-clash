@@ -5,8 +5,8 @@
     "path": "sub/Clash.yml",
     "stars": 323,
     "forks": 18,
-    "pushed_at": "2026-10-10T17:05:08Z",
-    "nodes": 790
+    "pushed_at": "2026-10-10T19:55:08Z",
+    "nodes": 627
   },
   {
     "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml",
@@ -14,8 +14,8 @@
     "path": "light/clash.yaml",
     "stars": 714,
     "forks": 50,
-    "pushed_at": "2026-10-10T14:52:15Z",
-    "nodes": 3170
+    "pushed_at": "2026-10-10T19:52:18Z",
+    "nodes": 3159
   },
   {
     "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml",
@@ -23,8 +23,8 @@
     "path": "fast/clash.yaml",
     "stars": 714,
     "forks": 50,
-    "pushed_at": "2026-10-10T14:52:15Z",
-    "nodes": 575
+    "pushed_at": "2026-10-10T19:52:18Z",
+    "nodes": 537
   },
   {
     "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml",
@@ -32,17 +32,17 @@
     "path": "sub/sub.yml",
     "stars": 323,
     "forks": 18,
-    "pushed_at": "2026-10-10T17:05:08Z",
-    "nodes": 1026
+    "pushed_at": "2026-10-10T19:55:08Z",
+    "nodes": 807
   },
   {
-    "url": "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/master/README.md",
-    "repo": "WLget/V2Ray_configs_64",
-    "path": "README.md",
-    "stars": 308,
-    "forks": 26,
-    "pushed_at": "2026-10-10T17:06:34Z",
-    "nodes": 3
+    "url": "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/sub",
+    "repo": "free-nodes/v2rayfree",
+    "path": "sub",
+    "stars": 14130,
+    "forks": 1000,
+    "pushed_at": "2026-10-10T19:53:54Z",
+    "nodes": 468
   },
   {
     "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/Sub3.txt",
@@ -54,6 +54,24 @@
     "nodes": 116
   },
   {
+    "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml",
+    "repo": "hello-world-1989/cn-news",
+    "path": "clash.yaml",
+    "stars": 608,
+    "forks": 22,
+    "pushed_at": "2026-10-10T19:54:12Z",
+    "nodes": 2
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/ClashMeta.yml",
+    "stars": 323,
+    "forks": 18,
+    "pushed_at": "2026-10-10T19:55:08Z",
+    "nodes": 5
+  },
+  {
     "url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml",
     "repo": "NiceVPN123/NiceVPN",
     "path": "Clash.yaml",
@@ -63,40 +81,13 @@
     "nodes": 3643
   },
   {
-    "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml",
-    "repo": "hello-world-1989/cn-news",
-    "path": "clash.yaml",
-    "stars": 608,
-    "forks": 22,
-    "pushed_at": "2026-10-10T17:04:15Z",
-    "nodes": 2
-  },
-  {
-    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml",
-    "repo": "cbusifabcap/daily_free_vpn",
-    "path": "sub/ClashMeta.yml",
-    "stars": 323,
-    "forks": 18,
-    "pushed_at": "2026-10-10T17:05:08Z",
-    "nodes": 4
-  },
-  {
     "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-free.yaml",
     "repo": "hello-world-1989/cn-news",
     "path": "clash-free.yaml",
     "stars": 608,
     "forks": 22,
-    "pushed_at": "2026-10-10T17:04:15Z",
+    "pushed_at": "2026-10-10T19:54:12Z",
     "nodes": 4
-  },
-  {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
-    "stars": 9139,
-    "forks": 453,
-    "pushed_at": "2026-10-10T14:51:01Z",
-    "nodes": 9
   },
   {
     "url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml",
@@ -104,7 +95,7 @@
     "path": "clash-test.yaml",
     "stars": 608,
     "forks": 22,
-    "pushed_at": "2026-10-10T17:04:15Z",
+    "pushed_at": "2026-10-10T19:54:12Z",
     "nodes": 6
   },
   {
@@ -117,31 +108,13 @@
     "nodes": 10
   },
   {
-    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/V2Ray.yml",
-    "repo": "cbusifabcap/daily_free_vpn",
-    "path": "sub/V2Ray.yml",
-    "stars": 323,
-    "forks": 18,
-    "pushed_at": "2026-10-10T17:05:08Z",
-    "nodes": 1026
-  },
-  {
-    "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt",
-    "repo": "0xRadikal/Free-v2ray-Configs",
-    "path": "all/configs.txt",
-    "stars": 714,
-    "forks": 50,
-    "pushed_at": "2026-10-10T14:52:15Z",
-    "nodes": 10805
-  },
-  {
-    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt",
-    "repo": "ebrasha/free-v2ray-public-list",
-    "path": "ss_configs.txt",
-    "stars": 1365,
-    "forks": 233,
-    "pushed_at": "2026-10-10T15:58:15Z",
-    "nodes": 12
+    "url": "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/master/README.md",
+    "repo": "WLget/V2Ray_configs_64",
+    "path": "README.md",
+    "stars": 308,
+    "forks": 26,
+    "pushed_at": "2026-10-10T17:06:34Z",
+    "nodes": 3
   },
   {
     "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt",
@@ -153,13 +126,31 @@
     "nodes": 584
   },
   {
-    "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/clash.yaml",
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt",
+    "stars": 9139,
+    "forks": 453,
+    "pushed_at": "2026-10-10T14:51:01Z",
+    "nodes": 9
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/V2Ray.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/V2Ray.yml",
+    "stars": 323,
+    "forks": 18,
+    "pushed_at": "2026-10-10T19:55:08Z",
+    "nodes": 807
+  },
+  {
+    "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt",
     "repo": "0xRadikal/Free-v2ray-Configs",
-    "path": "all/clash.yaml",
+    "path": "all/configs.txt",
     "stars": 714,
     "forks": 50,
-    "pushed_at": "2026-10-10T14:52:15Z",
-    "nodes": 11330
+    "pushed_at": "2026-10-10T19:52:18Z",
+    "nodes": 10718
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt",
@@ -171,6 +162,24 @@
     "nodes": 113
   },
   {
+    "url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/clash.yaml",
+    "repo": "0xRadikal/Free-v2ray-Configs",
+    "path": "all/clash.yaml",
+    "stars": 714,
+    "forks": 50,
+    "pushed_at": "2026-10-10T19:52:18Z",
+    "nodes": 11241
+  },
+  {
+    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt",
+    "repo": "ebrasha/free-v2ray-public-list",
+    "path": "ss_configs.txt",
+    "stars": 1365,
+    "forks": 233,
+    "pushed_at": "2026-10-10T15:58:15Z",
+    "nodes": 12
+  },
+  {
     "url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt",
     "repo": "SoliSpirit/v2ray-configs",
     "path": "Subscriptions/Sub7.txt",
@@ -178,15 +187,6 @@
     "forks": 88,
     "pushed_at": "2026-10-10T17:06:31Z",
     "nodes": 151
-  },
-  {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
-    "stars": 9139,
-    "forks": 453,
-    "pushed_at": "2026-10-10T14:51:01Z",
-    "nodes": 127
   },
   {
     "url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt",
@@ -198,31 +198,13 @@
     "nodes": 154
   },
   {
-    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt",
-    "repo": "ebrasha/free-v2ray-public-list",
-    "path": "V2Ray-Config-By-EbraSha-All-Type.txt",
-    "stars": 1365,
-    "forks": 233,
-    "pushed_at": "2026-10-10T15:58:15Z",
-    "nodes": 15556
-  },
-  {
-    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha.txt",
-    "repo": "ebrasha/free-v2ray-public-list",
-    "path": "V2Ray-Config-By-EbraSha.txt",
-    "stars": 1365,
-    "forks": 233,
-    "pushed_at": "2026-10-10T15:58:15Z",
-    "nodes": 384
-  },
-  {
-    "url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt",
-    "repo": "itsyebekhe/PSG",
-    "path": "config.txt",
-    "stars": 446,
-    "forks": 82,
-    "pushed_at": "2026-10-10T03:06:45Z",
-    "nodes": 293
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt",
+    "stars": 9139,
+    "forks": 453,
+    "pushed_at": "2026-10-10T14:51:01Z",
+    "nodes": 127
   },
   {
     "url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt",
@@ -234,6 +216,24 @@
     "nodes": 166
   },
   {
+    "url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt",
+    "repo": "itsyebekhe/PSG",
+    "path": "config.txt",
+    "stars": 446,
+    "forks": 82,
+    "pushed_at": "2026-10-10T03:06:45Z",
+    "nodes": 293
+  },
+  {
+    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt",
+    "repo": "ebrasha/free-v2ray-public-list",
+    "path": "V2Ray-Config-By-EbraSha-All-Type.txt",
+    "stars": 1365,
+    "forks": 233,
+    "pushed_at": "2026-10-10T15:58:15Z",
+    "nodes": 15556
+  },
+  {
     "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/Sub2.txt",
     "repo": "Danialsamadi/v2go",
     "path": "Sub2.txt",
@@ -241,6 +241,15 @@
     "forks": 35,
     "pushed_at": "2026-10-10T03:32:33Z",
     "nodes": 366
+  },
+  {
+    "url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha.txt",
+    "repo": "ebrasha/free-v2ray-public-list",
+    "path": "V2Ray-Config-By-EbraSha.txt",
+    "stars": 1365,
+    "forks": 233,
+    "pushed_at": "2026-10-10T15:58:15Z",
+    "nodes": 384
   },
   {
     "url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json",

@@ -540,7 +540,8 @@ class GitHubDiscovery:
         self.stats={"queries":0,"query_failures":0,"repos_found":0,"tree_failures":0,"source_fetch_failures":0,"sources_found":0}
 
     def _get_json(self,url,params=None):
-        response=self.session.get(url,params=params,timeout=20)
+        headers=dict(self.session.headers)
+        response=requests.get(url,params=params,headers=headers,timeout=15)
         response.raise_for_status()
         return response.json()
 
@@ -598,7 +599,7 @@ class GitHubDiscovery:
         owner,name=repo["full_name"].split("/",1)
         raw=f"https://raw.githubusercontent.com/{owner}/{name}/{quote(repo['default_branch'],safe='')}/{quote(path,safe='/')}"
         try:
-            response=self.session.get(raw,timeout=20,allow_redirects=True)
+            response=requests.get(raw,headers={"User-Agent":UA},timeout=12,allow_redirects=True)
             response.raise_for_status()
             if len(response.content)>int(self.cfg["max_source_bytes"]):
                 return None
@@ -621,9 +622,30 @@ class GitHubDiscovery:
     def discover(self):
         out=[]
         seen=set()
-        for repo in self.search_repositories():
-            for path in self.candidate_files(repo):
-                source=self.fetch_and_validate(repo,path)
+        repos=self.search_repositories()
+        workers=max(1,min(int(self.cfg.get("source_workers",8)),16))
+        repo_paths=[]
+        # Bound concurrent API tree lookups to avoid serial discovery or an API burst.
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures=[executor.submit(self.candidate_files,repo) for repo in repos]
+            for repo,future in zip(repos,futures):
+                try:
+                    paths=future.result()
+                except Exception as exc:
+                    self.stats["tree_failures"]+=1
+                    print(f"source_tree_skip: {repo.get('full_name','unknown')}: {type(exc).__name__}")
+                    paths=[]
+                repo_paths.extend((repo,path) for path in paths)
+        # Fetch subscription content concurrently while preserving repo/path priority.
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures=[executor.submit(self.fetch_and_validate,repo,path) for repo,path in repo_paths]
+            for (repo,path),future in zip(repo_paths,futures):
+                try:
+                    source=future.result()
+                except Exception as exc:
+                    self.stats["source_fetch_failures"]+=1
+                    print(f"source_parse_skip: {repo.get('full_name','unknown')}/{path}: {type(exc).__name__}")
+                    continue
                 if source and source["url"] not in seen:
                     seen.add(source["url"])
                     out.append(source)
@@ -637,8 +659,7 @@ class GitHubDiscovery:
             )
         )
         return out
-
-MIHOMO_GEO_FILES = ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
+ ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
 
 def prepare_mihomo_geodata(work_dir, geo_dir):
     work_dir=Path(work_dir)

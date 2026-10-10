@@ -261,6 +261,24 @@ def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
     assert "luci-app-openclash/root/usr/share/openclash/res/default.yaml" not in files
     assert "notes.log" not in files
 
+def test_discovery_fetches_sources_concurrently_and_preserves_priority_order(monkeypatch):
+    discovery = fc.GitHubDiscovery(None, {"source_workers": 2})
+    repos = [
+        {"full_name": "x/first", "default_branch": "main"},
+        {"full_name": "x/second", "default_branch": "main"},
+    ]
+    monkeypatch.setattr(discovery, "search_repositories", lambda: repos)
+    monkeypatch.setattr(discovery, "candidate_files", lambda repo: [f"{repo['full_name']}.yaml"])
+    monkeypatch.setattr(
+        discovery,
+        "fetch_and_validate",
+        lambda repo, path: {"url": path, "repo": repo["full_name"]},
+    )
+    result = discovery.discover()
+    assert [source["repo"] for source in result] == ["x/first", "x/second"]
+    assert discovery.stats["sources_found"] == 2
+
+
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
     profile.write_text(
@@ -294,6 +312,7 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
 def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     cfg = fc.load_rules()
     assert cfg["sources"]["recent_days"] == 7
+    assert cfg["sources"]["source_workers"] == 8
     assert cfg["sources"]["max_source_age_days"] == 3
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
     assert cfg["nodes"]["min_clean_score"] == 65

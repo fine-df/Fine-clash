@@ -279,6 +279,26 @@ def test_discovery_fetches_sources_concurrently_and_preserves_priority_order(mon
     assert discovery.stats["sources_found"] == 2
 
 
+def test_discovery_caps_total_feed_downloads(monkeypatch):
+    discovery = fc.GitHubDiscovery(None, {"source_workers": 2, "max_source_fetches": 1})
+    repos = [
+        {"full_name": "x/first", "default_branch": "main"},
+        {"full_name": "x/second", "default_branch": "main"},
+    ]
+    monkeypatch.setattr(discovery, "search_repositories", lambda: repos)
+    monkeypatch.setattr(discovery, "candidate_files", lambda repo: [f"{repo['full_name']}.yaml"])
+    fetched = []
+    def fetch(repo, path):
+        fetched.append(path)
+        return {"url": path, "repo": repo["full_name"]}
+    monkeypatch.setattr(discovery, "fetch_and_validate", fetch)
+    result = discovery.discover()
+    assert [source["repo"] for source in result] == ["x/first"]
+    assert fetched == ["x/first.yaml"]
+    assert discovery.stats["candidate_paths_discovered"] == 2
+    assert discovery.stats["candidate_paths_scheduled"] == 1
+
+
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
     profile.write_text(
@@ -312,7 +332,10 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
 def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     cfg = fc.load_rules()
     assert cfg["sources"]["recent_days"] == 7
-    assert cfg["sources"]["source_workers"] == 8
+    assert cfg["sources"]["source_workers"] == 12
+    assert cfg["sources"]["max_source_fetches"] == 180
+    assert cfg["sources"]["max_repositories"] == 60
+    assert cfg["sources"]["max_candidate_files_per_repo"] == 4
     assert cfg["sources"]["max_source_age_days"] == 3
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
     assert cfg["nodes"]["min_clean_score"] == 65

@@ -623,7 +623,8 @@ class GitHubDiscovery:
         out=[]
         seen=set()
         repos=self.search_repositories()
-        workers=max(1,min(int(self.cfg.get("source_workers",8)),16))
+        workers=max(1,min(int(self.cfg.get("source_workers",12)),16))
+        candidate_cap=max(1,int(self.cfg.get("max_source_fetches",180)))
         repo_paths=[]
         # Bound concurrent API tree lookups to avoid serial discovery or an API burst.
         with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -636,6 +637,13 @@ class GitHubDiscovery:
                     print(f"source_tree_skip: {repo.get('full_name','unknown')}: {type(exc).__name__}")
                     paths=[]
                 repo_paths.extend((repo,path) for path in paths)
+        candidates_discovered=len(repo_paths)
+        # Hard cap the number of feed downloads. Otherwise 120 repositories × 8
+        # files can create ~1,000 sequentially queued requests and exceed the CI timeout.
+        repo_paths=repo_paths[:candidate_cap]
+        self.stats["candidate_paths_discovered"]=candidates_discovered
+        self.stats["candidate_paths_scheduled"]=len(repo_paths)
+        print("source_candidates: discovered=%d scheduled=%d workers=%d" % (candidates_discovered,len(repo_paths),workers))
         # Fetch subscription content concurrently while preserving repo/path priority.
         with ThreadPoolExecutor(max_workers=workers) as executor:
             futures=[executor.submit(self.fetch_and_validate,repo,path) for repo,path in repo_paths]

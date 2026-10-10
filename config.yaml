@@ -3,10 +3,11 @@ sources:
   min_stars: 30
   require_recent_push: true
   repositories_per_query: 30
-  max_repositories: 120
+  max_repositories: 60
   max_sources: 120
-  max_candidate_files_per_repo: 8
-  source_workers: 8
+  max_candidate_files_per_repo: 4
+  max_source_fetches: 180
+  source_workers: 12
   max_source_age_days: 3
   max_source_bytes: 8000000
   min_nodes_per_source: 2

@@ -1,5 +1,5 @@
-# Historical Fine candidates last published and validated on 2026-10-09.
-# This is only a candidate reserve; every node must pass current live endpoint and Shenzhen checks before publication.
+# Fine stable pool; refreshed only after successful end-to-end and Shenzhen validation.
+# Every run re-tests these nodes before retaining them in the published pool.
 proxies:
 - cipher: auto
   network: ws

@@ -353,6 +353,48 @@ def load_previous_published_nodes(path, max_nodes=5):
     return out
 
 
+def load_stable_pool_nodes(path, max_nodes=20):
+    """Load the last successfully published Fine pool as continuity candidates."""
+    try:
+        limit=max(0,int(max_nodes))
+        if limit==0 or not path.is_file():
+            return []
+        raw=yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        if not isinstance(raw,dict) or not isinstance(raw.get("proxies"),list):
+            return []
+        out=[]; seen=set()
+        for node in raw["proxies"]:
+            if not isinstance(node,dict) or node.get("type") not in SUPPORTED:
+                continue
+            if not node.get("server") or not node.get("port"):
+                continue
+            if not resolved_server_is_safe(node["server"]) or not mihomo_node_is_testable(node):
+                continue
+            fp=fingerprint(node)
+            if fp in seen:
+                continue
+            seen.add(fp); out.append(node)
+            if len(out)>=limit:
+                break
+        return out
+    except (OSError,ValueError,TypeError,yaml.YAMLError):
+        return []
+
+
+def save_stable_pool(path, nodes, max_nodes=20):
+    """Update the stable reserve only after the full candidate pool passes every gate."""
+    try:
+        limit=max(1,int(max_nodes))
+    except (TypeError,ValueError):
+        limit=20
+    clean=unique_node_names([dict(node) for node in (nodes or []) if isinstance(node,dict)])[:limit]
+    if not clean:
+        raise ValueError("refusing to overwrite the stable pool with an empty list")
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(yaml.safe_dump({"proxies":clean},allow_unicode=True,sort_keys=False),encoding="utf-8")
+    return len(clean)
+
+
 class GlobalpingShenzhenProbe:
     def __init__(self, cfg):
         self.cfg=cfg
@@ -1166,22 +1208,6 @@ def round_robin_fingerprints(source_buckets):
     return out
 
 
-def parse_curated_source_text(raw):
-    """Parse YAML/URI curated candidates first; fall back to a base64 subscription."""
-    if not raw:
-        return []
-    nodes=parse_subscription(raw)
-    if nodes:
-        return nodes
-    decoded=_decode_b64(raw)
-    if not decoded:
-        return []
-    try:
-        return parse_subscription(decoded.decode("utf-8","ignore"))
-    except (UnicodeError,ValueError):
-        return []
-
-
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
@@ -1246,19 +1272,8 @@ def run():
            source_pool_stats["accepted_sources"],source_pool_stats["max_source_age_days"])
     )
     if not sources:
-        report={
-            "generated_at":datetime.now(timezone.utc).isoformat(),
-            "sources":0,
-            "source_discovery":discovery.stats,
-            "source_pool":source_pool_stats,
-            "nodes_discovered":0,
-            "published":False,
-            "selected":0,
-            "quality_error":"No fresh, valid GitHub node sources. Stale caches were deliberately rejected.",
-        }
-        report_path.parent.mkdir(parents=True,exist_ok=True)
-        report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
-        raise RuntimeError("No fresh, valid GitHub node sources; refusing to republish the stale Fine pool.")
+        source_pool_stats["no_fresh_sources"]=True
+        print("source_warning: no fresh subscription sources; validating the saved stable Fine pool")
     source_path.parent.mkdir(parents=True,exist_ok=True)
     source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
     nodes_by_fp={}; source_fingerprints_by_repo={}; session=requests.Session()
@@ -1282,22 +1297,14 @@ def run():
     # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
     #   走和免费源完全相同的 gemini/play/深圳 实测闸门——活的才发布，过期的一样被筛掉。
-    curated_file=rules.get("curated_nodes_file")
-    curated_fps=set()
-    if curated_file:
-        cf=ROOT/curated_file
-        if cf.is_file():
-            try:
-                raw=cf.read_text(encoding="utf-8").strip()
-                cnt=0
-                for node in parse_curated_source_text(raw):
-                    if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]):
-                        if not mihomo_node_is_testable(node):
-                            continue
-                        fp=fingerprint(node); nodes_by_fp.setdefault(fp,node); curated_fps.add(fp); cnt+=1
-                print("curated_source: loaded %d nodes from %s" % (cnt, curated_file))
-            except Exception as e:
-                print("curated_source: skip %s (%s)" % (curated_file, type(e).__name__))
+    stable_file=ROOT/rules["nodes"].get("stable_pool_file","data/stable_pool.yaml")
+    stable_fps=set()
+    stable_nodes=load_stable_pool_nodes(stable_file,rules["nodes"].get("max_stable_nodes",20))
+    for node in stable_nodes:
+        fp=fingerprint(node)
+        nodes_by_fp.setdefault(fp,node)
+        stable_fps.add(fp)
+    print("stable_pool: loaded %d previously validated candidates" % len(stable_nodes))
     # ★ 直接订阅 URL 通道（2026-10-04 新增）：绕过 GitHub 搜索，直接拉取已知
     #   免费订阅端点（clash/v2ray base64 / yaml），并入同一候选池走相同实测闸门。
     direct_urls=rules.get("direct_urls") or []
@@ -1327,9 +1334,9 @@ def run():
     previous_fps={fingerprint(n) for n in previous_profile_nodes}
     cap=int(rules["nodes"]["max_test_nodes"])
     ordered=previous_profile_nodes[:]
-    ordered.extend([n for fp,n in nodes_by_fp.items() if fp in curated_fps and fingerprint(n) not in previous_fps])
+    ordered.extend([n for fp,n in nodes_by_fp.items() if fp in stable_fps and fingerprint(n) not in previous_fps])
     source_order=round_robin_fingerprints(list(source_fingerprints_by_repo.values()))
-    ordered.extend([nodes_by_fp[fp] for fp in source_order if fp not in curated_fps and fp not in previous_fps])
+    ordered.extend([nodes_by_fp[fp] for fp in source_order if fp not in stable_fps and fp not in previous_fps])
     dedup_ordered=[]; ordered_seen=set()
     for node in ordered:
         fp=fingerprint(node)
@@ -1401,7 +1408,7 @@ def run():
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
-    retained_fps=set(previous_fps)|set(curated_fps)
+    retained_fps=set(previous_fps)|set(stable_fps)
     for rec in candidate_records:
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
         row=history[fp]
@@ -1464,6 +1471,10 @@ def run():
         print(f"{r['rank']:>4} | {r['score']:>5} | {str(app_ms):>6} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
     if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
         report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); raise RuntimeError(f"Only {len(ranked)} nodes remained after diversity ranking; refusing to publish the previous Fine pool.")
-    build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+    build_outputs(ranked,rules)
+    report["stable_pool_written"]=save_stable_pool(stable_file,ranked,rules["nodes"].get("max_stable_nodes",20))
+    report["published"]=True
+    report["selected"]=len(ranked)
+    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

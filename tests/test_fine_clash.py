@@ -117,25 +117,6 @@ def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
     assert "luci-app-openclash/root/usr/share/openclash/res/default.yaml" not in files
     assert "notes.log" not in files
 
-def test_curated_source_parser_prefers_yaml_then_supports_base64():
-    yaml_text = (
-        "proxies:\n"
-        "- name: seed-yaml\n"
-        "  type: trojan\n"
-        "  server: example.com\n"
-        "  port: 443\n"
-        "  password: secret\n"
-        "  tls: true\n"
-    )
-    yaml_nodes = fc.parse_curated_source_text(yaml_text)
-    assert [node["name"] for node in yaml_nodes] == ["seed-yaml"]
-
-    uri = "vless://11111111-2222-3333-4444-555555555555@example.com:443?security=tls#seed-uri"
-    encoded = base64.b64encode(uri.encode()).decode()
-    decoded_nodes = fc.parse_curated_source_text(encoded)
-    assert [node["name"] for node in decoded_nodes] == ["seed-uri"]
-
-
 def test_cached_source_candidate_path_rejects_project_defaults():
     assert fc.is_candidate_source_path("Subscriptions/Sub9.txt")
     assert fc.is_candidate_source_path("api/allConfigs.json")
@@ -225,6 +206,20 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
     assert [node["name"] for node in nodes] == ["old-1", "old-2"]
 
 
+
+
+def test_stable_pool_round_trip(tmp_path, monkeypatch):
+    monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
+    path = tmp_path / "stable_pool.yaml"
+    nodes = [
+        {"name":"Stable-A","type":"trojan","server":"a.example","port":443,"password":"a","tls":True},
+        {"name":"Stable-B","type":"trojan","server":"b.example","port":443,"password":"b","tls":True},
+    ]
+    assert fc.save_stable_pool(path,nodes,max_nodes=5)==2
+    loaded=fc.load_stable_pool_nodes(path,max_nodes=5)
+    assert [node["name"] for node in loaded]==["Stable-A","Stable-B"]
+
+
 def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     cfg = fc.load_rules()
     assert cfg["sources"]["recent_days"] == 7
@@ -233,7 +228,8 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["max_repositories"] == 60
     assert cfg["sources"]["max_candidate_files_per_repo"] == 4
     assert cfg["sources"]["max_source_age_days"] == 3
-    assert cfg["curated_nodes_file"] == "data/known_good_fine_nodes.yaml"
+    assert cfg["nodes"]["stable_pool_file"] == "data/stable_pool.yaml"
+    assert cfg["nodes"]["max_stable_nodes"] == 20
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
     assert cfg["nodes"]["min_clean_score"] == 65
     assert cfg["nodes"]["min_final_nodes"] == 3

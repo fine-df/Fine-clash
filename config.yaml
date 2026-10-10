@@ -14,7 +14,6 @@ sources:
   # 源头约束（2026-10-08）：
   #  - 主源 = GitHub 活跃仓库搜索；30 stars 为最低发现门槛，后续质量由节点实测决定。
   #  - 专项加强美国非机房（residential/ISP）节点：下方 US/American/USA/residential 类查询。
-  #  - 排除付费订阅：direct_urls / curated_nodes_file 禁止填入任何付费机场。
   #  - 非 GIT 免费高质量订阅源可扩展进 direct_urls（须先验证稳定性，不填付费）。
   queries:
     - 'clash subscription in:name,description,readme archived:false stars:>=100'
@@ -39,11 +38,11 @@ sources:
     - 'residential proxy in:name,description,readme archived:false stars:>=50'
 # 非 GIT 免费高质量订阅源可在此扩展（验证稳定性后补充）；禁止付费机场。
 direct_urls: []
-# 历史上曾通过完整质量门槛的 Fine 节点作为候选种子；每轮仍重新实测，禁止包含付费节点。
-curated_nodes_file: 'data/known_good_fine_nodes.yaml'
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200
+  max_stable_nodes: 20
+  stable_pool_file: 'data/stable_pool.yaml'
   # Avoid publishing a nominally successful pool containing only one or two nodes.
   min_final_nodes: 3
   max_final_nodes: 20

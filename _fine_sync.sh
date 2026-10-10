@@ -3,22 +3,66 @@
 PATH=$PATH:/tmp/ShellCrash:/tmp/ctest:/data/clash/bin
 export PATH
 
-URL="https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml"
+URLS='https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+https://testingcf.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+https://fastly.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+https://raw.githubusercontent.com/fine-df/Fine-clash/main/live_clash.yaml'
 DST="/tmp/ShellCrash/live_clash.yaml"
 ACTIVE="/tmp/ShellCrash/config.yaml"
 TPL="/data/clash/yamls/config.yaml"
 TMP="/tmp/live_clash.sync"
+FETCH_BEST="/tmp/live_clash.sync.best"
+CURL_ERR="/tmp/live_clash.sync.curl.err"
 BACKUP="/tmp/live_clash.template.bak"
 BIN="/tmp/ShellCrash/CrashCore"
 [ -x "$BIN" ] || BIN="/tmp/ctest/CrashCore"
 
-rm -f "$TMP"
-HTTP=$(curl -fsS -m 30 -o "$TMP" -w "%{http_code}" "$URL" || true)
-if [ "$HTTP" != "200" ]; then
-  echo "sync_fail_http_$HTTP"
-  rm -f "$TMP"
+# Older router curl/PolarSSL builds can fail TLS negotiation with one CDN edge.
+# Try several HTTPS mirrors without disabling certificate verification, and choose
+# the newest structurally plausible profile returned by any mirror.
+rm -f "$TMP" "$FETCH_BEST" "$CURL_ERR"
+HTTP=000
+BEST_VER=0
+BEST_URL=""
+for URL in $URLS; do
+  rm -f "$TMP" "$CURL_ERR"
+  HTTP=$(curl -fsS --connect-timeout 8 -m 15 -o "$TMP" -w "%{http_code}" "$URL" 2>"$CURL_ERR" || true)
+  VERSION=$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$TMP" 2>/dev/null || true)
+  case "$VERSION" in
+    ''|*[!0-9]*)
+      echo "sync_fetch_invalid_version_url_$URL"
+      ;;
+    *)
+      if [ "$HTTP" = "200" ] && [ -s "$TMP" ] &&
+        [ "$VERSION" -gt 0 ] &&
+        grep -q '^mode: rule$' "$TMP" &&
+        grep -q '^- name: Fine$' "$TMP" &&
+        grep -q '^- name: Fine-Auto$' "$TMP"; then
+        echo "sync_fetch_candidate_version_$VERSION from $URL"
+        if [ "$VERSION" -gt "$BEST_VER" ]; then
+          cp "$TMP" "$FETCH_BEST" || { echo "sync_fail_save_best_mirror"; rm -f "$TMP" "$FETCH_BEST" "$CURL_ERR"; exit 1; }
+          BEST_VER="$VERSION"
+          BEST_URL="$URL"
+        fi
+      else
+        echo "sync_fetch_reject_response_http_$HTTP url $URL"
+      fi
+      ;;
+  esac
+  if [ "$HTTP" != "200" ] || [ ! -s "$TMP" ]; then
+    echo "sync_fetch_failed_http_$HTTP url $URL"
+    if [ -s "$CURL_ERR" ]; then sed -n '1p' "$CURL_ERR"; fi
+  fi
+done
+if [ ! -s "$FETCH_BEST" ]; then
+  echo "sync_fail_all_subscription_urls"
+  rm -f "$TMP" "$FETCH_BEST" "$CURL_ERR"
   exit 1
 fi
+cp "$FETCH_BEST" "$TMP" || { echo "sync_fail_restore_best_mirror"; rm -f "$TMP" "$FETCH_BEST" "$CURL_ERR"; exit 1; }
+echo "sync_fetch_selected_version_$BEST_VER"
+echo "sync_fetch_selected_source_$BEST_URL"
+rm -f "$FETCH_BEST" "$CURL_ERR"
 
 grep -q '^mode: rule$' "$TMP" || { echo "sync_fail_not_rule_mode"; rm -f "$TMP"; exit 1; }
 # 自 build_final 移除 GLOBAL 内置组后，订阅不再含 GLOBAL（mihomo 运行态会自动生成内置 GLOBAL）

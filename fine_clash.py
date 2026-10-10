@@ -1207,17 +1207,19 @@ def build_outputs(nodes, output_rules):
     clash_path=ROOT/output_rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
 
 def node_is_quality(meta, sticky_cfg):
-    """Pin a node only if Shenzhen reachability and end-to-end latency are good."""
+    """Pin a node only when its endpoint score and Shenzhen quality both remain acceptable."""
     if not isinstance(meta, dict): return False
     try:
         keep_ping=float(sticky_cfg.get("keep_ping_ms", 300))
         keep_loss=float(sticky_cfg.get("keep_loss_pct", 5.0))
         keep_endpoint=float(sticky_cfg.get("keep_endpoint_latency_ms", 2000))
+        keep_score=float(sticky_cfg.get("keep_min_score", 70))
+        score=float(meta.get("score", 0))
         app_latency=float(meta.get("app_latency_ms"))
     except (TypeError,ValueError):
         return False
     ping=meta.get("shenzhen_ping_ms"); loss=meta.get("shenzhen_loss_pct")
-    if ping is None or loss is None or app_latency>keep_endpoint: return False
+    if ping is None or loss is None or app_latency>keep_endpoint or score<keep_score: return False
     return float(ping)<keep_ping and float(loss)<=keep_loss
 
 def choose_sticky_primary(ranked, previous_profile_nodes, ranking_meta, sticky_cfg):
@@ -1748,7 +1750,7 @@ def run():
     report["ranking_output"]=len(ranked)
     report["ranking_dropped"]=max(0,len(selected)-len(ranked))
     # ★ 粘性优质节点（2026-10-06）：订阅更新时保持当前优秀节点为首选，
-    #   仅当其深圳 PING>=keep_ping_ms 或掉包率>keep_loss_pct 时才让位给新优质节点。
+    #   只有分数、端到端延迟、深圳 PING/掉包率均达标才保持首选；低分旧节点必须让位。
     sticky_cfg=rules.get("sticky", {}) or {}
     if sticky_cfg.get("enabled", True):
         kept=choose_sticky_primary(ranked, previous_profile_nodes, ranking_meta, sticky_cfg)

@@ -780,10 +780,12 @@ def test_rank_candidates_min_final_score_floor():
     assert [n["name"] for n in ranked] == ["high", "low"]
 
 
-def test_sticky_quality_requires_fast_end_to_end_latency():
-    base = {"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0, "app_latency_ms": 1500}
-    cfg = {"keep_ping_ms": 300, "keep_loss_pct": 5, "keep_endpoint_latency_ms": 2000}
+def test_sticky_quality_requires_score_and_fast_end_to_end_latency():
+    base = {"score": 80, "shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0, "app_latency_ms": 1500}
+    cfg = {"keep_ping_ms": 300, "keep_loss_pct": 5, "keep_endpoint_latency_ms": 2000, "keep_min_score": 70}
     assert fc.node_is_quality(base, cfg)
+    assert not fc.node_is_quality({**base, "score": 55}, cfg)
+    assert not fc.node_is_quality({**base, "score": 69}, cfg)
     assert not fc.node_is_quality({**base, "app_latency_ms": 2500}, cfg)
     assert not fc.node_is_quality({"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0}, cfg)
 

@@ -85,13 +85,15 @@ shenzhen_probe:
   stable_probe_grace_hours: 24
   api_token_env: 'GLOBALPING_API_TOKEN'
 sticky:
-  # 粘性优质节点：订阅更新时，若"当前连接节点"仍满足下方深圳质量门槛则保持为首选，
-  # 仅当其退化（PING>=keep_ping_ms 或 掉包率>keep_loss_pct）才让位给池内新优质节点。
+  # 粘性首选：当前节点的评分、端到端延迟、深圳 PING/丢包率必须同时达标。
+  # 若评分低于 keep_min_score 或其他质量指标退化，则让位给新的高质量候选。
   # 实测 shenzhen_probe.packets=4 → 掉包粒度 0/25/50/75/100%，故 keep_loss_pct=5.0 即"零丢包才算优秀"。
   enabled: true
   keep_ping_ms: 300
   keep_loss_pct: 5.0
   keep_endpoint_latency_ms: 2000
+  # Avoid retaining a low-score node as default only because its TCP probe is fast.
+  keep_min_score: 70
 checks:
   gemini_url: 'https://gemini.google.com/'
   google_play_url: 'https://play.google.com/store'

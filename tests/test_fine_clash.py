@@ -261,6 +261,13 @@ def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
     assert "luci-app-openclash/root/usr/share/openclash/res/default.yaml" not in files
     assert "notes.log" not in files
 
+def test_cached_source_candidate_path_rejects_project_defaults():
+    assert fc.is_candidate_source_path("Subscriptions/Sub9.txt")
+    assert fc.is_candidate_source_path("api/allConfigs.json")
+    assert fc.is_candidate_source_path("README.md")
+    assert not fc.is_candidate_source_path("luci-app-openclash/root/usr/share/openclash/res/default.yaml")
+    assert not fc.is_candidate_source_path("docs/defaults.yaml")
+
 def test_discovery_fetches_sources_concurrently_and_preserves_priority_order(monkeypatch):
     discovery = fc.GitHubDiscovery(None, {"source_workers": 2})
     repos = [

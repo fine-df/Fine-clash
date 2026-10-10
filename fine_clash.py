@@ -19,6 +19,17 @@ UA="Fine-Clash/1.0"
 CANDIDATE_NAMES=("sub","subscribe","subscription","clash","v2ray","proxy","nodes","node","free","config","export","pool","link","links","readme")
 CANDIDATE_BASENAMES={"sub","subscribe","subscription","clash","v2ray","nodes","node","free"}
 EXTENSIONS=(".yaml",".yml",".txt",".conf",".base64",".list",".lst",".json",".json5",".md")
+
+def is_candidate_source_path(path):
+    """Reject cached paths that are ordinary project files, not subscription feeds."""
+    low=str(path or "").split("?",1)[0].lower()
+    basename=low.rsplit("/",1)[-1]
+    if not basename:
+        return False
+    if basename in CANDIDATE_BASENAMES:
+        return True
+    return basename.endswith(EXTENSIONS) and any(key in basename for key in CANDIDATE_NAMES)
+
 ROOT=Path(__file__).resolve().parent
 
 # High-priority direct routes for WeChat/Tencent infrastructure. These sit above
@@ -588,9 +599,7 @@ class GitHubDiscovery:
             path=item.get("path","")
             low=path.lower()
             basename=low.rsplit("/",1)[-1]
-            extension_match=low.endswith(EXTENSIONS) and any(key in basename for key in CANDIDATE_NAMES)
-            basename_match=basename in CANDIDATE_BASENAMES
-            if extension_match or basename_match:
+            if is_candidate_source_path(path):
                 paths.append(path)
         paths.sort(key=lambda p: source_path_sort_key(p), reverse=True)
         return paths[:int(self.cfg["max_candidate_files_per_repo"])]
@@ -1101,6 +1110,7 @@ def run():
         "cache_seen":0,
         "cache_fresh":0,
         "cache_stale_or_undated_dropped":0,
+        "cache_non_candidate_dropped":0,
         "cache_low_star_dropped":0,
         "accepted_sources":0,
         "max_source_age_days":max_source_age_days,
@@ -1118,6 +1128,9 @@ def run():
     min_stars=int(rules["sources"].get("min_stars",30))
     for s in cached:
         if not isinstance(s,dict) or not s.get("url") or s["url"] in seen:
+            continue
+        if not is_candidate_source_path(s.get("path") or s.get("url")):
+            source_pool_stats["cache_non_candidate_dropped"]+=1
             continue
         if not source_is_fresh(s,max_source_age_days,source_now):
             source_pool_stats["cache_stale_or_undated_dropped"]+=1
@@ -1140,11 +1153,11 @@ def run():
         sources=sorted(sources,key=source_quality,reverse=True)[:max_sources]
     source_pool_stats["accepted_sources"]=len(sources)
     print(
-        "source_freshness: live=%d/%d stale_live=%d cached_fresh=%d cached_stale_or_undated=%d accepted=%d max_age_days=%s"
+        "source_freshness: live=%d/%d stale_live=%d cached_fresh=%d cached_non_candidate=%d cached_stale_or_undated=%d accepted=%d max_age_days=%s"
         % (source_pool_stats["live_fresh"],source_pool_stats["live_discovered"],
            source_pool_stats["live_stale_dropped"],source_pool_stats["cache_fresh"],
-           source_pool_stats["cache_stale_or_undated_dropped"],source_pool_stats["accepted_sources"],
-           source_pool_stats["max_source_age_days"])
+           source_pool_stats["cache_non_candidate_dropped"],source_pool_stats["cache_stale_or_undated_dropped"],
+           source_pool_stats["accepted_sources"],source_pool_stats["max_source_age_days"])
     )
     if not sources:
         report={

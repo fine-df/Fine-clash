@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - 'live_clash.yaml'
-      - '.github/workflows/purge-public-profile.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+# Never run two cache purges at once; concurrent requests can hit jsDelivr's rate limit.
+concurrency:
+  group: fine-clash-public-profile-purge
+  cancel-in-progress: false
 
 jobs:
   purge:

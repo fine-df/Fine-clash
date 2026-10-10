@@ -1076,6 +1076,7 @@ class MihomoTester:
                         "google":item["google"].get("latency_ms"),
                     },
                 })
+                print("node_test_progress: completed=%d/%d name=%r" % (idx+1,len(nodes),node.get("name","")))
             return results
         finally:
             self.stop()
@@ -1392,6 +1393,51 @@ def round_robin_fingerprints(source_buckets, weights=None):
     return out
 
 
+def select_dns_safe_candidates(nodes, limit, workers=16):
+    """DNS-validate only prioritized candidates needed for a bounded test run.
+
+    Subscription sources can contain tens of thousands of proxy records. Resolving
+    every host before applying max_test_nodes makes a small validation run perform
+    thousands of DNS lookups. Process a bounded window concurrently and stop as
+    soon as the requested number of safe candidates has been selected.
+    """
+    try:
+        limit=max(0,int(limit))
+        worker_count=max(1,min(int(workers),32))
+    except (TypeError,ValueError):
+        limit=0
+        worker_count=1
+    if limit == 0 or not nodes:
+        return [],0,0
+
+    selected=[]
+    checked=0
+    rejected=0
+    chunk_size=worker_count*4
+
+    def check_server(server):
+        try:
+            return resolved_server_is_safe(server)
+        except Exception:
+            # A resolver error must fail closed, never make the node testable.
+            return False
+
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        for offset in range(0,len(nodes),chunk_size):
+            batch=nodes[offset:offset+chunk_size]
+            safe_flags=list(executor.map(check_server,(node.get("server") for node in batch)))
+            checked += len(batch)
+            rejected += sum(1 for ok in safe_flags if not ok)
+            for node,ok in zip(batch,safe_flags):
+                if ok:
+                    selected.append(node)
+                    if len(selected) >= limit:
+                        break
+            if len(selected) >= limit:
+                break
+    return selected,checked,rejected
+
+
 def run():
     rules=load_rules()
     source_path=ROOT/rules["output"]["source_file"]
@@ -1470,18 +1516,22 @@ def run():
             return None
         source=source or source_lookup.get(str(url),{}) or {}
         return source_run_stats.setdefault(str(url),{"repo":source.get("repo"),**{key:0 for key in SOURCE_RUN_METRICS}})
-    for source in sources:
+    for source_index, source in enumerate(sources,1):
         source_url=str(source.get("url") or "")
+        print("source_load: %d/%d %s" % (source_index,len(sources),source_url))
         stats=ensure_source_stats(source_url,source)
         try:
             response=session.get(source_url,timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
             parsed=parse_subscription(response.text)
             stats["parsed_nodes"]+=len(parsed)
+            print("source_load_done: %d/%d parsed_nodes=%d" % (source_index,len(sources),len(parsed)))
             source_bucket=source_fingerprints_by_url.setdefault(source_url,[])
             for node in parsed:
                 if node.get("type") not in rules["nodes"]["allowed_types"] or not node.get("server") or not node.get("port"):
                     continue
-                if not resolved_server_is_safe(node["server"]) or not mihomo_node_is_testable(node):
+                # parse_subscription already rejects literal private/invalid servers.
+                # Defer DNS resolution until after the bounded candidate list is ranked.
+                if not is_safe_server(node["server"]) or not mihomo_node_is_testable(node):
                     continue
                 stats["structurally_valid_nodes"]+=1
                 fp=fingerprint(node)
@@ -1521,7 +1571,14 @@ def run():
         fp=fingerprint(node)
         if fp in ordered_seen: continue
         ordered_seen.add(fp); dedup_ordered.append(node)
-    nodes=dedup_ordered[:cap]
+    nodes,dns_checked,dns_rejected=select_dns_safe_candidates(
+        dedup_ordered,
+        cap,
+        rules["nodes"].get("dns_validation_workers",16),
+    )
+    print("node_dns_validation: candidates=%d checked=%d rejected=%d selected=%d cap=%d" % (
+        len(dedup_ordered),dns_checked,dns_rejected,len(nodes),cap
+    ))
     binary=shutil.which("mihomo") or shutil.which("clash")
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
@@ -1531,6 +1588,7 @@ def run():
         "sources":len(sources),
         "source_discovery":discovery.stats,
         "source_pool":source_pool_stats,
+        "dns_validation":{"prioritized_candidates":len(dedup_ordered),"checked":dns_checked,"rejected":dns_rejected,"workers":int(rules["nodes"].get("dns_validation_workers",16))},
         "nodes_discovered":len(nodes),
         "previous_profile_candidates":len(previous_profile_nodes),
         "stable_candidates":sum(1 for node in nodes if fingerprint(node) in (stable_fps|previous_fps)),

@@ -48,6 +48,8 @@ nodes:
   max_per_org: 3
   max_endpoint_latency_ms: 2500
   validation_workers: 8
+  # DNS-check a bounded candidate window concurrently before proxy tests.
+  dns_validation_workers: 16
   endpoint_workers: 6
   test_timeout_seconds: 8
   controller_startup_seconds: 1.5

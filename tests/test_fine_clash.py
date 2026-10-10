@@ -277,6 +277,30 @@ def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
     assert not fc.resolved_server_is_safe("attacker.example")
 
 
+def test_dns_candidate_selection_bounds_checks_and_fails_closed(monkeypatch):
+    checked = []
+
+    def fake_safe(server):
+        checked.append(server)
+        return server != "private.example"
+
+    monkeypatch.setattr(fc, "resolved_server_is_safe", fake_safe)
+    nodes = [
+        {"server": "private.example"},
+        {"server": "one.example"},
+        {"server": "two.example"},
+        {"server": "three.example"},
+    ] + [{"server": f"later-{i}.example"} for i in range(20)]
+
+    selected, checked_count, rejected = fc.select_dns_safe_candidates(nodes, limit=2, workers=1)
+
+    assert [node["server"] for node in selected] == ["one.example", "two.example"]
+    # With one worker the bounded window is four candidates, not the whole feed.
+    assert checked_count == 4
+    assert len(checked) == 4
+    assert rejected == 1
+
+
 def test_source_is_fresh_rejects_stale_snapshot_even_if_repo_was_pushed_later():
     now = fc.datetime(2026, 10, 10, 12, 0, tzinfo=fc.timezone.utc)
     stale_snapshot = {"path": "clash20261004.yml", "pushed_at": "2026-10-09T10:00:00Z"}

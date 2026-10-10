@@ -89,16 +89,150 @@ if [ "$REMOTE_VER" = "0" ]; then
   exit 1
 fi
 
+# Count members of a named policy group in either block-list or inline-list YAML.
+# Checking the total number of "server:" entries alone is unsafe: the unrelated
+# Bitz group can make the total look correct while Fine-Auto is empty.
+group_member_count() {
+  awk -v wanted="$2" '
+    function inline_count(line, rest, n, items) {
+      rest=line
+      sub(/^[^[]*\\[/, "", rest)
+      sub(/\\].*$/, "", rest)
+      if (rest ~ /^[[:space:]]*$/) return 0
+      n=split(rest, items, ",")
+      return n
+    }
+    /^- name: / {
+      current=($0 == "- name: " wanted)
+      in_proxies=0
+      next
+    }
+    current && /^  proxies:[[:space:]]*\\[/ {
+      count += inline_count($0)
+      in_proxies=0
+      next
+    }
+    current && /^  proxies:[[:space:]]*$/ { in_proxies=1; next }
+    current && in_proxies && /^  - / { count++; next }
+    current && in_proxies && /^  [^ -][^:]*:/ { in_proxies=0 }
+    END { print count+0 }
+  ' "$1"
+}
+
 runtime_profile_ok() {
   [ -s "$ACTIVE" ] || return 1
-  grep -q '^- name: Fine$' "$ACTIVE" || return 1
-  grep -q '^- name: Fine-Auto$' "$ACTIVE" || return 1
+  grep -q '^- name: Fine
+
+if [ "$REMOTE_VER" -le "$LOCAL_VER" ]; then
+  if runtime_profile_ok; then
+    echo "sync_keep_local_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+    rm -f "$TMP"
+    exit 0
+  fi
+  echo "sync_repair_runtime_profile_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+  echo "runtime_group_counts remote_Fine=${REMOTE_FINE_COUNT:-0} active_Fine=${ACTIVE_FINE_COUNT:-0} remote_Fine_Auto=${REMOTE_FINE_AUTO_COUNT:-0} active_Fine_Auto=${ACTIVE_FINE_AUTO_COUNT:-0}"
+fi
+
+"$BIN" -t -d /data/clash -f "$TMP" >/dev/null 2>&1 || {
+  echo "sync_selfcheck_fail"
+  rm -f "$TMP"
+  exit 1
+}
+
+if [ -f "$DST" ] && cmp -s "$TMP" "$DST" && runtime_profile_ok; then
+  echo "sync_same"
+  rm -f "$TMP"
+  exit 0
+fi
+
+rm -f "$BACKUP"
+if [ -f "$TPL" ]; then
+  cp "$TPL" "$BACKUP" || { echo "sync_fail_backup_template"; rm -f "$TMP"; exit 1; }
+fi
+cp "$TMP" "$TPL" || { echo "sync_fail_write_template"; rm -f "$TMP" "$BACKUP"; exit 1; }
+/data/clash/start.sh stop >/dev/null 2>&1
+sleep 5
+/data/clash/start.sh start >/dev/null 2>&1
+sleep 3
+if ! runtime_profile_ok; then
+  echo "sync_fail_runtime_profile_not_updated"
+  echo "runtime_group_counts remote_Fine=${REMOTE_FINE_COUNT:-0} active_Fine=${ACTIVE_FINE_COUNT:-0} remote_Fine_Auto=${REMOTE_FINE_AUTO_COUNT:-0} active_Fine_Auto=${ACTIVE_FINE_AUTO_COUNT:-0}"
+  if [ -s "$BACKUP" ]; then
+    cp "$BACKUP" "$TPL"
+    /data/clash/start.sh stop >/dev/null 2>&1
+    sleep 5
+    /data/clash/start.sh start >/dev/null 2>&1
+  fi
+  rm -f "$TMP" "$BACKUP"
+  exit 1
+fi
+cp "$TMP" "$DST" || { echo "sync_fail_save_checkpoint"; rm -f "$TMP" "$BACKUP"; exit 1; }
+rm -f "$TMP" "$BACKUP"
+echo "sync_updated_$(date '+%m-%d %H:%M')"
+ "$ACTIVE" || return 1
+  grep -q '^- name: Fine-Auto
+
+if [ "$REMOTE_VER" -le "$LOCAL_VER" ]; then
+  if runtime_profile_ok; then
+    echo "sync_keep_local_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+    rm -f "$TMP"
+    exit 0
+  fi
+  echo "sync_repair_runtime_profile_remote_ver_${REMOTE_VER}_local_ver_${LOCAL_VER}"
+fi
+
+"$BIN" -t -d /data/clash -f "$TMP" >/dev/null 2>&1 || {
+  echo "sync_selfcheck_fail"
+  rm -f "$TMP"
+  exit 1
+}
+
+if [ -f "$DST" ] && cmp -s "$TMP" "$DST" && runtime_profile_ok; then
+  echo "sync_same"
+  rm -f "$TMP"
+  exit 0
+fi
+
+rm -f "$BACKUP"
+if [ -f "$TPL" ]; then
+  cp "$TPL" "$BACKUP" || { echo "sync_fail_backup_template"; rm -f "$TMP"; exit 1; }
+fi
+cp "$TMP" "$TPL" || { echo "sync_fail_write_template"; rm -f "$TMP" "$BACKUP"; exit 1; }
+/data/clash/start.sh stop >/dev/null 2>&1
+sleep 5
+/data/clash/start.sh start >/dev/null 2>&1
+sleep 3
+if ! runtime_profile_ok; then
+  echo "sync_fail_runtime_profile_not_updated"
+  if [ -s "$BACKUP" ]; then
+    cp "$BACKUP" "$TPL"
+    /data/clash/start.sh stop >/dev/null 2>&1
+    sleep 5
+    /data/clash/start.sh start >/dev/null 2>&1
+  fi
+  rm -f "$TMP" "$BACKUP"
+  exit 1
+fi
+cp "$TMP" "$DST" || { echo "sync_fail_save_checkpoint"; rm -f "$TMP" "$BACKUP"; exit 1; }
+rm -f "$TMP" "$BACKUP"
+echo "sync_updated_$(date '+%m-%d %H:%M')"
+ "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wps.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wps.com,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wps365.com,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,kdocs.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wpscdn.cn,DIRECT' "$ACTIVE" || return 1
   grep -Fq 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' "$ACTIVE" || return 1
+
+  REMOTE_FINE_COUNT=$(group_member_count "$TMP" "Fine")
+  ACTIVE_FINE_COUNT=$(group_member_count "$ACTIVE" "Fine")
+  REMOTE_FINE_AUTO_COUNT=$(group_member_count "$TMP" "Fine-Auto")
+  ACTIVE_FINE_AUTO_COUNT=$(group_member_count "$ACTIVE" "Fine-Auto")
+  [ "${REMOTE_FINE_AUTO_COUNT:-0}" -gt 0 ] || return 1
+  [ "${ACTIVE_FINE_AUTO_COUNT:-0}" -ge "${REMOTE_FINE_AUTO_COUNT:-0}" ] || return 1
+  [ "${REMOTE_FINE_COUNT:-0}" -gt 2 ] || return 1
+  [ "${ACTIVE_FINE_COUNT:-0}" -ge "${REMOTE_FINE_COUNT:-0}" ] || return 1
+
   REMOTE_NODE_COUNT=$(grep -c '  server:' "$TMP" 2>/dev/null || true)
   ACTIVE_NODE_COUNT=$(grep -c '  server:' "$ACTIVE" 2>/dev/null || true)
   [ "${REMOTE_NODE_COUNT:-0}" -gt 0 ] && [ "${ACTIVE_NODE_COUNT:-0}" -ge "${REMOTE_NODE_COUNT:-0}" ]

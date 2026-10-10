@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261010000102 | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v4 | fine-clash-version:20261010000103 | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,73 +10,82 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- name: CA 🇨🇦 | @Raydikalx | EB4CDB
-  alterId: 0
-  ws-opts:
-    path: /androirfdsreoightrjh?ed=2560
-    headers:
-      Host: server4.9966338.xyz
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+- port: 18000
   type: vmess
-  server: us5-1.998998.best
-  udp: true
-  port: 443
-  cipher: auto
-  tls: true
-  network: ws
-  servername: server4.9966338.xyz
-- type: vmess
-  name: 🇺🇸US_15|1.7MB/s|A004-260618
-  server: 67.220.95.3
-  port: 18000
   uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
+  udp: true
   alterId: 0
   cipher: auto
-  udp: true
-- name: US 🇺🇸 | @Raydikalx | E39004
-  client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  reality-opts:
+  server: 84.17.41.2
+  name: 🇺🇸US_14|1.1MB/s|A004-260618
+- reality-opts:
     public-key: Vh8dv6ENmfFd4JlPgj9-R1Fbet2m6JyRFukcVvDq5A8
     short-id: e7dc2c820ba8bbd4
-  uuid: b67422ff-101b-433b-8f66-4ab282960b36
+  port: 443
   type: vless
-  server: 172.245.253.16
-  udp: true
-  port: 443
-  tls: true
-  network: tcp
-  servername: www.apple.com
-- name: 🇺🇸US_2|2.1MB/s
-  password: shadowsocks
-  port: 443
-  cipher: aes-128-gcm
-  udp: true
-  type: ss
-  server: 37.19.198.160
-- name: 🇺🇸US_14|1.1MB/s|A004-260618
-  alterId: 0
-  uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
-  type: vmess
-  server: 84.17.41.2
-  udp: true
-  port: 18000
-  cipher: auto
-- name: US 🇺🇸 | @Raydikalx | F1AD8B
+  uuid: b67422ff-101b-433b-8f66-4ab282960b36
   client-fingerprint: chrome
-  reality-opts:
+  udp: true
+  servername: www.apple.com
+  network: tcp
+  server: 172.245.253.16
+  tls: true
+  flow: xtls-rprx-vision
+  name: US 🇺🇸 | @Raydikalx | E39004
+- port: 18000
+  type: vmess
+  uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
+  udp: true
+  alterId: 0
+  cipher: auto
+  network: tcp
+  server: 67.220.85.46
+  tls: false
+  name: US 🇺🇸 | @Raydikalx | BA43A3
+- server: 37.19.198.160
+  port: 443
+  type: ss
+  udp: true
+  name: 🇺🇸US_2|2.1MB/s
+  cipher: aes-128-gcm
+  password: shadowsocks
+- reality-opts:
     public-key: D3ojIs3AUKP_tV0E4TEjh90HBVJp24Nq3qMfdxD30kc
     short-id: df8611c07d
-  uuid: 1d39f715-2740-4d99-bc3b-197cc48dcee7
-  type: vless
-  server: 107.173.237.146
-  udp: true
   port: 8443
-  tls: true
-  network: tcp
+  type: vless
+  uuid: 1d39f715-2740-4d99-bc3b-197cc48dcee7
+  client-fingerprint: chrome
+  udp: true
   servername: updates.cdn-apple.com
+  network: tcp
+  server: 107.173.237.146
+  tls: true
+  name: US 🇺🇸 | @Raydikalx | F1AD8B
+- reality-opts:
+    public-key: ALT8hIGeZEhi0sQFbXP_ntBg8Xo-v7i0YCLrqTnBxRk
+    short-id: 0990d22f
+  port: 443
+  type: vless
+  uuid: 00144519-7e0d-476b-8d28-435576af9262
+  client-fingerprint: chrome
+  udp: true
+  servername: www.cloudflare.com
+  network: tcp
+  server: 167.17.69.171
+  tls: true
+  flow: xtls-rprx-vision
+  name: US 🇺🇸 | @Raydikalx | BF3066
+- port: 18000
+  type: vmess
+  uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
+  udp: true
+  alterId: 0
+  cipher: auto
+  server: 67.220.95.3
+  name: 🇺🇸US_15|1.7MB/s|A004-260618
 - type: vless
-  name: v2go | 🇺🇸 US | VLESS | 115
+  name: v2go | 🇺🇸 US | VLESS | 631
   server: 47.251.25.74
   port: 443
   udp: true
@@ -89,122 +98,108 @@ proxies:
   reality-opts:
     public-key: H56cOJhw0xw76lDEpt7IuJJmVGemK6_CK34KtHwDMX8
   network: tcp
-- name: US 🇺🇸 | @Raydikalx | BA43A3
-  alterId: 0
-  uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
-  type: vmess
-  server: 67.220.85.46
-  udp: true
-  port: 18000
-  cipher: auto
-  tls: false
-  network: tcp
-- name: US 🇺🇸 | @Raydikalx | CDF562
-  password: NzJlOTQ5NWYtM2ZkYi00Cg==
+- server: 103.11.76.248
   port: 28679
-  cipher: 2022-blake3-aes-128-gcm
-  udp: true
   type: ss
-  server: 103.11.76.248
-- name: US 🇺🇸 | @Raydikalx | BF3066
-  client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: ALT8hIGeZEhi0sQFbXP_ntBg8Xo-v7i0YCLrqTnBxRk
-    short-id: 0990d22f
-  uuid: 00144519-7e0d-476b-8d28-435576af9262
-  type: vless
-  server: 167.17.69.171
   udp: true
-  port: 443
-  tls: true
-  network: tcp
-  servername: www.cloudflare.com
-- name: 🇳🇱NL_26|6.2MB/s|C002-260622
-  client-fingerprint: chrome
+  name: US 🇺🇸 | @Raydikalx | CDF562
+  cipher: 2022-blake3-aes-128-gcm
+  password: NzJlOTQ5NWYtM2ZkYi00Cg==
+- type: vless
+  name: 🇳🇱NL_26|6.2MB/s|C002-260622
+  server: 51.158.206.86
+  port: 23576
+  udp: true
+  uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
   encryption: none
+  tls: true
+  servername: fuck.rkn
   flow: xtls-rprx-vision
+  client-fingerprint: chrome
   reality-opts:
     public-key: 1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s
     short-id: '01'
-  uuid: 48ff2b70-e180-582f-8866-d9a2edeed5f5
-  type: vless
-  server: 51.158.206.86
-  udp: true
-  port: 23576
-  tls: true
   network: tcp
-  servername: fuck.rkn
-- type: vmess
-  name: 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  server: 45.127.32.220
-  port: 55002
-  uuid: b25731af-0428-4274-be5d-31a273a8d632
-  alterId: 0
-  cipher: auto
+- type: vless
+  name: v2go | VLESS | 72
+  server: 188.114.97.6
+  port: 443
   udp: true
+  uuid: 49ccad64-c854-4f33-b334-793cf0d02b74
+  encryption: none
+  tls: true
+  servername: newcscf.jisucf.cloudns.ch
+  client-fingerprint: unsafe
   network: ws
   ws-opts:
-    path: b25731af-0428-4274-be5d-31a273a8d632-vm
-- name: CA 🇨🇦 | @Raydikalx | BEBFBB
-  password: kDWvXYZoTBcGkC4
-  port: 8882
-  cipher: aes-256-gcm
+    path: /
+    headers:
+      Host: newcscf.jisucf.cloudns.ch
+- port: 443
+  type: vmess
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
   udp: true
-  type: ss
-  server: 51.79.49.116
-- name: 🇳🇱NL_7|5.5MB/s|A003-260618
-  password: shadowsocks
+  ws-opts:
+    path: /androirfdsreoightrjh?ed=2560
+    headers:
+      Host: server4.9966338.xyz
+  alterId: 0
+  servername: server4.9966338.xyz
+  cipher: auto
+  network: ws
+  server: us5-1.998998.best
+  tls: true
+  name: CA 🇨🇦 | @Raydikalx | EB4CDB
+- server: 158.173.20.208
   port: 443
+  type: ss
+  udp: true
+  name: 🇳🇱NL_7|5.5MB/s|A003-260618
   cipher: aes-128-gcm
-  udp: true
-  type: ss
-  server: 158.173.20.208
-- name: 🇳🇱NL_6|3.0MB/s
-  password: k1dBOmOB4oqi7Ump37a1bQ
+  password: shadowsocks
+- server: 82.38.31.183
   port: 8080
-  cipher: chacha20-ietf-poly1305
-  udp: true
   type: ss
-  server: 82.38.31.183
+  udp: true
+  name: 🇳🇱NL_6|3.0MB/s
+  cipher: chacha20-ietf-poly1305
+  password: k1dBOmOB4oqi7Ump37a1bQ
 proxy-groups:
 - name: Fine
   type: select
   proxies:
   - Fine-Auto
   - DIRECT
-  - CA 🇨🇦 | @Raydikalx | EB4CDB
-  - 🇺🇸US_15|1.7MB/s|A004-260618
-  - US 🇺🇸 | @Raydikalx | E39004
-  - 🇺🇸US_2|2.1MB/s
   - 🇺🇸US_14|1.1MB/s|A004-260618
-  - US 🇺🇸 | @Raydikalx | F1AD8B
-  - v2go | 🇺🇸 US | VLESS | 115
+  - US 🇺🇸 | @Raydikalx | E39004
   - US 🇺🇸 | @Raydikalx | BA43A3
-  - US 🇺🇸 | @Raydikalx | CDF562
+  - 🇺🇸US_2|2.1MB/s
+  - US 🇺🇸 | @Raydikalx | F1AD8B
   - US 🇺🇸 | @Raydikalx | BF3066
+  - 🇺🇸US_15|1.7MB/s|A004-260618
+  - v2go | 🇺🇸 US | VLESS | 631
+  - US 🇺🇸 | @Raydikalx | CDF562
   - 🇳🇱NL_26|6.2MB/s|C002-260622
-  - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  - CA 🇨🇦 | @Raydikalx | BEBFBB
+  - v2go | VLESS | 72
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
   - 🇳🇱NL_7|5.5MB/s|A003-260618
   - 🇳🇱NL_6|3.0MB/s
-  default-selected: CA 🇨🇦 | @Raydikalx | EB4CDB
+  default-selected: 🇺🇸US_14|1.1MB/s|A004-260618
 - name: Fine-Auto
   type: url-test
   proxies:
-  - CA 🇨🇦 | @Raydikalx | EB4CDB
-  - 🇺🇸US_15|1.7MB/s|A004-260618
-  - US 🇺🇸 | @Raydikalx | E39004
-  - 🇺🇸US_2|2.1MB/s
   - 🇺🇸US_14|1.1MB/s|A004-260618
-  - US 🇺🇸 | @Raydikalx | F1AD8B
-  - v2go | 🇺🇸 US | VLESS | 115
+  - US 🇺🇸 | @Raydikalx | E39004
   - US 🇺🇸 | @Raydikalx | BA43A3
-  - US 🇺🇸 | @Raydikalx | CDF562
+  - 🇺🇸US_2|2.1MB/s
+  - US 🇺🇸 | @Raydikalx | F1AD8B
   - US 🇺🇸 | @Raydikalx | BF3066
+  - 🇺🇸US_15|1.7MB/s|A004-260618
+  - v2go | 🇺🇸 US | VLESS | 631
+  - US 🇺🇸 | @Raydikalx | CDF562
   - 🇳🇱NL_26|6.2MB/s|C002-260622
-  - 🇸🇬 Singapore, Singapore | 🌐 | [BL]
-  - CA 🇨🇦 | @Raydikalx | BEBFBB
+  - v2go | VLESS | 72
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
   - 🇳🇱NL_7|5.5MB/s|A003-260618
   - 🇳🇱NL_6|3.0MB/s
   url: https://play.google.com/store

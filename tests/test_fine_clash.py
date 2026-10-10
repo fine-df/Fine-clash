@@ -230,6 +230,8 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["max_source_age_days"] == 3
     assert cfg["sources"]["exploration_fraction"] == 0.2
     assert cfg["output"]["source_quality_file"] == "data/source_quality.json"
+    assert "direct_urls" not in cfg
+    assert "fail_closed" not in cfg["shenzhen_probe"]
     assert cfg["nodes"]["stable_pool_file"] == "data/stable_pool.yaml"
     assert cfg["nodes"]["max_stable_nodes"] == 20
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
@@ -807,6 +809,8 @@ def test_source_quality_score_rewards_real_quality():
          "endpoint_tested_total":50,"endpoint_passed_total":4,
          "shenzhen_decided_total":20,"shenzhen_passed_total":2}
     assert fc.source_quality_score(good)>fc.source_quality_score(bad)
+    # Probe-service outages are excluded from the measured pass/fail denominator.
+    assert fc.source_quality_score({**good,"probe_unknown_total":10000})==fc.source_quality_score(good)
 
 
 def test_source_selection_reserves_exploration_slots():
@@ -830,7 +834,8 @@ def test_source_selection_reserves_exploration_slots():
 def test_weighted_round_robin_gives_each_feed_a_seed_and_favors_good_sources():
     high=[f"h-{i}" for i in range(12)]
     low=[f"l-{i}" for i in range(12)]
-    picked=fc.round_robin_fingerprints([high,low],weights=[1.5,0.5])
+    # Empty source buckets must not shift weights for the remaining feeds.
+    picked=fc.round_robin_fingerprints([[],high,low],weights=[0.1,1.5,0.5])
     assert picked[:2]==["h-0","l-0"]
     # Compare the actual test window, not the complete schedule that contains every node.
     window=picked[:12]

@@ -409,7 +409,7 @@ class GlobalpingShenzhenProbe:
     def measure(self, node):
         """Retry transient probe-service errors; never convert unknown results to success."""
         retries=max(0,_safe_int(self.cfg.get("retries",1),1))
-        retryable={"probe-unavailable","timeout","no-stats","no-measurement-id","error","invalid-response","request-rejected"}
+        retryable={"probe-unavailable","timeout","no-stats","no-measurement-id","error","invalid-response"}
         result={"ok":False,"status":"not-measured"}
         for attempt in range(retries+1):
             result=self._measure_once(node)
@@ -1336,12 +1336,21 @@ def candidate_gate_passes(item, gate, clean, min_clean):
     return False
 
 def round_robin_fingerprints(source_buckets, weights=None):
-    """Give every feed a first sample, then allocate extra slots by quality weight."""
-    buckets=[list(dict.fromkeys(bucket)) for bucket in source_buckets if bucket]
+    """Give every non-empty feed a first sample, then allocate extra slots by quality weight."""
+    supplied=list(weights) if weights is not None else []
+    buckets=[]; bucket_weights=[]
+    for original_index,raw_bucket in enumerate(source_buckets):
+        bucket=list(dict.fromkeys(raw_bucket or []))
+        if not bucket:
+            continue
+        buckets.append(bucket)
+        weight=_safe_float(supplied[original_index],1.0) if original_index<len(supplied) else 1.0
+        bucket_weights.append(max(0.1,weight))
     if not buckets:
         return []
+    offsets=[0 for _ in buckets]
     if weights is None:
-        offsets=[0 for _ in buckets]; seen=set(); out=[]
+        seen=set(); out=[]
         while True:
             progressed=False
             for index,bucket in enumerate(buckets):
@@ -1355,10 +1364,7 @@ def round_robin_fingerprints(source_buckets, weights=None):
             if not progressed:
                 break
         return out
-    supplied=list(weights)
-    bucket_weights=[max(0.1,_safe_float(supplied[i],1.0) if i<len(supplied) else 1.0) for i in range(len(buckets))]
-    offsets=[0 for _ in buckets]; current=[0.0 for _ in buckets]; seen=set(); out=[]
-    # First pass gives every source a slot before any source gets a second.
+    current=[0.0 for _ in buckets]; seen=set(); out=[]
     for i,bucket in enumerate(buckets):
         while offsets[i]<len(bucket) and bucket[offsets[i]] in seen:
             offsets[i]+=1
@@ -1498,27 +1504,6 @@ def run():
         nodes_by_fp.setdefault(fp,node)
         stable_fps.add(fp)
     print("stable_pool: loaded %d previously validated candidates" % len(stable_nodes))
-    # ★ 直接订阅 URL 通道（2026-10-04 新增）：绕过 GitHub 搜索，直接拉取已知
-    #   免费订阅端点（clash/v2ray base64 / yaml），并入同一候选池走相同实测闸门。
-    direct_urls=rules.get("direct_urls") or []
-    if isinstance(direct_urls,list) and direct_urls:
-        try:
-            dsession=requests.Session()
-            for url in direct_urls:
-                try:
-                    resp=dsession.get(url,timeout=20,headers={"User-Agent":UA}); resp.raise_for_status()
-                    cnt=0
-                    for node in parse_subscription(resp.text):
-                        if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]):
-                            if not mihomo_node_is_testable(node):
-                                continue
-                            nodes_by_fp.setdefault(fingerprint(node),node); cnt+=1
-                    print("direct_url: loaded %d nodes from %s" % (cnt, url))
-                except requests.RequestException as e:
-                    print("direct_url: skip %s (%s)" % (url, type(e).__name__))
-        except Exception as e:
-            print("direct_url: fatal %s" % type(e).__name__)
-
     # Preserve previously published Fine nodes and stable-pool candidates first; allocate
     # the remaining test budget across source feeds using the measured quality weights.
     retention_cfg=rules.get("retention",{}) or {}
@@ -1548,6 +1533,8 @@ def run():
         "source_pool":source_pool_stats,
         "nodes_discovered":len(nodes),
         "previous_profile_candidates":len(previous_profile_nodes),
+        "stable_candidates":sum(1 for node in nodes if fingerprint(node) in (stable_fps|previous_fps)),
+        "exploration_candidates":sum(1 for node in nodes if fingerprint(node) not in (stable_fps|previous_fps)),
         "results":[]
     }
     report_lookup={}

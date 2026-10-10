@@ -15,7 +15,6 @@ sources:
   # 源头约束（2026-10-08）：
   #  - 主源 = GitHub 活跃仓库搜索；30 stars 为最低发现门槛，后续质量由节点实测决定。
   #  - 专项加强美国非机房（residential/ISP）节点：下方 US/American/USA/residential 类查询。
-  #  - 非 GIT 免费高质量订阅源可扩展进 direct_urls（须先验证稳定性，不填付费）。
   queries:
     - 'clash subscription in:name,description,readme archived:false stars:>=100'
     - 'clash config in:name,description,readme archived:false stars:>=100'
@@ -37,8 +36,6 @@ sources:
     - 'American residential proxy in:name,description,readme archived:false stars:>=50'
     - 'United States proxy nodes in:name,description,readme archived:false stars:>=50'
     - 'residential proxy in:name,description,readme archived:false stars:>=50'
-# 非 GIT 免费高质量订阅源可在此扩展（验证稳定性后补充）；禁止付费机场。
-direct_urls: []
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200
@@ -83,7 +80,6 @@ shenzhen_probe:
   retries: 1
   poll_interval_seconds: 1
   max_wait_seconds: 20
-  fail_closed: true
   stable_probe_grace_hours: 24
   api_token_env: 'GLOBALPING_API_TOKEN'
 sticky:

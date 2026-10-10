@@ -629,6 +629,108 @@ def source_is_fresh(source,max_age_days,now=None):
     return -timedelta(hours=24)<=age<=limit
 
 
+
+
+def load_source_quality(path):
+    try:
+        value=json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(value,dict) and isinstance(value.get("sources"),dict):
+            return {"version":1,"updated_at":value.get("updated_at"),"sources":value["sources"]}
+    except (OSError,json.JSONDecodeError):
+        pass
+    return {"version":1,"updated_at":None,"sources":{}}
+
+
+def source_quality_score(row):
+    """0-100 smoothed score; unavailable probes are excluded from node-failure counts."""
+    def rate(success,total):
+        return (float(success)+1.0)/(float(total)+2.0)
+    parsed=max(0,_safe_int(row.get("parsed_nodes_total"),0))
+    unique=max(0,_safe_int(row.get("unique_nodes_total"),0))
+    tested=max(0,_safe_int(row.get("endpoint_tested_total"),0))
+    passed=max(0,_safe_int(row.get("endpoint_passed_total"),0))
+    decided=max(0,_safe_int(row.get("shenzhen_decided_total"),0))
+    shenzhen=max(0,_safe_int(row.get("shenzhen_passed_total"),0))
+    diversity=rate(min(unique,parsed),parsed) if parsed else 0.5
+    endpoint=rate(min(passed,tested),tested) if tested else 0.5
+    local=rate(min(shenzhen,decided),decided) if decided else 0.5
+    return round(20*diversity+35*endpoint+45*local,1)
+
+
+def rank_source_list(sources, quality_rows, max_sources, exploration_fraction=0.2):
+    """Keep a high-yield majority while reserving slots for under-tested feeds."""
+    if not sources:
+        return []
+    try:
+        limit=max(1,int(max_sources))
+    except (TypeError,ValueError):
+        limit=len(sources)
+    def url_of(source):
+        return str(source.get("url") or "")
+    def sample_counts(source):
+        row=quality_rows.get(url_of(source),{})
+        return _safe_int(row.get("endpoint_tested_total"),0),_safe_int(row.get("shenzhen_decided_total"),0)
+    def stamp(source):
+        return source_timestamp(source) or datetime.min.replace(tzinfo=timezone.utc)
+    ordered=sorted(sources,key=lambda s:(source_quality_score(quality_rows.get(url_of(s),{})),
+                                          stamp(s),_safe_int(s.get("stars"),0),url_of(s)),reverse=True)
+    if len(ordered)<=limit:
+        return ordered
+    proven=[s for s in ordered if sample_counts(s)[0]>=10 and sample_counts(s)[1]>=3]
+    explore=[s for s in ordered if s not in proven]
+    try:
+        fraction=max(0.0,min(0.5,float(exploration_fraction)))
+    except (TypeError,ValueError):
+        fraction=0.2
+    slots=min(len(explore),limit,max(1,int(round(limit*fraction)))) if explore else 0
+    selected=proven[:limit-slots]+explore[:slots]
+    chosen={url_of(s) for s in selected}
+    for source in ordered:
+        if len(selected)>=limit:
+            break
+        if url_of(source) not in chosen:
+            selected.append(source); chosen.add(url_of(source))
+    return selected[:limit]
+
+
+SOURCE_RUN_METRICS=("parsed_nodes","structurally_valid_nodes","unique_nodes","duplicate_nodes",
+                    "tested_nodes","endpoint_passed","shenzhen_decided","shenzhen_passed",
+                    "shenzhen_failed","probe_unknown")
+SOURCE_TOTAL_METRICS={
+    "parsed_nodes":"parsed_nodes_total",
+    "structurally_valid_nodes":"structurally_valid_nodes_total",
+    "unique_nodes":"unique_nodes_total",
+    "duplicate_nodes":"duplicate_nodes_total",
+    "tested_nodes":"endpoint_tested_total",
+    "endpoint_passed":"endpoint_passed_total",
+    "shenzhen_decided":"shenzhen_decided_total",
+    "shenzhen_passed":"shenzhen_passed_total",
+    "shenzhen_failed":"shenzhen_failed_total",
+    "probe_unknown":"probe_unknown_total",
+}
+
+
+def update_source_quality(db, current, now=None):
+    stamp=(now or datetime.now(timezone.utc)).isoformat()
+    rows=db.setdefault("sources",{})
+    for url,metrics in current.items():
+        if not url:
+            continue
+        row=rows.setdefault(url,{"repo":metrics.get("repo"),"runs_seen":0})
+        row["repo"]=metrics.get("repo") or row.get("repo")
+        for key,total_key in SOURCE_TOTAL_METRICS.items():
+            row[total_key]=_safe_int(row.get(total_key),0)+_safe_int(metrics.get(key),0)
+        row["runs_seen"]=_safe_int(row.get("runs_seen"),0)+1
+        row["last_seen_at"]=stamp
+        row["last_run"]={key:_safe_int(metrics.get(key),0) for key in SOURCE_RUN_METRICS}
+        row["quality_score"]=source_quality_score(row)
+    db["version"]=1
+    db["updated_at"]=stamp
+    if len(rows)>500:
+        db["sources"]=dict(sorted(rows.items(),key=lambda item:str(item[1].get("last_seen_at") or ""),reverse=True)[:500])
+    return db
+
+
 class GitHubDiscovery:
     def __init__(self,token,cfg):
         self.cfg=cfg
@@ -1184,32 +1286,65 @@ def candidate_gate_passes(item, gate, clean, min_clean):
         return bool(gemini and google_play and clean_ok)
     return False
 
-def round_robin_fingerprints(source_buckets):
-    """Interleave candidate fingerprints across repositories before applying the test cap."""
+def round_robin_fingerprints(source_buckets, weights=None):
+    """Give every feed a first sample, then allocate extra slots by quality weight."""
     buckets=[list(dict.fromkeys(bucket)) for bucket in source_buckets if bucket]
-    offsets=[0 for _ in buckets]
-    seen=set()
-    out=[]
+    if not buckets:
+        return []
+    if weights is None:
+        offsets=[0 for _ in buckets]; seen=set(); out=[]
+        while True:
+            progressed=False
+            for index,bucket in enumerate(buckets):
+                offset=offsets[index]
+                while offset<len(bucket) and bucket[offset] in seen:
+                    offset+=1
+                if offset<len(bucket):
+                    fp=bucket[offset]; out.append(fp); seen.add(fp)
+                    offset+=1; progressed=True
+                offsets[index]=offset
+            if not progressed:
+                break
+        return out
+    supplied=list(weights)
+    bucket_weights=[max(0.1,_safe_float(supplied[i],1.0) if i<len(supplied) else 1.0) for i in range(len(buckets))]
+    offsets=[0 for _ in buckets]; current=[0.0 for _ in buckets]; seen=set(); out=[]
+    # First pass gives every source a slot before any source gets a second.
+    for i,bucket in enumerate(buckets):
+        while offsets[i]<len(bucket) and bucket[offsets[i]] in seen:
+            offsets[i]+=1
+        if offsets[i]<len(bucket):
+            fp=bucket[offsets[i]]; offsets[i]+=1
+            if fp not in seen:
+                out.append(fp); seen.add(fp)
     while True:
-        progressed=False
-        for index,bucket in enumerate(buckets):
-            offset=offsets[index]
-            while offset<len(bucket) and bucket[offset] in seen:
-                offset+=1
-            if offset<len(bucket):
-                fp=bucket[offset]
-                out.append(fp)
-                seen.add(fp)
-                offset+=1
-                progressed=True
-            offsets[index]=offset
-        if not progressed:
+        active=[i for i,bucket in enumerate(buckets) if offsets[i]<len(bucket)]
+        if not active:
             break
+        total=sum(bucket_weights[i] for i in active)
+        for i in active:
+            current[i]+=bucket_weights[i]
+        chosen=max(active,key=lambda i:(current[i],-i))
+        current[chosen]-=total
+        while offsets[chosen]<len(buckets[chosen]) and buckets[chosen][offsets[chosen]] in seen:
+            offsets[chosen]+=1
+        if offsets[chosen]>=len(buckets[chosen]):
+            continue
+        fp=buckets[chosen][offsets[chosen]]
+        offsets[chosen]+=1
+        if fp not in seen:
+            out.append(fp); seen.add(fp)
     return out
 
 
 def run():
-    rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
+    rules=load_rules()
+    source_path=ROOT/rules["output"]["source_file"]
+    history_path=ROOT/rules["output"]["history_file"]
+    report_path=ROOT/rules["output"]["report_file"]
+    quality_path=ROOT/rules["output"].get("source_quality_file","data/source_quality.json")
+    quality_db=load_source_quality(quality_path)
+    quality_rows=quality_db.get("sources",{})
     discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
     live_discovered=discovery.discover()
     source_now=datetime.now(timezone.utc)
@@ -1258,11 +1393,7 @@ def run():
         sources.append(s)
         source_pool_stats["cache_fresh"]+=1
     max_sources=int(rules["sources"].get("max_sources",120))
-    if len(sources)>max_sources:
-        def source_quality(row):
-            stamp=source_timestamp(row) or datetime.min.replace(tzinfo=timezone.utc)
-            return (stamp,int(row.get("nodes",0) or 0),int(row.get("stars",0) or 0),str(row.get("url") or ""))
-        sources=sorted(sources,key=source_quality,reverse=True)[:max_sources]
+    sources=rank_source_list(sources,quality_rows,max_sources,rules["sources"].get("exploration_fraction",0.2))
     source_pool_stats["accepted_sources"]=len(sources)
     print(
         "source_freshness: live=%d/%d stale_live=%d cached_fresh=%d cached_non_candidate=%d cached_stale_or_undated=%d accepted=%d max_age_days=%s"
@@ -1274,26 +1405,41 @@ def run():
     if not sources:
         source_pool_stats["no_fresh_sources"]=True
         print("source_warning: no fresh subscription sources; validating the saved stable Fine pool")
-    source_path.parent.mkdir(parents=True,exist_ok=True)
-    source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
-    nodes_by_fp={}; source_fingerprints_by_repo={}; session=requests.Session()
+    if sources:
+        source_path.parent.mkdir(parents=True,exist_ok=True)
+        source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
+    nodes_by_fp={}; node_source_by_fp={}; source_fingerprints_by_url={}; source_run_stats={}; session=requests.Session()
+    source_lookup={str(source.get("url") or ""):source for source in sources}
+    def ensure_source_stats(url, source=None):
+        if not url:
+            return None
+        source=source or source_lookup.get(str(url),{}) or {}
+        return source_run_stats.setdefault(str(url),{"repo":source.get("repo"),**{key:0 for key in SOURCE_RUN_METRICS}})
     for source in sources:
+        source_url=str(source.get("url") or "")
+        stats=ensure_source_stats(source_url,source)
         try:
-            response=session.get(source["url"],timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
-            repo_key=str(source.get("repo") or source.get("url") or "")
-            repo_bucket=source_fingerprints_by_repo.setdefault(repo_key,[])
-            for node in parse_subscription(response.text):
+            response=session.get(source_url,timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
+            parsed=parse_subscription(response.text)
+            stats["parsed_nodes"]+=len(parsed)
+            source_bucket=source_fingerprints_by_url.setdefault(source_url,[])
+            for node in parsed:
                 if node.get("type") not in rules["nodes"]["allowed_types"] or not node.get("server") or not node.get("port"):
                     continue
                 if not resolved_server_is_safe(node["server"]) or not mihomo_node_is_testable(node):
                     continue
+                stats["structurally_valid_nodes"]+=1
                 fp=fingerprint(node)
-                # Keep the first occurrence and its repository attribution so one
-                # enormous subscription cannot dominate the entire test budget.
                 if fp not in nodes_by_fp:
                     nodes_by_fp[fp]=node
-                    repo_bucket.append(fp)
-        except requests.RequestException: continue
+                    node_source_by_fp[fp]=source_url
+                    source_bucket.append(fp)
+                    stats["unique_nodes"]+=1
+                else:
+                    stats["duplicate_nodes"]+=1
+        except requests.RequestException as exc:
+            print("source_content_skip: %s (%s)" % (source_url,type(exc).__name__))
+            continue
     # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
     #   走和免费源完全相同的 gemini/play/深圳 实测闸门——活的才发布，过期的一样被筛掉。
@@ -1335,7 +1481,9 @@ def run():
     cap=int(rules["nodes"]["max_test_nodes"])
     ordered=previous_profile_nodes[:]
     ordered.extend([n for fp,n in nodes_by_fp.items() if fp in stable_fps and fingerprint(n) not in previous_fps])
-    source_order=round_robin_fingerprints(list(source_fingerprints_by_repo.values()))
+    source_urls=list(source_fingerprints_by_url)
+    source_weights=[max(0.5,min(1.5,0.5+source_quality_score(quality_rows.get(url,{}))/100.0)) for url in source_urls]
+    source_order=round_robin_fingerprints([source_fingerprints_by_url[url] for url in source_urls],source_weights)
     ordered.extend([nodes_by_fp[fp] for fp in source_order if fp not in stable_fps and fp not in previous_fps])
     dedup_ordered=[]; ordered_seen=set()
     for node in ordered:
@@ -1365,6 +1513,16 @@ def run():
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
         row=history.get(fp,{"first_seen":date.today().isoformat(),"last_seen":date.today().isoformat(),"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
+        source_url=node_source_by_fp.get(fp) or row.get("source_url")
+        source_info=source_lookup.get(str(source_url or ""),{})
+        if not source_info and row.get("source_repo"):
+            source_info={"repo":row.get("source_repo")}
+        source_stats=ensure_source_stats(source_url,source_info) if source_url else None
+        if source_stats is not None:
+            source_stats["tested_nodes"]+=1
+            row["source_url"]=source_url
+            if source_info.get("repo"):
+                row["source_repo"]=source_info["repo"]
         life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
         app_latency_ms=worst_endpoint_latency_ms(item)
         score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability,endpoint_latency_ms=app_latency_ms)
@@ -1385,6 +1543,8 @@ def run():
         max_endpoint_latency_ms=float(rules["nodes"].get("max_endpoint_latency_ms",2500))
         latency_ok=app_latency_ms is not None and app_latency_ms<=max_endpoint_latency_ms
         candidate=candidate_gate_passes(item,gate,clean,min_clean) and latency_ok
+        if source_stats is not None:
+            source_stats["endpoint_passed"]+=int(candidate)
 
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
         entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"app_latency_ms":app_latency_ms,"endpoint_latency_ms":item.get("endpoint_latency_ms"),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
@@ -1395,7 +1555,7 @@ def run():
             candidate_gate_passed += 1
             if shenzhen_cfg.get("enabled",False):
                 cached=cached_shenzhen_result(row,shenzhen_cfg)
-                candidate_records.append({"fp":fp,"node":node,"result":cached})
+                candidate_records.append({"fp":fp,"node":node,"result":cached,"source_url":source_url})
             else:
                 selected.append(node)
 
@@ -1413,8 +1573,22 @@ def run():
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
         row=history[fp]
         result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
+        source_url=rec.get("source_url") or node_source_by_fp.get(fp) or row.get("source_url")
+        source_info=source_lookup.get(str(source_url or ""),{})
+        if not source_info and row.get("source_repo"):
+            source_info={"repo":row.get("source_repo")}
+        source_stats=ensure_source_stats(source_url,source_info) if source_url else None
         if cached is None:
             save_shenzhen_history(row,result)
+        if source_stats is not None:
+            if result.get("ok"):
+                source_stats["shenzhen_decided"]+=1
+                if shenzhen_passes(result,shenzhen_cfg):
+                    source_stats["shenzhen_passed"]+=1
+                else:
+                    source_stats["shenzhen_failed"]+=1
+            else:
+                source_stats["probe_unknown"]+=1
         effective=result
         if (not result.get("ok") and fp in retained_fps
                 and result.get("status") in PROBE_UNKNOWN_STATUSES):
@@ -1435,6 +1609,19 @@ def run():
     for result in report["results"]:
         status=result.get("shenzhen_status","unknown")
         report["shenzhen_status_counts"][status]=report["shenzhen_status_counts"].get(status,0)+1
+    # Unknown probe outcomes are separate from measured node failures.
+    quality_db=update_source_quality(quality_db,source_run_stats)
+    quality_path.parent.mkdir(parents=True,exist_ok=True)
+    quality_path.write_text(json.dumps(quality_db,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
+    report["source_quality_top"]=[
+        {"source_url":url,"repo":quality_db["sources"].get(url,{}).get("repo") or stats.get("repo"),
+         "score":source_quality_score(quality_db["sources"].get(url,{})),
+         "tested_nodes":stats.get("tested_nodes",0),"endpoint_passed":stats.get("endpoint_passed",0),
+         "shenzhen_passed":stats.get("shenzhen_passed",0),"shenzhen_failed":stats.get("shenzhen_failed",0),
+         "probe_unknown":stats.get("probe_unknown",0)}
+        for url,stats in sorted(source_run_stats.items(),
+            key=lambda item:source_quality_score(quality_db["sources"].get(item[0],{})),reverse=True)[:20]
+    ]
     # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)

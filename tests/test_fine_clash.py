@@ -228,6 +228,8 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["max_repositories"] == 60
     assert cfg["sources"]["max_candidate_files_per_repo"] == 4
     assert cfg["sources"]["max_source_age_days"] == 3
+    assert cfg["sources"]["exploration_fraction"] == 0.2
+    assert cfg["output"]["source_quality_file"] == "data/source_quality.json"
     assert cfg["nodes"]["stable_pool_file"] == "data/stable_pool.yaml"
     assert cfg["nodes"]["max_stable_nodes"] == 20
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
@@ -796,3 +798,39 @@ def test_previous_profile_without_fine_group_is_not_trusted(tmp_path, monkeypatc
                        encoding="utf-8")
     monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
     assert fc.load_previous_published_nodes(profile, max_nodes=5) == []
+
+def test_source_quality_score_rewards_real_quality():
+    good={"parsed_nodes_total":100,"unique_nodes_total":80,
+          "endpoint_tested_total":50,"endpoint_passed_total":40,
+          "shenzhen_decided_total":20,"shenzhen_passed_total":17}
+    bad={"parsed_nodes_total":100,"unique_nodes_total":10,
+         "endpoint_tested_total":50,"endpoint_passed_total":4,
+         "shenzhen_decided_total":20,"shenzhen_passed_total":2}
+    assert fc.source_quality_score(good)>fc.source_quality_score(bad)
+
+
+def test_source_selection_reserves_exploration_slots():
+    sources=[
+        {"url":f"https://raw.example/proven-{i}.yaml","repo":f"x/proven-{i}",
+         "pushed_at":"2026-10-10T01:00:00Z","stars":100}
+        for i in range(4)
+    ]+[{"url":"https://raw.example/new.yaml","repo":"x/new",
+        "pushed_at":"2026-10-10T05:00:00Z","stars":40}]
+    quality={
+        s["url"]:{"parsed_nodes_total":50,"unique_nodes_total":40,
+                  "endpoint_tested_total":30,"endpoint_passed_total":24,
+                  "shenzhen_decided_total":10,"shenzhen_passed_total":8}
+        for s in sources[:-1]
+    }
+    picked=fc.rank_source_list(sources,quality,max_sources=3,exploration_fraction=0.34)
+    assert len(picked)==3
+    assert "https://raw.example/new.yaml" in {s["url"] for s in picked}
+
+
+def test_weighted_round_robin_gives_each_feed_a_seed_and_favors_good_sources():
+    high=[f"h-{i}" for i in range(12)]
+    low=[f"l-{i}" for i in range(12)]
+    picked=fc.round_robin_fingerprints([high,low],weights=[1.5,0.5])
+    assert picked[:2]==["h-0","l-0"]
+    assert sum(x.startswith("h-") for x in picked)>sum(x.startswith("l-") for x in picked)
+

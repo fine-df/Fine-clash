@@ -9,6 +9,7 @@ sources:
   max_source_fetches: 180
   source_workers: 12
   max_source_age_days: 3
+  exploration_fraction: 0.2
   max_source_bytes: 8000000
   min_nodes_per_source: 2
   # 源头约束（2026-10-08）：
@@ -108,3 +109,4 @@ output:
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
   report_file: 'data/last_run.json'
+  source_quality_file: 'data/source_quality.json'

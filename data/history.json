@@ -151,6 +151,14 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "00c126dc43b104429309": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "00c32d826c4ace55ef35": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -252,7 +260,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "017c9ea9fa06367a27e2": {
     "first_seen": "2026-10-10",
@@ -359,7 +369,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
   },
   "0227abf498315d6f3a76": {
     "first_seen": "2026-10-04",
@@ -1181,7 +1193,9 @@
     "shenzhen_ping_ms": 197.0,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 1,
-    "shenzhen_status": "partial-ok"
+    "shenzhen_status": "partial-ok",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
   "075c5c552a3b5771448e": {
     "first_seen": "2026-09-30",
@@ -1867,7 +1881,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "0af9d3158cd06c833426": {
     "first_seen": "2026-10-06",
@@ -2071,6 +2087,14 @@
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
+  },
+  "0bcf9d1e61b50f4205a1": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "0bda1b43cfe6a4e6a7a3": {
     "first_seen": "2026-10-07",
@@ -2516,6 +2540,23 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats"
   },
+  "0e04dddff201caa0aeb8": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-10T16:03:44.069957+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.069957+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 273.6,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok"
+  },
   "0e25701ea44e831663c5": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 1,
@@ -2861,7 +2902,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
   "1005c4211f504d585110": {
     "first_seen": "2026-10-02",
@@ -3058,7 +3101,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "1130a5aff3827afae8c0": {
     "first_seen": "2026-10-10",
@@ -3771,6 +3816,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "15e0803f5d1642517814": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "15e6950623e425f06d31": {
     "first_seen": "2026-10-08",
     "gemini_pass_count": 2,
@@ -3834,6 +3887,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "164f172e3fccf6305fe0": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "165cf6822d32f4156038": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 1,
@@ -3869,7 +3930,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "16704f6b09994a6b8cad": {
     "first_seen": "2026-10-04",
@@ -4929,7 +4992,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "1c7a220493f84b04ed2f": {
     "first_seen": "2026-10-10",
@@ -5132,7 +5197,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
   "1dcabb633b6cc2f8d086": {
     "first_seen": "2026-10-04",
@@ -5697,6 +5764,14 @@
     "play_pass_count": 2,
     "seen_count": 2
   },
+  "209177604c05d44e725f": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "20a9afb47b73f2442607": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
@@ -5806,7 +5881,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "219be70474622967f2c4": {
     "first_seen": "2026-10-10",
@@ -5923,6 +6000,14 @@
     "shenzhen_ping_ms": 244.9,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "2252f46e366a6dba8524": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
   },
   "22573020d2b0db9fc9fc": {
     "first_seen": "2026-10-07",
@@ -7000,6 +7085,14 @@
     "play_pass_count": 2,
     "seen_count": 1
   },
+  "29b60a552686fcbd2f79": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "29d97444f00cecaca566": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 6,
@@ -7410,7 +7503,9 @@
     "shenzhen_last_attempt_at": "2026-10-10T15:34:43.547867+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
-    "shenzhen_last_error": "no-stats"
+    "shenzhen_last_error": "no-stats",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
   "2c49c6576cc6863a7058": {
     "first_seen": "2026-10-05",
@@ -7480,7 +7575,9 @@
     "shenzhen_ping_ms": 492.3,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 1,
-    "shenzhen_status": "partial-ok"
+    "shenzhen_status": "partial-ok",
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
   "2cdc923fda6de2ce6436": {
     "first_seen": "2026-10-06",
@@ -10127,6 +10224,18 @@
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
+  "3e725ac889de88fc607a": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070093+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "3e8b1e8d2d73adc57b87": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 0,
@@ -11651,6 +11760,14 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "47a5936b61ca21793b1b": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "47ab5212bfff7c960c40": {
     "first_seen": "2026-10-01",
     "gemini_pass_count": 1,
@@ -12316,7 +12433,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "itsyebekhe/PSG",
+    "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
   "4bb6991e42f40325e2cc": {
     "first_seen": "2026-10-05",
@@ -12899,7 +13018,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
   "50353403b0963d5fd4c9": {
     "first_seen": "2026-10-07",
@@ -13089,7 +13210,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 1,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
   "51919ad35e939535e8d2": {
     "first_seen": "2026-10-04",
@@ -13171,6 +13294,14 @@
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
+  },
+  "5221806886a5a30462b4": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "522a0357b2114f21cf05": {
     "first_seen": "2026-10-10",
@@ -14124,8 +14255,8 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 2,
     "shenzhen_status": "ok",
-    "source_repo": "ebrasha/free-v2ray-public-list",
-    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
   },
   "58b2e4472cf03d205005": {
     "first_seen": "2026-10-10",
@@ -16164,6 +16295,23 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "6503017857d6552886bb": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070136+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070136+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 221.3,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok"
+  },
   "650d38bb6f493708c6c9": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 1,
@@ -16265,7 +16413,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "65657c26f34fce7e5ae2": {
     "first_seen": "2026-09-30",
@@ -16534,7 +16684,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "6731743f06496d16cadc": {
     "first_seen": "2026-10-09",
@@ -16840,7 +16992,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
   },
   "69128c6cdcff31a1df98": {
     "first_seen": "2026-10-02",
@@ -16872,7 +17026,7 @@
     "shenzhen_probe_observations": 2,
     "shenzhen_status": "ok",
     "source_repo": "0xRadikal/Free-v2ray-Configs",
-    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
   "6946eea3644a0860aaf6": {
     "first_seen": "2026-10-04",
@@ -17183,7 +17337,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
   },
   "6ba22f2072fab814e2b0": {
     "first_seen": "2026-10-04",
@@ -17306,6 +17462,14 @@
     "shenzhen_ping_ms": 274.1,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "6cc83c2e6bfc26c92c07": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "6cd032ce033d092ee0fd": {
     "first_seen": "2026-10-04",
@@ -17537,6 +17701,14 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
   },
+  "6e693632fbb720f7de22": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "6e6d43e331d35a12fb2e": {
     "first_seen": "2026-10-01",
     "gemini_pass_count": 0,
@@ -17747,7 +17919,9 @@
     "shenzhen_loss_pct": null,
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
-    "shenzhen_status": "no-stats"
+    "shenzhen_status": "no-stats",
+    "source_repo": "cbusifabcap/daily_free_vpn",
+    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml"
   },
   "6fca4db9e4b4f0398f3d": {
     "first_seen": "2026-10-04",
@@ -17971,7 +18145,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "712d5a891d15825bed37": {
     "first_seen": "2026-10-07",
@@ -18310,7 +18486,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
   "72f78d4fbe7f09c8a7eb": {
     "first_seen": "2026-10-01",
@@ -18911,7 +19089,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
   "76b26bfc7c2b5bcc5136": {
     "first_seen": "2026-10-10",
@@ -19652,7 +19832,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "itsyebekhe/PSG",
+    "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
   "7ae8afe1f2a85b5a16a8": {
     "first_seen": "2026-10-06",
@@ -19763,7 +19945,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "7c0f534cc440c357da01": {
     "first_seen": "2026-10-10",
@@ -19881,7 +20065,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 1,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt"
   },
   "7cafe4dfd567133bb6d2": {
     "first_seen": "2026-10-10",
@@ -20094,7 +20280,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
   "7dc88e8afbc44b08a309": {
     "first_seen": "2026-10-06",
@@ -21230,6 +21418,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "855f2b29208042a5ac4f": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "8571821884aab9735b84": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -21518,6 +21714,14 @@
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
+  },
+  "86bf8d9cb04a6513397d": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "86c48e7d768c1964b99c": {
     "first_seen": "2026-10-06",
@@ -21841,6 +22045,14 @@
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
+  "8913f558865dc56d174f": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "893022f26267bafe7d2e": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -22001,11 +22213,15 @@
     "pass_count": 1,
     "play_pass_count": 1,
     "seen_count": 4,
-    "shenzhen_checked_at": "2026-10-06T00:43:35.941935+00:00",
-    "shenzhen_loss_pct": null,
-    "shenzhen_ping_ms": null,
-    "shenzhen_probe_city": null,
-    "shenzhen_status": "timeout",
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070125+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070125+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 190.0,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok",
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_SS%2BAll_RUS_v2rayN.txt"
   },
@@ -22276,6 +22492,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "8c56a5836d3a7a6b337d": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070114+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "8c7205699a999b4cfc99": {
     "first_seen": "2026-10-07",
@@ -22705,7 +22933,7 @@
     "pass_count": 1,
     "play_pass_count": 1,
     "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T15:34:43.548116+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070085+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -23039,10 +23267,15 @@
     "pass_count": 0,
     "play_pass_count": 1,
     "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T15:34:43.548071+00:00",
-    "shenzhen_last_attempt_status": "no-stats",
-    "shenzhen_last_attempts": 2,
-    "shenzhen_last_error": "no-stats",
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070070+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070070+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 263.4,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok",
     "source_repo": "cbusifabcap/daily_free_vpn",
     "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/Clash.yml"
   },
@@ -23282,6 +23515,14 @@
     "last_seen": "2026-10-04",
     "pass_count": 1,
     "play_pass_count": 1,
+    "seen_count": 1
+  },
+  "93546e589da0d40793ec": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
     "seen_count": 1
   },
   "9370b3c5308514ba16f1": {
@@ -23568,6 +23809,14 @@
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-04",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "94da62461f1623efd0b0": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -23966,6 +24215,14 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 2
+  },
+  "97577900726e638fdbd9": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
   },
   "97672cf05da97114a359": {
     "first_seen": "2026-10-04",
@@ -25314,7 +25571,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "a0b4621ad88293bc5ff4": {
     "first_seen": "2026-10-07",
@@ -25493,7 +25752,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "a19c269bc1143a23e3a0": {
     "first_seen": "2026-10-04",
@@ -26152,6 +26413,14 @@
     "shenzhen_ping_ms": 225.9,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "a5078e163eee4e9f2c1b": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "a50883d428ccc873110c": {
     "first_seen": "2026-10-06",
@@ -28007,7 +28276,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "b15ea4dfb45648a0470d": {
     "first_seen": "2026-10-10",
@@ -29253,7 +29524,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "b96956f74e82fc2631eb": {
     "first_seen": "2026-10-04",
@@ -29753,7 +30026,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "bc7d7e44e47a478ba7a8": {
     "first_seen": "2026-10-10",
@@ -29868,10 +30143,17 @@
     "pass_count": 1,
     "play_pass_count": 1,
     "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T15:34:43.548099+00:00",
-    "shenzhen_last_attempt_status": "no-stats",
-    "shenzhen_last_attempts": 2,
-    "shenzhen_last_error": "no-stats"
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070104+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070104+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 25.0,
+    "shenzhen_ping_ms": 233.6,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
   "bd690ae80358184b200a": {
     "first_seen": "2026-10-08",
@@ -30092,7 +30374,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "be95e7c3dbf6ba64459f": {
     "first_seen": "2026-10-10",
@@ -30100,7 +30384,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
   },
   "be9ef76f62fdbdcbb328": {
     "first_seen": "2026-10-07",
@@ -30979,6 +31265,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "c41337d0945799b0ace4": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "c431cdfdd3a87f338848": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
@@ -31618,7 +31912,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "itsyebekhe/PSG",
+    "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
   "c893d05b701512e2d1a0": {
     "first_seen": "2026-10-08",
@@ -32370,6 +32666,14 @@
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-06",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "cd8d4c520bddbdd18a04": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -33425,6 +33729,14 @@
     "play_pass_count": 0,
     "seen_count": 2
   },
+  "d3b2627e1f349430f02a": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "d3bc83192feb1288cb92": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 0,
@@ -33777,6 +34089,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "d590823c4d04bd537a04": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "d590f171315850975617": {
     "first_seen": "2026-10-02",
     "gemini_pass_count": 0,
@@ -34081,6 +34401,14 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 3
+  },
+  "d79b5c9fb303b70e5d2c": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "d7a547177510ee31eaa2": {
     "first_seen": "2026-10-07",
@@ -34618,7 +34946,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
   },
   "db88b8854f71e0572df4": {
     "first_seen": "2026-10-01",
@@ -34780,6 +35110,14 @@
     "shenzhen_ping_ms": 180.4,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "dc718742cd23ccac5f2e": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
   },
   "dc7656035d710c5c8185": {
     "first_seen": "2026-10-07",
@@ -35090,7 +35428,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
   "df224f7cfc0459818fc3": {
     "first_seen": "2026-10-04",
@@ -35144,6 +35484,15 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070017+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070017+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 232.0,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok",
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
   },
@@ -35853,7 +36202,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
   "e44a4438323eb9b0f363": {
     "first_seen": "2026-10-08",
@@ -36051,6 +36402,14 @@
     "play_pass_count": 2,
     "seen_count": 2
   },
+  "e57ded663d8f27c171f4": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "e57f764ae9211d55e464": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 1,
@@ -36115,6 +36474,16 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
+  },
+  "e5df5745571c03e75b71": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
     "seen_count": 1
   },
   "e5fb034a4d2d706e3cea": {
@@ -36138,6 +36507,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "e61125c2ffc16e8b2d6a": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "e61e7a48b94fef807790": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -36152,7 +36529,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 1,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "e62d7006f64849e4e5b3": {
     "first_seen": "2026-10-08",
@@ -36532,6 +36911,23 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "e886641c31fec7658bec": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-10",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-10T16:03:44.070053+00:00",
+    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070053+00:00",
+    "shenzhen_last_attempt_status": "partial-ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 225.9,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 1,
+    "shenzhen_status": "partial-ok"
   },
   "e8a67508a76923905ff3": {
     "first_seen": "2026-10-03",
@@ -37131,7 +37527,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
   },
   "ebbc4243d81e82ab7d8b": {
     "first_seen": "2026-10-04",
@@ -37550,6 +37948,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "ee46beac5164e2d3c1fe": {
+    "first_seen": "2026-10-10",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "ee4fa373a91cc2308d73": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -37790,7 +38196,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
   },
   "efa18dbc165cfae9fef8": {
     "first_seen": "2026-10-06",
@@ -38476,7 +38884,9 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 1,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "f3ce93ed022120f441f9": {
     "first_seen": "2026-10-06",

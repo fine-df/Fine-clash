@@ -73,6 +73,27 @@ jobs:
         run: |
           python fine_clash.py || { echo '--- mihomo logs (build failed) ---'; find /tmp -maxdepth 2 -name mihomo.log -exec echo "== {} ==" \; -exec cat {} \; ; exit 1; }
 
+      - name: Persist diagnostic metrics after failed pool build
+        if: failure() && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/history.json data/sources.json data/last_run.json data/source_quality.json
+          if git diff --cached --quiet; then
+            echo 'no diagnostic changes to persist'
+            exit 0
+          fi
+          git fetch --no-tags origin main
+          checked_out_sha="$(git rev-parse HEAD)"
+          latest_main_sha="$(git rev-parse FETCH_HEAD)"
+          if [[ "$checked_out_sha" != "$latest_main_sha" ]]; then
+            echo "main advanced while this diagnostic run was running; refusing stale metrics commit."
+            exit 1
+          fi
+          git commit -m 'chore: persist Fine pool diagnostics'
+          git push origin HEAD:main
+
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
         # The public subscription is Fine-only; never pass paid-upstream secrets here.

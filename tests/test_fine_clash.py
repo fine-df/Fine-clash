@@ -832,7 +832,9 @@ def test_weighted_round_robin_gives_each_feed_a_seed_and_favors_good_sources():
     low=[f"l-{i}" for i in range(12)]
     picked=fc.round_robin_fingerprints([high,low],weights=[1.5,0.5])
     assert picked[:2]==["h-0","l-0"]
-    assert sum(x.startswith("h-") for x in picked)>sum(x.startswith("l-") for x in picked)
+    # Compare the actual test window, not the complete schedule that contains every node.
+    window=picked[:12]
+    assert sum(x.startswith("h-") for x in window)>sum(x.startswith("l-") for x in window)
 
 def test_globalping_measure_retries_a_transient_unknown_result(monkeypatch):
     probe=fc.GlobalpingShenzhenProbe({"retries":1})

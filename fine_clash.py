@@ -1489,9 +1489,7 @@ def run():
         except requests.RequestException as exc:
             print("source_content_skip: %s (%s)" % (source_url,type(exc).__name__))
             continue
-    # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
-    #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
-    #   走和免费源完全相同的 gemini/play/深圳 实测闸门——活的才发布，过期的一样被筛掉。
+    # Re-test the saved stable Fine candidates alongside current source discovery.
     stable_file=ROOT/rules["nodes"].get("stable_pool_file","data/stable_pool.yaml")
     stable_fps=set()
     stable_nodes=load_stable_pool_nodes(stable_file,rules["nodes"].get("max_stable_nodes",20))
@@ -1521,9 +1519,8 @@ def run():
         except Exception as e:
             print("direct_url: fatal %s" % type(e).__name__)
 
-    # Preserve recently published and curated nodes first, then fairly sample across
-    # source repositories. Source discovery is ordered by repository update time, so
-    # simply slicing the first 200 unique nodes lets one large feed crowd out all others.
+    # Preserve previously published Fine nodes and stable-pool candidates first; allocate
+    # the remaining test budget across source feeds using the measured quality weights.
     retention_cfg=rules.get("retention",{}) or {}
     previous_profile_nodes=load_previous_published_nodes(ROOT / "live_clash.yaml", retention_cfg.get("max_previous_nodes",5) if retention_cfg.get("enabled",True) else 0)
     previous_fps={fingerprint(n) for n in previous_profile_nodes}

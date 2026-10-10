@@ -67,14 +67,7 @@ jobs:
 
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' }}
-        env:
-          # When both secrets are populated, build_final.py fetches the upstream
-          # during the build and inlines its nodes. That publishes the nodes
-          # themselves, which the owner accepted on 2026-10-07. Nothing here ever
-          # needs the raw URL to appear in the repo.
-          FINE_BITZ_SUBSCRIPTION_URL: ${{ secrets.FINE_BITZ_SUBSCRIPTION_URL }}
-          FINE_BITZ_ALLOWED_HOSTS: ${{ secrets.FINE_BITZ_ALLOWED_HOSTS }}
-          FINE_BITZ_ALLOW_PUBLIC_CREDENTIAL: ${{ secrets.FINE_BITZ_ALLOW_PUBLIC_CREDENTIAL }}
+        # The public subscription is Fine-only; never pass paid-upstream secrets here.
         run: python build_final.py data/fine_pool.yaml
 
       - name: Validate profile

@@ -232,66 +232,35 @@ def suffix_rules(domains,group):
     return [f"DOMAIN-SUFFIX,{d},{group}" for d in domains]
 
 def build_proxy_groups(fine_names, bitz_names=None):
-    """Build symmetric Fine / Bitz groups, each usable manually and via Auto.
-
-    2026-10-07 调整：
-      - 恢复 Bitz 组（付费上游），节点在构建期直接展开进最终 proxies。
-      - 两组结构对称：`<组>-Auto`(url-test 自动测速选优) + DIRECT(强制直连)
-        + 组内具体节点，全部可手动点选。
-      - Fine 保持不变，仍是 validated-free-pool；大流量规则仍指向 Fine。
-      - Bitz 只在设置了订阅 URL 的环境变量时出现；未设置时不产出任何 Bitz
-        结构，公开订阅退化为 Fine-only，避免付费 token 泄露。
-    """
-    # `fine_names[0]` is the sticky-quality primary chosen by fine_clash.py's
-    # sticky ordering (previous node if still Shenzhen-quality, else freshest
-    # quality node). Pinning it as the default-selected keeps the connection
-    # stable across subscription updates.
+    """Build the public Fine-only groups. Bitz is intentionally not published."""
+    if not fine_names:
+        raise ValueError("Fine pool must be non-empty")
     primary=fine_names[0]
-    groups=[
+    return [
         {"name":"Fine","type":"select","proxies":["Fine-Auto","DIRECT"]+fine_names,"default-selected":primary},
         {"name":"Fine-Auto","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
     ]
-    if bitz_names:
-        # Every upstream node is listed explicitly: that is what makes the file
-        # load in Shadowrocket / Clash for Android / v2rayN, none of which know
-        # about mihomo's `proxy-providers`. `Fine` stays listed too, so a future
-        # build whose fetch failed still leaves a working exit in the group
-        # instead of a MATCH blackhole.
-        groups += [
-            {"name":"Bitz","type":"select","proxies":["Bitz-Auto","DIRECT","Fine"]+bitz_names,"default-selected":"Bitz-Auto"},
-            {"name":"Bitz-Auto","type":"url-test","proxies":bitz_names,"url":BITZ_HEALTH_CHECK_URL,"interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
-        ]
-    return groups
+
 
 def build_config(fine_nodes):
     if not fine_nodes: raise ValueError("Fine pool must be non-empty")
     fine_nodes=unique_node_names(fine_nodes)
     fine_names=[n["name"] for n in fine_nodes]
-    bitz_url=bitz_subscription_url()
+    # Security lockdown (2026-10-10): the public profile is Fine-only.
+    # Ignore all Bitz subscription environment variables and never download or inline
+    # paid-upstream nodes or credentials into this publicly distributed file.
     bitz_nodes=[]
-    if bitz_url:
-        try:
-            bitz_nodes=fetch_bitz_nodes(bitz_url)
-        except Exception as exc:  # noqa: BLE001 - never let a fetch failure ship a broken profile
-            print(f"WARNING: could not fetch Bitz nodes ({exc!r}); degrading to Fine-only.")
-    # A group with zero members would swallow every MATCH-bound connection, so
-    # Bitz only takes over the fallback when nodes actually arrived.
-    bitz_enabled=bool(bitz_nodes)
+    bitz_enabled=False
     # Bulk traffic (video / app stores) stays on Fine, the validated free pool.
-    # Every other proxy-bound destination falls through to Bitz. When Bitz is
-    # not configured the profile must never lose its fallback, so MATCH stays
-    # on Fine instead of pointing at a group that does not exist.
+    # All non-domestic fallback traffic uses Fine. Bitz is disabled.
     rules=LOCAL_IOT_DIRECT+WPS_DIRECT_RULES+PRIVATE_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT"]
-    rules.append("MATCH,Bitz" if bitz_enabled else "MATCH,Fine")
+    rules.append("MATCH,Fine")
     config={
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
         "profile":{"store-selected":True},
     }
-    if bitz_enabled:
-        bitz_nodes=unique_node_names(bitz_nodes)
-    bitz_names=[n["name"] for n in bitz_nodes]
-    config["proxies"]=fine_nodes+bitz_nodes
-    config["proxy-groups"]=build_proxy_groups(fine_names,bitz_names)
+    config["proxies"]=fine_nodes
+    config["proxy-groups"]=build_proxy_groups(fine_names)
     config["tun"]={"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True}
     config["dns"]={"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
                "nameserver-policy":{"+.wps.cn":["223.5.5.5","119.29.29.29"],"+.wps.com":["223.5.5.5","119.29.29.29"],"+.wps365.com":["223.5.5.5","119.29.29.29"],"+.kdocs.cn":["223.5.5.5","119.29.29.29"],"+.wpscdn.cn":["223.5.5.5","119.29.29.29"],"+.wpscdn.com":["223.5.5.5","119.29.29.29"],"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"]},

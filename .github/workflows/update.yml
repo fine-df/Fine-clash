@@ -16,13 +16,14 @@ env:
   MIHOMO_VERSION: v1.19.28
 
 concurrency:
-  group: fine-clash-update
+  # v2 unblocks the new bounded scanner from a pre-fix run stuck in the old concurrency group.
+  group: fine-clash-update-v2
   cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -150,6 +151,15 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]'
         run: |
           set -euo pipefail
+          # A run may have spent many minutes testing nodes. Never publish results
+          # generated from an older checkout if main advanced while this job ran.
+          git fetch --no-tags origin main
+          checked_out_sha="$(git rev-parse HEAD)"
+          latest_main_sha="$(git rev-parse FETCH_HEAD)"
+          if [[ "$checked_out_sha" != "$latest_main_sha" ]]; then
+            echo "main advanced while this build was running; refusing stale publication."
+            exit 1
+          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add live_clash.yaml data/history.json data/sources.json data/last_run.json

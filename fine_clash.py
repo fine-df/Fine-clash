@@ -315,7 +315,7 @@ def lifespan_days(row):
 
 
 def load_previous_published_nodes(path, max_nodes=5):
-    """Load only the previous Fine pool, not Bitz/upstream nodes, as the continuity reserve."""
+    """Load only nodes referenced by the previous Fine policy group as continuity reserve."""
     try:
         limit=max(0,int(max_nodes))
     except (TypeError,ValueError):

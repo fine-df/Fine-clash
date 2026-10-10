@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261010000100 | Bitz=disabled | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v4 | fine-clash-version:20261010000100 | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'

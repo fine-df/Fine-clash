@@ -1,6 +1,5 @@
 import base64
 import inspect
-import re
 import pytest
 from pathlib import Path
 
@@ -16,8 +15,6 @@ def test_final_proxy_groups_single_fine_with_direct():
     fine_names = ["Fine-1", "Fine-2"]
     groups = bf.build_proxy_groups(fine_names)
     by_name = {g["name"]: g for g in groups}
-    # Bitz stays absent unless its subscription URL is supplied by the
-    # environment; the public profile must stay Fine-only by default.
     assert set(by_name) == {"Fine", "Fine-Auto"}
     # Sticky-first: the first (quality-ranked) node is pinned as default-selected.
     assert by_name["Fine"]["default-selected"] == fine_names[0]
@@ -43,11 +40,7 @@ def test_sticky_primary_is_pinned_as_default_selected():
     assert by_name["Fine"]["default-selected"] != "Fine-Auto"
 
 
-def test_final_config_is_fine_only(monkeypatch):
-    # A public build has no Bitz credential available, so it must degrade to a
-    # fully self-contained Fine-only profile rather than referencing a group
-    # that would never be populated.
-    monkeypatch.delenv(bf.BITZ_URL_ENV, raising=False)
+def test_final_config_is_fine_only():
     cfg = bf.build_config([_fine_node()])
     assert cfg["mode"] == "rule"
     assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
@@ -62,87 +55,15 @@ def test_final_config_is_fine_only(monkeypatch):
         assert domain in cfg["dns"]["nameserver-policy"]
 
 
-def test_final_config_leaves_mihomo_default_ua_untouched_without_bitz(monkeypatch):
-    # Without Bitz there is no reason to spoof anything, so mihomo keeps its own UA.
-    monkeypatch.delenv(bf.BITZ_URL_ENV, raising=False)
-    cfg = bf.build_config([_fine_node()])
-    assert "global-ua" not in cfg
-
-
-def _bitz_node():
-    return {"name": "Bitz-1", "type": "trojan", "server": "bitz.example", "port": 443,
-            "password": "pw", "udp": True}
-
-
-def test_public_profile_ignores_bitz_environment_and_never_fetches_it(monkeypatch):
-    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "upstream.example")
-    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://upstream.example/sub?token=credential")
-    monkeypatch.setenv(bf.BITZ_PUBLIC_ENV, "1")
-    def fail_if_called(*args, **kwargs):
-        raise AssertionError("public builder must not fetch Bitz")
-    monkeypatch.setattr(bf, "fetch_bitz_nodes", fail_if_called)
-    cfg = bf.build_config([_fine_node()])
-    assert [n["name"] for n in cfg["proxies"]] == ["Fine-1"]
-    assert {g["name"] for g in cfg["proxy-groups"]} == {"Fine", "Fine-Auto"}
-    assert cfg["rules"][-1] == "MATCH,Fine"
-
-
-def test_final_config_ignores_bitz_group_arguments():
-    groups = bf.build_proxy_groups(["Fine-1", "Fine-2"], ["Bitz-1", "Bitz-2"])
-    by_name = {g["name"]: g for g in groups}
-    assert set(by_name) == {"Fine", "Fine-Auto"}
-    assert by_name["Fine"]["proxies"] == ["Fine-Auto", "DIRECT", "Fine-1", "Fine-2"]
-
-
-def test_proxy_from_uri_expands_the_protocols_the_upstream_serves():
-    trojan = bf.proxy_from_uri("trojan://pw@h.example:443?sni=s.example&allowInsecure=1#节点")
-    assert trojan["name"] == "节点"
-    assert trojan["type"] == "trojan" and trojan["password"] == "pw"
-    assert trojan["sni"] == "s.example" and trojan["skip-cert-verify"] is True
-    vless = bf.proxy_from_uri("vless://11111111-2222-3333-4444-555555555555@h.example:443?security=reality&pbk=k&sid=1&flow=xtls-rprx-vision#v")
-    assert vless["type"] == "vless" and vless["uuid"] == "11111111-2222-3333-4444-555555555555"
-    assert vless["reality-opts"] == {"public-key": "k", "short-id": "1"}
-    assert bf.proxy_from_uri("http://nope") is None
-
-
-def test_repository_contains_no_credential_bearing_url():
-    # Regression guard for the 2026-10-04 incident, where a paid upstream URL with
-    # its token was committed into the publicly published profile. Rather than
-    # free-text scanning (a node's ws path can be 16 hex chars and looks identical
-    # to a secret), this extracts URLs and reuses the production detector so the
-    # two can never drift apart.
-    repo_root = Path(bf.__file__).resolve().parent
-    paid_host = "cont." + "bbkcdpub" + ".com"
-    url_re = re.compile(r"https?://[^\s\"'<>]+")
-    patterns = ("*.py", "*.yml", "*.yaml", "*.sh", "*.md", "*.json", "*.toml")
-    offenders = []
-    for path in sorted(p for pat in patterns for p in repo_root.rglob(pat)):
-        # This file intentionally holds credential-shaped fixtures for the tests below.
-        if path.name == Path(__file__).name:
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        if paid_host in text:
-            offenders.append(f"{path.relative_to(repo_root)}: paid upstream host")
-        for url in url_re.findall(text):
-            if bf.bitz_url_carries_credential(url):
-                offenders.append(f"{path.relative_to(repo_root)}: {url[:72]}")
-    assert offenders == []
-
-
-def test_public_builder_never_fetches_bitz_even_when_secret_is_set(monkeypatch):
-    monkeypatch.setenv(bf.BITZ_URL_ENV, "https://relay.example/sub?token=credential")
-    monkeypatch.setenv(bf.BITZ_ALLOWED_HOSTS_ENV, "relay.example")
-    monkeypatch.setenv(bf.BITZ_PUBLIC_ENV, "1")
-    calls = []
-    monkeypatch.setattr(bf, "fetch_bitz_nodes", lambda *args, **kwargs: calls.append(args))
+def test_public_profile_is_self_contained_fine_only():
     config = bf.build_config([_fine_node()])
-    assert calls == []
-    assert [node["name"] for node in config["proxies"]] == ["Fine-1"]
+    assert "proxy-providers" not in config
+    assert "global-ua" not in config
     assert config["rules"][-1] == "MATCH,Fine"
-    assert {g["name"] for g in config["proxy-groups"]} == {"Fine", "Fine-Auto"}
+    assert {group["name"] for group in config["proxy-groups"]} == {"Fine", "Fine-Auto"}
 
 
-def test_load_previous_published_nodes_ignores_bitz_group(tmp_path, monkeypatch):
+def test_load_previous_published_nodes_only_keeps_members_of_fine_group(tmp_path, monkeypatch):
     profile = tmp_path / "live_clash.yaml"
     profile.write_text(
         "proxies:\n"
@@ -152,24 +73,25 @@ def test_load_previous_published_nodes_ignores_bitz_group(tmp_path, monkeypatch)
         "    port: 443\n"
         "    password: fine\n"
         "    tls: true\n"
-        "  - name: bitz-1\n"
+        "  - name: unrelated-1\n"
         "    type: trojan\n"
-        "    server: bitz.example\n"
+        "    server: unrelated.example\n"
         "    port: 443\n"
-        "    password: bitz\n"
+        "    password: unrelated\n"
         "    tls: true\n"
         "proxy-groups:\n"
         "  - name: Fine\n"
         "    type: select\n"
         "    proxies: [Fine-Auto, DIRECT, fine-1]\n"
-        "  - name: Bitz\n"
+        "  - name: Other\n"
         "    type: select\n"
-        "    proxies: [Bitz-Auto, DIRECT, bitz-1]\n",
+        "    proxies: [unrelated-1]\n",
         encoding="utf-8",
     )
     monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
     nodes = fc.load_previous_published_nodes(profile, max_nodes=5)
     assert [node["name"] for node in nodes] == ["fine-1"]
+
 
 def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
     discovery = fc.GitHubDiscovery(None, {

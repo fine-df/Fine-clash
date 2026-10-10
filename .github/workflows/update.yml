@@ -28,8 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      # Do this before the slow node-pool build: the current public profile was
-      # scrubbed of Bitz immediately, so purge any cached version as early as possible.
+      # Purge the CDN copy before rebuilding so stale cached profile content is removed early.
       - name: Purge public profile cache immediately
         run: |
           set -euo pipefail
@@ -114,20 +113,8 @@ jobs:
           grep -q 'DOMAIN-SUFFIX,tencentcos.cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mijia.com,DIRECT' live_clash.yaml
           grep -q 'default-selected' live_clash.yaml
-          # Two supported layouts: Fine-only (default public build) or symmetric
-          # Fine + Bitz where Bitz carries every remaining proxy-bound destination.
-          # Either way MATCH must resolve to a group that actually exists.
-          if grep -Eq '^- name: Bitz$' live_clash.yaml; then
-            grep -q '^- name: Bitz-Auto$' live_clash.yaml
-            grep -q '  - Bitz-Auto' live_clash.yaml
-            grep -q 'MATCH,Bitz' live_clash.yaml
-            # Nodes are inlined, so there is no provider section left to check: what
-            # matters is that the group really carries members, otherwise every
-            # MATCH-bound connection blackholes on every client downstream.
-            python -c "import sys, yaml; cfg = yaml.safe_load(open('live_clash.yaml', encoding='utf-8')); g = {x['name']: x for x in cfg['proxy-groups']}; sys.exit(0 if len(g['Bitz']['proxies']) >= 4 and g['Bitz-Auto']['proxies'] else 1)" || { echo 'empty Bitz group'; exit 1; }
-          else
-            grep -q 'MATCH,Fine' live_clash.yaml
-          fi
+          # The public profile has one supported layout: the validated Fine pool.
+          grep -q 'MATCH,Fine' live_clash.yaml
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
@@ -136,17 +123,30 @@ jobs:
             echo 'obsolete router-specific markers detected'
             exit 1
           fi
-          # proxy-providers is only legitimate alongside the Bitz layout.
-          if ! grep -Eq '^- name: Bitz$' live_clash.yaml && grep -Eq '^proxy-providers:' live_clash.yaml; then
-            echo 'proxy providers present without a Bitz group'
+          if grep -Eq '^proxy-providers:' live_clash.yaml; then
+            echo 'proxy providers are not supported in the public profile'
             exit 1
           fi
           # Hard guard from the 2026-10-04 incident: a paid upstream credential must
           # never reach the publicly distributed profile.
-          if grep -Eq 'cont\.bbkcdpub\.com|token=' live_clash.yaml; then
+          if grep -Eq 'token=' live_clash.yaml; then
             echo 'subscription credential or token-bearing URL leaked into public profile'
             exit 1
           fi
+          python - <<'PY'
+          import yaml
+          with open('live_clash.yaml', encoding='utf-8') as f:
+              cfg = yaml.safe_load(f)
+          groups = cfg.get('proxy-groups') or []
+          if {g.get('name') for g in groups} != {'Fine', 'Fine-Auto'}:
+              raise SystemExit('unsupported proxy group layout')
+          if not groups or len(groups[0].get('proxies') or []) < 3:
+              raise SystemExit('Fine group has no validated node members')
+          if not groups[1].get('proxies'):
+              raise SystemExit('Fine-Auto has no validated node members')
+          if not cfg.get('rules') or cfg['rules'][-1] != 'MATCH,Fine':
+              raise SystemExit('fallback must resolve to Fine')
+          PY
           mihomo -t -f live_clash.yaml
 
       - name: Publish

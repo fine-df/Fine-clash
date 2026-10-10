@@ -13,11 +13,11 @@
 | 中国大陆网站 / 中国内网 | DIRECT |
 | 视频站点（YouTube / Netflix / Twitch / Vimeo 等） | Fine |
 | 应用商店与下载（Google Play / Microsoft / Steam 等） | Fine |
-| 其他需要代理的海外流量 | Bitz（Bitz 未配置时为 Fine） |
+| 其他需要代理的海外流量 | Fine |
 
 `Fine` 为已验证免费节点池，支持自动测速和手动选择。
 
-如果配置了 Bitz 上游，其他代理流量由 Bitz 兜底；未配置时全部回落到 Fine。
+所有需要代理的非大陆流量均由 Fine 处理。
 
 - `Fine-Auto`：Fine 内部自动测速子组。
 - 节点更新时，上一版有效节点会参与连续性保留，并重新验证。

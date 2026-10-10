@@ -26,6 +26,8 @@ grep -q '^- name: Fine$' "$TMP" || { echo "sync_fail_no_fine_group"; rm -f "$TMP
 grep -q '^- name: Fine-Auto$' "$TMP" || { echo "sync_fail_no_fine_auto_group"; rm -f "$TMP"; exit 1; }
 grep -q '  - Fine-Auto' "$TMP" || { echo "sync_fail_fine_no_auto"; rm -f "$TMP"; exit 1; }
 grep -q '  - DIRECT' "$TMP" || { echo "sync_fail_fine_no_direct"; rm -f "$TMP"; exit 1; }
+GROUP_NAMES=$(grep '^- name: ' "$TMP" | sed 's/^- name: //' | tr '\n' ' ')
+[ "$GROUP_NAMES" = "Fine Fine-Auto " ] || { echo "sync_fail_unsupported_group_layout"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' "$TMP" || { echo "sync_fail_no_video_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' "$TMP" || { echo "sync_fail_no_store_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'DOMAIN-SUFFIX,cn,DIRECT' "$TMP" || { echo "sync_fail_no_cn_rule"; rm -f "$TMP"; exit 1; }
@@ -40,35 +42,22 @@ grep -q 'DOMAIN-SUFFIX,wpscdn.com,DIRECT' "$TMP" || { echo "sync_fail_no_wpscdn_
 grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' "$TMP" || { echo "sync_fail_no_private_lan_rule"; rm -f "$TMP"; exit 1; }
 grep -q 'GEOIP,CN,DIRECT' "$TMP" || { echo "sync_fail_no_cn_direct"; rm -f "$TMP"; exit 1; }
 
-# 两种合法布局：Fine-only（默认，公开构建）；或 Fine + Bitz 对称双组（Bitz 兜底其余代理流量）。
-# 两种布局都必须保证 MATCH 指向一个真实存在的组，避免落到空组导致断网。
-if grep -q '^- name: Bitz$' "$TMP"; then BITZ_LAYOUT=1; else BITZ_LAYOUT=0; fi
-if [ "$BITZ_LAYOUT" = 1 ]; then
-  grep -q '^- name: Bitz-Auto$' "$TMP" || { echo "sync_fail_no_bitz_auto_group"; rm -f "$TMP"; exit 1; }
-  grep -q '  - Bitz-Auto' "$TMP" || { echo "sync_fail_bitz_no_auto"; rm -f "$TMP"; exit 1; }
-  grep -q 'MATCH,Bitz' "$TMP" || { echo "sync_fail_no_match_bitz"; rm -f "$TMP"; exit 1; }
-  # 节点是内联的，不再有 proxy-provider 段。Bitz 组若没成员，MATCH 会落空组导致全断网。
-  MEM=$(awk '/^- name: Bitz$/{f=1;next} /^- name:/{f=0} f&&/^    - /{c++} END{print c+0}' "$TMP")
-  [ "$MEM" -ge 4 ] || { echo "sync_fail_empty_bitz_group"; rm -f "$TMP"; exit 1; }
-else
-  grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; exit 1; }
-fi
+# The public subscription has one supported layout and one fallback group.
+grep -q 'MATCH,Fine' "$TMP" || { echo "sync_fail_no_match_fine"; rm -f "$TMP"; exit 1; }
 
 if grep -Eq 'GEOSITE,' "$TMP"; then
   echo "sync_fail_geosite_dependency"
   rm -f "$TMP"
   exit 1
 fi
-# proxy-providers 只属于 Bitz 布局；Fine-only 订阅里出现 provider 说明架构回退到废弃版本。
-if [ "$BITZ_LAYOUT" = 0 ] && grep -Eq '^proxy-providers:' "$TMP"; then
-  echo "sync_fail_obsolete_provider_architecture"
+# Provider-based upstream subscriptions are not part of this profile.
+if grep -Eq '^proxy-providers:' "$TMP"; then
+  echo "sync_fail_unsupported_proxy_providers"
   rm -f "$TMP"
   exit 1
 fi
-# 硬红线：订阅 URL / 明文 token 不得出现在公开订阅里（2026-10-04 事故后的护栏）。
-# 2026-10-07 起 Bitz 走「构建期内联节点」：token 只存在 CI Secret 里，
-# 出现在订阅中的是已展开的节点（server/password/uuid）——业主已接受该公开尺度。
-if grep -Eq 'cont\.bbkcdpub\.com|token=' "$TMP"; then
+# Credentials must never be published in the public profile.
+if grep -Eq 'token=' "$TMP"; then
   echo "sync_fail_public_profile_contains_token"
   rm -f "$TMP"
   exit 1
@@ -90,7 +79,7 @@ if [ "$REMOTE_VER" = "0" ]; then
 fi
 
 # Count members of a named policy group in either block-list or inline-list YAML.
-# Checking total server entries is insufficient: Bitz nodes can mask an empty Fine-Auto.
+# Checking total server entries is insufficient: unrelated proxies can mask an empty Fine-Auto.
 group_member_count() {
   awk -v wanted="$2" '
     function inline_count(line, rest, left, right, n, items) {

@@ -1,6 +1,5 @@
 # Historical Fine candidates last published and validated on 2026-10-09.
 # This is only a candidate reserve; every node must pass current live endpoint and Shenzhen checks before publication.
-# Bitz entries are excluded: these nodes are selected by membership in the historical Fine policy group.
 proxies:
 - cipher: auto
   network: ws

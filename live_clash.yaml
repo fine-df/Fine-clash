@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110043 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
+# fine-clash-unified-v4 | fine-clash-version:20261004110044 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,139 +10,22 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- server: us16-4.998998.best
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+- type: vmess
+  name: 🇺🇸 United States, Los Angeles | [BL]
+  port: 443
   cipher: auto
+  server: us16-4.998998.best
+  alterId: 0
+  tls: true
+  network: ws
   ws-opts:
     headers:
       Host: server1.9966338.xyz
     path: /efrsdioy98wert
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
   udp: true
-  port: 443
-  name: 🇺🇸 United States, Los Angeles | [BL]
-  type: vmess
-  tls: true
-  alterId: 0
-  network: ws
 - type: vless
-  name: 🇹🇭 Thailand, Thap Sakae | [BL] [b9ad774f]
-  server: 104.16.111.193
-  port: 443
-  udp: true
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  encryption: none
-  tls: true
-  servername: v2ray.simspeedup.com
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: v2ray.simspeedup.com
-- servername: fr.api-music-fa.com
-  server: 8.47.69.0
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  client-fingerprint: firefox
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  encryption: none
-  udp: true
-  port: 2053
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  type: vless
-  tls: true
-  network: ws
-- servername: fr.api-music-fa.com
-  server: 8.47.69.0
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  client-fingerprint: qq
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  encryption: none
-  udp: true
-  port: 2053
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  type: vless
-  tls: true
-  network: ws
-- type: vless
-  name: 🇹🇭 Thailand, Thap Sakae | [BL] [0bda1b43]
-  server: 104.16.10.185
-  port: 443
-  udp: true
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  encryption: none
-  tls: true
-  servername: v2ray.simspeedup.com
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: v2ray.simspeedup.com
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [52553185]
-  server: 8.47.69.0
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: vless.api-music-fa.com
-  client-fingerprint: edge
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- type: vless
-  name: 🇹🇭 Thailand, Thap Sakae | [BL] [7cd4ab15]
-  server: 104.16.10.2
-  port: 443
-  udp: true
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  encryption: none
-  tls: true
-  servername: v2ray.simspeedup.com
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: v2ray.simspeedup.com
-- type: vless
-  name: 🇹🇭 Thailand, Thap Sakae | [BL] [ea01fa45]
-  server: 104.18.26.90
-  port: 443
-  udp: true
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  encryption: none
-  tls: true
-  servername: v2ray.simspeedup.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: v2ray.simspeedup.com
-- servername: primelinelk.me
-  server: support.zoom.us
-  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
-  client-fingerprint: chrome
-  ws-opts:
-    path: /xprolk-primeline
-    headers:
-      Host: primelinelk.me
-  encryption: none
-  udp: true
-  port: 8443
-  name: 🇸🇬 Singapore | 🌐 | [BL] [a8102700]
-  type: vless
-  tls: true
-  network: ws
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [1f33e98f]
+  name: CA
   server: 172.67.185.98
   port: 2053
   udp: true
@@ -155,149 +38,54 @@ proxies:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
-- type: vless
-  name: 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
-  server: www.large-files.info
-  port: 8443
-  udp: true
-  uuid: 7c99dc89-bf49-45c9-acc5-e43f36657518
-  encryption: none
-  tls: true
-  servername: www.large-files.info
-  network: ws
-  ws-opts:
-    path: /var/www/html/video/preview/download/i8o0la
-    headers:
-      Host: www.large-files.info
-- type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [99c5bacb]
-  server: fr.api-music-fa.com
+- servername: fr.api-music-fa.com
+  type: vless
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
   port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
+  client-fingerprint: firefox
+  server: 8.47.69.0
   tls: true
-  servername: fr.api-music-fa.com
   network: ws
   ws-opts:
     path: /api/voip/updates/static/fr2035
     headers:
       Host: fr.api-music-fa.com
-- server: sbgfgov.vip6.wogacnmnagfwgov.com
-  uuid: 605956ee-544d-308e-8b90-51e67c6ea8da
-  cipher: auto
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
   udp: true
-  port: 11206
-  name: 🇨🇳_CN_中国->🇯🇵_JP_日本
-  type: vmess
-  alterId: 2
-- type: vless
-  name: 🇯🇵 Japan, Shibuya City | [BL] [b405af50]
-  server: 43.247.132.42
-  port: 41563
-  udp: true
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
   encryption: none
-  tls: true
-  servername: iosapps.itunes.apple.com
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: HrcXRHtsitc_AVlN-_8fZuRgaP-Mqa_9JJotI9OnkVc
-    short-id: 25c79e5856c7
-  network: tcp
-- type: vless
-  name: 🇯🇵 Japan, Shibuya City | [BL] [e7b58536]
-  server: 43.247.132.85
-  port: 41563
-  udp: true
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
-  encryption: none
-  tls: true
-  servername: iosapps.itunes.apple.com
-  flow: xtls-rprx-vision
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: HrcXRHtsitc_AVlN-_8fZuRgaP-Mqa_9JJotI9OnkVc
-    short-id: 25c79e5856c7
-  network: tcp
-- type: vless
-  name: 🇹🇭 Thailand, Thap Sakae | [BL] [e3c42d7d]
-  server: 104.16.10.9
-  port: 443
-  udp: true
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  encryption: none
-  tls: true
-  servername: v2ray.simspeedup.com
-  network: ws
-  ws-opts:
-    path: /ws
-    headers:
-      Host: v2ray.simspeedup.com
-- servername: primelinelk.me
-  server: 170.114.46.6
-  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
-  client-fingerprint: firefox
-  ws-opts:
-    path: /xprolk-primeline
-    headers:
-      Host: primelinelk.me
-  encryption: none
-  udp: true
-  port: 8443
-  name: 🇸🇬 Singapore | 🌐 | [BL] [23f5cca0]
+- servername: fr.api-music-fa.com
   type: vless
-  tls: true
-  network: ws
-- servername: primelinelk.me
-  server: 170.114.46.6
-  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
-  client-fingerprint: chrome
-  ws-opts:
-    path: /xprolk-primeline
-    headers:
-      Host: primelinelk.me
-  encryption: none
-  udp: true
-  port: 8443
-  name: 🇸🇬 Singapore | 🌐 | [BL] [bf4642ed]
-  type: vless
-  tls: true
-  network: ws
-- type: vless
-  name: 🇸🇬 Singapore | 🌐 | [BL]
-  server: support.zoom.us
-  port: 8443
-  udp: true
-  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
-  encryption: none
-  tls: true
-  servername: primelinelk.me
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
+  port: 2053
   client-fingerprint: qq
-  network: ws
-  ws-opts:
-    path: /xprolk-primeline
-    headers:
-      Host: primelinelk.me
-- servername: primelinelk.me
-  server: support.zoom.us
-  uuid: ba9ba1d3-19c8-4792-9d3f-ddd2cdcc2e65
-  client-fingerprint: ios
-  ws-opts:
-    path: /xprolk-primeline
-    headers:
-      Host: primelinelk.me
-  encryption: none
-  udp: true
-  port: 8443
-  name: 🇸🇬 Singapore | 🌐 | [BL] [b456c876]
-  type: vless
+  server: 8.47.69.0
   tls: true
   network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  udp: true
+  encryption: none
+- servername: server4.9966338.xyz
+  type: vmess
+  name: CA 🇨🇦 | @Raydikalx | EB4CDB
+  port: 443
+  cipher: auto
+  server: us5-1.998998.best
+  alterId: 0
+  tls: true
+  network: ws
+  ws-opts:
+    path: /androirfdsreoightrjh?ed=2560
+    headers:
+      Host: server4.9966338.xyz
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  udp: true
 - name: 🇺🇸 美国-广东专线 BGP 1
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32001
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -305,7 +93,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇺🇸 美国-广东专线 BGP 2
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32028
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -313,7 +101,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇺🇸 美国-直连线路 BGP
   type: vless
-  server: 348b6100-99c5-4183-b34e-24c66d00d54d.bnsepserv.com
+  server: 348b6100-99c5-4183-b34e-24c66d00d54d.69899c58-0691-49bf-8b56-efa8d1d951fa.bnconnctrl.com
   port: 32501
   uuid: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   tls: true
@@ -326,7 +114,7 @@ proxies:
     short-id: 76a1da15
 - name: 🇹🇼 台湾-广东专线 NeaRoute
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32003
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -334,7 +122,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇷🇺 俄罗斯-广东专线 PQ
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32008
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -342,7 +130,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇫🇷 法国-广东专线 BGP
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32009
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -350,7 +138,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇬🇧 英国-广东专线 BGP
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32010
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -358,7 +146,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇬🇧 英国-广东专线 Scaleblade
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32047
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -366,7 +154,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇨🇦 加拿大-广东专线 BGP
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32039
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -374,7 +162,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇩🇪 德国-广东专线 BGP
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32011
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -382,7 +170,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇦🇺 澳大利亚-广东专线 VUAU
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32012
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -390,7 +178,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇲🇾 马来西亚-广东专线 Shin
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32038
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -398,7 +186,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇹🇭 泰国-广东专线 Bangmod
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32043
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -406,7 +194,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇹🇷 土耳其-广东专线 Kapteyan
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32014
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -414,7 +202,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇹🇷 土耳其-广东专线 GCore
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32026
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -422,7 +210,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇦🇷 阿根廷-广东专线 DonWeb
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32015
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -430,7 +218,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇳🇬 尼日利亚-广东专线 Melbicom
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32034
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -438,7 +226,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇺🇦 乌克兰-广东专线 Vik
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32019
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -446,7 +234,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇧🇷 巴西-广东专线 GCore 1
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32016
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -454,7 +242,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇮🇳 印度-广东专线 DOIN
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32017
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -462,7 +250,7 @@ proxies:
   sni: v18-music-ncdn.douyinstatic.com
 - name: 🇸🇦 沙特-广东专线 STC
   type: trojan
-  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnsepserv.com
+  server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
   port: 32035
   password: 32901c54-7a51-4a50-96b7-abe4d74f7d84
   udp: true
@@ -475,49 +263,19 @@ proxy-groups:
   - Fine-Auto
   - DIRECT
   - 🇺🇸 United States, Los Angeles | [BL]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [b9ad774f]
+  - CA
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [0bda1b43]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [52553185]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [7cd4ab15]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [ea01fa45]
-  - 🇸🇬 Singapore | 🌐 | [BL] [a8102700]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [1f33e98f]
-  - 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [99c5bacb]
-  - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇯🇵 Japan, Shibuya City | [BL] [b405af50]
-  - 🇯🇵 Japan, Shibuya City | [BL] [e7b58536]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [e3c42d7d]
-  - 🇸🇬 Singapore | 🌐 | [BL] [23f5cca0]
-  - 🇸🇬 Singapore | 🌐 | [BL] [bf4642ed]
-  - 🇸🇬 Singapore | 🌐 | [BL]
-  - 🇸🇬 Singapore | 🌐 | [BL] [b456c876]
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
   default-selected: 🇺🇸 United States, Los Angeles | [BL]
 - name: Fine-Auto
   type: url-test
   proxies:
   - 🇺🇸 United States, Los Angeles | [BL]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [b9ad774f]
+  - CA
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [0bda1b43]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [52553185]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [7cd4ab15]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [ea01fa45]
-  - 🇸🇬 Singapore | 🌐 | [BL] [a8102700]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [1f33e98f]
-  - 🇩🇪 Germany, Saarbrücken (Mitte) | 🌐 | [BL]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [99c5bacb]
-  - 🇨🇳_CN_中国->🇯🇵_JP_日本
-  - 🇯🇵 Japan, Shibuya City | [BL] [b405af50]
-  - 🇯🇵 Japan, Shibuya City | [BL] [e7b58536]
-  - 🇹🇭 Thailand, Thap Sakae | [BL] [e3c42d7d]
-  - 🇸🇬 Singapore | 🌐 | [BL] [23f5cca0]
-  - 🇸🇬 Singapore | 🌐 | [BL] [bf4642ed]
-  - 🇸🇬 Singapore | 🌐 | [BL]
-  - 🇸🇬 Singapore | 🌐 | [BL] [b456c876]
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

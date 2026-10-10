@@ -28,6 +28,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # Do this before the slow node-pool build: the current public profile was
+      # scrubbed of Bitz immediately, so purge any cached version as early as possible.
+      - name: Purge public profile cache immediately
+        run: |
+          set -euo pipefail
+          purge_url='https://purge.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml'
+          curl -fsSL "$purge_url"
+          echo
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:

@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261004110044 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
+# fine-clash-unified-v4 | fine-clash-version:20261004110045 | Bitz=inline(21) | Fine=validated-pool | bulk->Fine | CN->DIRECT | MATCH->Bitz
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,79 +10,65 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: vmess
-  name: 🇺🇸 United States, Los Angeles | [BL]
-  port: 443
-  cipher: auto
-  server: us16-4.998998.best
-  alterId: 0
-  tls: true
-  network: ws
-  ws-opts:
-    headers:
-      Host: server1.9966338.xyz
-    path: /efrsdioy98wert
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-  udp: true
-- type: vless
-  name: CA
-  server: 172.67.185.98
-  port: 2053
-  udp: true
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  encryption: none
-  tls: true
-  servername: fr.api-music-fa.com
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-- servername: fr.api-music-fa.com
-  type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  port: 2053
-  client-fingerprint: firefox
-  server: 8.47.69.0
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  udp: true
-  encryption: none
-- servername: fr.api-music-fa.com
-  type: vless
-  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  port: 2053
-  client-fingerprint: qq
-  server: 8.47.69.0
-  tls: true
-  network: ws
-  ws-opts:
-    path: /api/voip/updates/static/fr2035
-    headers:
-      Host: fr.api-music-fa.com
-  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
-  udp: true
-  encryption: none
-- servername: server4.9966338.xyz
-  type: vmess
-  name: CA 🇨🇦 | @Raydikalx | EB4CDB
-  port: 443
-  cipher: auto
-  server: us5-1.998998.best
-  alterId: 0
-  tls: true
-  network: ws
+- network: ws
   ws-opts:
     path: /androirfdsreoightrjh?ed=2560
     headers:
       Host: server4.9966338.xyz
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  servername: server4.9966338.xyz
+  cipher: auto
+  name: CA 🇨🇦 | @Raydikalx | EB4CDB
+  tls: true
   udp: true
+  alterId: 0
+  server: us5-1.998998.best
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  port: 443
+  type: vmess
+- network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+  servername: fr.api-music-fa.com
+  encryption: none
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
+  tls: true
+  udp: true
+  server: 8.47.69.0
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  port: 2053
+  client-fingerprint: qq
+  type: vless
+- network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+  servername: fr.api-music-fa.com
+  encryption: none
+  name: CA
+  tls: true
+  udp: true
+  server: 172.67.185.98
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  port: 2053
+  type: vless
+- network: ws
+  ws-opts:
+    path: /api/voip/updates/static/fr2035
+    headers:
+      Host: fr.api-music-fa.com
+  servername: fr.api-music-fa.com
+  encryption: none
+  name: 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
+  tls: true
+  udp: true
+  server: 8.47.69.0
+  uuid: 9d672694-c146-422e-b3b5-3717a38a0fcc
+  port: 2053
+  client-fingerprint: firefox
+  type: vless
 - name: 🇺🇸 美国-广东专线 BGP 1
   type: trojan
   server: 5cc536a5-e0f2-48c7-88f0-6844e5b41627.bnconnctrl.com
@@ -262,20 +248,18 @@ proxy-groups:
   proxies:
   - Fine-Auto
   - DIRECT
-  - 🇺🇸 United States, Los Angeles | [BL]
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
   - CA
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - CA 🇨🇦 | @Raydikalx | EB4CDB
-  default-selected: 🇺🇸 United States, Los Angeles | [BL]
+  default-selected: CA 🇨🇦 | @Raydikalx | EB4CDB
 - name: Fine-Auto
   type: url-test
   proxies:
-  - 🇺🇸 United States, Los Angeles | [BL]
+  - CA 🇨🇦 | @Raydikalx | EB4CDB
+  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
   - CA
   - 🇫🇷 France, Roubaix | 🌐 | [BL] [92db1d7a]
-  - 🇫🇷 France, Roubaix | 🌐 | [BL] [363ebc57]
-  - CA 🇨🇦 | @Raydikalx | EB4CDB
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

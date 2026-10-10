@@ -1,5 +1,77 @@
 [
   {
+    "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/Sub3.txt",
+    "repo": "Danialsamadi/v2go",
+    "path": "Sub3.txt",
+    "stars": 154,
+    "forks": 35,
+    "pushed_at": "2026-10-10T03:32:33Z",
+    "nodes": 116
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/Sub2.txt",
+    "repo": "Danialsamadi/v2go",
+    "path": "Sub2.txt",
+    "stars": 154,
+    "forks": 35,
+    "pushed_at": "2026-10-10T03:32:33Z",
+    "nodes": 366
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/Sub1.txt",
+    "repo": "Danialsamadi/v2go",
+    "path": "Sub1.txt",
+    "stars": 154,
+    "forks": 35,
+    "pushed_at": "2026-10-10T03:32:33Z",
+    "nodes": 443
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt",
+    "repo": "Danialsamadi/v2go",
+    "path": "AllConfigsSub.txt",
+    "stars": 154,
+    "forks": 35,
+    "pushed_at": "2026-10-10T03:32:33Z",
+    "nodes": 584
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/V2Ray.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/V2Ray.yml",
+    "stars": 319,
+    "forks": 18,
+    "pushed_at": "2026-10-10T03:30:12Z",
+    "nodes": 1109
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/sub.yml",
+    "stars": 319,
+    "forks": 18,
+    "pushed_at": "2026-10-10T03:30:12Z",
+    "nodes": 1109
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/Clash.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/Clash.yml",
+    "stars": 319,
+    "forks": 18,
+    "pushed_at": "2026-10-10T03:30:12Z",
+    "nodes": 848
+  },
+  {
+    "url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml",
+    "repo": "cbusifabcap/daily_free_vpn",
+    "path": "sub/ClashMeta.yml",
+    "stars": 319,
+    "forks": 18,
+    "pushed_at": "2026-10-10T03:30:12Z",
+    "nodes": 5
+  },
+  {
     "url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt",
     "repo": "SoliSpirit/v2ray-configs",
     "path": "all_configs.txt",
@@ -88,14 +160,5 @@
     "forks": 82,
     "pushed_at": "2026-10-10T03:06:45Z",
     "nodes": 472
-  },
-  {
-    "url": "https://raw.githubusercontent.com/vernesong/OpenClash/master/luci-app-openclash/root/usr/share/openclash/res/default.yaml",
-    "repo": "vernesong/OpenClash",
-    "path": "luci-app-openclash/root/usr/share/openclash/res/default.yaml",
-    "stars": 27723,
-    "forks": 4022,
-    "pushed_at": "2026-10-09T23:57:15Z",
-    "nodes": 20
   }
 ]

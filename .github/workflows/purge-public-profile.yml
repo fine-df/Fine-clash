@@ -28,7 +28,7 @@ jobs:
               continue
             fi
             printf '%s\n' "$response"
-            if printf '%s' "$response" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d.get("paths") or {}; ok=(d.get("status")=="finished" and bool(p) and all(x.get("throttled") is False and isinstance(x.get("providers"),dict) and bool(x["providers"]) and all(v is True for v in x["providers"].values()) for x in p.values())); sys.exit(0 if ok else 1)'
+            if printf '%s' "$response" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d.get("paths") or {}; ok=(d.get("status")=="finished" and bool(p) and all(x.get("throttled") is False and isinstance(x.get("providers"),dict) and bool(x["providers"]) and all(v is True for v in x["providers"].values()) for x in p.values())); sys.exit(0 if ok else 1)'; then
               echo 'jsDelivr confirmed that cache providers purged the public profile'
               exit 0
             fi

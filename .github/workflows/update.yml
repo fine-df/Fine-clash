@@ -12,6 +12,7 @@ on:
       - 'data/last_run.json'
       - 'data/stable_pool.yaml'
       - 'data/source_quality.json'
+      - '.github/workflows/purge-public-profile.yml'
   schedule:
     - cron: '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:

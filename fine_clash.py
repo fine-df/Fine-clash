@@ -453,10 +453,24 @@ CLOUD_MARKERS=("amazon","aws","google","azure","microsoft","digitalocean","vultr
 HIGH_RISK_MARKERS=("m247","layer7","bluevps","alfahost")
 
 def clean_score(ipinfo,google_result):
-    if not ipinfo: return 60
-    score=80; org=str(ipinfo.get("org","")).lower()
-    if any(x in org for x in CLOUD_MARKERS+HIGH_RISK_MARKERS): score-=20
-    privacy=ipinfo.get("privacy") or {}
+    # A missing IP-intelligence response is unknown, not evidence of a bad node.
+    # Cloudflare often appears as a reverse-proxy edge, so its ASN alone also
+    # does not identify the origin or prove low quality. Both receive a neutral
+    # score that still must pass endpoint and Shenzhen measurements.
+    if not ipinfo:
+        score=65
+        org=""
+        privacy={}
+    else:
+        score=80
+        org=str(ipinfo.get("org","")).lower()
+        # Exclude Cloudflare alone from the hosting penalty; retain all other
+        # cloud/high-risk markers and any explicit privacy flags.
+        markers=tuple(x for x in CLOUD_MARKERS if x!="cloudflare")+HIGH_RISK_MARKERS
+        if any(x in org for x in markers): score-=20
+        if "cloudflare" in org and not any(x in org for x in markers):
+            score=min(score,65)
+        privacy=ipinfo.get("privacy") or {}
     if isinstance(privacy,dict):
         if privacy.get("vpn"): score-=15
         if privacy.get("proxy"): score-=15

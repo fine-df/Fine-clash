@@ -289,7 +289,7 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["max_candidate_files_per_repo"] == 4
     assert cfg["sources"]["max_source_age_days"] == 3
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
-    assert cfg["nodes"]["min_clean_score"] == 60
+    assert cfg["nodes"]["min_clean_score"] == 65
     assert cfg["nodes"]["min_final_nodes"] == 3
     assert cfg["nodes"]["max_per_server"] == 2
     assert cfg["nodes"]["max_per_org"] == 3
@@ -803,11 +803,13 @@ def test_sticky_quality_requires_fast_end_to_end_latency():
     assert not fc.node_is_quality({"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0}, cfg)
 
 
-def test_neutral_clean_score_is_eligible_with_reachability_checks():
-    item = {"gemini": True, "google_play": True, "google": {"ok": True}}
-    assert fc.clean_score(None, item["google"]) == 60
-    assert fc.clean_score({"org": "AS13335 Cloudflare, Inc."}, item["google"]) == 60
-    assert fc.candidate_gate_passes(item, "gemini_or_play", 60, 60)
+def test_missing_ipinfo_and_cloudflare_edge_are_neutral_not_hard_rejected():
+    google_ok = {"ok": True, "challenge": False}
+    item = {"gemini": True, "google_play": True, "google": google_ok}
+    assert fc.clean_score(None, google_ok) == 65
+    assert fc.clean_score({"org": "AS13335 Cloudflare, Inc."}, google_ok) == 65
+    assert fc.clean_score({"org": "AS9009 M247 Europe SRL"}, google_ok) < 65
+    assert fc.candidate_gate_passes(item, "gemini_or_play", 65, 65)
     assert not fc.candidate_gate_passes(item, "gemini_or_play", 60, 65)
 
 

@@ -57,9 +57,9 @@ nodes:
   switch_wait_seconds: 0.5
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
-  # 60 is a neutral/unknown score (e.g. missing IP intelligence or Cloudflare fronting),
-  # not evidence that a node is dirty; use actual Gemini/Play and latency checks for reachability.
-  min_clean_score: 60
+  # Missing IP intelligence and Cloudflare-only edges score neutral 65; explicit
+  # high-risk / privacy signals remain below this gate and are rejected.
+  min_clean_score: 65
   # 软优先级地板（2026-10-06 D 方向）：final 池截断时，低于此分的节点排到
   # 达地板节点之后，确保最终 20 个优先取高分优质节点。非硬门槛，0=不启用。
   min_final_score: 55

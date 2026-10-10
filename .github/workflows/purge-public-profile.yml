@@ -49,11 +49,11 @@ jobs:
                 fi
                 actual_version="$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$verify_dir/cdn.yaml" 2>/dev/null || true)"
                 cache_headers="$(grep -iE '^(age|x-cache|cf-cache-status|cache-control|via|x-served-by):' "$verify_dir/cdn.headers" 2>/dev/null | tr '\n' ';' | tail -c 600 || true)"
-                echo "::warning::CDN content mismatch (attempt $verify_attempt/8; expected version $expected_version, received \${actual_version:-missing}; headers: \${cache_headers:-unavailable})"
+                echo "::warning::CDN content mismatch (attempt $verify_attempt/8; expected version $expected_version, received ${actual_version:-missing}; headers: ${cache_headers:-unavailable})"
                 if (( verify_attempt < 8 )); then
                   wait_seconds=$((verify_attempt * 5))
                   if (( wait_seconds > 30 )); then wait_seconds=30; fi
-                  echo "Waiting \${wait_seconds}s for CDN branch-cache convergence"
+                  echo "Waiting ${wait_seconds}s for CDN branch-cache convergence"
                   sleep "$wait_seconds"
                 fi
               done

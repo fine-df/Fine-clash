@@ -91,8 +91,9 @@ jobs:
             echo 'GLOBAL group must be absent (built-in to mihomo; a defined GLOBAL is redundant)'
             exit 1
           fi
-          grep -q 'reject_above_ms: 350' config.yaml
-          grep -q 'reject_loss_pct: 10' config.yaml
+          grep -q 'reject_above_ms: 250' config.yaml
+          grep -q 'reject_loss_pct: 0' config.yaml
+          grep -q 'cache_days: 0.25' config.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml

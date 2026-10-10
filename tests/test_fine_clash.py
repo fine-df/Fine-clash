@@ -213,7 +213,11 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
         "    server: old.example\n"
         "    port: 443\n"
         "    password: secret\n"
-        "    tls: true\n",
+        "    tls: true\n"
+        "proxy-groups:\n"
+        "  - name: Fine\n"
+        "    type: select\n"
+        "    proxies: [Fine-Auto, DIRECT, old-1, old-2, old-3]\n",
         encoding="utf-8",
     )
     monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
@@ -497,14 +501,29 @@ def test_output_builder_filters_xhttp_for_compatibility(tmp_path: Path):
 
 
 def test_shenzhen_latency_filter():
-    cfg = {"reject_above_ms": 400, "reject_loss_pct": 25, "fail_closed": False}
+    cfg = {"reject_above_ms": 400, "reject_loss_pct": 25}
     assert fc.shenzhen_passes({"ok": True, "avg_ms": 399.9, "loss_pct": 0}, cfg)
     assert fc.shenzhen_passes({"ok": True, "avg_ms": 400, "loss_pct": 25}, cfg)
     assert not fc.shenzhen_passes({"ok": True, "avg_ms": 400.1, "loss_pct": 0}, cfg)
     assert not fc.shenzhen_passes({"ok": True, "avg_ms": 100, "loss_pct": 26}, cfg)
     assert not fc.shenzhen_passes({"ok": True, "avg_ms": 100}, cfg)
-    assert fc.shenzhen_passes({"ok": False, "status": "timeout"}, cfg)
-    assert not fc.shenzhen_passes({"ok": False, "status": "timeout"}, {**cfg, "fail_closed": True})
+    assert not fc.shenzhen_passes({"ok": False, "status": "timeout"}, cfg)
+
+
+def test_probe_outage_preserves_last_good_shenzhen_measurement():
+    row = {
+        "shenzhen_checked_at": fc.datetime.now(fc.timezone.utc).isoformat(),
+        "shenzhen_ping_ms": 120.0,
+        "shenzhen_loss_pct": 0.0,
+        "shenzhen_probe_city": "Shenzhen",
+        "shenzhen_probe_observations": 2,
+    }
+    fc.save_shenzhen_history(row, {"ok": False, "status": "probe-unavailable", "attempts": 2})
+    assert row["shenzhen_ping_ms"] == 120.0
+    assert row["shenzhen_loss_pct"] == 0.0
+    assert row["shenzhen_last_attempt_status"] == "probe-unavailable"
+    last_good = fc.recent_shenzhen_good_result(row, 24)
+    assert last_good and last_good["avg_ms"] == 120.0
 
 
 def test_cached_shenzhen_result(tmp_path: Path):
@@ -774,3 +793,10 @@ def test_update_history_dedups_within_same_day():
     fc.update_history(db, "fp", result)
     row = fc.update_history(db, "fp", result)  # 同一自然日第二次访问
     assert row["pass_count"] == 1 and row["seen_count"] == 1
+
+def test_previous_profile_without_fine_group_is_not_trusted(tmp_path, monkeypatch):
+    profile = tmp_path / "live_clash.yaml"
+    profile.write_text("proxies:\\n- name: orphan\\n  type: trojan\\n  server: orphan.example\\n  port: 443\\n  password: x\\n",
+                       encoding="utf-8")
+    monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
+    assert fc.load_previous_published_nodes(profile, max_nodes=5) == []

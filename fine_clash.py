@@ -337,7 +337,7 @@ def load_previous_published_nodes(path, max_nodes=5):
         by_name={node.get("name"):node for node in parsed if isinstance(node,dict)}
         nodes=[by_name[name] for name in fine_names if name in by_name]
     else:
-        nodes=parsed
+        return []
     out=[]; seen=set()
     for node in nodes:
         fp=fingerprint(node)
@@ -429,25 +429,57 @@ def cached_shenzhen_result(row, cfg):
 
 
 def shenzhen_passes(result, cfg):
-    if result.get("ok"):
-        try:
-            avg=float(result["avg_ms"])
-            loss=result.get("loss_pct")
-            max_loss=float(cfg.get("reject_loss_pct",100))
-            if loss is None:
-                return False
-            return avg <= float(cfg.get("reject_above_ms",400)) and float(loss) <= max_loss
-        except (TypeError,ValueError):
-            return False
-    return not bool(cfg.get("fail_closed",False))
+    """An unknown probe result is never equivalent to a passing measurement."""
+    if not result.get("ok"):
+        return False
+    try:
+        avg=float(result["avg_ms"])
+        loss=float(result["loss_pct"])
+        return avg<=float(cfg.get("reject_above_ms",400)) and loss<=float(cfg.get("reject_loss_pct",100))
+    except (KeyError,TypeError,ValueError):
+        return False
 
 
 def save_shenzhen_history(row, result):
-    row["shenzhen_checked_at"]=datetime.now(timezone.utc).isoformat()
-    row["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
-    row["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
-    row["shenzhen_status"]=result.get("status","unknown")
-    row["shenzhen_probe_city"]=result.get("probe_city")
+    """Record failures without deleting the last successful Shenzhen measurement."""
+    now=datetime.now(timezone.utc).isoformat()
+    row["shenzhen_last_attempt_at"]=now
+    row["shenzhen_last_attempt_status"]=result.get("status","unknown")
+    row["shenzhen_last_attempts"]=_safe_int(result.get("attempts"),1)
+    if result.get("ok") and result.get("avg_ms") is not None and result.get("loss_pct") is not None:
+        row["shenzhen_checked_at"]=now
+        row["shenzhen_ping_ms"]=float(result["avg_ms"])
+        row["shenzhen_loss_pct"]=float(result["loss_pct"])
+        row["shenzhen_status"]=result.get("status","ok")
+        row["shenzhen_probe_city"]=result.get("probe_city")
+        row["shenzhen_probe_observations"]=_safe_int(result.get("probe_observations"),1)
+        row.pop("shenzhen_last_error",None)
+    else:
+        row["shenzhen_last_error"]=str(result.get("error") or result.get("status") or "unknown")[:180]
+
+
+def recent_shenzhen_good_result(row, max_age_hours=24):
+    """Use last successful measurement as temporary continuity during probe outages."""
+    checked=row.get("shenzhen_checked_at")
+    avg=row.get("shenzhen_ping_ms")
+    loss=row.get("shenzhen_loss_pct")
+    if not checked or avg is None or loss is None:
+        return None
+    try:
+        stamp=datetime.fromisoformat(checked)
+        if stamp.tzinfo is None:
+            stamp=stamp.replace(tzinfo=timezone.utc)
+        age=(datetime.now(timezone.utc)-stamp.astimezone(timezone.utc)).total_seconds()/3600
+        if age<0 or age>float(max_age_hours):
+            return None
+        return {"ok":True,"status":"last-good","avg_ms":float(avg),"loss_pct":float(loss),
+                "probe_city":row.get("shenzhen_probe_city"),
+                "probe_observations":_safe_int(row.get("shenzhen_probe_observations"),1)}
+    except (ValueError,TypeError):
+        return None
+
+
+PROBE_UNKNOWN_STATUSES={"probe-unavailable","timeout","no-stats","no-measurement-id","invalid-response","request-rejected","error"}
 
 CLOUD_MARKERS=("amazon","aws","google","azure","microsoft","digitalocean","vultr","linode","hetzner","contabo","oracle","cloudflare")
 HIGH_RISK_MARKERS=("m247","layer7","bluevps","alfahost")
@@ -1369,17 +1401,26 @@ def run():
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
+    retained_fps=set(previous_fps)|set(curated_fps)
     for rec in candidate_records:
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
         row=history[fp]
         result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
         if cached is None:
             save_shenzhen_history(row,result)
+        effective=result
+        if (not result.get("ok") and fp in retained_fps
+                and result.get("status") in PROBE_UNKNOWN_STATUSES):
+            grace_hours=float(shenzhen_cfg.get("stable_probe_grace_hours",24))
+            last_good=recent_shenzhen_good_result(row,grace_hours)
+            if last_good is not None and shenzhen_passes(last_good,shenzhen_cfg):
+                effective=last_good
         entry=report_lookup[fp]
-        entry["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
-        entry["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
-        entry["shenzhen_status"]=result.get("status","unknown")
-        if shenzhen_passes(result,shenzhen_cfg):
+        entry["shenzhen_probe_status"]=result.get("status","unknown")
+        entry["shenzhen_ping_ms"]=effective.get("avg_ms") if effective.get("ok") else None
+        entry["shenzhen_loss_pct"]=effective.get("loss_pct") if effective.get("ok") else None
+        entry["shenzhen_status"]="probe-unavailable-retained" if effective is not result else result.get("status","unknown")
+        if shenzhen_passes(effective,shenzhen_cfg):
             selected.append(node)
 
     report["shenzhen_passed"]=len(selected)

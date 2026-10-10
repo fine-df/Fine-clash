@@ -5,7 +5,7 @@ import functools
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
-import requests, yaml
+import requests, yaml, statistics
 
 SUPPORTED = {"vmess","vless","trojan","ss"}
 ALLOWED_FIELDS = {
@@ -407,64 +407,111 @@ class GlobalpingShenzhenProbe:
         self.base_url="https://api.globalping.io/v1/measurements"
 
     def measure(self, node):
+        """Retry transient probe-service errors; never convert unknown results to success."""
+        retries=max(0,_safe_int(self.cfg.get("retries",1),1))
+        retryable={"probe-unavailable","timeout","no-stats","no-measurement-id","error","invalid-response","request-rejected"}
+        result={"ok":False,"status":"not-measured"}
+        for attempt in range(retries+1):
+            result=self._measure_once(node)
+            result["attempts"]=attempt+1
+            if result.get("ok") or result.get("status") not in retryable or attempt>=retries:
+                return result
+            time.sleep(min(2.0,0.5*(attempt+1)))
+        return result
+
+    def _measure_once(self, node):
         city=str(self.cfg.get("city","Shenzhen"))
         port=_safe_int(node.get("port"))
         target=str(node.get("server") or "").strip()
         if not target or not port:
             return {"ok":False,"status":"invalid-target"}
+        probe_count=max(1,_safe_int(self.cfg.get("probe_count",2),2))
         payload={
             "target":target,
             "type":"ping",
-            "locations":[{"city":city,"limit":1}],
+            "locations":[{"city":city,"limit":probe_count}],
             "measurementOptions":{
                 "protocol":str(self.cfg.get("protocol","TCP")).upper(),
                 "port":port,
-                "packets":int(self.cfg.get("packets",3)),
+                "packets":int(self.cfg.get("packets",4)),
             },
         }
         try:
             created=self.session.post(self.base_url,json=payload,timeout=15)
-            created.raise_for_status(); body=created.json(); measurement_id=body.get("id")
+            created.raise_for_status()
+            body=created.json()
+            measurement_id=body.get("id")
             if not measurement_id:
                 return {"ok":False,"status":"no-measurement-id"}
-            deadline=time.monotonic()+float(self.cfg.get("max_wait_seconds",30))
-            poll=float(self.cfg.get("poll_interval_seconds",2))
+            deadline=time.monotonic()+float(self.cfg.get("max_wait_seconds",20))
+            poll=max(0.25,float(self.cfg.get("poll_interval_seconds",1)))
             result=None
             while time.monotonic()<deadline:
                 time.sleep(poll)
                 response=self.session.get(f"{self.base_url}/{measurement_id}",timeout=15)
-                response.raise_for_status(); result=response.json()
-                if result.get("status") != "in-progress": break
+                response.raise_for_status()
+                result=response.json()
+                if result.get("status")!="in-progress":
+                    break
             if not result or result.get("status")=="in-progress":
                 return {"ok":False,"status":"timeout","measurement_id":measurement_id}
+
+            observations=[]; cities=[]
             for entry in result.get("results",[]):
                 data=entry.get("result") or {}
                 stats=data.get("stats") or {}
                 avg=stats.get("avg")
-                if avg is None: avg=stats.get("average")
+                if avg is None:
+                    avg=stats.get("average")
                 loss=stats.get("loss")
-                if avg is not None:
-                    return {
-                        "ok":True,
-                        "status":"ok",
-                        "avg_ms":float(avg),
-                        "loss_pct":float(loss) if loss is not None else None,
-                        "probe_city":(entry.get("probe") or {}).get("city"),
-                        "measurement_id":measurement_id,
-                    }
-            return {"ok":False,"status":"no-stats","measurement_id":measurement_id}
-        except (requests.RequestException,ValueError,TypeError) as exc:
-            return {"ok":False,"status":"error","error":str(exc)[:180]}
+                if avg is None or loss is None:
+                    continue
+                try:
+                    avg=float(avg); loss=float(loss)
+                except (TypeError,ValueError):
+                    continue
+                if avg<0 or not 0<=loss<=100:
+                    continue
+                observations.append((avg,loss))
+                probe_city=(entry.get("probe") or {}).get("city")
+                if probe_city:
+                    cities.append(str(probe_city))
+            minimum=max(1,_safe_int(self.cfg.get("min_successful_probes",1),1))
+            if len(observations)<minimum:
+                return {"ok":False,"status":"no-stats","measurement_id":measurement_id,
+                        "probe_observations":len(observations)}
+            return {
+                "ok":True,
+                "status":"ok" if len(observations)>=probe_count else "partial-ok",
+                "avg_ms":round(statistics.median(value[0] for value in observations),1),
+                "loss_pct":max(value[1] for value in observations),
+                "probe_city":",".join(sorted(set(cities))) or city,
+                "probe_observations":len(observations),
+                "measurement_id":measurement_id,
+            }
+        except requests.RequestException as exc:
+            response=getattr(exc,"response",None)
+            code=getattr(response,"status_code",None)
+            status="probe-unavailable" if code==429 or code is None or code>=500 else "request-rejected"
+            return {"ok":False,"status":status,"http_status":code,"error":str(exc)[:180]}
+        except (ValueError,TypeError,KeyError) as exc:
+            return {"ok":False,"status":"invalid-response","error":str(exc)[:180]}
 
 
 def cached_shenzhen_result(row, cfg):
     checked=row.get("shenzhen_checked_at")
     avg=row.get("shenzhen_ping_ms")
-    if not checked or avg is None: return None
+    loss=row.get("shenzhen_loss_pct")
+    if not checked or avg is None or loss is None: return None
     try:
         checked_at=datetime.fromisoformat(checked)
-        if datetime.now(timezone.utc)-checked_at <= timedelta(days=float(cfg.get("cache_days",1))):
-            return {"ok":True,"status":"cached","avg_ms":float(avg),"loss_pct":row.get("shenzhen_loss_pct"),"probe_city":row.get("shenzhen_probe_city")}
+        if checked_at.tzinfo is None:
+            checked_at=checked_at.replace(tzinfo=timezone.utc)
+        age=datetime.now(timezone.utc)-checked_at
+        if timedelta(0)<=age<=timedelta(days=float(cfg.get("cache_days",1))):
+            return {"ok":True,"status":"cached","avg_ms":float(avg),"loss_pct":float(loss),
+                    "probe_city":row.get("shenzhen_probe_city"),
+                    "probe_observations":_safe_int(row.get("shenzhen_probe_observations"),1)}
     except (ValueError,TypeError):
         pass
     return None
@@ -477,7 +524,9 @@ def shenzhen_passes(result, cfg):
     try:
         avg=float(result["avg_ms"])
         loss=float(result["loss_pct"])
-        return avg<=float(cfg.get("reject_above_ms",400)) and loss<=float(cfg.get("reject_loss_pct",100))
+        observations=_safe_int(result.get("probe_observations"),1)
+        minimum=max(1,_safe_int(cfg.get("min_successful_probes",1),1))
+        return observations>=minimum and avg<=float(cfg.get("reject_above_ms",400)) and loss<=float(cfg.get("reject_loss_pct",100))
     except (KeyError,TypeError,ValueError):
         return False
 

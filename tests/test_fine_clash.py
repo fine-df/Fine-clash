@@ -834,3 +834,50 @@ def test_weighted_round_robin_gives_each_feed_a_seed_and_favors_good_sources():
     assert picked[:2]==["h-0","l-0"]
     assert sum(x.startswith("h-") for x in picked)>sum(x.startswith("l-") for x in picked)
 
+def test_globalping_measure_retries_a_transient_unknown_result(monkeypatch):
+    probe=fc.GlobalpingShenzhenProbe({"retries":1})
+    attempts=[]
+    def measure_once(node):
+        attempts.append(node["name"])
+        if len(attempts)==1:
+            return {"ok":False,"status":"probe-unavailable"}
+        return {"ok":True,"status":"ok","avg_ms":120.0,"loss_pct":0.0,"probe_observations":2}
+    monkeypatch.setattr(probe,"_measure_once",measure_once)
+    monkeypatch.setattr(fc.time,"sleep",lambda *_:None)
+    result=probe.measure({"name":"demo"})
+    assert result["ok"] is True
+    assert result["attempts"]==2
+    assert len(attempts)==2
+
+
+def test_globalping_aggregates_multiple_probe_results(monkeypatch):
+    probe=fc.GlobalpingShenzhenProbe({
+        "city":"Shenzhen","protocol":"TCP","probe_count":2,
+        "min_successful_probes":1,"max_wait_seconds":1,"poll_interval_seconds":0.25,
+        "packets":4,
+    })
+    class FakeResponse:
+        def __init__(self,payload): self.payload=payload
+        def raise_for_status(self): return None
+        def json(self): return self.payload
+    posted=[]
+    def fake_post(url,json,timeout):
+        posted.append(json)
+        return FakeResponse({"id":"measurement-1"})
+    def fake_get(url,timeout):
+        return FakeResponse({
+            "status":"finished",
+            "results":[
+                {"probe":{"city":"Shenzhen"},"result":{"stats":{"avg":100,"loss":0}}},
+                {"probe":{"city":"Shenzhen"},"result":{"stats":{"avg":140,"loss":5}}},
+            ],
+        })
+    monkeypatch.setattr(probe.session,"post",fake_post)
+    monkeypatch.setattr(probe.session,"get",fake_get)
+    result=probe._measure_once({"name":"demo","server":"example.com","port":443})
+    assert posted[0]["locations"][0]["limit"]==2
+    assert result["ok"] is True
+    assert result["probe_observations"]==2
+    assert result["avg_ms"]==120.0
+    assert result["loss_pct"]==5.0
+

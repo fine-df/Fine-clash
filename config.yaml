@@ -76,12 +76,13 @@ shenzhen_probe:
   reject_loss_pct: 0
   # Cache for 6 hours; the workflow runs every 4 hours so stale results are refreshed quickly.
   cache_days: 0.25
-  # workers 6->12（2026-10-06 C 方向）：提高探测并行度，减少 pending 积压，
-  # 降低因 CI 时段内未测完导致的 not-tested/timeout 失真。
-  workers: 12
+  # Multiple independent probes; one transient service failure gets one retry.
+  probe_count: 2
+  min_successful_probes: 1
+  workers: 4
+  retries: 1
   poll_interval_seconds: 1
-  # max_wait_seconds 12->15：给 Globalping 探针更长时间，减少误判 timeout。
-  max_wait_seconds: 15
+  max_wait_seconds: 20
   fail_closed: true
   stable_probe_grace_hours: 24
   api_token_env: 'GLOBALPING_API_TOKEN'

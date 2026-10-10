@@ -351,6 +351,10 @@ def test_source_path_sort_key_parses_version_numbers():
     assert fc.source_path_sort_key("version-12.yaml")[1] == 12
 
 
+def test_parse_uri_skips_malformed_port_instead_of_aborting_source_scan():
+    assert fc.parse_uri("vless://some-uuid@example.com:not-a-port?security=tls") is None
+
+
 def test_parse_yaml_and_strip_untrusted_fields():
     text = """proxies:
   - name: demo

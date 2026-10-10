@@ -224,8 +224,12 @@ def mihomo_node_is_testable(node):
 
 
 def parse_uri(uri):
-    uri=uri.strip()
-    return _parse_vmess(uri) if uri.lower().startswith("vmess://") else _parse_standard(uri)
+    try:
+        uri=uri.strip()
+        return _parse_vmess(uri) if uri.lower().startswith("vmess://") else _parse_standard(uri)
+    except (ValueError,TypeError,UnicodeError):
+        # One malformed public URI must not abort discovery of every source.
+        return None
 
 def parse_subscription(text):
     if not text: return []

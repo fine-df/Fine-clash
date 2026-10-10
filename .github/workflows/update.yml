@@ -1,5 +1,5 @@
 name: Fine-Clash update
-# Push-triggered CI is intentional: production code changes must self-validate before publication.
+# Push-triggered CI self-validates code. Bot pushes use GITHUB_TOKEN, so Publish explicitly dispatches CDN verification.
 
 on:
   push:

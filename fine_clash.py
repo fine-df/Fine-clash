@@ -531,6 +531,28 @@ def shenzhen_passes(result, cfg):
         return False
 
 
+def record_shenzhen_source_metrics(source_stats, result, cfg, *, cached=False):
+    """Track fresh Shenzhen measurements separately from cached quality evidence.
+
+    Reusing a cached passing measurement may keep a node eligible during its cache
+    window, but it is not a new independent probe observation and must not inflate
+    cumulative source-quality success counts.
+    """
+    if source_stats is None:
+        return
+    if cached:
+        source_stats["shenzhen_cache_hits"] = _safe_int(source_stats.get("shenzhen_cache_hits"), 0) + 1
+        return
+    if result.get("ok"):
+        source_stats["shenzhen_decided"] += 1
+        if shenzhen_passes(result, cfg):
+            source_stats["shenzhen_passed"] += 1
+        else:
+            source_stats["shenzhen_failed"] += 1
+    else:
+        source_stats["probe_unknown"] += 1
+
+
 def save_shenzhen_history(row, result):
     """Record failures without deleting the last successful Shenzhen measurement."""
     now=datetime.now(timezone.utc).isoformat()
@@ -744,7 +766,7 @@ def rank_source_list(sources, quality_rows, max_sources, exploration_fraction=0.
 
 SOURCE_RUN_METRICS=("parsed_nodes","structurally_valid_nodes","unique_nodes","duplicate_nodes",
                     "tested_nodes","endpoint_passed","shenzhen_decided","shenzhen_passed",
-                    "shenzhen_failed","probe_unknown")
+                    "shenzhen_failed","probe_unknown","shenzhen_cache_hits")
 SOURCE_TOTAL_METRICS={
     "parsed_nodes":"parsed_nodes_total",
     "structurally_valid_nodes":"structurally_valid_nodes_total",
@@ -1671,15 +1693,12 @@ def run():
         source_stats=ensure_source_stats(source_url,source_info) if source_url else None
         if cached is None:
             save_shenzhen_history(row,result)
-        if source_stats is not None:
-            if result.get("ok"):
-                source_stats["shenzhen_decided"]+=1
-                if shenzhen_passes(result,shenzhen_cfg):
-                    source_stats["shenzhen_passed"]+=1
-                else:
-                    source_stats["shenzhen_failed"]+=1
-            else:
-                source_stats["probe_unknown"]+=1
+        record_shenzhen_source_metrics(
+            source_stats,
+            result,
+            shenzhen_cfg,
+            cached=(cached is not None),
+        )
         effective=result
         if (not result.get("ok") and fp in retained_fps
                 and result.get("status") in PROBE_UNKNOWN_STATUSES):
@@ -1709,7 +1728,7 @@ def run():
          "score":source_quality_score(quality_db["sources"].get(url,{})),
          "tested_nodes":stats.get("tested_nodes",0),"endpoint_passed":stats.get("endpoint_passed",0),
          "shenzhen_passed":stats.get("shenzhen_passed",0),"shenzhen_failed":stats.get("shenzhen_failed",0),
-         "probe_unknown":stats.get("probe_unknown",0)}
+         "probe_unknown":stats.get("probe_unknown",0),"shenzhen_cache_hits":stats.get("shenzhen_cache_hits",0)}
         for url,stats in sorted(source_run_stats.items(),
             key=lambda item:source_quality_score(quality_db["sources"].get(item[0],{})),reverse=True)[:20]
     ]

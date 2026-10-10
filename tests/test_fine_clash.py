@@ -825,6 +825,41 @@ def test_previous_profile_without_fine_group_is_not_trusted(tmp_path, monkeypatc
     monkeypatch.setattr(fc, "resolved_server_is_safe", lambda server: True)
     assert fc.load_previous_published_nodes(profile, max_nodes=5) == []
 
+def test_cached_shenzhen_results_do_not_inflate_source_quality():
+    stats = {key: 0 for key in fc.SOURCE_RUN_METRICS}
+    config = {
+        "min_successful_probes": 2,
+        "reject_above_ms": 250,
+        "reject_loss_pct": 0,
+    }
+    result = {
+        "ok": True,
+        "status": "cached",
+        "avg_ms": 100,
+        "loss_pct": 0,
+        "probe_observations": 2,
+    }
+
+    fc.record_shenzhen_source_metrics(stats, result, config, cached=True)
+    assert stats["shenzhen_cache_hits"] == 1
+    assert stats["shenzhen_decided"] == 0
+    assert stats["shenzhen_passed"] == 0
+    assert stats["shenzhen_failed"] == 0
+
+    fc.record_shenzhen_source_metrics(stats, result, config, cached=False)
+    assert stats["shenzhen_cache_hits"] == 1
+    assert stats["shenzhen_decided"] == 1
+    assert stats["shenzhen_passed"] == 1
+
+    db = {"version": 1, "sources": {}}
+    fc.update_source_quality(db, {"https://example.com/feed": stats})
+    row = db["sources"]["https://example.com/feed"]
+    assert row["shenzhen_decided_total"] == 1
+    assert row["shenzhen_passed_total"] == 1
+    assert row["last_run"]["shenzhen_cache_hits"] == 1
+    assert "shenzhen_cache_hits_total" not in row
+
+
 def test_source_quality_score_rewards_real_quality():
     good={"parsed_nodes_total":100,"unique_nodes_total":80,
           "endpoint_tested_total":50,"endpoint_passed_total":40,

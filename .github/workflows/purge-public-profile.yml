@@ -40,16 +40,24 @@ jobs:
                 echo '::error::GitHub origin profile has no valid version marker'
                 exit 1
               fi
-              for verify_attempt in 1 2 3; do
-                if curl -fsSL --max-time 20 "$cdn_url" -o "$verify_dir/cdn.yaml" && cmp -s "$verify_dir/origin.yaml" "$verify_dir/cdn.yaml"; then
+              # jsDelivr's purge API can finish before all serving edges expose the new branch content.
+              # Verify the actual subscriber URL for up to ~135 seconds; never pass on a version-only match.
+              for verify_attempt in {1..8}; do
+                if curl -fsSL --max-time 20 -D "$verify_dir/cdn.headers" "$cdn_url" -o "$verify_dir/cdn.yaml" && cmp -s "$verify_dir/origin.yaml" "$verify_dir/cdn.yaml"; then
                   echo "jsDelivr content verified: exact byte match, version $expected_version"
                   exit 0
                 fi
                 actual_version="$(sed -n '1s/.*fine-clash-version:\([0-9][0-9]*\).*/\1/p' "$verify_dir/cdn.yaml" 2>/dev/null || true)"
-                echo "::warning::CDN content mismatch (attempt $verify_attempt/3; expected version $expected_version, received ${actual_version:-missing})"
-                sleep "$((verify_attempt * 3))"
+                cache_headers="$(grep -iE '^(age|x-cache|cf-cache-status|cache-control|via|x-served-by):' "$verify_dir/cdn.headers" 2>/dev/null | tr '\n' ';' | tail -c 600 || true)"
+                echo "::warning::CDN content mismatch (attempt $verify_attempt/8; expected version $expected_version, received \${actual_version:-missing}; headers: \${cache_headers:-unavailable})"
+                if (( verify_attempt < 8 )); then
+                  wait_seconds=$((verify_attempt * 5))
+                  if (( wait_seconds > 30 )); then wait_seconds=30; fi
+                  echo "Waiting \${wait_seconds}s for CDN branch-cache convergence"
+                  sleep "$wait_seconds"
+                fi
               done
-              echo '::error::CDN purge response succeeded but served content still differs from GitHub origin'
+              echo '::error::CDN purge response succeeded but served content still differs from GitHub origin after verification window'
               exit 1
             fi
             reset_seconds="$(printf '%s' "$response" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d.get("paths") or {}; print(max((int(x.get("throttlingReset",0) or 0) for x in p.values() if x.get("throttled")), default=0))')"

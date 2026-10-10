@@ -250,11 +250,15 @@ def test_source_discovery_accepts_extensionless_subscription_files(monkeypatch):
             {"type": "blob", "path": "sub"},
             {"type": "blob", "path": "README.md"},
             {"type": "blob", "path": "notes.log"},
+            {"type": "blob", "path": "luci-app-openclash/root/usr/share/openclash/res/default.yaml"},
+            {"type": "blob", "path": "clash20261010.yml"},
         ]},
     )
     files = discovery.candidate_files({"full_name":"x/y","default_branch":"main"})
     assert "sub" in files
     assert "README.md" in files
+    assert "clash20261010.yml" in files
+    assert "luci-app-openclash/root/usr/share/openclash/res/default.yaml" not in files
     assert "notes.log" not in files
 
 def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Path, monkeypatch):
@@ -287,17 +291,30 @@ def test_load_previous_published_nodes_uses_safe_continuity_reserve(tmp_path: Pa
     assert [node["name"] for node in nodes] == ["old-1", "old-2"]
 
 
-def test_pool_build_gates_are_expanded_without_relaxing_shenzhen():
+def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     cfg = fc.load_rules()
-    assert cfg["nodes"]["candidate_gate"] == "reachable"
-    assert cfg["nodes"]["min_clean_score"] == 60
-    assert cfg["nodes"]["max_per_server"] == 3
-    assert cfg["nodes"]["max_per_org"] == 6
+    assert cfg["sources"]["recent_days"] == 7
+    assert cfg["sources"]["max_source_age_days"] == 3
+    assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
+    assert cfg["nodes"]["min_clean_score"] == 65
+    assert cfg["nodes"]["max_per_server"] == 2
+    assert cfg["nodes"]["max_per_org"] == 3
+    assert cfg["nodes"]["max_endpoint_latency_ms"] == 2500
     assert cfg["shenzhen_probe"]["reject_above_ms"] == 250
     assert cfg["shenzhen_probe"]["reject_loss_pct"] == 0
     assert cfg["shenzhen_probe"]["cache_days"] == 0.25
     assert cfg["retention"]["enabled"] is True
-    assert cfg["retention"]["max_previous_nodes"] == 20
+    assert cfg["retention"]["max_previous_nodes"] == 5
+
+def test_total_score_penalizes_slow_end_to_end_requests():
+    common = {
+        "gemini": True, "google_play": True, "google": {"ok": True},
+        "clean": 80, "lifespan": 3, "stability": 1,
+    }
+    fast = fc.total_score(**common, endpoint_latency_ms=400)
+    slow = fc.total_score(**common, endpoint_latency_ms=5000)
+    assert slow <= fast - 15
+
 
 def test_candidate_gate_modes_are_explicit():
     item = {"gemini": False, "google_play": False, "google": {"ok": True}}
@@ -318,6 +335,15 @@ def test_resolved_server_safety_fails_closed_for_private_dns(monkeypatch):
     )
     fc.resolved_server_is_safe.cache_clear()
     assert not fc.resolved_server_is_safe("attacker.example")
+
+
+def test_source_is_fresh_rejects_stale_snapshot_even_if_repo_was_pushed_later():
+    now = fc.datetime(2026, 10, 10, 12, 0, tzinfo=fc.timezone.utc)
+    stale_snapshot = {"path": "clash20261004.yml", "pushed_at": "2026-10-09T10:00:00Z"}
+    fresh_feed = {"path": "sub.yaml", "pushed_at": "2026-10-09T10:00:00Z"}
+    assert not fc.source_is_fresh(stale_snapshot, 3, now)
+    assert fc.source_is_fresh(fresh_feed, 3, now)
+    assert not fc.source_is_fresh({"path": "sub.yaml"}, 3, now)
 
 
 def test_source_path_sort_key_parses_version_numbers():
@@ -729,24 +755,32 @@ def test_us_non_datacenter_bonus():
     assert fc._us_non_datacenter_bonus({"country": None, "org": "x"}) == 0
 
 
-def test_rank_candidates_prefers_us_residential_over_us_dc_and_foreign():
+def test_rank_candidates_uses_us_residential_only_as_quality_tiebreaker():
     us_home = _rank_node("us-home", "1.1.1.1")
     us_dc = _rank_node("us-dc", "2.2.2.2")
     foreign = _rank_node("foreign", "3.3.3.3")
     nodes = [foreign, us_dc, us_home]
     meta = {
-        fc.fingerprint(us_home): {**_rank_meta(us_home, score=80, ping=200), "country": "US", "org": "Comcast Cable Communications"},
-        fc.fingerprint(us_dc): {**_rank_meta(us_dc, score=80, ping=50), "country": "US", "org": "Amazon Web Services"},
-        fc.fingerprint(foreign): {**_rank_meta(foreign, score=80, ping=50), "country": "DE", "org": "Deutsche Telekom"},
+        fc.fingerprint(us_home): {**_rank_meta(us_home, score=80, ping=50), "app_latency_ms": 500, "country": "US", "org": "Comcast Cable Communications"},
+        fc.fingerprint(us_dc): {**_rank_meta(us_dc, score=80, ping=50), "app_latency_ms": 500, "country": "US", "org": "Amazon Web Services"},
+        fc.fingerprint(foreign): {**_rank_meta(foreign, score=80, ping=50), "app_latency_ms": 500, "country": "DE", "org": "Deutsche Telekom"},
     }
     ranked = fc.rank_candidates(nodes, metadata=meta)
     names = [n["name"] for n in ranked]
-    # US residential leads unconditionally (us_nd=1 beats both us_nd=0 buckets).
     assert names[0] == "us-home"
-    # US-datacenter (US but a known cloud ASN) and foreign both have us_nd=0,
-    # so they tie on the priority key; only the leading US-residential node is
-    # guaranteed. Assert the trailing set, not a fixed order.
     assert set(names[1:]) == {"us-dc", "foreign"}
+
+
+def test_rank_candidates_does_not_let_us_bonus_override_endpoint_speed():
+    us_home = _rank_node("us-home", "1.1.1.1")
+    fast_foreign = _rank_node("fast-foreign", "3.3.3.3")
+    nodes = [us_home, fast_foreign]
+    meta = {
+        fc.fingerprint(us_home): {**_rank_meta(us_home, score=80, ping=200), "app_latency_ms": 2000, "country": "US", "org": "Comcast Cable Communications"},
+        fc.fingerprint(fast_foreign): {**_rank_meta(fast_foreign, score=80, ping=50), "app_latency_ms": 500, "country": "DE", "org": "Deutsche Telekom"},
+    }
+    ranked = fc.rank_candidates(nodes, metadata=meta)
+    assert [n["name"] for n in ranked] == ["fast-foreign", "us-home"]
 
 
 def test_rank_candidates_min_final_score_floor():
@@ -761,6 +795,14 @@ def test_rank_candidates_min_final_score_floor():
     # the high-score node is preferred into the final pool.
     ranked = fc.rank_candidates(nodes, metadata=meta, min_final_score=55)
     assert [n["name"] for n in ranked] == ["high", "low"]
+
+
+def test_sticky_quality_requires_fast_end_to_end_latency():
+    base = {"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0, "app_latency_ms": 1500}
+    cfg = {"keep_ping_ms": 300, "keep_loss_pct": 5, "keep_endpoint_latency_ms": 2000}
+    assert fc.node_is_quality(base, cfg)
+    assert not fc.node_is_quality({**base, "app_latency_ms": 2500}, cfg)
+    assert not fc.node_is_quality({"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0}, cfg)
 
 
 def test_clean_score_catches_google_and_oracle():

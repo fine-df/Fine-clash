@@ -451,11 +451,30 @@ def clean_score(ipinfo,google_result):
     if not google_result.get("ok"): score-=20
     return max(0,min(100,score))
 
-def total_score(*,gemini,google_play,google,clean,lifespan,stability):
+def worst_endpoint_latency_ms(item):
+    """Worst observed end-to-end proxy response time among tested Google services."""
+    values=[]
+    for value in (item.get("endpoint_latency_ms") or {}).values():
+        try:
+            number=float(value)
+            if number>=0:
+                values.append(number)
+        except (TypeError,ValueError):
+            continue
+    return round(max(values)) if values else None
+
+
+def total_score(*,gemini,google_play,google,clean,lifespan,stability,endpoint_latency_ms=None):
     points=(20 if google.get("ok") else 0)+(25 if gemini else 0)+(20 if google_play else 0)+round(clean*0.20)
     points += 10 if lifespan>=30 else 7 if lifespan>=14 else 4 if lifespan>=7 else 2 if lifespan>=3 else 0
     points += round(5*max(0,min(1,stability)))
-    return min(100,points)
+    if endpoint_latency_ms is not None:
+        try:
+            latency=max(0.0,float(endpoint_latency_ms))
+            points -= min(30,max(0,int((latency-500.0)//250.0)))
+        except (TypeError,ValueError):
+            pass
+    return max(0,min(100,points))
 
 def source_path_sort_key(path):
     low=str(path).lower()
@@ -465,6 +484,47 @@ def source_path_sort_key(path):
     version_score=max(versions) if versions else -1
     is_readme=1 if "readme" in low else 0
     return (date_score,version_score,-is_readme,-len(low),low)
+
+def source_timestamp(source):
+    """Prefer a date-coded snapshot filename; otherwise use repository push time."""
+    if not isinstance(source,dict):
+        return None
+    path=str(source.get("path") or source.get("url") or "")
+    dates=re.findall(r"(20\d{6})",path)
+    if dates:
+        try:
+            return datetime.strptime(max(dates),"%Y%m%d").replace(tzinfo=timezone.utc)
+        except ValueError:
+            pass
+    raw=source.get("pushed_at")
+    if not raw:
+        return None
+    try:
+        stamp=datetime.fromisoformat(str(raw).replace("Z","+00:00"))
+    except (TypeError,ValueError):
+        return None
+    if stamp.tzinfo is None:
+        stamp=stamp.replace(tzinfo=timezone.utc)
+    return stamp.astimezone(timezone.utc)
+
+
+def source_is_fresh(source,max_age_days,now=None):
+    """Reject undated and stale sources, even if they remain in the source cache."""
+    try:
+        limit=timedelta(days=float(max_age_days))
+    except (TypeError,ValueError):
+        return False
+    if limit.total_seconds()<0:
+        return False
+    stamp=source_timestamp(source)
+    if stamp is None:
+        return False
+    current=now or datetime.now(timezone.utc)
+    if current.tzinfo is None:
+        current=current.replace(tzinfo=timezone.utc)
+    age=current.astimezone(timezone.utc)-stamp
+    return -timedelta(hours=24)<=age<=limit
+
 
 class GitHubDiscovery:
     def __init__(self,token,cfg):
@@ -489,7 +549,7 @@ class GitHubDiscovery:
             try:
                 data=self._get_json(
                     "https://api.github.com/search/repositories",
-                    {"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":int(self.cfg["repositories_per_query"])}
+                    {"q":f"{base_query}{push_suffix}","sort":"updated","order":"desc","per_page":int(self.cfg["repositories_per_query"])}
                 )
             except requests.RequestException as exc:
                 self.stats["query_failures"]+=1
@@ -501,7 +561,7 @@ class GitHubDiscovery:
         self.stats["repos_found"]=len(repos)
         return sorted(
             repos.values(),
-            key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),
+            key=lambda x:(x.get("pushed_at",""),x.get("stargazers_count",0),x.get("forks_count",0)),
             reverse=True
         )[:int(self.cfg["max_repositories"])]
 
@@ -523,7 +583,7 @@ class GitHubDiscovery:
             path=item.get("path","")
             low=path.lower()
             basename=low.rsplit("/",1)[-1]
-            extension_match=low.endswith(EXTENSIONS) and any(key in low for key in CANDIDATE_NAMES)
+            extension_match=low.endswith(EXTENSIONS) and any(key in basename for key in CANDIDATE_NAMES)
             basename_match=basename in CANDIDATE_BASENAMES
             if extension_match or basename_match:
                 paths.append(path)
@@ -729,6 +789,11 @@ class MihomoTester:
                     "google_play":item["google_play"]["ok"],
                     "google":item["google"],
                     "ipinfo":item["ipinfo"].get("data") if item["ipinfo"]["ok"] else None,
+                    "endpoint_latency_ms":{
+                        "gemini":item["gemini"].get("latency_ms"),
+                        "google_play":item["google_play"].get("latency_ms"),
+                        "google":item["google"].get("latency_ms"),
+                    },
                 })
             return results
         finally:
@@ -838,20 +903,18 @@ def build_outputs(nodes, output_rules):
     clash_path=ROOT/output_rules["output"]["clash_file"]; clash_path.parent.mkdir(parents=True,exist_ok=True); clash_path.write_text(yaml.safe_dump(config,allow_unicode=True,sort_keys=False),encoding="utf-8")
 
 def node_is_quality(meta, sticky_cfg):
-    """Return True only if a node's Shenzhen probe metrics meet the 'keep' quality bar.
-
-    The bar is intentionally tighter than the publish gate (shenzhen_probe.reject_*):
-    a node may be publishable yet not 'excellent' enough to stay pinned as the primary.
-    """
+    """Pin a node only if Shenzhen reachability and end-to-end latency are good."""
     if not isinstance(meta, dict): return False
     try:
         keep_ping=float(sticky_cfg.get("keep_ping_ms", 300))
         keep_loss=float(sticky_cfg.get("keep_loss_pct", 5.0))
-    except (TypeError, ValueError):
-        keep_ping, keep_loss = 300.0, 5.0
+        keep_endpoint=float(sticky_cfg.get("keep_endpoint_latency_ms", 2000))
+        app_latency=float(meta.get("app_latency_ms"))
+    except (TypeError,ValueError):
+        return False
     ping=meta.get("shenzhen_ping_ms"); loss=meta.get("shenzhen_loss_pct")
-    if ping is None or loss is None: return False
-    return float(ping) < keep_ping and float(loss) <= keep_loss
+    if ping is None or loss is None or app_latency>keep_endpoint: return False
+    return float(ping)<keep_ping and float(loss)<=keep_loss
 
 def choose_sticky_primary(ranked, previous_profile_nodes, ranking_meta, sticky_cfg):
     """Decide which node should be the sticky primary for the published pool.
@@ -939,6 +1002,7 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
         enriched.append({
             "node":node,"fp":fp,
             "score":score,
+            "app_latency":_safe_float(meta.get("app_latency_ms"),float("inf")),
             "ping":_safe_float(meta.get("shenzhen_ping_ms"),float("inf")),
             "loss":_safe_float(meta.get("shenzhen_loss_pct"),float("inf")),
             "stability":_safe_float(meta.get("stability"),0.0),
@@ -948,7 +1012,7 @@ def rank_candidates(nodes, limit=20, metadata=None, max_per_server=2, max_per_or
             "server":str(node.get("server") or "").strip().lower(),
             "org":str(meta.get("org") or meta.get("asn") or "").strip().lower(),
         })
-    enriched.sort(key=lambda e:(-e["us_nd"],-e["above_floor"],-e["score"],e["ping"],e["loss"],-e["stability"],-e["lifespan"],e["fp"]))
+    enriched.sort(key=lambda e:(-e["above_floor"],-e["score"],e["app_latency"],e["ping"],e["loss"],-e["stability"],-e["lifespan"],-e["us_nd"],e["fp"]))
     seen_fp=set(); server_count={}; org_count={}; picked=[]
     for e in enriched:
         if e["fp"] in seen_fp: continue
@@ -993,47 +1057,78 @@ def candidate_gate_passes(item, gate, clean, min_clean):
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
-    live=discovery.discover()
+    live_discovered=discovery.discover()
+    source_now=datetime.now(timezone.utc)
+    max_source_age_days=float(rules["sources"].get("max_source_age_days",3))
+    live=[s for s in live_discovered if source_is_fresh(s,max_source_age_days,source_now)]
+    source_pool_stats={
+        "live_discovered":len(live_discovered),
+        "live_fresh":len(live),
+        "live_stale_dropped":len(live_discovered)-len(live),
+        "cache_seen":0,
+        "cache_fresh":0,
+        "cache_stale_or_undated_dropped":0,
+        "cache_low_star_dropped":0,
+        "accepted_sources":0,
+        "max_source_age_days":max_source_age_days,
+    }
     cached=[]
     if source_path.is_file():
         try:
             cached=json.loads(source_path.read_text(encoding="utf-8"))
             if not isinstance(cached,list): cached=[]
         except Exception: cached=[]
-    # Keep the previous validated source cache as a continuity fallback. Live discovery
-    # remains authoritative and is merged ahead of cached entries.
-    if not live and cached:
-        print("WARNING: live source discovery returned 0 sources; using cached source pool.")
+    # Cache is continuity only; its entries must pass the same freshness rule as live sources.
+    source_pool_stats["cache_seen"]=len(cached)
     seen={s.get("url") for s in live if isinstance(s,dict)}
     sources=list(live)
     min_stars=int(rules["sources"].get("min_stars",30))
     for s in cached:
         if not isinstance(s,dict) or not s.get("url") or s["url"] in seen:
             continue
-        stars=s.get("stars")
-        # Cached sources must carry explicit high-star metadata. Unknown-star
-        # legacy cache entries are not allowed to bypass the current source gate.
+        if not source_is_fresh(s,max_source_age_days,source_now):
+            source_pool_stats["cache_stale_or_undated_dropped"]+=1
+            continue
         try:
-            if int(stars) < min_stars:
+            if int(s.get("stars")) < min_stars:
+                source_pool_stats["cache_low_star_dropped"]+=1
                 continue
         except (TypeError,ValueError):
+            source_pool_stats["cache_low_star_dropped"]+=1
             continue
-        seen.add(s["url"]); sources.append(s)
-    if not sources and cached:
-        sources=[s for s in cached if isinstance(s,dict) and int(s.get("stars",0) or 0)>=min_stars]
-    # Bound the persistent source pool by source quality rather than merely
-    # live-vs-cached ordering. High-star, node-rich, recently-pushed sources win.
+        seen.add(s["url"])
+        sources.append(s)
+        source_pool_stats["cache_fresh"]+=1
     max_sources=int(rules["sources"].get("max_sources",120))
     if len(sources)>max_sources:
         def source_quality(row):
-            return (
-                int(row.get("stars", 0) or 0),
-                int(row.get("nodes", 0) or 0),
-                str(row.get("pushed_at") or ""),
-                str(row.get("url") or ""),
-            )
+            stamp=source_timestamp(row) or datetime.min.replace(tzinfo=timezone.utc)
+            return (stamp,int(row.get("nodes",0) or 0),int(row.get("stars",0) or 0),str(row.get("url") or ""))
         sources=sorted(sources,key=source_quality,reverse=True)[:max_sources]
-    source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
+    source_pool_stats["accepted_sources"]=len(sources)
+    print(
+        "source_freshness: live=%d/%d stale_live=%d cached_fresh=%d cached_stale_or_undated=%d accepted=%d max_age_days=%s"
+        % (source_pool_stats["live_fresh"],source_pool_stats["live_discovered"],
+           source_pool_stats["live_stale_dropped"],source_pool_stats["cache_fresh"],
+           source_pool_stats["cache_stale_or_undated_dropped"],source_pool_stats["accepted_sources"],
+           source_pool_stats["max_source_age_days"])
+    )
+    if not sources:
+        report={
+            "generated_at":datetime.now(timezone.utc).isoformat(),
+            "sources":0,
+            "source_discovery":discovery.stats,
+            "source_pool":source_pool_stats,
+            "nodes_discovered":0,
+            "published":False,
+            "selected":0,
+            "quality_error":"No fresh, valid GitHub node sources. Stale caches were deliberately rejected.",
+        }
+        report_path.parent.mkdir(parents=True,exist_ok=True)
+        report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+        raise RuntimeError("No fresh, valid GitHub node sources; refusing to republish the stale Fine pool.")
+    source_path.parent.mkdir(parents=True,exist_ok=True)
+    source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
     nodes_by_fp={}; session=requests.Session()
     for source in sources:
         try:
@@ -1112,6 +1207,7 @@ def run():
         "generated_at":datetime.now(timezone.utc).isoformat(),
         "sources":len(sources),
         "source_discovery":discovery.stats,
+        "source_pool":source_pool_stats,
         "nodes_discovered":len(nodes),
         "previous_profile_candidates":len(previous_profile_nodes),
         "results":[]
@@ -1120,12 +1216,14 @@ def run():
     candidate_records=[]
     clean_floor_passed=0
     candidate_gate_passed=0
+    endpoint_latency_passed=0
 
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
         row=history.get(fp,{"first_seen":date.today().isoformat(),"last_seen":date.today().isoformat(),"seen_count":0,"pass_count":0,"gemini_pass_count":0,"play_pass_count":0})
         life=lifespan_days(row); ipinfo_data=item.get("ipinfo") or {}; clean=clean_score(item.get("ipinfo"),item["google"]); stability=min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1)))
-        score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability)
+        app_latency_ms=worst_endpoint_latency_ms(item)
+        score=total_score(gemini=item["gemini"],google_play=item["google_play"],google=item["google"],clean=clean,lifespan=life,stability=stability,endpoint_latency_ms=app_latency_ms)
         row=update_history(history,fp,{"score":score,"gemini":item["gemini"],"google_play":item["google_play"]},score_threshold=rules["nodes"].get("score_threshold",70))
         # candidate_gate 控制「候选」门槛；score_threshold 仅用于历史稳定性统计，
         # 不再作为候选硬门槛。
@@ -1136,12 +1234,16 @@ def run():
         min_clean=float(rules["nodes"].get("min_clean_score",0))
         if clean >= min_clean:
             clean_floor_passed += 1
+        if app_latency_ms is not None and app_latency_ms<=float(rules["nodes"].get("max_endpoint_latency_ms",2500)):
+            endpoint_latency_passed += 1
         # score_threshold is used for history/pass-day statistics, not as a hard
         # candidate gate. The candidate gate itself is explicit and testable.
-        candidate=candidate_gate_passes(item,gate,clean,min_clean)
+        max_endpoint_latency_ms=float(rules["nodes"].get("max_endpoint_latency_ms",2500))
+        latency_ok=app_latency_ms is not None and app_latency_ms<=max_endpoint_latency_ms
+        candidate=candidate_gate_passes(item,gate,clean,min_clean) and latency_ok
 
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
-        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"app_latency_ms":app_latency_ms,"endpoint_latency_ms":item.get("endpoint_latency_ms"),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
@@ -1155,6 +1257,8 @@ def run():
 
     report["clean_floor_passed"]=clean_floor_passed
     report["candidate_gate_passed"]=candidate_gate_passed
+    report["endpoint_latency_passed"]=endpoint_latency_passed
+    report["max_endpoint_latency_ms"]=float(rules["nodes"].get("max_endpoint_latency_ms",2500))
     report["candidate_gate"]=gate
     report["candidate_clean_floor"]=min_clean
     shenzhen_cfg=rules.get("shenzhen_probe",{})
@@ -1182,11 +1286,11 @@ def run():
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
     if len(selected)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return
+        report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); raise RuntimeError(f"Only {len(selected)} nodes passed final threshold; refusing to publish the previous Fine pool.")
     ranking_meta={}
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
-        ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
+        ranking_meta[fp]={"score":entry.get("score",0),"app_latency_ms":entry.get("app_latency_ms"),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
     # Rank the entire currently passing pool. Previous nodes were already prioritized
     # for re-testing above; they must not reserve final slots or bypass diversity caps.
     ranked=rank_final_nodes(selected, ranking_meta, rules["nodes"])
@@ -1207,13 +1311,13 @@ def run():
     report["ranking"]=[]
     for i,node in enumerate(ranked,1):
         entry=report_lookup.get(fingerprint(node),{})
-        report["ranking"].append({"rank":i,"score":entry.get("score"),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"server":node.get("server"),"type":node.get("type")})
-    print("Top20 Ranking:"); print("Rank | Score | Ping | Loss | Server | Type")
+        report["ranking"].append({"rank":i,"score":entry.get("score"),"app_latency_ms":entry.get("app_latency_ms"),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"server":node.get("server"),"type":node.get("type")})
+    print("Top20 Ranking:"); print("Rank | Score | App ms | Ping | Loss | Server | Type")
     for r in report["ranking"]:
-        ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
-        print(f"{r['rank']:>4} | {r['score']:>5} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
+        app_ms=r["app_latency_ms"] if r["app_latency_ms"] is not None else "-"; ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
+        print(f"{r['rank']:>4} | {r['score']:>5} | {str(app_ms):>6} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
     if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
+        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); raise RuntimeError(f"Only {len(ranked)} nodes remained after diversity ranking; refusing to publish the previous Fine pool.")
     build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

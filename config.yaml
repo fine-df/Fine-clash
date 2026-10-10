@@ -1,11 +1,12 @@
 sources:
-  recent_days: 30
+  recent_days: 7
   min_stars: 30
   require_recent_push: true
   repositories_per_query: 30
   max_repositories: 120
-  max_sources: 160
+  max_sources: 120
   max_candidate_files_per_repo: 8
+  max_source_age_days: 3
   max_source_bytes: 8000000
   min_nodes_per_source: 2
   # 源头约束（2026-10-08）：
@@ -43,23 +44,23 @@ nodes:
   max_test_nodes: 200
   min_final_nodes: 1
   max_final_nodes: 20
-  max_per_server: 3
-  max_per_org: 6
+  max_per_server: 2
+  max_per_org: 3
+  max_endpoint_latency_ms: 2500
   validation_workers: 8
   endpoint_workers: 6
   test_timeout_seconds: 8
   controller_startup_seconds: 1.5
   switch_wait_seconds: 0.5
-  candidate_gate: 'reachable'
+  candidate_gate: 'gemini_or_play'
   score_threshold: 70
-  # 60 = 允许 IP 情报接口暂时不可用时进入后续深圳实测；已知低洁净度节点仍会被排除。
-  min_clean_score: 60
+  min_clean_score: 65
   # 软优先级地板（2026-10-06 D 方向）：final 池截断时，低于此分的节点排到
   # 达地板节点之后，确保最终 20 个优先取高分优质节点。非硬门槛，0=不启用。
   min_final_score: 55
 retention:
   enabled: true
-  max_previous_nodes: 20
+  max_previous_nodes: 5
 shenzhen_probe:
   enabled: true
   city: 'Shenzhen'
@@ -85,6 +86,7 @@ sticky:
   enabled: true
   keep_ping_ms: 300
   keep_loss_pct: 5.0
+  keep_endpoint_latency_ms: 2000
 checks:
   gemini_url: 'https://gemini.google.com/'
   google_play_url: 'https://play.google.com/store'

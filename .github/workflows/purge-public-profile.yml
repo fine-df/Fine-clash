@@ -1,0 +1,25 @@
+name: Purge public subscription cache
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'live_clash.yaml'
+      - '.github/workflows/purge-public-profile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Purge jsDelivr cached public profile
+        run: |
+          set -euo pipefail
+          purge_url='https://purge.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml'
+          curl -fsSL --retry 3 --retry-delay 2 --max-time 20 "$purge_url"
+          echo

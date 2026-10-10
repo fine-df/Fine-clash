@@ -1,3 +1,0 @@
-GitHub read/write connection test
-Created: 2026-10-10
-Purpose: temporary verification only.

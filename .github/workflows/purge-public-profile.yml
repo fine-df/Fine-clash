@@ -15,7 +15,7 @@ permissions:
 jobs:
   purge:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 30
     steps:
       - name: Purge and verify jsDelivr cached public profile
         run: |
@@ -32,8 +32,19 @@ jobs:
               echo 'jsDelivr confirmed that cache providers purged the public profile'
               exit 0
             fi
-            echo "::warning::jsDelivr did not confirm a full purge (attempt $attempt/3)"
-            sleep "$((attempt * 3))"
+            reset_seconds="$(printf '%s' "$response" | python3 -c 'import json,sys; d=json.load(sys.stdin); p=d.get("paths") or {}; print(max((int(x.get("throttlingReset",0) or 0) for x in p.values() if x.get("throttled")), default=0))')"
+            if [[ "$reset_seconds" =~ ^[0-9]+$ ]] && (( reset_seconds > 0 )); then
+              wait_seconds=$((reset_seconds + 3))
+              if (( wait_seconds >= 1800 )); then
+                echo "::error::jsDelivr throttle reset (${wait_seconds}s) exceeds the configured purge window"
+                exit 1
+              fi
+              echo "::warning::jsDelivr is throttling purge requests; waiting ${wait_seconds}s before retry"
+              sleep "$wait_seconds"
+            else
+              echo "::warning::jsDelivr did not confirm a full purge (attempt $attempt/3)"
+              sleep "$((attempt * 3))"
+            fi
           done
           echo "::error::jsDelivr cache purge did not confirm success; the CDN may still serve stale profile content"
           exit 1

@@ -44,7 +44,8 @@ curated_nodes_file: ''
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200
-  min_final_nodes: 1
+  # Avoid publishing a nominally successful pool containing only one or two nodes.
+  min_final_nodes: 3
   max_final_nodes: 20
   max_per_server: 2
   max_per_org: 3
@@ -56,7 +57,9 @@ nodes:
   switch_wait_seconds: 0.5
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
-  min_clean_score: 65
+  # 60 is a neutral/unknown score (e.g. missing IP intelligence or Cloudflare fronting),
+  # not evidence that a node is dirty; use actual Gemini/Play and latency checks for reachability.
+  min_clean_score: 60
   # 软优先级地板（2026-10-06 D 方向）：final 池截断时，低于此分的节点排到
   # 达地板节点之后，确保最终 20 个优先取高分优质节点。非硬门槛，0=不启用。
   min_final_score: 55

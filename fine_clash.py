@@ -1096,6 +1096,30 @@ def candidate_gate_passes(item, gate, clean, min_clean):
         return bool(gemini and google_play and clean_ok)
     return False
 
+def round_robin_fingerprints(source_buckets):
+    """Interleave candidate fingerprints across repositories before applying the test cap."""
+    buckets=[list(dict.fromkeys(bucket)) for bucket in source_buckets if bucket]
+    offsets=[0 for _ in buckets]
+    seen=set()
+    out=[]
+    while True:
+        progressed=False
+        for index,bucket in enumerate(buckets):
+            offset=offsets[index]
+            while offset<len(bucket) and bucket[offset] in seen:
+                offset+=1
+            if offset<len(bucket):
+                fp=bucket[offset]
+                out.append(fp)
+                seen.add(fp)
+                offset+=1
+                progressed=True
+            offsets[index]=offset
+        if not progressed:
+            break
+    return out
+
+
 def run():
     rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
     discovery=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"])
@@ -1175,12 +1199,23 @@ def run():
         raise RuntimeError("No fresh, valid GitHub node sources; refusing to republish the stale Fine pool.")
     source_path.parent.mkdir(parents=True,exist_ok=True)
     source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
-    nodes_by_fp={}; session=requests.Session()
+    nodes_by_fp={}; source_fingerprints_by_repo={}; session=requests.Session()
     for source in sources:
         try:
             response=session.get(source["url"],timeout=20,headers={"User-Agent":UA}); response.raise_for_status()
+            repo_key=str(source.get("repo") or source.get("url") or "")
+            repo_bucket=source_fingerprints_by_repo.setdefault(repo_key,[])
             for node in parse_subscription(response.text):
-                if node.get("type") in rules["nodes"]["allowed_types"] and node.get("server") and node.get("port") and resolved_server_is_safe(node["server"]) and mihomo_node_is_testable(node): nodes_by_fp[fingerprint(node)]=node
+                if node.get("type") not in rules["nodes"]["allowed_types"] or not node.get("server") or not node.get("port"):
+                    continue
+                if not resolved_server_is_safe(node["server"]) or not mihomo_node_is_testable(node):
+                    continue
+                fp=fingerprint(node)
+                # Keep the first occurrence and its repository attribution so one
+                # enormous subscription cannot dominate the entire test budget.
+                if fp not in nodes_by_fp:
+                    nodes_by_fp[fp]=node
+                    repo_bucket.append(fp)
         except requests.RequestException: continue
     # ★ 并入手维护优质节点源（2026-10-04 接入）：sub_local.txt 是用户精选的 [BL] 节点池，
     #   之前完全不在发现管线里，导致「唯一活节点不是 git 收集的」。这里把它解码后并入候选池，
@@ -1227,18 +1262,17 @@ def run():
         except Exception as e:
             print("direct_url: fatal %s" % type(e).__name__)
 
-    # ★ curated 优质节点优先（2026-10-04 修复回退）：用户手维护的 [BL] 节点是能通 Gemini 的
-    #   核心资产，必须始终排在测试集最前、绝不被 max_test_nodes 截断丢弃。否则会出现
-    #   「免费 204 节点挤掉唯一通 Gemini 的 [BL] 节点」的净亏（实测发生过：Gemini 从 200 掉到 000）。
-    #   排序：curated 优先，其余按发现顺序；再截断到上限。
+    # Preserve recently published and curated nodes first, then fairly sample across
+    # source repositories. Source discovery is ordered by repository update time, so
+    # simply slicing the first 200 unique nodes lets one large feed crowd out all others.
     retention_cfg=rules.get("retention",{}) or {}
     previous_profile_nodes=load_previous_published_nodes(ROOT / "live_clash.yaml", retention_cfg.get("max_previous_nodes",5) if retention_cfg.get("enabled",True) else 0)
     previous_fps={fingerprint(n) for n in previous_profile_nodes}
-    # Previously published nodes are re-tested first, but never bypass current gates.
     cap=int(rules["nodes"]["max_test_nodes"])
     ordered=previous_profile_nodes[:]
     ordered.extend([n for fp,n in nodes_by_fp.items() if fp in curated_fps and fingerprint(n) not in previous_fps])
-    ordered.extend([n for fp,n in nodes_by_fp.items() if fp not in curated_fps and fingerprint(n) not in previous_fps])
+    source_order=round_robin_fingerprints(list(source_fingerprints_by_repo.values()))
+    ordered.extend([nodes_by_fp[fp] for fp in source_order if fp not in curated_fps and fp not in previous_fps])
     dedup_ordered=[]; ordered_seen=set()
     for node in ordered:
         fp=fingerprint(node)

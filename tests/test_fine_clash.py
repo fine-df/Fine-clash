@@ -202,6 +202,16 @@ def test_cached_source_candidate_path_rejects_project_defaults():
     assert not fc.is_candidate_source_path("luci-app-openclash/root/usr/share/openclash/res/default.yaml")
     assert not fc.is_candidate_source_path("docs/defaults.yaml")
 
+def test_round_robin_fingerprints_balances_large_repositories():
+    first = [f"a-{i}" for i in range(100)]
+    second = ["b-0", "b-1"]
+    third = [f"c-{i}" for i in range(100)]
+    picked = fc.round_robin_fingerprints([first, second, third])
+    assert picked[:9] == ["a-0", "b-0", "c-0", "a-1", "b-1", "c-1", "a-2", "c-2", "a-3"]
+    assert len(picked) == 202
+    assert len(set(picked)) == len(picked)
+
+
 def test_discovery_fetches_sources_concurrently_and_preserves_priority_order(monkeypatch):
     discovery = fc.GitHubDiscovery(None, {"source_workers": 2})
     repos = [
@@ -279,7 +289,8 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["max_candidate_files_per_repo"] == 4
     assert cfg["sources"]["max_source_age_days"] == 3
     assert cfg["nodes"]["candidate_gate"] == "gemini_or_play"
-    assert cfg["nodes"]["min_clean_score"] == 65
+    assert cfg["nodes"]["min_clean_score"] == 60
+    assert cfg["nodes"]["min_final_nodes"] == 3
     assert cfg["nodes"]["max_per_server"] == 2
     assert cfg["nodes"]["max_per_org"] == 3
     assert cfg["nodes"]["max_endpoint_latency_ms"] == 2500
@@ -790,6 +801,14 @@ def test_sticky_quality_requires_fast_end_to_end_latency():
     assert fc.node_is_quality(base, cfg)
     assert not fc.node_is_quality({**base, "app_latency_ms": 2500}, cfg)
     assert not fc.node_is_quality({"shenzhen_ping_ms": 120, "shenzhen_loss_pct": 0}, cfg)
+
+
+def test_neutral_clean_score_is_eligible_with_reachability_checks():
+    item = {"gemini": True, "google_play": True, "google": {"ok": True}}
+    assert fc.clean_score(None, item["google"]) == 60
+    assert fc.clean_score({"org": "AS13335 Cloudflare, Inc."}, item["google"]) == 60
+    assert fc.candidate_gate_passes(item, "gemini_or_play", 60, 60)
+    assert not fc.candidate_gate_passes(item, "gemini_or_play", 60, 65)
 
 
 def test_clean_score_catches_google_and_oracle():

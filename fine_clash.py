@@ -315,7 +315,7 @@ def lifespan_days(row):
 
 
 def load_previous_published_nodes(path, max_nodes=5):
-    """Load only nodes referenced by the previous Fine policy group as continuity reserve."""
+    """Load only proxies explicitly referenced by the previous Fine group for re-testing."""
     try:
         limit=max(0,int(max_nodes))
     except (TypeError,ValueError):

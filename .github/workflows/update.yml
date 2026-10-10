@@ -24,8 +24,9 @@ env:
   MIHOMO_VERSION: v1.19.28
 
 concurrency:
-  # Keep discovery and publication serialized; end-to-end node checks can run for over 20 minutes.
-  group: fine-clash-update-v2
+  # Isolate the optimized pipeline from long-running jobs queued under the legacy group.
+  # Subsequent updates to this ref still cancel stale runs rather than wasting runner time.
+  group: "fine-clash-update-v3-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:

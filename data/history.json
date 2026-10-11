@@ -41,6 +41,18 @@
     "play_pass_count": 4,
     "seen_count": 1
   },
+  "003d07df1fa0a77cc034": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277854+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "004a978d906168090837": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -154,10 +166,10 @@
   "00c126dc43b104429309": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -286,6 +298,18 @@
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
   },
+  "01809f69ab1f13319662": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277934+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "0181d3f06bb168d96913": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 1,
@@ -380,20 +404,22 @@
   "021ea75709f8fd15cfe5": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
   },
   "0227abf498315d6f3a76": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-04",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "ALIILAPRO/v2rayNG-Config",
+    "source_url": "https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/sub.txt"
   },
   "0248f032a713dbcae54f": {
     "first_seen": "2026-10-10",
@@ -449,6 +475,14 @@
     "shenzhen_ping_ms": 204.7,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "02a11ccc5a68ecc3c509": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
   },
   "02adeb001f4a19828294": {
     "first_seen": "2026-10-05",
@@ -547,6 +581,14 @@
     "shenzhen_ping_ms": 215.0,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "0328bef7ad57d832c038": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "0333b2c0b4bd72442042": {
     "first_seen": "2026-10-02",
@@ -679,11 +721,11 @@
   },
   "03f3ee9ca51fa78c5674": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
@@ -816,12 +858,12 @@
   "04f908f887dd4a0fa5f2": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:34:43.548161+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015182+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277982+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -830,8 +872,8 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 1,
     "shenzhen_status": "partial-ok",
-    "source_repo": "cbusifabcap/daily_free_vpn",
-    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/Clash.yml"
+    "source_repo": "barry-far/V2ray-config",
+    "source_url": "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt"
   },
   "055e3e6aa7e91d5e29ec": {
     "first_seen": "2026-10-09",
@@ -930,6 +972,18 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
   },
+  "060553a6b06653ac9a0a": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278068+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "062ea74603066ac6ed9f": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
@@ -953,6 +1007,14 @@
     "pass_count": 2,
     "play_pass_count": 2,
     "seen_count": 2
+  },
+  "0635e865299b2aea27dd": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "063cad3e886d904e5da2": {
     "first_seen": "2026-10-06",
@@ -1211,13 +1273,13 @@
   },
   "0758a69ec409a9f27f0c": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:34:43.548175+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015097+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277766+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -1890,6 +1952,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 3
+  },
+  "0ad34f22726c7f52e5df": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278101+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "0ae2a7a6fef24f1e455b": {
     "first_seen": "2026-10-06",
@@ -2963,12 +3037,24 @@
   "0fab9e67764b55cdae3f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
+    "seen_count": 2,
+    "source_repo": "ebrasha/free-v2ray-public-list",
+    "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/ss_configs.txt"
+  },
+  "0fb60a60bdd1a1a67822": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
     "seen_count": 1,
-    "source_repo": "0xRadikal/Free-v2ray-Configs",
-    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/configs.txt"
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278062+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "0fc04f703cc5e4a8d1a9": {
     "first_seen": "2026-10-07",
@@ -2981,10 +3067,10 @@
   "0fdcce00d55b646699bc": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "cbusifabcap/daily_free_vpn",
     "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml"
   },
@@ -3009,10 +3095,10 @@
   "0fe7c75a459d1fdb3d94": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
@@ -3208,20 +3294,20 @@
   "11100bfd1eb89bcb2fc9": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
   "1130a5aff3827afae8c0": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json"
   },
@@ -3267,10 +3353,10 @@
   "115c69c174b840c8d379": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
@@ -3639,10 +3725,10 @@
   "13a049737ae6c3f66ca8": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml"
   },
@@ -4100,6 +4186,14 @@
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-04",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "16a0f63f42a64175540d": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -4595,6 +4689,14 @@
     "last_seen": "2026-10-08",
     "pass_count": 0,
     "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "1999ce9dd7d46ee8a47a": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
     "seen_count": 1
   },
   "19a185f0f99072f27ce8": {
@@ -5637,6 +5739,14 @@
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
+  "1f2cba4af8df73bfcc08": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "1f2fa0372d982c119835": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 2,
@@ -6429,22 +6539,30 @@
   "238a82959e4471ce838a": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
   "239265e38c1e568be3be": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
+  },
+  "23979224b8c97b74646c": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
   },
   "23e3f41c4748fc877a59": {
     "first_seen": "2026-10-04",
@@ -6480,10 +6598,12 @@
   "2411617a2d28bbd874ce": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "24229945d3fb174f13be": {
     "first_seen": "2026-10-08",
@@ -6728,10 +6848,10 @@
   "2586a41243c6c993624d": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -6756,6 +6876,14 @@
     "play_pass_count": 1,
     "seen_count": 2
   },
+  "25adde16726c3c0149ef": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "25b1168a1493796d6849": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 1,
@@ -6779,6 +6907,18 @@
     "pass_count": 0,
     "play_pass_count": 1,
     "seen_count": 1
+  },
+  "25dccb5c37a2ccdea37c": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277976+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "2600d5def5e5c11a31a0": {
     "first_seen": "2026-10-07",
@@ -6841,10 +6981,10 @@
   "2667ca423eaeb4f6244d": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json"
   },
@@ -6992,6 +7132,14 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 2
+  },
+  "27adb78376c28677a7e3": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "27b9b0b4d6e880487c05": {
     "first_seen": "2026-10-01",
@@ -7395,6 +7543,14 @@
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats"
+  },
+  "29ead5e7d7addfb2f53a": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "29ee11aa9b1a601f2804": {
     "first_seen": "2026-10-07",
@@ -7946,6 +8102,18 @@
     "play_pass_count": 0,
     "seen_count": 2
   },
+  "2d3be37cc1bdcb179341": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277958+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "2d5cf6bc1a8c20deaeae": {
     "first_seen": "2026-10-09",
     "gemini_pass_count": 2,
@@ -8064,12 +8232,12 @@
   "2d991d0f2f9563e1f754": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
-    "source_repo": "Danialsamadi/v2go",
-    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
+    "seen_count": 2,
+    "source_repo": "barry-far/V2ray-config",
+    "source_url": "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt"
   },
   "2da56635465b224f2be5": {
     "first_seen": "2026-10-04",
@@ -8195,11 +8363,11 @@
   },
   "2ea23a09b59a8669293c": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
@@ -8364,12 +8532,12 @@
   },
   "2f715c91b9f76bee1763": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015285+00:00",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277794+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -8904,13 +9072,13 @@
   },
   "3389c2cb5187f3ee6243": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714873+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015145+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277994+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -9458,13 +9626,13 @@
   },
   "3708dbb7c536b5d97395": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "source_repo": "free-nodes/v2rayfree",
-    "source_url": "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/sub"
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "3712d61d8a5264a2820e": {
     "first_seen": "2026-10-08",
@@ -9553,10 +9721,10 @@
   "376f57a1f0fdfd290c39": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015091+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
@@ -9784,6 +9952,14 @@
     "play_pass_count": 0,
     "seen_count": 2
   },
+  "388953309b9028f4cc2c": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "38c427ddb3d25dd370a2": {
     "first_seen": "2026-10-08",
     "gemini_pass_count": 0,
@@ -9840,10 +10016,10 @@
   "38f2b0515b05f754ff89": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -10192,6 +10368,14 @@
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-04",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "3b9a68ae03b38ef57936": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -10786,13 +10970,13 @@
   },
   "3f7c8d566634aa7e6cf7": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714892+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015064+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277804+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -11238,6 +11422,23 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "41fbc3decec5b4397494": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-11T00:33:53.278091+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278091+00:00",
+    "shenzhen_last_attempt_status": "ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 162.7,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 2,
+    "shenzhen_status": "ok"
+  },
   "4209a30cea0d9f38d9bf": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -11272,11 +11473,11 @@
   },
   "423473adc68481177a69": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
@@ -11458,6 +11659,18 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "435337e241ccb4956e70": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278075+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "4355fd44126bce443824": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 1,
@@ -11470,6 +11683,14 @@
     "shenzhen_ping_ms": 230.7,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "435940c02ce4f3c29fb7": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "435a459d94285b46a22c": {
     "first_seen": "2026-10-04",
@@ -11956,11 +12177,11 @@
   },
   "4671d563d8cd5d39e4c1": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T20:02:47.007923+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T20:02:47.007923+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -12062,10 +12283,10 @@
   "46be2a309be3cba16bde": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json"
   },
@@ -12105,6 +12326,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "471496223c21621d5ef4": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278006+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "47185fe6b0419f8eb7f2": {
     "first_seen": "2026-10-08",
@@ -12185,6 +12418,14 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
   },
+  "478a5086fd7054c06c6b": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "478e3a2a09eb8bc849c7": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -12248,10 +12489,12 @@
   "47e18c04cdbf3abbff59": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "47e9a0ac38dd559bf09e": {
     "first_seen": "2026-10-08",
@@ -12611,10 +12854,10 @@
   "49fc908022b54e9d8a52": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json"
   },
@@ -12691,11 +12934,11 @@
   },
   "4a8717f054f6d00f5a99": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt"
   },
@@ -13338,6 +13581,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "4edf0eb2c1d474ff28e6": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "4ee8a0ff5481b4a7589b": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -13478,10 +13729,10 @@
   "501b7f56dfc3a9e1163c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -13496,10 +13747,12 @@
   "503c99028e8d5ebc3d1d": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-04",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 1,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "504776d1fac7e62b3e33": {
     "first_seen": "2026-10-04",
@@ -14345,10 +14598,10 @@
   "55ea196204e50fbc0dd5": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
@@ -14652,10 +14905,10 @@
   "5838bce385b742fb4ab8": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 3,
+    "seen_count": 4,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
@@ -14802,6 +15055,18 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 2,
     "shenzhen_status": "ok"
+  },
+  "58daf668b389d1ca1be0": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277929+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "58db5b7503073209ead5": {
     "first_seen": "2026-10-10",
@@ -15016,11 +15281,11 @@
   },
   "5a7553849d30050a1c2b": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T23:31:27.014985+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014985+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -15113,15 +15378,21 @@
   "5ae7b53e8e9d16621292": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 1,
-    "last_seen": "2026-10-04",
+    "last_seen": "2026-10-11",
     "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-04T04:17:52.377354+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277847+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
     "shenzhen_loss_pct": null,
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
-    "shenzhen_status": "timeout"
+    "shenzhen_status": "timeout",
+    "source_repo": "SoliSpirit/v2ray-configs",
+    "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/all_configs.txt"
   },
   "5aeae50c80867e09c390": {
     "first_seen": "2026-10-06",
@@ -15440,6 +15711,14 @@
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
   },
+  "5c78fd86e040b5b65d8f": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "5c89afc9097002827808": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 1,
@@ -15452,6 +15731,14 @@
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-06",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "5c924a630fa9ba0bb951": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -15491,18 +15778,20 @@
   "5cbd0b2ff3b64336203d": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2rayc.yaml"
   },
   "5cc625c277441cd2147b": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015045+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
@@ -15637,10 +15926,10 @@
   "5d65abe620faf428eb34": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
@@ -15710,6 +15999,14 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "5e269961e4ffec05584c": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
     "seen_count": 1
   },
   "5e34d2c563a3b1e69632": {
@@ -15995,10 +16292,12 @@
   "6002838356469ce31319": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/cfv2ray.yaml"
   },
   "6009085f05989ab40b87": {
     "first_seen": "2026-10-10",
@@ -16847,13 +17146,13 @@
   },
   "6503017857d6552886bb": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T16:03:44.070136+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014974+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277818+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -16963,10 +17262,10 @@
   "655dbfadf453d1bc792c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
@@ -17127,13 +17426,13 @@
   },
   "66401ed02c8307dbb8b1": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714704+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014963+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277878+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -17148,14 +17447,16 @@
   "664ac91c128f0de49f29": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T20:02:47.007902+00:00",
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277896+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
-    "shenzhen_last_error": "no-stats"
+    "shenzhen_last_error": "no-stats",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
   },
   "664bef1d366bbb2c184a": {
     "first_seen": "2026-10-10",
@@ -17330,6 +17631,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "67c9db5cf40c4c8dcbac": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "67d727e6bba8c2973797": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 1,
@@ -17388,10 +17697,10 @@
   "681c61aa8e0ab321f2e8": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
@@ -17569,10 +17878,12 @@
   "69049f67c8efa41a1bf6": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "69128c6cdcff31a1df98": {
     "first_seen": "2026-10-02",
@@ -17590,10 +17901,10 @@
   "692a47817beb0361894a": {
     "first_seen": "2026-10-09",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 2,
-    "seen_count": 2,
+    "play_pass_count": 3,
+    "seen_count": 3,
     "shenzhen_checked_at": "2026-10-10T23:31:27.015290+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015290+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -17745,6 +18056,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "6a0e5f0631a14ddedf36": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "6a1206e1ecb36c52de40": {
     "first_seen": "2026-09-30",
     "gemini_pass_count": 5,
@@ -17858,10 +18177,12 @@
   "6ae66bc5846e94991c31": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2rayc.yaml"
   },
   "6af73841b4f58efc565a": {
     "first_seen": "2026-10-04",
@@ -17988,10 +18309,10 @@
   "6c0bd85337b35c8887e5": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "WLget/V2Ray_configs_64",
     "source_url": "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/master/README.md"
   },
@@ -18149,6 +18470,18 @@
     "shenzhen_ping_ms": 287.3,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "6d1385f9d8ca2ece1c46": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278030+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "6d17dca3e2f8182946fc": {
     "first_seen": "2026-10-10",
@@ -18312,10 +18645,10 @@
   "6e693632fbb720f7de22": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -18491,10 +18824,10 @@
   "6f809db675ddbb58dd19": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
@@ -18542,18 +18875,22 @@
   },
   "6fb2226bc83c14f2209d": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T03:55:58.494314+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277916+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
     "shenzhen_loss_pct": null,
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats",
-    "source_repo": "cbusifabcap/daily_free_vpn",
-    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml"
+    "source_repo": "barry-far/V2ray-config",
+    "source_url": "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt"
   },
   "6fca4db9e4b4f0398f3d": {
     "first_seen": "2026-10-04",
@@ -18612,6 +18949,14 @@
     "shenzhen_ping_ms": 424.2,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "702565b0458f35452025": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "702c4cfb2f50e3edcf7f": {
     "first_seen": "2026-10-04",
@@ -18806,6 +19151,14 @@
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-06",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "7154d4bb612778760480": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -19129,10 +19482,10 @@
   "72e874a957bb84bb0c1c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -19815,10 +20168,10 @@
   "7715132e5971083d750c": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 2,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 2,
     "play_pass_count": 2,
-    "seen_count": 5,
+    "seen_count": 6,
     "shenzhen_checked_at": "2026-10-06T12:32:46.901865+00:00",
     "shenzhen_loss_pct": null,
     "shenzhen_ping_ms": null,
@@ -20002,10 +20355,10 @@
   "785b562e782b978358dc": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
@@ -20331,13 +20684,13 @@
   },
   "7a021668bd80daabf0f4": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714864+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014808+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277636+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -20425,11 +20778,11 @@
   },
   "7a9f69e90abdcbaae847": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
@@ -20615,10 +20968,10 @@
   "7c038a7472410cd3c90e": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
@@ -20874,10 +21227,10 @@
   "7d6bc5087e591516785c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -21264,10 +21617,10 @@
   "7f5d0a95529fedf15bb0": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/clash.yaml"
   },
@@ -21285,6 +21638,14 @@
     "last_seen": "2026-10-10",
     "pass_count": 0,
     "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "7f9e79eba07700965895": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
     "seen_count": 1
   },
   "7fa9b7958db38dc3823e": {
@@ -21551,10 +21912,12 @@
   "81546ed23a434dd40fb8": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "81571557722d8e37a57b": {
     "first_seen": "2026-10-10",
@@ -21632,15 +21995,17 @@
   },
   "81f307b3c324d4d1edba": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T20:02:47.007994+00:00",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277964+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
-    "shenzhen_last_error": "no-stats"
+    "shenzhen_last_error": "no-stats",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
   "82065e2309b3372c0231": {
     "first_seen": "2026-10-04",
@@ -22146,10 +22511,10 @@
   "855f2b29208042a5ac4f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -22248,18 +22613,32 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "85e36850b3e545b14a2c": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "85e60e50f3086ecdd49d": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T03:55:58.494285+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277860+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
     "shenzhen_loss_pct": null,
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
-    "shenzhen_status": "no-stats"
+    "shenzhen_status": "no-stats",
+    "source_repo": "cbusifabcap/daily_free_vpn",
+    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml"
   },
   "85fe47c8a90d64e55f00": {
     "first_seen": "2026-10-04",
@@ -22775,11 +23154,11 @@
   },
   "890c977066222101f76a": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T23:31:27.015053+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015053+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -22795,10 +23174,10 @@
   "8913f558865dc56d174f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -22809,6 +23188,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "89330d63d5ec7b5dc670": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277970+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "893b282fe9c063795a09": {
     "first_seen": "2026-10-08",
@@ -22966,10 +23357,10 @@
   "8a267f752f688f3466cc": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 1,
     "play_pass_count": 1,
-    "seen_count": 4,
+    "seen_count": 5,
     "shenzhen_checked_at": "2026-10-10T16:03:44.070125+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070125+00:00",
     "shenzhen_last_attempt_status": "partial-ok",
@@ -23146,6 +23537,14 @@
     "play_pass_count": 0,
     "seen_count": 3
   },
+  "8b9bf2b2cc9b44be43a5": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "8ba3d4153c3787b33785": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -23257,6 +23656,14 @@
     "shenzhen_ping_ms": 155.7,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "8c4f652e46e2ace99e45": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "8c53898a94d3a3441703": {
     "first_seen": "2026-10-06",
@@ -23534,10 +23941,12 @@
   "8dc3479f9955dc2832e2": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2rayc.yaml"
   },
   "8dc8289c20fb88a18460": {
     "first_seen": "2026-10-07",
@@ -23579,10 +23988,10 @@
   "8df2cd9491da3fc116a2": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/all/clash.yaml"
   },
@@ -23701,10 +24110,12 @@
   "8f298ea3d7d700a8a8b3": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "8f4c821f1087a557d54a": {
     "first_seen": "2026-10-01",
@@ -23811,6 +24222,14 @@
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats"
   },
+  "8fb1f0cf54370f5fb0f5": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "8fc3e3d3c7d3510b612f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -23880,10 +24299,12 @@
   "8fe79944e90832ca0175": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "8fede3518585286c3736": {
     "first_seen": "2026-10-01",
@@ -24084,14 +24505,15 @@
   "915461cac61f2ee47db4": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T16:03:44.070070+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T16:03:44.070070+00:00",
-    "shenzhen_last_attempt_status": "partial-ok",
-    "shenzhen_last_attempts": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277890+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
     "shenzhen_loss_pct": 0.0,
     "shenzhen_ping_ms": 263.4,
     "shenzhen_probe_city": "Shenzhen",
@@ -24227,6 +24649,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "92c2a732dcf84c09ff88": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "92cacada63f59e388e81": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -24237,13 +24667,13 @@
   },
   "92d9de09d11ee3f29aa7": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:34:43.547908+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015245+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278047+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -24252,8 +24682,8 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 1,
     "shenzhen_status": "partial-ok",
-    "source_repo": "cbusifabcap/daily_free_vpn",
-    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/sub.yml"
+    "source_repo": "Danialsamadi/v2go",
+    "source_url": "https://raw.githubusercontent.com/Danialsamadi/v2go/main/AllConfigsSub.txt"
   },
   "92db1d7a79930bfa344e": {
     "first_seen": "2026-10-04",
@@ -24309,12 +24739,12 @@
   },
   "9310f73b3c9672d34e68": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015310+00:00",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278108+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -24347,12 +24777,12 @@
   },
   "93546e589da0d40793ec": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015274+00:00",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278012+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -24650,10 +25080,10 @@
   "94da62461f1623efd0b0": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -24938,6 +25368,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "96b603e85a0a2806ed2d": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278057+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "96bef88c4e22d59e267e": {
     "first_seen": "2026-10-04",
@@ -25234,10 +25676,10 @@
   "98643b6378d386f68947": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
@@ -25519,11 +25961,11 @@
   },
   "9a1617b6fcc1fdaae1d8": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015280+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
@@ -25679,6 +26121,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "9b107c574c9ec89865c7": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1
+  },
   "9b30a9a5de22f1754d6a": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -25714,10 +26164,10 @@
   "9ba78022a06d34bfcf6e": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "shenzhen_last_attempt_at": "2026-10-10T15:34:43.548125+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
@@ -26154,10 +26604,10 @@
   "9e607a4f88fbbe700b02": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
@@ -26484,10 +26934,10 @@
   "a0b435270080368d7200": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
@@ -26506,11 +26956,13 @@
   },
   "a0b5b2565337622d9652": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "source_repo": "hello-world-1989/cn-news",
+    "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-free.yaml"
   },
   "a0b71f901ee884cc5ea0": {
     "first_seen": "2026-10-05",
@@ -26944,6 +27396,23 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "a29e3924218973bc4ca2": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_checked_at": "2026-10-11T00:33:53.277904+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277904+00:00",
+    "shenzhen_last_attempt_status": "ok",
+    "shenzhen_last_attempts": 1,
+    "shenzhen_loss_pct": 0.0,
+    "shenzhen_ping_ms": 191.5,
+    "shenzhen_probe_city": "Shenzhen",
+    "shenzhen_probe_observations": 2,
+    "shenzhen_status": "ok"
+  },
   "a29edc7268204c8573c1": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -27187,10 +27656,10 @@
   "a44a6d631e229ef016a2": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
@@ -27227,6 +27696,14 @@
     "shenzhen_ping_ms": 196.5,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "a491eb36e773bcd9e860": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "a497dd5d12e84bf3eaaf": {
     "first_seen": "2026-10-10",
@@ -27495,16 +27972,16 @@
   "a5df311f2c523f3a2e59": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015086+00:00",
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277839+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
-    "source_repo": "cbusifabcap/daily_free_vpn",
-    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/Clash.yml"
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
   },
   "a5e3c68ef926c33982fe": {
     "first_seen": "2026-10-07",
@@ -27562,10 +28039,12 @@
   "a61b0d09e0a79b1fe4cb": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "a6206f4e626ce8b3a6bf": {
     "first_seen": "2026-10-04",
@@ -27719,6 +28198,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "a6e2b1c922dd988e87be": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "a6ef93a339afa75358af": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 5,
@@ -27787,10 +28274,10 @@
   "a7367b65301fad96f18f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
@@ -28143,10 +28630,10 @@
   "a953f2cbeee67c93535f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
@@ -28181,11 +28668,15 @@
   },
   "a973579ac6dbdd7045bf": {
     "first_seen": "2026-10-06",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 2,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 3,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277832+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/BLACK_VLESS_RUS_v2rayN.txt"
   },
@@ -28572,6 +29063,14 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "ac8180853b9864b1726f": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "ac83dfaca15a6cfd5c24": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 2,
@@ -28932,6 +29431,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "ae95110f85d9e4750470": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "ae9777dac54fab064d73": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -29246,6 +29753,14 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "b0676da59f4e9154c128": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "b09c38a501b93bf13ec7": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 2,
@@ -29480,10 +29995,12 @@
   "b27bc230eebaacc6b1a9": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/cfv2ray.yaml"
   },
   "b285eb35a5c6ad651803": {
     "first_seen": "2026-09-30",
@@ -29674,6 +30191,14 @@
     "shenzhen_ping_ms": null,
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats"
+  },
+  "b37540ba233c3d93b8f1": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "b39dc1035b51bbf65748": {
     "first_seen": "2026-10-06",
@@ -30172,6 +30697,14 @@
     "play_pass_count": 2,
     "seen_count": 2
   },
+  "b666f7b943b623e8b7dc": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "b66a5a973db22eae6009": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 1,
@@ -30328,10 +30861,10 @@
   "b71a92dd84e7bcf16bda": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/api/allConfigs.json"
   },
@@ -30522,20 +31055,20 @@
   "b895dfaac00990df3d1d": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "cbusifabcap/daily_free_vpn",
     "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml"
   },
   "b8a417955dfb29786353": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub9.txt"
   },
@@ -30655,10 +31188,10 @@
   "b967f3ed67acc0c4f1d9": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "ebrasha/free-v2ray-public-list",
     "source_url": "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/main/V2Ray-Config-By-EbraSha-All-Type.txt"
   },
@@ -31065,10 +31598,10 @@
   "bbaaff95b5b2bb14966a": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "0xRadikal/Free-v2ray-Configs",
     "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
   },
@@ -31083,10 +31616,10 @@
   "bbb63128ba1b1b09ab78": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
@@ -31111,10 +31644,12 @@
   "bbeb4391add46199c5f9": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/cfv2ray.yaml"
   },
   "bbec054e78725f74e711": {
     "first_seen": "2026-10-02",
@@ -31432,6 +31967,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "bdd300ef82f13417e5c5": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "bdeb614bae9944b382f5": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 2,
@@ -31521,10 +32064,10 @@
   "be7d7c132437a6dde249": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
@@ -31744,6 +32287,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "c002e6060d31227cc53d": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "c037c4367f3569db9dd5": {
     "first_seen": "2026-10-05",
     "gemini_pass_count": 0,
@@ -31838,13 +32389,13 @@
   },
   "c0a9eb5d508be7a6fe23": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:34:43.548133+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014870+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277781+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -32570,6 +33121,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "c50782c29b82c4e8accc": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "c51012d4020e1739bd6b": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -33124,6 +33683,14 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats"
   },
+  "c89c5089089f964fa472": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "c8b92d6e6186d2c53a27": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -33270,6 +33837,18 @@
     "pass_count": 0,
     "play_pass_count": 1,
     "seen_count": 1
+  },
+  "c979f0163812ba6213d3": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278019+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "c97dcd5731508851bce0": {
     "first_seen": "2026-10-07",
@@ -33728,6 +34307,14 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "cca139b61d3c70f19cdc": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "ccb34ee695d6f515581e": {
     "first_seen": "2026-09-30",
     "gemini_pass_count": 1,
@@ -33770,6 +34357,18 @@
     "play_pass_count": 1,
     "seen_count": 1
   },
+  "cccaeb7f26f6f27b9052": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277733+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "cccc2a359d8253fcd356": {
     "first_seen": "2026-10-07",
     "gemini_pass_count": 0,
@@ -33781,10 +34380,12 @@
   "cccf72427ce43482ef35": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "cce3072653a793ea3392": {
     "first_seen": "2026-10-06",
@@ -34028,6 +34629,14 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
   },
+  "ce53ac233831128362be": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "ce5743cf08bf4bf1da8c": {
     "first_seen": "2026-10-08",
     "gemini_pass_count": 0,
@@ -34208,10 +34817,10 @@
   "cfd73da23faaf51c82a7": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
@@ -34445,10 +35054,12 @@
   "d0ed5d23a8289efd4791": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2rayc.yaml"
   },
   "d0f24798c4fce5bcefec": {
     "first_seen": "2026-10-08",
@@ -34475,12 +35086,12 @@
   },
   "d0f6a13b8d10e06c8daf": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T20:02:47.008102+00:00",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278114+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -34529,13 +35140,13 @@
   },
   "d1469d206776c886d300": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714854+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015192+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277946+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -34698,13 +35309,13 @@
   },
   "d1fb5ec2d012c9b03dbf": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:34:43.548029+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.014928+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278025+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -34932,6 +35543,18 @@
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
+  },
+  "d3236a0be496e7854e03": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277744+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "d323f6c35d2ac800fcdd": {
     "first_seen": "2026-10-10",
@@ -35259,10 +35882,12 @@
   "d4dce0bdade007af95ff": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/cfv2ray.yaml"
   },
   "d4ee13b6aa7b2970cd10": {
     "first_seen": "2026-10-07",
@@ -35414,10 +36039,10 @@
   "d5abaa1e21cc2b8131dd": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash.yaml"
   },
@@ -35700,10 +36325,10 @@
   "d79b5c9fb303b70e5d2c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "NiceVPN123/NiceVPN",
     "source_url": "https://raw.githubusercontent.com/NiceVPN123/NiceVPN/main/Clash.yaml"
   },
@@ -35864,10 +36489,12 @@
   "d87ded0307c454fb0b03": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "d89071bf5873c5f5c17a": {
     "first_seen": "2026-10-10",
@@ -36053,10 +36680,12 @@
   "d99cfca63b310d2d332c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2rayc.yaml"
   },
   "d9bcfade6950b25c529c": {
     "first_seen": "2026-10-09",
@@ -36248,6 +36877,14 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "db66ca160a243e2262e8": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "db76c6215e13a59c8724": {
     "first_seen": "2026-10-04",
     "gemini_pass_count": 0,
@@ -36258,13 +36895,13 @@
   },
   "db8098d0de4ab6c5d2f9": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714778+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015236+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278035+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -36328,6 +36965,14 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "no-stats"
   },
+  "dbb2f2b1316307cb9280": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
   "dbb5dde175020b226f7b": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
@@ -36356,6 +37001,14 @@
     "shenzhen_ping_ms": 460.1,
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_status": "ok"
+  },
+  "dbde93e028e2fdc3b2fb": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "dbe619e1cd83ab7086ea": {
     "first_seen": "2026-10-01",
@@ -36518,6 +37171,18 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "dccd593b6b28c5268536": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277759+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "dccda04816dc176c47b4": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 1,
@@ -36629,6 +37294,18 @@
     "play_pass_count": 0,
     "seen_count": 1
   },
+  "ddac011aafc01db5d319": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278120+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "ddadd35984417c7f7dc0": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
@@ -36713,10 +37390,12 @@
   "de9a66765e92c0bfac1e": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/v2nodes.yaml"
   },
   "dea54c958f98e4a7187e": {
     "first_seen": "2026-10-09",
@@ -36875,12 +37554,12 @@
   },
   "df73a36865be8c4429d9": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015264+00:00",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277923+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -36948,6 +37627,14 @@
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
     "last_seen": "2026-10-10",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
+  },
+  "dfd0e941820929a6f3e5": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
     "seen_count": 1
@@ -37573,11 +38260,11 @@
   },
   "e447d4b2fb6ed3a3d7ed": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 0,
-    "seen_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T23:31:27.015118+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015118+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -38242,10 +38929,10 @@
   "e7f356f045337d8b08b3": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
@@ -38376,10 +39063,10 @@
   "e8d0bd89ddfd0d10feef": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
@@ -38506,11 +39193,13 @@
   },
   "e9962c9545103ef41094": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "source_repo": "igareck/vpn-configs-for-russia",
+    "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-CIDR-RU-all-v2rayN.txt"
   },
   "e9bd72ff8c4e3d4ede37": {
     "first_seen": "2026-10-04",
@@ -38565,11 +39254,11 @@
   },
   "e9f2dadba7859a96d022": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "source_repo": "igareck/vpn-configs-for-russia",
     "source_url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/v2rayN_PC/WHITE-SNI-RU-all-v2rayN.txt"
   },
@@ -38610,10 +39299,12 @@
   "ea1b9875555985a8c663": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "ea20c00412f0fa06ad9f": {
     "first_seen": "2026-10-10",
@@ -38797,11 +39488,11 @@
   },
   "eb19e7dd736a0f0ec2b0": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
-    "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
+    "pass_count": 2,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T20:02:47.007957+00:00",
     "shenzhen_last_attempt_at": "2026-10-10T20:02:47.007957+00:00",
     "shenzhen_last_attempt_status": "ok",
@@ -39090,10 +39781,10 @@
   "ecdd1dd61aa566162232": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "hello-world-1989/cn-news",
     "source_url": "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/clash-test.yaml"
   },
@@ -39200,10 +39891,10 @@
   "ed60c9f97433106c861c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub8.txt"
   },
@@ -39281,10 +39972,10 @@
   "edc29c6f30c1deabf9ae": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "SoliSpirit/v2ray-configs",
     "source_url": "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/main/Subscriptions/Sub7.txt"
   },
@@ -39506,10 +40197,12 @@
   "eebab1617fe4aa1b646c": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/freev2ray.yaml"
   },
   "eedb7459f22915ef12f1": {
     "first_seen": "2026-10-10",
@@ -39563,11 +40256,13 @@
   },
   "eefde821b33f7ef151e0": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 1,
-    "last_seen": "2026-10-10",
+    "gemini_pass_count": 2,
+    "last_seen": "2026-10-11",
     "pass_count": 1,
-    "play_pass_count": 1,
-    "seen_count": 1
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "source_repo": "sunmiao4458/free-proxy-airport",
+    "source_url": "https://raw.githubusercontent.com/sunmiao4458/free-proxy-airport/main/output/clash.yaml"
   },
   "ef1573ff469eafec4d23": {
     "first_seen": "2026-10-06",
@@ -40132,10 +40827,10 @@
   "f2a7707ae5567a37711f": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1,
+    "seen_count": 2,
     "source_repo": "cbusifabcap/daily_free_vpn",
     "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/ClashMeta.yml"
   },
@@ -40873,10 +41568,10 @@
   "f68f0d7b8e73160eaf69": {
     "first_seen": "2026-10-09",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 2,
+    "seen_count": 3,
     "source_repo": "itsyebekhe/PSG",
     "source_url": "https://raw.githubusercontent.com/itsyebekhe/PSG/main/config.txt"
   },
@@ -40981,10 +41676,12 @@
   "f72f9bb9853573fcdadc": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
     "play_pass_count": 0,
-    "seen_count": 1
+    "seen_count": 2,
+    "source_repo": "dongchengjie/airport",
+    "source_url": "https://raw.githubusercontent.com/dongchengjie/airport/main/subs/cfv2ray.yaml"
   },
   "f7393db8d6ddc9507eab": {
     "first_seen": "2026-10-07",
@@ -41060,12 +41757,12 @@
   "f7c0c84ff9e2a9ac6d1d": {
     "first_seen": "2026-10-10",
     "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
+    "last_seen": "2026-10-11",
     "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
     "shenzhen_checked_at": "2026-10-10T15:02:44.714679+00:00",
-    "shenzhen_last_attempt_at": "2026-10-10T23:31:27.015076+00:00",
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277697+00:00",
     "shenzhen_last_attempt_status": "no-stats",
     "shenzhen_last_attempts": 2,
     "shenzhen_last_error": "no-stats",
@@ -41074,8 +41771,8 @@
     "shenzhen_probe_city": "Shenzhen",
     "shenzhen_probe_observations": 1,
     "shenzhen_status": "partial-ok",
-    "source_repo": "0xRadikal/Free-v2ray-Configs",
-    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/fast/clash.yaml"
+    "source_repo": "cbusifabcap/daily_free_vpn",
+    "source_url": "https://raw.githubusercontent.com/cbusifabcap/daily_free_vpn/main/sub/Clash.yml"
   },
   "f7c6b00d6c033aa1ffa9": {
     "first_seen": "2026-10-08",
@@ -41203,11 +41900,17 @@
   },
   "f86fdff382d904601cff": {
     "first_seen": "2026-10-10",
-    "gemini_pass_count": 0,
-    "last_seen": "2026-10-10",
-    "pass_count": 0,
-    "play_pass_count": 1,
-    "seen_count": 1
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 2,
+    "seen_count": 2,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.278126+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats",
+    "source_repo": "0xRadikal/Free-v2ray-Configs",
+    "source_url": "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/main/light/clash.yaml"
   },
   "f8735676098d85b2f80d": {
     "first_seen": "2026-10-02",
@@ -41310,6 +42013,18 @@
     "shenzhen_probe_city": null,
     "shenzhen_status": "timeout"
   },
+  "f8ff953015360c1b3438": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277752+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
+  },
   "f9345e07d9b87f9a0c72": {
     "first_seen": "2026-10-06",
     "gemini_pass_count": 0,
@@ -41380,6 +42095,18 @@
     "pass_count": 0,
     "play_pass_count": 1,
     "seen_count": 2
+  },
+  "f9b61de543162349d29b": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 1,
+    "last_seen": "2026-10-11",
+    "pass_count": 1,
+    "play_pass_count": 1,
+    "seen_count": 1,
+    "shenzhen_last_attempt_at": "2026-10-11T00:33:53.277867+00:00",
+    "shenzhen_last_attempt_status": "no-stats",
+    "shenzhen_last_attempts": 2,
+    "shenzhen_last_error": "no-stats"
   },
   "f9b7ef7aa682142ec680": {
     "first_seen": "2026-10-05",
@@ -41491,6 +42218,14 @@
     "pass_count": 2,
     "play_pass_count": 2,
     "seen_count": 2
+  },
+  "fa55d63f3ff9dcc6b385": {
+    "first_seen": "2026-10-11",
+    "gemini_pass_count": 0,
+    "last_seen": "2026-10-11",
+    "pass_count": 0,
+    "play_pass_count": 0,
+    "seen_count": 1
   },
   "fa6084c9dc5519ec1556": {
     "first_seen": "2026-10-06",

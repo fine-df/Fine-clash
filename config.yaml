@@ -36,6 +36,18 @@ sources:
     - 'American residential proxy in:name,description,readme archived:false stars:>=50'
     - 'United States proxy nodes in:name,description,readme archived:false stars:>=50'
     - 'residential proxy in:name,description,readme archived:false stars:>=50'
+  # 固定来源：不受仓库搜索遗漏、文件名规则、来源缓存过期和最低 star 数过滤影响。
+  # 固定仅保证采集，不绕过节点解析、DNS 安全检查、外网探测、延迟和深圳质量门槛。
+  pinned_sources:
+    - url: 'https://raw.githubusercontent.com/free18/v2ray/main/v.txt'
+      repo: 'free18/v2ray'
+      path: 'v.txt'
+    - url: 'https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub'
+      repo: 'Pawdroid/Free-servers'
+      path: 'sub'
+    - url: 'https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt'
+      repo: 'barry-far/V2ray-config'
+      path: 'Sub1.txt'
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200

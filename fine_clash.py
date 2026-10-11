@@ -153,22 +153,42 @@ def _parse_vmess(uri):
 
 def _parse_standard(uri):
     parsed=urlparse(uri); scheme=parsed.scheme.lower()
-    if scheme not in {"vless","trojan","ss"}: return None
-    server,port=parsed.hostname,parsed.port
-    if not isinstance(server, str) or not server or not port or not is_safe_server(server): return None
-    name=_clean_name(parsed.fragment,f"{scheme}-{server}:{port}")
     if scheme=="ss":
-        user,password=parsed.username or "",parsed.password or ""
-        if not password and "@" not in parsed.netloc:
+        # Shadowsocks subscriptions commonly use SIP002:
+        # ss://BASE64(cipher:password)@server:port#name
+        # Some older feeds Base64-encode the entire "cipher:password@server:port" payload.
+        server,port=parsed.hostname,parsed.port
+        user,password=unquote(parsed.username or ""),unquote(parsed.password or "")
+        name=_clean_name(parsed.fragment,f"ss-{server or 'unknown'}:{port or 0}")
+        if server and port:
+            if not password:
+                decoded_user=_decode_b64(user)
+                if decoded_user:
+                    try:
+                        decoded_pair=decoded_user.decode("utf-8")
+                        if ":" in decoded_pair:
+                            user,password=decoded_pair.split(":",1)
+                    except UnicodeDecodeError:
+                        pass
+        else:
             decoded=_decode_b64(parsed.netloc.split("#",1)[0])
             if decoded:
                 try:
-                    alt=urlparse("ss://"+decoded.decode())
-                    user,password=alt.username or "",alt.password or ""
-                    server,port=alt.hostname or server,alt.port or port
-                except ValueError: pass
-        if not user or not password: return None
+                    alt=urlparse("ss://"+decoded.decode("utf-8"))
+                    user,password=unquote(alt.username or ""),unquote(alt.password or "")
+                    server,port=alt.hostname,alt.port
+                    name=_clean_name(parsed.fragment,f"ss-{server or 'unknown'}:{port or 0}")
+                except (ValueError,UnicodeDecodeError):
+                    return None
+        if not isinstance(server,str) or not server or not port or not is_safe_server(server):
+            return None
+        if not user or not password:
+            return None
         return {"type":"ss","name":name,"server":server,"port":port,"cipher":unquote(user),"password":unquote(password),"udp":True}
+    if scheme not in {"vless","trojan"}: return None
+    server,port=parsed.hostname,parsed.port
+    if not isinstance(server, str) or not server or not port or not is_safe_server(server): return None
+    name=_clean_name(parsed.fragment,f"{scheme}-{server}:{port}")
     secret=unquote(parsed.username or "")
     if not secret: return None
     node={"type":scheme,"name":name,"server":server,"port":port,"udp":True,("uuid" if scheme=="vless" else "password"):secret}
@@ -698,6 +718,48 @@ def source_is_fresh(source,max_age_days,now=None):
         current=current.replace(tzinfo=timezone.utc)
     age=current.astimezone(timezone.utc)-stamp
     return -timedelta(hours=24)<=age<=limit
+
+
+
+def merge_pinned_sources(sources, pinned_sources):
+    """Merge explicitly configured feeds into discovery results without duplicates.
+
+    Pinned feeds bypass discovery, source-age, and minimum-star filters. They still
+    pass through the same parsing, node safety, endpoint, latency, and Shenzhen gates.
+    """
+    ordered=[]
+    by_url={}
+    for source in sources or []:
+        if not isinstance(source,dict):
+            continue
+        url=str(source.get("url") or "").strip()
+        if not url or url in by_url:
+            continue
+        row=dict(source)
+        by_url[url]=row
+        ordered.append(row)
+
+    pinned_urls=set()
+    for source in pinned_sources or []:
+        if not isinstance(source,dict):
+            continue
+        url=str(source.get("url") or "").strip()
+        if not url or urlparse(url).scheme!="https":
+            continue
+        pinned_urls.add(url)
+        existing=by_url.get(url)
+        if existing is not None:
+            for key in ("repo","path"):
+                if not existing.get(key) and source.get(key):
+                    existing[key]=source[key]
+            existing["pinned"]=True
+            continue
+        row=dict(source)
+        row["url"]=url
+        row["pinned"]=True
+        by_url[url]=row
+        ordered.append(row)
+    return ordered,pinned_urls
 
 
 
@@ -1475,10 +1537,16 @@ def run():
     source_now=datetime.now(timezone.utc)
     max_source_age_days=float(rules["sources"].get("max_source_age_days",3))
     live=[s for s in live_discovered if source_is_fresh(s,max_source_age_days,source_now)]
+    pinned_config=rules["sources"].get("pinned_sources",[]) or []
+    live_urls={str(s.get("url") or "") for s in live if isinstance(s,dict)}
+    sources,pinned_urls=merge_pinned_sources(live,pinned_config)
+    pinned_added=len(pinned_urls-live_urls)
     source_pool_stats={
         "live_discovered":len(live_discovered),
         "live_fresh":len(live),
         "live_stale_dropped":len(live_discovered)-len(live),
+        "pinned_sources_configured":len(pinned_urls),
+        "pinned_sources_added":pinned_added,
         "cache_seen":0,
         "cache_fresh":0,
         "cache_stale_or_undated_dropped":0,
@@ -1494,9 +1562,9 @@ def run():
             if not isinstance(cached,list): cached=[]
         except Exception: cached=[]
     # Cache is continuity only; its entries must pass the same freshness rule as live sources.
+    # Configured pinned sources above are deliberately exempt from cache freshness/star filters.
     source_pool_stats["cache_seen"]=len(cached)
-    seen={s.get("url") for s in live if isinstance(s,dict)}
-    sources=list(live)
+    seen={s.get("url") for s in sources if isinstance(s,dict)}
     min_stars=int(rules["sources"].get("min_stars",30))
     for s in cached:
         if not isinstance(s,dict) or not s.get("url") or s["url"] in seen:
@@ -1518,7 +1586,13 @@ def run():
         sources.append(s)
         source_pool_stats["cache_fresh"]+=1
     max_sources=int(rules["sources"].get("max_sources",120))
-    sources=rank_source_list(sources,quality_rows,max_sources,rules["sources"].get("exploration_fraction",0.2))
+    pinned_items=[s for s in sources if s.get("url") in pinned_urls]
+    other_items=[s for s in sources if s.get("url") not in pinned_urls]
+    other_limit=max(0,max_sources-len(pinned_items))
+    ranked_other=rank_source_list(
+        other_items,quality_rows,other_limit,rules["sources"].get("exploration_fraction",0.2)
+    ) if other_limit else []
+    sources=pinned_items+ranked_other
     source_pool_stats["accepted_sources"]=len(sources)
     print(
         "source_freshness: live=%d/%d stale_live=%d cached_fresh=%d cached_non_candidate=%d cached_stale_or_undated=%d accepted=%d max_age_days=%s"

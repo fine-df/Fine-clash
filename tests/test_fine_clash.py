@@ -231,6 +231,11 @@ def test_pool_build_uses_fresh_sources_and_end_to_end_quality_gates():
     assert cfg["sources"]["exploration_fraction"] == 0.2
     assert cfg["output"]["source_quality_file"] == "data/source_quality.json"
     assert "direct_urls" not in cfg
+    assert {s["url"] for s in cfg["sources"]["pinned_sources"]} == {
+        "https://raw.githubusercontent.com/free18/v2ray/main/v.txt",
+        "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+        "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub1.txt",
+    }
     assert "fail_closed" not in cfg["shenzhen_probe"]
     assert cfg["nodes"]["stable_pool_file"] == "data/stable_pool.yaml"
     assert cfg["nodes"]["max_stable_nodes"] == 20
@@ -331,6 +336,49 @@ def test_parse_yaml_and_strip_untrusted_fields():
     node = fc.parse_subscription(text)[0]
     assert node["type"] == "trojan"
     assert "dialer-proxy" not in node
+
+
+def test_parse_ss_sip002_base64_method_password():
+    encoded = base64.urlsafe_b64encode(b"aes-128-gcm:secret").decode().rstrip("=")
+    node = fc.parse_uri(f"ss://{encoded}@1.1.1.1:8388#sip002")
+    assert node is not None
+    assert node["type"] == "ss"
+    assert node["server"] == "1.1.1.1"
+    assert node["port"] == 8388
+    assert node["cipher"] == "aes-128-gcm"
+    assert node["password"] == "secret"
+    assert node["name"] == "sip002"
+
+
+def test_parse_ss_legacy_base64_encoded_authority():
+    payload = base64.urlsafe_b64encode(b"aes-256-gcm:secret@1.1.1.1:8388").decode().rstrip("=")
+    node = fc.parse_uri(f"ss://{payload}#legacy")
+    assert node is not None
+    assert node["type"] == "ss"
+    assert node["server"] == "1.1.1.1"
+    assert node["port"] == 8388
+    assert node["cipher"] == "aes-256-gcm"
+    assert node["password"] == "secret"
+    assert node["name"] == "legacy"
+
+
+def test_merge_pinned_sources_always_keeps_configured_urls_and_deduplicates():
+    live = [
+        {"url":"https://raw.githubusercontent.com/x/y/main/sub.yaml","repo":"x/y","path":"sub.yaml","stars":100},
+    ]
+    pinned = [
+        {"url":"https://raw.githubusercontent.com/x/y/main/sub.yaml","repo":"x/y","path":"sub.yaml"},
+        {"url":"https://raw.githubusercontent.com/a/b/main/v.txt","repo":"a/b","path":"v.txt"},
+    ]
+    sources, pinned_urls = fc.merge_pinned_sources(live, pinned)
+    assert len(sources) == 2
+    assert pinned_urls == {
+        "https://raw.githubusercontent.com/x/y/main/sub.yaml",
+        "https://raw.githubusercontent.com/a/b/main/v.txt",
+    }
+    by_url = {source["url"]: source for source in sources}
+    assert by_url["https://raw.githubusercontent.com/x/y/main/sub.yaml"]["pinned"] is True
+    assert by_url["https://raw.githubusercontent.com/a/b/main/v.txt"]["pinned"] is True
 
 
 def test_parse_vless_and_vmess_uri():

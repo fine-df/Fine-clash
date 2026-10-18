@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070015 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070016 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,210 +10,122 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- tls: true
+- encryption: none
   udp: true
-  name: 🇭🇺 Hungary, Budapest | 🌐 | [BL]
-  flow: xtls-rprx-vision
-  port: 443
   reality-opts:
     public-key: mPzNFHO4pZMzFviRkIhRd7xDUz4dMHyI-flZLOrgDVg
     short-id: f8379ce795f2e5ed
-  server: hu1.aiage.work
-  client-fingerprint: chrome
-  network: tcp
+  type: vless
+  name: 🇭🇺 Hungary, Budapest | 🌐 | [BL]
+  port: 443
   uuid: 6338c01a-310e-42c3-bf4f-2a20e161054b
   servername: hu1.aiage.work
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL] [522a0357]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: random
-  network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL] [8fc3e3d3]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: firefox
-  network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇬🇧 United Kingdom, London | [BL] [7036dd65]
   flow: xtls-rprx-vision
-  port: 443
-  reality-opts:
-    public-key: TIKEWdxQBblFGWMQmQWserNef8P1rqJCfCLLi-KB32s
-  server: revers.bachidze.com
-  client-fingerprint: firefox
-  uuid: 8a9c586c-4b2c-49e5-9e78-97408bf58500
-  servername: poland.travel
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇬🇧 United Kingdom, London | [BL] [31f454b7]
-  flow: xtls-rprx-vision
-  port: 443
-  reality-opts:
-    public-key: TIKEWdxQBblFGWMQmQWserNef8P1rqJCfCLLi-KB32s
-  server: revers.bachidze.com
-  client-fingerprint: random
-  uuid: 8a9c586c-4b2c-49e5-9e78-97408bf58500
-  servername: poland.travel
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇬🇧 United Kingdom, London | [BL] [96335ce7]
-  flow: xtls-rprx-vision
-  port: 443
-  reality-opts:
-    public-key: TIKEWdxQBblFGWMQmQWserNef8P1rqJCfCLLi-KB32s
-  server: revers.bachidze.com
-  client-fingerprint: edge
-  uuid: 8a9c586c-4b2c-49e5-9e78-97408bf58500
-  servername: poland.travel
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL] [e0c49a57]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: edge
   network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- tls: true
+  client-fingerprint: chrome
+  tls: true
+  server: hu1.aiage.work
+- cipher: auto
   udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL] [c69ef01e]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: safari
-  network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL] [5be8de38]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: qq
-  network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- udp: true
+  type: vmess
   name: 未知 VMESS-490 | free-nodes
   port: 33736
-  server: nl-2a972c8052.shamanapp.online
+  uuid: 1281acca-f21d-475c-bf04-eccbee7f8df2
+  alterId: 0
+  network: ws
   ws-opts:
     path: /vmess-ws
-  cipher: auto
-  network: ws
-  uuid: 1281acca-f21d-475c-bf04-eccbee7f8df2
-  type: vmess
-  alterId: 0
-- tls: true
-  udp: true
-  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  flow: xtls-rprx-vision
-  port: 443
-  reality-opts:
-    public-key: TIKEWdxQBblFGWMQmQWserNef8P1rqJCfCLLi-KB32s
-  server: revers.bachidze.com
-  client-fingerprint: safari
-  uuid: 8a9c586c-4b2c-49e5-9e78-97408bf58500
-  servername: poland.travel
-  type: vless
-  encryption: none
-- tls: true
-  udp: true
-  name: 🇱🇹 Lithuania, Vilnius | [BL]
-  port: 443
-  reality-opts:
-    public-key: MbRONgV8ADD5B_aKDBv15LAW2a8QZok5bkkZexRRVAs
-    short-id: 2301ac8aee8bf6d4
-  server: b58e68t.lt1.h1clayd.click
-  client-fingerprint: ios
-  network: tcp
-  uuid: f90b7d43-69e2-4b46-a672-8029bc6796a2
-  servername: b58e68t.lt1.h1clayd.click
-  type: vless
-  encryption: none
-- type: vless
-  name: 🇬🇧 United Kingdom, London | [BL] [e17db6c1]
-  server: revers.bachidze.com
+  server: nl-2a972c8052.shamanapp.online
+- type: trojan
+  name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
+  server: pl1.dedushka.top
   port: 443
   udp: true
-  uuid: 8a9c586c-4b2c-49e5-9e78-97408bf58500
-  encryption: none
+  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
   tls: true
-  servername: poland.travel
-  flow: xtls-rprx-vision
-  client-fingerprint: ios
-  reality-opts:
-    public-key: TIKEWdxQBblFGWMQmQWserNef8P1rqJCfCLLi-KB32s
-- type: vless
-  name: 🇸🇪 Sweden, Stockholm | [BL]
-  server: se1.h1cloud.net
-  port: 26100
-  udp: true
-  uuid: 68c3d665-b2b5-4ffb-9f37-9f3d8c47324d
-  encryption: none
-  tls: true
-  servername: www.icloud.com
-  client-fingerprint: safari
-  reality-opts:
-    public-key: 1uuvuG2Jl_o6yoVvOYm3hEboArh2Znu7zCy4Tqj36TI
-    short-id: 8045087bda646f1b
+  servername: pl1.dedushka.top
+  client-fingerprint: firefox
   network: tcp
 - type: vless
-  name: 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Zuidoost) | [BL]
-  server: testuiwrty-production.up.railway.app
-  port: 443
+  name: 🇬🇧 United Kingdom, London | [BL]
+  server: 45.88.12.168
+  port: 2083
   udp: true
-  uuid: b64a14b9-c7aa-db05-6836-2fc627190b17
+  uuid: 5062e1a7-89aa-4bd0-be2a-4f4a88f6c325
   encryption: none
   tls: true
-  servername: testuiwrty-production.up.railway.app
-  client-fingerprint: ios
+  servername: va.stream-room.com
+  client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /ws/b64a14b9-c7aa-db05-6836-2fc627190b17
-    headers:
-      Host: testuiwrty-production.up.railway.app
+    path: /vless-ws
+- type: trojan
+  name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
+  server: pl2.dedushka.top
+  port: 443
+  udp: true
+  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
+  tls: true
+  servername: pl2.dedushka.top
+  client-fingerprint: firefox
+  network: tcp
+- type: vless
+  name: 🇹🇷 Turkey, Yakuplu | [BL]
+  server: 84.200.62.231
+  port: 23690
+  udp: true
+  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
+  encryption: none
+  tls: true
+  servername: apple.com
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: kbITklNKTdfvB6e3xy97pTV7gjl3Z3irv246oRZ5Gnk
+    short-id: f679b4f2
+  network: grpc
+  grpc-opts:
+    grpc-service-name: awarecricketer
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
+  server: 84.200.62.236
+  port: 443
+  udp: true
+  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
+  encryption: none
+  tls: true
+  servername: de14.my-cdn.org
+  client-fingerprint: firefox
+  network: grpc
+  grpc-opts:
+    grpc-service-name: hls-vod.iJxGWWENB3HP4nTjN8IcrA.1790085537.2512.0x5000039ce83a2b8d.2ac8ad72028049619c2fb844a825a.ca.mp4.segment-20-v1-a1.ts
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
+  server: de14.my-cdn.org
+  port: 443
+  udp: true
+  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
+  encryption: none
+  tls: true
+  servername: de14.my-cdn.org
+  client-fingerprint: chrome
+  network: grpc
+  grpc-opts:
+    grpc-service-name: hls-vod.iJxGWWENB3HP4nTjN8IcrA.1790085537.2512.0x5000039ce83a2b8d.2ac8ad72028049619c2fb844a825a.ca.mp4.segment-20-v1-a1.ts
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
+  server: 193.23.209.1
+  port: 8467
+  udp: true
+  uuid: 4cb9157c-cd6f-451f-b786-1c92edec32cb
+  encryption: none
+  tls: true
+  servername: ru.tradingview.com
+  flow: xtls-rprx-vision
+  client-fingerprint: qq
+  reality-opts:
+    public-key: n3BiVX_oDQXcqC0OmOm5o0RuOaXoHHhdiQ2s-xqkayA
+    short-id: d7c8227902c1d878
+  network: tcp
 proxy-groups:
 - name: Fine
   type: select
@@ -221,39 +133,27 @@ proxy-groups:
   - AUTO
   - DIRECT
   - 🇭🇺 Hungary, Budapest | 🌐 | [BL]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [522a0357]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [8fc3e3d3]
-  - 🇬🇧 United Kingdom, London | [BL] [7036dd65]
-  - 🇬🇧 United Kingdom, London | [BL] [31f454b7]
-  - 🇬🇧 United Kingdom, London | [BL] [96335ce7]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [e0c49a57]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [c69ef01e]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [5be8de38]
   - 未知 VMESS-490 | free-nodes
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  - 🇱🇹 Lithuania, Vilnius | [BL]
-  - 🇬🇧 United Kingdom, London | [BL] [e17db6c1]
-  - 🇸🇪 Sweden, Stockholm | [BL]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Zuidoost) | [BL]
+  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
+  - 🇬🇧 United Kingdom, London | [BL]
+  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
+  - 🇹🇷 Turkey, Yakuplu | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
   default-selected: 🇭🇺 Hungary, Budapest | 🌐 | [BL]
 - name: AUTO
   type: url-test
   proxies:
   - 🇭🇺 Hungary, Budapest | 🌐 | [BL]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [522a0357]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [8fc3e3d3]
-  - 🇬🇧 United Kingdom, London | [BL] [7036dd65]
-  - 🇬🇧 United Kingdom, London | [BL] [31f454b7]
-  - 🇬🇧 United Kingdom, London | [BL] [96335ce7]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [e0c49a57]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [c69ef01e]
-  - 🇱🇹 Lithuania, Vilnius | [BL] [5be8de38]
   - 未知 VMESS-490 | free-nodes
-  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
-  - 🇱🇹 Lithuania, Vilnius | [BL]
-  - 🇬🇧 United Kingdom, London | [BL] [e17db6c1]
-  - 🇸🇪 Sweden, Stockholm | [BL]
-  - 🇳🇱 The Netherlands, Amsterdam (Amsterdam-Zuidoost) | [BL]
+  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
+  - 🇬🇧 United Kingdom, London | [BL]
+  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
+  - 🇹🇷 Turkey, Yakuplu | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
+  - 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

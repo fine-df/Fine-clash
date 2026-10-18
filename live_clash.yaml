@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070019 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070020 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,130 +10,84 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- server: 178.248.236.45
-  reality-opts:
-    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
-    short-id: d0cd6a0b1a18092b
-  encryption: none
-  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
-  servername: rutube.ru
-  name: 🇩🇪 Germany | [*CIDR] [a9873db7]
-  port: 62443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  type: vless
+- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
   udp: true
-  client-fingerprint: firefox
-- server: 178.248.236.45
-  reality-opts:
-    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
-    short-id: d0cd6a0b1a18092b
-  encryption: none
-  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
-  servername: rutube.ru
-  name: 🇩🇪 Germany | [*CIDR] [8d71b036]
-  port: 62443
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  type: vless
-  udp: true
-  client-fingerprint: qq
-- server: 103.24.207.87
-  reality-opts:
-    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
-    short-id: d0cd6a0b1a18092b
-  encryption: none
-  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
-  servername: rutube.ru
-  name: 🇩🇪 Germany | [SNI-RU] rutube.ru [dd69a414]
-  port: 10000
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  type: vless
-  udp: true
-  client-fingerprint: edge
-- server: 45.145.12.148
+  port: 443
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
+  network: grpc
+  type: vless
+  tls: true
   encryption: none
-  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
   grpc-opts:
     grpc-service-name: grpc
-  servername: max.ru
+  server: 45.145.12.148
   name: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
-  port: 443
-  network: grpc
-  tls: true
-  type: vless
-  udp: true
+  servername: max.ru
   client-fingerprint: edge
-- server: 45.145.12.148
+- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+  udp: true
+  port: 443
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
+  network: grpc
+  type: vless
+  tls: true
   encryption: none
-  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
   grpc-opts:
     grpc-service-name: grpc
-  servername: max.ru
+  server: 45.145.12.148
   name: 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
+  servername: max.ru
+  client-fingerprint: firefox
+- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+  udp: true
   port: 443
-  network: grpc
-  tls: true
-  type: vless
-  udp: true
-  client-fingerprint: firefox
-- server: 103.24.207.87
-  reality-opts:
-    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
-    short-id: d0cd6a0b1a18092b
-  encryption: none
-  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
-  servername: rutube.ru
-  name: 🇩🇪 Germany | [SNI-RU] rutube.ru [15701edc]
-  port: 10000
-  network: tcp
-  tls: true
-  flow: xtls-rprx-vision
-  type: vless
-  udp: true
-  client-fingerprint: firefox
-- server: 45.145.12.148
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
+  network: grpc
+  type: vless
+  tls: true
   encryption: none
-  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
   grpc-opts:
     grpc-service-name: grpc
-  servername: max.ru
+  server: 45.145.12.148
   name: 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
-  port: 443
-  network: grpc
-  tls: true
-  type: vless
-  udp: true
+  servername: max.ru
   client-fingerprint: qq
-- server: 45.145.12.148
+- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+  udp: true
+  port: 443
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
+  network: grpc
+  type: vless
+  tls: true
   encryption: none
-  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
   grpc-opts:
     grpc-service-name: grpc
-  servername: max.ru
+  server: 45.145.12.148
   name: 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
-  port: 443
-  network: grpc
-  tls: true
-  type: vless
-  udp: true
+  servername: max.ru
   client-fingerprint: safari
+- type: vless
+  name: 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
+  server: 104.225.239.122
+  port: 443
+  udp: true
+  uuid: 5c68cb0a-0c11-4c61-9458-66f63387adc5
+  encryption: none
+  tls: true
+  servername: www.amazon.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: yzpUjsMEI7c7nBB5A3M_VVnROlrZdIR50XEhUQfXnC0
+  network: tcp
 - type: trojan
   name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
   server: pl1.dedushka.top
@@ -154,36 +108,97 @@ proxies:
   servername: pl2.dedushka.top
   client-fingerprint: firefox
   network: tcp
+- type: vless
+  name: 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
+  server: 103.195.5.246
+  port: 443
+  udp: true
+  uuid: 258b51dc-c470-408f-a14a-160ebfdaf509
+  encryption: none
+  tls: true
+  servername: ads.x5.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
+  reality-opts:
+    public-key: i0wksYtLLRc3oNqlZ1DYQCc77hcCU6wgGUp1OJIXMAI
+    short-id: 985b
+  network: tcp
+- type: vless
+  name: 🇫🇷 France | [*CIDR] [d9073ee9]
+  server: cdn-01.funvideos.video
+  port: 443
+  udp: true
+  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
+  encryption: none
+  tls: true
+  servername: cdn-01.funvideos.video
+  client-fingerprint: ios
+  network: ws
+  ws-opts:
+    path: /api/53d53ac3/a7fa61/096357bebc62
+    headers:
+      Host: cdn-01.funvideos.video
+- type: vless
+  name: 🇫🇷 France | [*CIDR] [6997bb4e]
+  server: cdn-01.funvideos.video
+  port: 443
+  udp: true
+  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
+  encryption: none
+  tls: true
+  servername: cdn-01.funvideos.video
+  client-fingerprint: qq
+  network: ws
+  ws-opts:
+    path: /api/53d53ac3/a7fa61/096357bebc62
+    headers:
+      Host: cdn-01.funvideos.video
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
+  server: irnamh.g44mozgh.ir
+  port: 2035
+  udp: true
+  uuid: 65c91ab7-a503-4b73-9f8e-e1c0b6377dc2
+  encryption: none
+  tls: true
+  servername: play.google.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: tjlpmcWwDiXnVu2Wc8v8wxwmiYWtnoUNeHmXPtL5vyk
+    short-id: 75faac3a588f5160
+  network: tcp
 proxy-groups:
 - name: Fine
   type: select
   proxies:
   - AUTO
   - DIRECT
-  - 🇩🇪 Germany | [*CIDR] [a9873db7]
-  - 🇩🇪 Germany | [*CIDR] [8d71b036]
-  - 🇩🇪 Germany | [SNI-RU] rutube.ru [dd69a414]
   - 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
   - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
-  - 🇩🇪 Germany | [SNI-RU] rutube.ru [15701edc]
   - 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
   - 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
+  - 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  default-selected: 🇩🇪 Germany | [*CIDR] [a9873db7]
+  - 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
+  - 🇫🇷 France | [*CIDR] [d9073ee9]
+  - 🇫🇷 France | [*CIDR] [6997bb4e]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
+  default-selected: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
 - name: AUTO
   type: url-test
   proxies:
-  - 🇩🇪 Germany | [*CIDR] [a9873db7]
-  - 🇩🇪 Germany | [*CIDR] [8d71b036]
-  - 🇩🇪 Germany | [SNI-RU] rutube.ru [dd69a414]
   - 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
   - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
-  - 🇩🇪 Germany | [SNI-RU] rutube.ru [15701edc]
   - 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
   - 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
+  - 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
+  - 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
+  - 🇫🇷 France | [*CIDR] [d9073ee9]
+  - 🇫🇷 France | [*CIDR] [6997bb4e]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

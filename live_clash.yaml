@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070016 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070017 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,32 +10,31 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- encryption: none
-  udp: true
-  reality-opts:
-    public-key: mPzNFHO4pZMzFviRkIhRd7xDUz4dMHyI-flZLOrgDVg
-    short-id: f8379ce795f2e5ed
-  type: vless
-  name: 🇭🇺 Hungary, Budapest | 🌐 | [BL]
-  port: 443
-  uuid: 6338c01a-310e-42c3-bf4f-2a20e161054b
-  servername: hu1.aiage.work
-  flow: xtls-rprx-vision
-  network: tcp
-  client-fingerprint: chrome
-  tls: true
-  server: hu1.aiage.work
-- cipher: auto
-  udp: true
+- uuid: 1281acca-f21d-475c-bf04-eccbee7f8df2
+  network: ws
+  server: nl-2a972c8052.shamanapp.online
   type: vmess
   name: 未知 VMESS-490 | free-nodes
-  port: 33736
-  uuid: 1281acca-f21d-475c-bf04-eccbee7f8df2
-  alterId: 0
-  network: ws
   ws-opts:
     path: /vmess-ws
-  server: nl-2a972c8052.shamanapp.online
+  udp: true
+  cipher: auto
+  port: 33736
+  alterId: 0
+- type: vless
+  name: .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
+  server: 104.225.239.122
+  port: 443
+  udp: true
+  uuid: 5c68cb0a-0c11-4c61-9458-66f63387adc5
+  encryption: none
+  tls: true
+  servername: www.amazon.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: yzpUjsMEI7c7nBB5A3M_VVnROlrZdIR50XEhUQfXnC0
+  network: tcp
 - type: trojan
   name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
   server: pl1.dedushka.top
@@ -46,19 +45,6 @@ proxies:
   servername: pl1.dedushka.top
   client-fingerprint: firefox
   network: tcp
-- type: vless
-  name: 🇬🇧 United Kingdom, London | [BL]
-  server: 45.88.12.168
-  port: 2083
-  udp: true
-  uuid: 5062e1a7-89aa-4bd0-be2a-4f4a88f6c325
-  encryption: none
-  tls: true
-  servername: va.stream-room.com
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /vless-ws
 - type: trojan
   name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
   server: pl2.dedushka.top
@@ -70,90 +56,110 @@ proxies:
   client-fingerprint: firefox
   network: tcp
 - type: vless
-  name: 🇹🇷 Turkey, Yakuplu | [BL]
-  server: 84.200.62.231
-  port: 23690
+  name: 🇩🇪 Germany | [*CIDR] [a9873db7]
+  server: 178.248.236.45
+  port: 62443
   udp: true
-  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
+  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
   encryption: none
   tls: true
-  servername: apple.com
+  servername: rutube.ru
+  flow: xtls-rprx-vision
   client-fingerprint: firefox
   reality-opts:
-    public-key: kbITklNKTdfvB6e3xy97pTV7gjl3Z3irv246oRZ5Gnk
-    short-id: f679b4f2
-  network: grpc
-  grpc-opts:
-    grpc-service-name: awarecricketer
+    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
+    short-id: d0cd6a0b1a18092b
+  network: tcp
 - type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
-  server: 84.200.62.236
-  port: 443
+  name: 🇩🇪 Germany | [*CIDR] [8d71b036]
+  server: 178.248.236.45
+  port: 62443
   udp: true
-  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
+  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
   encryption: none
   tls: true
-  servername: de14.my-cdn.org
-  client-fingerprint: firefox
-  network: grpc
-  grpc-opts:
-    grpc-service-name: hls-vod.iJxGWWENB3HP4nTjN8IcrA.1790085537.2512.0x5000039ce83a2b8d.2ac8ad72028049619c2fb844a825a.ca.mp4.segment-20-v1-a1.ts
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
-  server: de14.my-cdn.org
-  port: 443
-  udp: true
-  uuid: c19ecc7f-8312-4d9d-90c9-1a997d82d3c5
-  encryption: none
-  tls: true
-  servername: de14.my-cdn.org
-  client-fingerprint: chrome
-  network: grpc
-  grpc-opts:
-    grpc-service-name: hls-vod.iJxGWWENB3HP4nTjN8IcrA.1790085537.2512.0x5000039ce83a2b8d.2ac8ad72028049619c2fb844a825a.ca.mp4.segment-20-v1-a1.ts
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
-  server: 193.23.209.1
-  port: 8467
-  udp: true
-  uuid: 4cb9157c-cd6f-451f-b786-1c92edec32cb
-  encryption: none
-  tls: true
-  servername: ru.tradingview.com
+  servername: rutube.ru
   flow: xtls-rprx-vision
   client-fingerprint: qq
   reality-opts:
-    public-key: n3BiVX_oDQXcqC0OmOm5o0RuOaXoHHhdiQ2s-xqkayA
-    short-id: d7c8227902c1d878
+    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
+    short-id: d0cd6a0b1a18092b
   network: tcp
+- type: vless
+  name: 🇩🇪 Germany | [SNI-RU] rutube.ru
+  server: 103.24.207.87
+  port: 10000
+  udp: true
+  uuid: 320bb8a2-0b37-4d1a-9b7e-615fe6534ecf
+  encryption: none
+  tls: true
+  servername: rutube.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: edge
+  reality-opts:
+    public-key: vqRiLDLgn_0PWMUvELC0C4JD-a2LUoM0iZ6wdvgMBmQ
+    short-id: d0cd6a0b1a18092b
+  network: tcp
+- type: vless
+  name: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
+  server: 45.145.12.148
+  port: 443
+  udp: true
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+  encryption: none
+  tls: true
+  servername: max.ru
+  client-fingerprint: edge
+  reality-opts:
+    public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
+    short-id: 35debf0dc757d053
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpc
+- type: vless
+  name: 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
+  server: 45.145.12.148
+  port: 443
+  udp: true
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+  encryption: none
+  tls: true
+  servername: max.ru
+  client-fingerprint: firefox
+  reality-opts:
+    public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
+    short-id: 35debf0dc757d053
+  network: grpc
+  grpc-opts:
+    grpc-service-name: grpc
 proxy-groups:
 - name: Fine
   type: select
   proxies:
   - AUTO
   - DIRECT
-  - 🇭🇺 Hungary, Budapest | 🌐 | [BL]
   - 未知 VMESS-490 | free-nodes
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
-  - 🇬🇧 United Kingdom, London | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  - 🇹🇷 Turkey, Yakuplu | [BL]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
-  default-selected: 🇭🇺 Hungary, Budapest | 🌐 | [BL]
+  - 🇩🇪 Germany | [*CIDR] [a9873db7]
+  - 🇩🇪 Germany | [*CIDR] [8d71b036]
+  - 🇩🇪 Germany | [SNI-RU] rutube.ru
+  - 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
+  - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
+  default-selected: 未知 VMESS-490 | free-nodes
 - name: AUTO
   type: url-test
   proxies:
-  - 🇭🇺 Hungary, Budapest | 🌐 | [BL]
   - 未知 VMESS-490 | free-nodes
+  - .𖥔 ݁ ˖ִ🛸༄˖°. | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
-  - 🇬🇧 United Kingdom, London | [BL]
   - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  - 🇹🇷 Turkey, Yakuplu | [BL]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [83b81363]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [a2e9c742]
-  - 🇩🇪 Germany, Frankfurt am Main | [BL] [74fc2571]
+  - 🇩🇪 Germany | [*CIDR] [a9873db7]
+  - 🇩🇪 Germany | [*CIDR] [8d71b036]
+  - 🇩🇪 Germany | [SNI-RU] rutube.ru
+  - 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
+  - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

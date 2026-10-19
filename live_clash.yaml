@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070020 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070021 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,151 +10,130 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
-  udp: true
+- server: 45.145.12.148
+  servername: max.ru
+  network: grpc
   port: 443
+  grpc-opts:
+    grpc-service-name: grpc
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
-  network: grpc
-  type: vless
-  tls: true
   encryption: none
-  grpc-opts:
-    grpc-service-name: grpc
-  server: 45.145.12.148
-  name: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
-  servername: max.ru
+  tls: true
+  type: vless
+  udp: true
   client-fingerprint: edge
-- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
-  udp: true
+  name: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+- server: 45.145.12.148
+  servername: max.ru
+  network: grpc
   port: 443
+  grpc-opts:
+    grpc-service-name: grpc
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
-  network: grpc
-  type: vless
-  tls: true
   encryption: none
-  grpc-opts:
-    grpc-service-name: grpc
-  server: 45.145.12.148
-  name: 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
-  servername: max.ru
+  tls: true
+  type: vless
+  udp: true
   client-fingerprint: firefox
-- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
-  udp: true
+  name: 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+- server: 45.145.12.148
+  servername: max.ru
+  network: grpc
   port: 443
+  grpc-opts:
+    grpc-service-name: grpc
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
-  network: grpc
-  type: vless
-  tls: true
   encryption: none
-  grpc-opts:
-    grpc-service-name: grpc
-  server: 45.145.12.148
-  name: 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
-  servername: max.ru
+  tls: true
+  type: vless
+  udp: true
   client-fingerprint: qq
-- uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
-  udp: true
+  name: 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+- server: 45.145.12.148
+  servername: max.ru
+  network: grpc
   port: 443
+  grpc-opts:
+    grpc-service-name: grpc
   reality-opts:
     public-key: OOI0p2vKjr8xdwcVCzxcd3rAxmMr7XRA0wMk14IXaFM
     short-id: 35debf0dc757d053
-  network: grpc
+  encryption: none
+  tls: true
   type: vless
-  tls: true
-  encryption: none
-  grpc-opts:
-    grpc-service-name: grpc
-  server: 45.145.12.148
-  name: 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
-  servername: max.ru
-  client-fingerprint: safari
-- type: vless
-  name: 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
-  server: 104.225.239.122
-  port: 443
   udp: true
-  uuid: 5c68cb0a-0c11-4c61-9458-66f63387adc5
+  client-fingerprint: safari
+  name: 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
+  uuid: b869a8d0-0733-4346-8d1c-c1230a78651c
+- server: cdn-01.funvideos.video
+  ws-opts:
+    path: /api/53d53ac3/a7fa61/096357bebc62
+    headers:
+      Host: cdn-01.funvideos.video
+  servername: cdn-01.funvideos.video
+  network: ws
+  port: 443
   encryption: none
   tls: true
-  servername: www.amazon.com
-  flow: xtls-rprx-vision
+  type: vless
+  udp: true
+  client-fingerprint: ios
+  name: 🇫🇷 France | [*CIDR] [d9073ee9]
+  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
+- server: cdn-01.funvideos.video
+  ws-opts:
+    path: /api/53d53ac3/a7fa61/096357bebc62
+    headers:
+      Host: cdn-01.funvideos.video
+  servername: cdn-01.funvideos.video
+  network: ws
+  port: 443
+  encryption: none
+  tls: true
+  type: vless
+  udp: true
+  client-fingerprint: qq
+  name: 🇫🇷 France | [*CIDR] [6997bb4e]
+  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
+- server: irnamh.g44mozgh.ir
+  servername: play.google.com
+  network: tcp
+  port: 2035
+  reality-opts:
+    public-key: tjlpmcWwDiXnVu2Wc8v8wxwmiYWtnoUNeHmXPtL5vyk
+    short-id: 75faac3a588f5160
+  encryption: none
+  tls: true
+  type: vless
+  udp: true
+  client-fingerprint: chrome
+  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [f99f517f]
+  uuid: 65c91ab7-a503-4b73-9f8e-e1c0b6377dc2
+- type: vless
+  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [05fa6f47]
+  server: almaim.g44mozgh.ir
+  port: 8880
+  udp: true
+  uuid: e3026ffb-cde6-4cfe-b4b7-f76d5264e969
+  encryption: none
+  tls: true
+  servername: play.google.com
   client-fingerprint: chrome
   reality-opts:
-    public-key: yzpUjsMEI7c7nBB5A3M_VVnROlrZdIR50XEhUQfXnC0
-  network: tcp
-- type: trojan
-  name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
-  server: pl1.dedushka.top
-  port: 443
-  udp: true
-  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
-  tls: true
-  servername: pl1.dedushka.top
-  client-fingerprint: firefox
-  network: tcp
-- type: trojan
-  name: 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  server: pl2.dedushka.top
-  port: 443
-  udp: true
-  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
-  tls: true
-  servername: pl2.dedushka.top
-  client-fingerprint: firefox
+    public-key: nPiL5I1a2l6UMXTrPQ11uZkMjuCtX9LcK3Qpl0zarBo
+    short-id: 67c9e81d9769d3c3
   network: tcp
 - type: vless
-  name: 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
-  server: 103.195.5.246
-  port: 443
-  udp: true
-  uuid: 258b51dc-c470-408f-a14a-160ebfdaf509
-  encryption: none
-  tls: true
-  servername: ads.x5.ru
-  flow: xtls-rprx-vision
-  client-fingerprint: safari
-  reality-opts:
-    public-key: i0wksYtLLRc3oNqlZ1DYQCc77hcCU6wgGUp1OJIXMAI
-    short-id: 985b
-  network: tcp
-- type: vless
-  name: 🇫🇷 France | [*CIDR] [d9073ee9]
-  server: cdn-01.funvideos.video
-  port: 443
-  udp: true
-  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
-  encryption: none
-  tls: true
-  servername: cdn-01.funvideos.video
-  client-fingerprint: ios
-  network: ws
-  ws-opts:
-    path: /api/53d53ac3/a7fa61/096357bebc62
-    headers:
-      Host: cdn-01.funvideos.video
-- type: vless
-  name: 🇫🇷 France | [*CIDR] [6997bb4e]
-  server: cdn-01.funvideos.video
-  port: 443
-  udp: true
-  uuid: aca886aa-9b51-4eb2-8d7a-12d6b89caf4d
-  encryption: none
-  tls: true
-  servername: cdn-01.funvideos.video
-  client-fingerprint: qq
-  network: ws
-  ws-opts:
-    path: /api/53d53ac3/a7fa61/096357bebc62
-    headers:
-      Host: cdn-01.funvideos.video
-- type: vless
-  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
+  name: 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [43c644e0]
   server: irnamh.g44mozgh.ir
   port: 2035
   udp: true
@@ -162,7 +141,7 @@ proxies:
   encryption: none
   tls: true
   servername: play.google.com
-  client-fingerprint: chrome
+  client-fingerprint: ios
   reality-opts:
     public-key: tjlpmcWwDiXnVu2Wc8v8wxwmiYWtnoUNeHmXPtL5vyk
     short-id: 75faac3a588f5160
@@ -177,13 +156,11 @@ proxy-groups:
   - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
   - 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
   - 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
-  - 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
-  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
-  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  - 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
   - 🇫🇷 France | [*CIDR] [d9073ee9]
   - 🇫🇷 France | [*CIDR] [6997bb4e]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [f99f517f]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [05fa6f47]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [43c644e0]
   default-selected: 🇸🇪 Sweden | [SNI-RU] max.ru [aa671eda]
 - name: AUTO
   type: url-test
@@ -192,13 +169,11 @@ proxy-groups:
   - 🇸🇪 Sweden | [SNI-RU] max.ru [36a44a43]
   - 🇸🇪 Sweden [SNI-RU] max.ru [c2097f46]
   - 🇸🇪 Sweden [SNI-RU] max.ru [36452e8c]
-  - 🇺🇸 United States, Los Angeles (Downtown Los Angeles) | [BL]
-  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [04d72f91]
-  - 🇵🇱 Poland, Poznan (Jeżyce) | [BL] [9fd270c6]
-  - 🇭🇰 Hong Kong | [SNI-RU] ads.x5.ru
   - 🇫🇷 France | [*CIDR] [d9073ee9]
   - 🇫🇷 France | [*CIDR] [6997bb4e]
-  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [f99f517f]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [05fa6f47]
+  - 🇩🇪 Germany, Frankfurt am Main (Innenstadt I) | [BL] [43c644e0]
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

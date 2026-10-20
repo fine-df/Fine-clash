@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070025 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070026 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,106 +10,119 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
-  server: news.zoom.us
+- alterId: 0
+  cipher: auto
   port: 8443
   udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
+  tls: true
+  server: 206.238.239.109
+  ws-opts:
+    headers:
+      Host: uk.frnhk.xyz
+    path: /London31
+  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
+  network: ws
+  type: vmess
+  name: 🇬🇧 United Kingdom, London | [BL] [19fd95de]
+- alterId: 0
+  cipher: auto
+  port: 8443
+  udp: true
+  tls: true
+  server: 206.238.238.222
+  ws-opts:
+    headers:
+      Host: uk.frnhk.xyz
+    path: /London31
+  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
+  network: ws
+  type: vmess
+  name: 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
+- client-fingerprint: edge
+  port: 443
+  reality-opts:
+    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
+    short-id: 257420d9d430152a
+  tls: true
+  encryption: none
+  server: a0688bt.us4.h1clayd.click
+  type: vless
+  servername: a0688bt.us4.h1clayd.click
+  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
+  network: tcp
+  udp: true
+  name: 🇺🇸 United States, Secaucus | [BL] [39a215ac]
+- client-fingerprint: ios
+  port: 443
+  reality-opts:
+    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
+    short-id: 257420d9d430152a
+  tls: true
+  encryption: none
+  server: a0688bt.us4.h1clayd.click
+  type: vless
+  servername: a0688bt.us4.h1clayd.click
+  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
+  network: tcp
+  udp: true
+  name: 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
+- type: vless
+  name: 🇺🇸 United States, Dallas | [BL] [afc26eca]
+  server: 27.50.48.211
+  port: 8443
+  udp: true
+  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
   encryption: none
   tls: true
-  servername: u.srilankangrill.online
   client-fingerprint: qq
   network: ws
   ws-opts:
-    path: /
+    path: /usa1019
     headers:
-      Host: u.srilankangrill.online
+      Host: usa.frnhk.xyz
 - type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  server: 141.193.213.21
+  name: 🇺🇸 United States, Dallas | [BL] [05f50417]
+  server: 27.50.48.211
   port: 8443
   udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
-  encryption: none
-  tls: true
-  servername: u.srilankangrill.online
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: u.srilankangrill.online
-- type: vless
-  name: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [2537eee6]
-  server: news.zoom.us
-  port: 8443
-  udp: true
-  uuid: 29c3dd6b-b164-40ca-a0d5-f06aca52a8b2
-  encryption: none
-  tls: true
-  servername: u.srilankangrill.online
-  client-fingerprint: firefox
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: u.srilankangrill.online
-- type: vmess
-  name: 🇬🇧 United Kingdom, London | [BL] [19fd95de]
-  server: 206.238.239.109
-  port: 8443
   uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
-  alterId: 0
-  cipher: auto
-  udp: true
-  network: ws
-  tls: true
-  ws-opts:
-    headers:
-      Host: uk.frnhk.xyz
-    path: /London31
-- type: vmess
-  name: 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
-  server: 206.238.238.222
-  port: 8443
-  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
-  alterId: 0
-  cipher: auto
-  udp: true
-  network: ws
-  tls: true
-  ws-opts:
-    headers:
-      Host: uk.frnhk.xyz
-    path: /London31
-- type: vless
-  name: 🇺🇸 United States, Secaucus | [BL] [39a215ac]
-  server: a0688bt.us4.h1clayd.click
-  port: 443
-  udp: true
-  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
   encryption: none
   tls: true
-  servername: a0688bt.us4.h1clayd.click
   client-fingerprint: edge
+  network: ws
+  ws-opts:
+    path: /usa1019
+    headers:
+      Host: usa.frnhk.xyz
+- type: vless
+  name: 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
+  server: 9.247.34.118
+  port: 2053
+  udp: true
+  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
+  encryption: none
+  tls: true
+  servername: www.rutube.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: safari
   reality-opts:
-    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
-    short-id: 257420d9d430152a
+    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
+    short-id: c46d735d6444850f
   network: tcp
 - type: vless
-  name: 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
-  server: a0688bt.us4.h1clayd.click
-  port: 443
+  name: 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
+  server: 9.247.34.118
+  port: 2053
   udp: true
-  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
+  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
   encryption: none
   tls: true
-  servername: a0688bt.us4.h1clayd.click
-  client-fingerprint: ios
+  servername: www.rutube.ru
+  flow: xtls-rprx-vision
+  client-fingerprint: firefox
   reality-opts:
-    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
-    short-id: 257420d9d430152a
+    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
+    short-id: c46d735d6444850f
   network: tcp
 proxy-groups:
 - name: Fine
@@ -117,24 +130,26 @@ proxy-groups:
   proxies:
   - AUTO
   - DIRECT
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [2537eee6]
   - 🇬🇧 United Kingdom, London | [BL] [19fd95de]
   - 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
   - 🇺🇸 United States, Secaucus | [BL] [39a215ac]
   - 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
-  default-selected: 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
+  - 🇺🇸 United States, Dallas | [BL] [afc26eca]
+  - 🇺🇸 United States, Dallas | [BL] [05f50417]
+  - 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
+  - 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
+  default-selected: 🇬🇧 United Kingdom, London | [BL] [19fd95de]
 - name: AUTO
   type: url-test
   proxies:
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [46dac452]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [a146a8fa]
-  - 🇸🇬 Singapore, Singapore (Somapah) | 🌐 | [BL] [2537eee6]
   - 🇬🇧 United Kingdom, London | [BL] [19fd95de]
   - 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
   - 🇺🇸 United States, Secaucus | [BL] [39a215ac]
   - 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
+  - 🇺🇸 United States, Dallas | [BL] [afc26eca]
+  - 🇺🇸 United States, Dallas | [BL] [05f50417]
+  - 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
+  - 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

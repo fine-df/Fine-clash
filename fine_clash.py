@@ -278,7 +278,13 @@ def mihomo_node_is_testable(node):
 
 def parse_uri(uri):
     uri=uri.strip()
-    return _parse_vmess(uri) if uri.lower().startswith("vmess://") else _parse_standard(uri)
+    try:
+        return _parse_vmess(uri) if uri.lower().startswith("vmess://") else _parse_standard(uri)
+    except (ValueError, TypeError):
+        # A malformed URI (e.g. a non-integer port 'ADzlhA3ndouUCY3JbLddR' found in a
+        # real discovered source) must be skipped, never crash the whole discovery run.
+        # One bad node must not zero out all sources.
+        return None
 
 def parse_subscription(text):
     if not text: return []

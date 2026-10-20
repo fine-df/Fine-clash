@@ -954,3 +954,27 @@ def test_empty_successful_discovery_preserves_published_config(monkeypatch, tmp_
     assert json.loads(source_path.read_text(encoding="utf-8")) == []
     # Published config untouched — zero valid sources does not blank it.
     assert published.read_text(encoding="utf-8") == "proxies: []\n"
+
+
+def test_parse_uri_skips_malformed_port_without_raising():
+    # Regression for CI run #69 crash: a real discovered source contained a URI
+    # whose 'port' field was garbage ('ADzlhA3ndouUCY3JbLddR'); urlparse(...).port
+    # raised ValueError, which previously propagated and killed discover().
+    bad = "trojan://secret@1.2.3.4:ADzlhA3ndouUCY3JbLddR?security=tls#bad"
+    assert fc.parse_uri(bad) is None
+    # A well-formed URI still parses normally.
+    good = "trojan://secret@1.2.3.4:443?security=tls#ok"
+    node = fc.parse_uri(good)
+    assert node is not None and node["server"] == "1.2.3.4" and node["port"] == 443
+    # parse_subscription must not raise when the body embeds the malformed URI.
+    body = "preamble\n" + bad + "\ntrailing"
+    result = fc.parse_subscription(body)
+    assert isinstance(result, list)
+    assert not any(n.get("server") == "1.2.3.4" and str(n.get("port")) == "ADzlhA3ndouUCY3JbLddR" for n in result)
+
+
+def test_parse_uri_skips_malformed_ss_port_without_raising():
+    # ss:// with a base64 userinfo whose decoded host:port has a bad port must also
+    # be skipped rather than crash (alt.port in _parse_standard).
+    bad_ss = "ss://" + __import__("base64").b64encode(b"method:pass@5.6.7.8:NOTAPORT").decode() + "#x"
+    assert fc.parse_uri(bad_ss) is None

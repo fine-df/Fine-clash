@@ -70,7 +70,9 @@ def build_config(fine_nodes):
         "profile":{"store-selected":True},
         "proxies":fine_nodes,
         "proxy-groups":build_proxy_groups(fine_names),
-        "tun":{"enable":True,"stack":"system","auto-route":True,"auto-detect-interface":True},
+        # ★ F1 (2026-10-20): 关闭 TUN。10-12 四端故障同根因——tun.enable:true 使 Android(mihomo 严格 TUN)
+        #   加载失败、路由器 ShellCrash TUN 与 iptables NAT 抢路由；iOS 忽略 TUN 故正常。关掉后四端统一走 mixed-port。
+        "tun":{"enable":False,"stack":"system","auto-route":False,"auto-detect-interface":False},
         "dns":{"enable":True,"ipv6":False,"use-hosts":True,"enhanced-mode":"redir-host","nameserver":["223.5.5.5","119.29.29.29","1.1.1.1"],
                "nameserver-policy":{"+.mi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.com":["223.5.5.5","119.29.29.29"],"+.xiaomi.cn":["223.5.5.5","119.29.29.29"],"+.mijia.com":["223.5.5.5","119.29.29.29"],"+.miwifi.com":["223.5.5.5","119.29.29.29"],"+.miui.com":["223.5.5.5","119.29.29.29"],"+.weixin.qq.com":["223.5.5.5","119.29.29.29"],"+.qq.com":["223.5.5.5","119.29.29.29"],"+.myqcloud.com":["223.5.5.5","119.29.29.29"],"+.tencentcos.cn":["223.5.5.5","119.29.29.29"],"+.ozon.ru":["223.5.5.5","119.29.29.29"]},
                "fallback":["https://1.1.1.1/dns-query","tls://8.8.8.8"],"fallback-filter":{"geoip":True,"geoip-code":"CN"}},

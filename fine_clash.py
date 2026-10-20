@@ -880,20 +880,35 @@ def run():
     seen={s.get("url") for s in live if isinstance(s,dict)}
     sources=list(live)
     min_stars=int(rules["sources"].get("min_stars",30))
-    for s in cached:
-        if not isinstance(s,dict) or not s.get("url") or s["url"] in seen:
-            continue
-        stars=s.get("stars")
-        # Cached sources must carry explicit high-star metadata. Unknown-star
-        # legacy cache entries are not allowed to bypass the current source gate.
+    # ★ F3 (2026-10-20): 缓存源失效控制。recent_days/require_recent_push 的截止逻辑原本只作用于
+    #   GitHubDiscovery 的实时搜索（L443），缓存合并被绕过。这里补同一道时间窗：cached 源必须
+    #   pushed_at 存在且未超过 recent_days，否则视为过期、不并入候选池。
+    recent_days=int(rules["sources"].get("recent_days",14))
+    cutoff_date=(datetime.now(timezone.utc)-timedelta(days=recent_days)).date()
+    def _cache_fresh(s):
+        if not isinstance(s,dict) or not s.get("url"):
+            return False
         try:
-            if int(stars) < min_stars:
-                continue
+            if int(s.get("stars",0) or 0) < min_stars:
+                return False
         except (TypeError,ValueError):
+            return False
+        pa=s.get("pushed_at")
+        if not pa:
+            return False  # 无 pushed_at 无法证明新鲜度 → 按过期处理
+        try:
+            pa_dt=datetime.fromisoformat(pa.replace("Z","+00:00"))
+        except ValueError:
+            return False
+        return pa_dt.date() >= cutoff_date
+    for s in cached:
+        if s.get("url") in seen:
+            continue
+        if not _cache_fresh(s):
             continue
         seen.add(s["url"]); sources.append(s)
-    if not sources and cached:
-        sources=[s for s in cached if isinstance(s,dict) and int(s.get("stars",0) or 0)>=min_stars]
+    # 注：移除原“live 为空则退回全部 cached”逻辑——那会绕过上面失效控制，重新注入过期免费池。
+    #   候选为空时宁可本轮不发布（CI 守卫 min_final_nodes 会拦下），比发布死池安全。
     # Bound the persistent source pool by source quality rather than merely
     # live-vs-cached ordering. High-star, node-rich, recently-pushed sources win.
     max_sources=int(rules["sources"].get("max_sources",120))
@@ -1006,7 +1021,14 @@ def run():
         candidate=candidate_gate_passes(item,gate,clean,min_clean)
 
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
-        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
+        # ★ L2 (2026-10-18): 真实代理转发判定。节点必须经 mihomo 实际向前转发流量
+        #   （gemini/google_play/google204 任一通过）才算“活”。Globalping TCP ping 只能证
+        #   server 端口可达，证不了 vless/vmess/trojan 能真正握手转发——后者恰恰是用户侧
+        #   “节点看着在、其实死”的根因。proxy_latency_ms 取 google204 实测握手延迟，
+        #   比深圳探针的 TCP ping 更贴近用户实际体验，用于排序/拒门槛。
+        real_proxy_ok=bool(item["gemini"] or item["google_play"] or (item.get("google") or {}).get("ok"))
+        proxy_latency_ms=(item.get("google") or {}).get("latency_ms")
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","real_proxy_ok":real_proxy_ok,"proxy_latency_ms":proxy_latency_ms,"org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
@@ -1033,7 +1055,14 @@ def run():
         entry["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
         entry["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
         entry["shenzhen_status"]=result.get("status","unknown")
-        if shenzhen_passes(result,shenzhen_cfg):
+        # ★ L2 (2026-10-18): 真实代理转发为权威判活门槛。
+        #   - real_proxy_ok=True → 节点本轮已实测能经 mihomo 真正转发流量 → 入选。
+        #   - 否则即便 Globalping TCP ping 显示端口可达，也视为“协议死”不发布
+        #     （TCP ping 从探针主机发，与用户实际路径无关，会误判活）。
+        #   - shenzhen TCP ping 仅作延迟/评分参考，不再单独决定入选。
+        if entry.get("real_proxy_ok", False):
+            selected.append(node)
+        elif (not shenzhen_cfg.get("fail_closed", False)) and shenzhen_passes(result, shenzhen_cfg):
             selected.append(node)
 
     # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
@@ -1044,11 +1073,19 @@ def run():
     ranking_meta={}
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
-        ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
+        # 排序延迟优先用真实代理握手延迟（proxy_latency_ms），它更贴近用户实际体验；
+        # 仅在缺真实延迟时回退到深圳 TCP ping。
+        eff_ping = entry.get("proxy_latency_ms") if entry.get("proxy_latency_ms") is not None else entry.get("shenzhen_ping_ms")
+        ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":eff_ping,"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
     max_final=int(rules["nodes"].get("max_final_nodes",20))
     # Reserve slots for previously published nodes that still pass all current gates.
     selected_fps={fingerprint(x) for x in selected}
-    retained_previous=[n for n in previous_profile_nodes if fingerprint(n) in selected_fps][:min(len(previous_profile_nodes),max_final)]
+    # ★ L4 (2026-10-18): 保留节点必须在本轮真实代理判活中通过，不得沿用旧快照。
+    #   上一轮已发布的节点若本轮 real_proxy_ok=False（协议已死），一律不保留，
+    #   避免死亡螺旋：同一批濒死节点被反复重发、永远等不到新鲜替补。
+    retained_previous=[n for n in previous_profile_nodes
+                       if fingerprint(n) in selected_fps
+                       and report_lookup.get(fingerprint(n), {}).get("real_proxy_ok", False)][:min(len(previous_profile_nodes),max_final)]
     retained_fps={fingerprint(n) for n in retained_previous}
     fresh_selected=[n for n in selected if fingerprint(n) not in retained_fps]
     retained_previous_ranked=retained_previous[:max_final]

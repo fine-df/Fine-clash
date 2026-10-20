@@ -36,7 +36,7 @@ curated_nodes_file: ''
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
   max_test_nodes: 200
-  min_final_nodes: 1
+  min_final_nodes: 3  # ★ F4 (2026-10-20): 抬高地板，杜绝“仅剩 1 节点仍覆盖发布”（原值 1 = 无质量保护）
   max_final_nodes: 20
   max_per_server: 2
   max_per_org: 3

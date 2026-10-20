@@ -48,6 +48,12 @@ nodes:
   candidate_gate: 'gemini_or_play'
   score_threshold: 70
   min_clean_score: 65
+  # 真实代理延迟硬门槛（2026-10-20）：real_proxy_ok 只证“能转发”，但 3.3s 的节点实质
+  # 不可用。proxy_latency_ms 取 mihomo 实测 google204 握手延迟（探针超时 test_timeout_seconds=8s），
+  # 超过此值的节点按配置明确拒绝（不得当 0ms 通过）。依据：559~592ms 的 NL 节点通过；
+  # 3333ms 的 GB 节点与 5~8.5s 的 US 节点被拒。取值显著低于 8s 探针超时，故它是质量检测、
+  # 不是探针假象；同时给正常高质量节点留足余量。
+  max_proxy_latency_ms: 2500
   # 软优先级地板（2026-10-06 D 方向）：final 池截断时，低于此分的节点排到
   # 达地板节点之后，确保最终 20 个优先取高分优质节点。非硬门槛，0=不启用。
   min_final_score: 55
@@ -92,4 +98,5 @@ output:
   clash_file: 'data/fine_pool.yaml'
   history_file: 'data/history.json'
   source_file: 'data/sources.json'
+  source_history_file: 'data/source_history.json'
   report_file: 'data/last_run.json'

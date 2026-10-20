@@ -1,5 +1,8 @@
 import base64
 import inspect
+import json
+import subprocess
+import requests
 import pytest
 from pathlib import Path
 
@@ -536,3 +539,238 @@ def test_update_history_dedups_within_same_day():
     fc.update_history(db, "fp", result)
     row = fc.update_history(db, "fp", result)  # 同一自然日第二次访问
     assert row["pass_count"] == 1 and row["seen_count"] == 1
+
+
+# ============================================================================
+# 2026-10-20 regression suite: data-source resilience, quality gates, and the
+# router sync contract. Every test walks the REAL code paths (GitHubDiscovery,
+# admission_reason, decide_publish, run()'s cache-write guard, and the live
+# _fine_sync.sh check_groups/vercmp functions) — no reimplementations.
+# ============================================================================
+
+def _make_item(gemini=False, google_play=False, google_ok=False, latency_ms=100, network="tcp"):
+    return {
+        "node": {"network": network},
+        "gemini": gemini,
+        "google_play": google_play,
+        "google": {"ok": google_ok, "latency_ms": latency_ms},
+    }
+
+
+def _node_rules(**over):
+    base = {"candidate_gate": "gemini_or_play", "min_clean_score": 65,
+            "max_proxy_latency_ms": 2500}
+    base.update(over)
+    return {"nodes": base}
+
+
+def test_cache_fresh_rejects_expired_and_incomplete():
+    cutoff = (fc.datetime.now(fc.timezone.utc) - fc.timedelta(days=14)).date()
+    now_iso = fc.datetime.now(fc.timezone.utc).isoformat()
+    fresh = {"url": "https://x/fresh.yaml", "stars": 150, "pushed_at": now_iso}
+    assert fc.cache_fresh(fresh, 100, cutoff) is True
+    # pushed_at older than the recency window -> stale, never auto-qualified.
+    stale = {"url": "https://x/stale.yaml", "stars": 150,
+             "pushed_at": (fc.datetime.now(fc.timezone.utc) - fc.timedelta(days=30)).isoformat()}
+    assert fc.cache_fresh(stale, 100, cutoff) is False
+    # below the star floor
+    low = {"url": "https://x/low.yaml", "stars": 10, "pushed_at": now_iso}
+    assert fc.cache_fresh(low, 100, cutoff) is False
+    # missing pushed_at -> cannot prove freshness, never coerced to fresh
+    nopush = {"url": "https://x/nopush.yaml", "stars": 150}
+    assert fc.cache_fresh(nopush, 100, cutoff) is False
+    # not a dict / no url
+    assert fc.cache_fresh(None, 100, cutoff) is False
+    assert fc.cache_fresh({"stars": 150, "pushed_at": now_iso}, 100, cutoff) is False
+
+
+def test_discover_distinguishes_failure_from_empty(monkeypatch):
+    cfg = {"recent_days": 14, "require_recent_push": True, "queries": ["x"],
+           "repositories_per_query": 20, "max_repositories": 80, "min_stars": 100,
+           "max_candidate_files_per_repo": 6, "max_source_bytes": 8000000, "min_nodes_per_source": 2}
+    # Case A: every search query fails (network/API outage).
+    disc = fc.GitHubDiscovery("tok", cfg)
+    def boom(*a, **k):
+        raise requests.RequestException("Connection reset by peer")
+    monkeypatch.setattr(disc, "_get_json", boom)
+    out, meta = disc.discover()
+    assert out == []
+    assert meta["search_succeeded"] is False
+    assert meta["failure_type"] == "search_error"
+    # Case B: search returns HTTP 200 but genuinely matches nothing.
+    disc2 = fc.GitHubDiscovery("tok", cfg)
+    def ok_empty(*a, **k):
+        return {"items": []}
+    monkeypatch.setattr(disc2, "_get_json", ok_empty)
+    out2, meta2 = disc2.discover()
+    assert out2 == []
+    assert meta2["search_succeeded"] is True
+    assert meta2["failure_type"] is None
+
+
+def test_admission_reason_rejects_without_real_proxy():
+    rules = _node_rules()
+    # All three reachability signals false -> rejected (candidate gate fails first).
+    ok, reason = fc.admission_reason(_make_item(), rules, 90)
+    assert ok is False
+    # gemini true passes candidate gate, but a missing latency must still be
+    # rejected (never coerced to 0 ms to sneak through).
+    ok, reason = fc.admission_reason(_make_item(gemini=True, latency_ms=None), rules, 90)
+    assert ok is False and reason == "latency_missing"
+    # real proxy ok but latency over the configured ceiling
+    ok, reason = fc.admission_reason(_make_item(gemini=True, google_ok=True, latency_ms=3000), rules, 90)
+    assert ok is False and reason == "latency_exceed_2500ms"
+    # unsupported transport
+    ok, reason = fc.admission_reason(_make_item(gemini=True, google_ok=True, network="xhttp"), rules, 90)
+    assert ok is False and reason == "incompatible_network"
+
+
+def test_admission_reason_accepts_qualified_node():
+    rules = _node_rules()
+    ok, reason = fc.admission_reason(_make_item(gemini=True, google_ok=True, latency_ms=500), rules, 90)
+    assert ok is True and reason == "ok"
+
+
+def test_decide_publish_respects_min_final_nodes():
+    assert fc.decide_publish(2, {"min_final_nodes": 3}) is False
+    assert fc.decide_publish(3, {"min_final_nodes": 3}) is True
+    assert fc.decide_publish(4, {"min_final_nodes": 3}) is True
+    # 0 nodes never publishes even with the old floor of 1
+    assert fc.decide_publish(0, {"min_final_nodes": 1}) is False
+    assert fc.decide_publish(1, {"min_final_nodes": 1}) is True
+
+
+# --- run()'s source-cache write guard: a failed discovery must not blank the cache ---
+
+def _patch_run(monkeypatch, tmp_path, discover_return):
+    """Isolate run() down to the cache-write decision without mihomo/network."""
+    cfg = {
+        "sources": {"recent_days": 14, "min_stars": 100, "require_recent_push": True,
+                    "queries": [], "repositories_per_query": 20, "max_repositories": 80,
+                    "max_sources": 120, "max_candidate_files_per_repo": 6,
+                    "max_source_bytes": 8000000, "min_nodes_per_source": 2},
+        "nodes": {"candidate_gate": "gemini_or_play", "min_clean_score": 65,
+                  "max_proxy_latency_ms": 2500, "min_final_nodes": 3, "max_final_nodes": 20,
+                  "max_per_server": 2, "max_per_org": 3, "min_final_score": 0,
+                  "max_test_nodes": 200},
+        "output": {"source_file": "data/sources.json", "history_file": "data/history.json",
+                   "source_history_file": "data/source_history.json",
+                   "report_file": "data/last_run.json", "clash_file": "data/fine_pool.yaml"},
+        "checks": {"challenge_markers": [], "success_statuses": [200, 204, 301, 302]},
+        "shenzhen_probe": {"enabled": False},
+        "retention": {"enabled": True, "max_previous_nodes": 5},
+        "sticky": {"enabled": False},
+    }
+    monkeypatch.setattr(fc, "ROOT", tmp_path)
+    monkeypatch.setattr(fc, "load_rules", lambda: cfg)
+    monkeypatch.setattr(fc, "load_previous_published_nodes", lambda *a, **k: [])
+    monkeypatch.setattr(fc.GitHubDiscovery, "discover", lambda self: discover_return)
+    # Guard against any node-fetch network call during the merge path.
+    def _offline(self, *a, **k):
+        raise requests.RequestException("offline")
+    monkeypatch.setattr(requests.Session, "get", _offline)
+    (tmp_path / "data").mkdir(parents=True, exist_ok=True)
+    return tmp_path / "data" / "sources.json"
+
+
+def test_failed_discovery_preserves_existing_source_cache(monkeypatch, tmp_path):
+    source_path = _patch_run(monkeypatch, tmp_path,
+                             ([], {"search_succeeded": False, "failure_type": "search_error"}))
+    prior = [{"url": "https://old.example/c.yaml", "stars": 150}]  # no pushed_at -> stale
+    source_path.write_text(json.dumps(prior, indent=2), encoding="utf-8")
+    with pytest.raises(RuntimeError):
+        fc.run()
+    # A failed search must never blank the only usable source list.
+    assert json.loads(source_path.read_text(encoding="utf-8")) == prior
+
+
+def test_successful_discovery_refreshes_source_cache(monkeypatch, tmp_path):
+    fresh = [{"url": "https://new.example/a.yaml", "stars": 200,
+              "pushed_at": fc.datetime.now(fc.timezone.utc).isoformat(),
+              "nodes": 3, "repo": "new/repo", "path": "a.yaml"}]
+    source_path = _patch_run(monkeypatch, tmp_path,
+                             (fresh, {"search_succeeded": True, "failure_type": None}))
+    source_path.write_text(json.dumps([], indent=2), encoding="utf-8")
+    with pytest.raises(RuntimeError):
+        fc.run()
+    # A definitive successful search refreshes the fresh cache with the live list.
+    assert json.loads(source_path.read_text(encoding="utf-8")) == fresh
+
+
+# --- router sync contract (real _fine_sync.sh sourced, not reimplemented) ---
+
+FINE_SYNC = Path(__file__).resolve().parent.parent / "_fine_sync.sh"
+
+
+def _bash(expr):
+    return subprocess.run(
+        ["bash", "-c", 'source "%s"; %s' % (str(FINE_SYNC).replace("\\", "/"), expr)],
+        capture_output=True, text=True,
+    )
+
+
+def _sync_check_groups(cfg_path):
+    proc = _bash('check_groups "%s"; echo RC=$?' % str(cfg_path).replace("\\", "/"))
+    for line in proc.stdout.splitlines():
+        if line.startswith("RC="):
+            return int(line[3:].strip())
+    return -1
+
+
+def _write_published_config(path, nodes):
+    cfg = bf.build_config(nodes)
+    import yaml
+    header = "# fine-clash-unified-v3 | fine-clash-version:20261020120000 | Fine=validated-pool | CN->DIRECT | MATCH->Fine\n"
+    path.write_text(header + yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
+
+
+def test_sync_check_groups_passes_published_config(tmp_path):
+    cfg_file = tmp_path / "live_clash.yaml"
+    _write_published_config(cfg_file, [{"name": "Fine-1", "type": "trojan",
+                                        "server": "example.com", "port": 443,
+                                        "password": "secret", "tls": True}])
+    assert _sync_check_groups(cfg_file) == 0
+
+
+def test_sync_check_groups_rejects_missing_fine_group(tmp_path):
+    cfg_file = tmp_path / "bad.yaml"
+    cfg_file.write_text(
+        "mode: rule\n"
+        "proxy-groups:\n"
+        "  - name: PROXY\n    type: select\n    proxies: [DIRECT]\n"
+        "rules:\n  - MATCH,PROXY\n",
+        encoding="utf-8",
+    )
+    assert _sync_check_groups(cfg_file) == 1
+
+
+def test_sync_check_groups_rejects_geosite_dependency(tmp_path):
+    cfg_file = tmp_path / "geo.yaml"
+    _write_published_config(cfg_file, [{"name": "Fine-1", "type": "trojan",
+                                        "server": "example.com", "port": 443,
+                                        "password": "secret", "tls": True}])
+    # Inject a GEOSITE rule the generator would never emit -> guard must catch it.
+    text = cfg_file.read_text(encoding="utf-8") + "  - GEOSITE,google@ads,Fine\n"
+    cfg_file.write_text(text, encoding="utf-8")
+    assert _sync_check_groups(cfg_file) == 1
+
+
+def _vercmp(remote, local):
+    proc = _bash('vercmp "%s" "%s"; echo RC=$?' % (remote, local))
+    for line in proc.stdout.splitlines():
+        if line.startswith("RC="):
+            return int(line[3:].strip())
+    return -1
+
+
+def test_sync_vercmp_handles_14_digit_without_overflow():
+    # 14-digit timestamps exceed the 32-bit signed int range (> 2**31-1); vercmp
+    # must compare them as numbers via awk, not as 32-bit ints.
+    assert _vercmp("20261020120000", "20261020110000") == 0  # remote newer
+    assert _vercmp("20261020110000", "20261020120000") == 1  # remote older
+    assert _vercmp("20261020120000", "20261020120000") == 1  # equal -> not newer
+    assert _vercmp("", "20261020120000") == 1                # no remote -> keep local
+    assert _vercmp("20261020120000", "") == 0                # no local -> remote newer
+    # Far-future timestamps (overflow 32-bit) still compare correctly.
+    assert _vercmp("20991231235959", "19990101000000") == 0
+    assert _vercmp("19990101000000", "20991231235959") == 1

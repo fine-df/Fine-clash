@@ -437,22 +437,49 @@ class GitHubDiscovery:
     def __init__(self,token,cfg):
         self.cfg=cfg; self.session=requests.Session(); self.session.headers.update({"User-Agent":UA,"Accept":"application/vnd.github+json"})
         if token: self.session.headers["Authorization"]=f"Bearer {token}"
+        # Auditable discovery metadata. Lets the run report distinguish a genuine
+        # "no matching repositories" result from a silent network/API failure, so a
+        # temporary GitHub outage is never misreported as a clean empty run.
+        self.meta={
+            "search_succeeded":False,"search_error":None,"rate_limited":False,
+            "queries":0,"repos_found":0,"repos_filtered":0,"candidate_files":0,
+            "candidate_files_failed":0,"fetched":0,"fetched_failed":0,
+            "parsed":0,"parse_failed":0,"failure_type":None,
+        }
     def _get_json(self,url,params=None):
-        response=self.session.get(url,params=params,timeout=20); response.raise_for_status(); return response.json()
+        try:
+            response=self.session.get(url,params=params,timeout=20); response.raise_for_status(); return response.json()
+        except requests.RequestException as exc:
+            status=getattr(getattr(exc,"response",None),"status_code",None)
+            if status in (403,429): self.meta["rate_limited"]=True
+            raise
     def search_repositories(self):
         cutoff=(datetime.now(timezone.utc)-timedelta(days=int(self.cfg["recent_days"]))).date().isoformat(); repos={}
         push_suffix=f" pushed:>={cutoff}" if self.cfg.get("require_recent_push",False) else ""
+        self.meta["queries"]=len(self.cfg["queries"])
         for base_query in self.cfg["queries"]:
-            try: data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
-            except requests.RequestException: continue
+            try:
+                data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
+                self.meta["search_succeeded"]=True
+            except requests.RequestException as exc:
+                self.meta["failure_type"]="search_error"; self.meta["search_error"]=f"{type(exc).__name__}: {str(exc)[:160]}"
+                continue
             for item in data.get("items",[]):
+                self.meta["repos_found"]+=1
                 if int(item.get("stargazers_count", 0)) >= int(self.cfg.get("min_stars", 30)):
                     repos[item["full_name"]]=item
+                else:
+                    self.meta["repos_filtered"]+=1
         return sorted(repos.values(),key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),reverse=True)[:int(self.cfg["max_repositories"])]
     def candidate_files(self,repo):
         owner,name=repo["full_name"].split("/",1)
         try: tree=self._get_json(f"https://api.github.com/repos/{owner}/{name}/git/trees/{repo['default_branch']}",{"recursive":"1"})
-        except requests.RequestException: return []
+        except requests.RequestException as exc:
+            self.meta["candidate_files_failed"]+=1
+            status=getattr(getattr(exc,"response",None),"status_code",None)
+            if status in (403,429): self.meta["rate_limited"]=True
+            return []
+        self.meta["candidate_files"]+=1
         paths=[]
         for item in tree.get("tree",[]):
             if item.get("type")!="blob": continue
@@ -464,18 +491,29 @@ class GitHubDiscovery:
         owner,name=repo["full_name"].split("/",1); raw=f"https://raw.githubusercontent.com/{owner}/{name}/{quote(repo['default_branch'],safe='')}/{quote(path,safe='/')}"
         try:
             response=self.session.get(raw,timeout=20,allow_redirects=True); response.raise_for_status()
-            if len(response.content)>int(self.cfg["max_source_bytes"]): return None
-        except requests.RequestException: return None
+            if len(response.content)>int(self.cfg["max_source_bytes"]): self.meta["parse_failed"]+=1; return None
+        except requests.RequestException:
+            self.meta["fetched_failed"]+=1; return None
+        self.meta["fetched"]+=1
         nodes=parse_subscription(response.text)
-        if len(nodes)<int(self.cfg["min_nodes_per_source"]): return None
+        if len(nodes)<int(self.cfg["min_nodes_per_source"]):
+            self.meta["parse_failed"]+=1; return None
+        self.meta["parsed"]+=1
         return {"url":raw,"repo":repo["full_name"],"path":path,"stars":repo.get("stargazers_count",0),"forks":repo.get("forks_count",0),"pushed_at":repo.get("pushed_at"),"nodes":len(nodes)}
     def discover(self):
         out=[]; seen=set()
-        for repo in self.search_repositories():
+        repos=self.search_repositories()
+        for repo in repos:
             for path in self.candidate_files(repo):
                 source=self.fetch_and_validate(repo,path)
-                if source and source["url"] not in seen: seen.add(source["url"]); out.append(source)
-        return out
+                if source and source["url"] not in seen:
+                    seen.add(source["url"]); out.append(source)
+        # Distinguish a successful search with zero matches from a failed search.
+        if not out and not self.meta["search_succeeded"]:
+            self.meta["failure_type"]=self.meta["failure_type"] or "no_fresh_sources_discovered"
+        elif out:
+            self.meta["search_succeeded"]=True
+        return out, dict(self.meta)
 
 MIHOMO_GEO_FILES = ("GeoSite.dat","Country.mmdb","geoip.metadb","geosite.dat","geoip.dat")
 
@@ -865,52 +903,115 @@ def candidate_gate_passes(item, gate, clean, min_clean):
         return bool(gemini and google_play and clean_ok)
     return False
 
+def cache_fresh(source, min_stars, cutoff_date):
+    """Return True if a cached source record may enter this run's candidate pool.
+
+    Freshness requires a known star count at/above the floor AND a pushed_at
+    timestamp on/after the configured recency cutoff. Sources missing pushed_at
+    cannot prove freshness and are treated as stale (never auto-qualified). This is
+    the single source of truth for the F3 expiry gate and is unit-tested.
+    """
+    if not isinstance(source, dict) or not source.get("url"):
+        return False
+    try:
+        if int(source.get("stars", 0) or 0) < min_stars:
+            return False
+    except (TypeError, ValueError):
+        return False
+    pa = source.get("pushed_at")
+    if not pa:
+        return False
+    try:
+        pa_dt = datetime.fromisoformat(pa.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return pa_dt.date() >= cutoff_date
+
+def load_source_history(path):
+    """Load the persistent historical source audit record (url -> metadata)."""
+    p = Path(path)
+    if not p.is_file():
+        return {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+def write_source_history(path, history):
+    """Persist the historical source audit record. Never truncates to empty on a
+    failed run — only merges; expired entries stay recorded but do NOT grant usage."""
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(history, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+def admission_reason(item, rules, clean):
+    """Return (admitted, reason) using every independent hard gate.
+
+    A node reaches the final pool only if it clears, in order:
+      1. candidate gate  — endpoint reachability + cleanliness
+      2. real_proxy_ok   — mihomo actually forwarded live traffic
+      3. latency gate    — proxy_latency_ms present AND <= max_proxy_latency_ms
+      4. compatibility   — supported transport network
+    Shenzhen TCP ping is intentionally NOT here: it only proved a probe-host port
+    was open, never that user traffic forwards. Missing/invalid latency is rejected
+    (never coerced to 0 ms).
+    """
+    node = item["node"]
+    gate = str(rules["nodes"].get("candidate_gate", "gemini_or_play")).lower()
+    min_clean = float(rules["nodes"].get("min_clean_score", 0))
+    if not candidate_gate_passes(item, gate, clean, min_clean):
+        return False, "candidate_gate_fail"
+    if not (item["gemini"] or item["google_play"] or (item.get("google") or {}).get("ok")):
+        return False, "real_proxy_fail"
+    max_lat = int(rules["nodes"].get("max_proxy_latency_ms", 0) or 0)
+    lat = (item.get("google") or {}).get("latency_ms")
+    if lat is None:
+        return False, "latency_missing"
+    if max_lat and lat > max_lat:
+        return False, "latency_exceed_%dms" % max_lat
+    if node.get("network", "tcp") not in COMPATIBLE_NETWORKS:
+        return False, "incompatible_network"
+    return True, "ok"
+
+def decide_publish(selected_len, nodes_rules):
+    """True only when the qualified pool meets the minimum publish floor.
+
+    Below the floor the last published profile must be preserved — never an empty
+    pool, a sub-floor pool, or a failed build result."""
+    return selected_len >= int(nodes_rules.get("min_final_nodes", 1))
+
 def run():
-    rules=load_rules(); source_path=ROOT/rules["output"]["source_file"]; history_path=ROOT/rules["output"]["history_file"]; report_path=ROOT/rules["output"]["report_file"]
-    live=GitHubDiscovery(os.getenv("GITHUB_TOKEN"),rules["sources"]).discover()
+    rules=load_rules()
+    source_path=ROOT/rules["output"]["source_file"]
+    history_path=ROOT/rules["output"]["history_file"]
+    report_path=ROOT/rules["output"]["report_file"]
+    source_history_path=ROOT/rules["output"].get("source_history_file","data/source_history.json")
+    # GitHubDiscovery now returns (sources, discovery_meta) so a temporary API
+    # failure can be told apart from a genuine zero-result search.
+    live, discovery_meta = GitHubDiscovery(os.getenv("GITHUB_TOKEN"), rules["sources"]).discover()
     cached=[]
     if source_path.is_file():
         try:
             cached=json.loads(source_path.read_text(encoding="utf-8"))
             if not isinstance(cached,list): cached=[]
         except Exception: cached=[]
-    # ★ 2026-10-04：始终合并缓存源（data/sources.json）。匿名 GitHub API 限额时 live 可能很少，
-    #   而 data/sources.json 由 discover_broad.py 预先用 raw 路径绕过 tree 限流挖出大量含订阅的仓库。
-    #   合并策略：live 优先，cached 中 url 不重复的追加，确保扩源成果一定进候选池。
+    # Freshness gate (F3, 2026-10-20): cached sources must prove recency via
+    # pushed_at >= recent_days cutoff; expired sources are NEVER re-admitted just
+    # because live search came back empty. cache_fresh() is the single source of
+    # truth and is unit-tested.
     seen={s.get("url") for s in live if isinstance(s,dict)}
     sources=list(live)
     min_stars=int(rules["sources"].get("min_stars",30))
-    # ★ F3 (2026-10-20): 缓存源失效控制。recent_days/require_recent_push 的截止逻辑原本只作用于
-    #   GitHubDiscovery 的实时搜索（L443），缓存合并被绕过。这里补同一道时间窗：cached 源必须
-    #   pushed_at 存在且未超过 recent_days，否则视为过期、不并入候选池。
     recent_days=int(rules["sources"].get("recent_days",14))
     cutoff_date=(datetime.now(timezone.utc)-timedelta(days=recent_days)).date()
-    def _cache_fresh(s):
-        if not isinstance(s,dict) or not s.get("url"):
-            return False
-        try:
-            if int(s.get("stars",0) or 0) < min_stars:
-                return False
-        except (TypeError,ValueError):
-            return False
-        pa=s.get("pushed_at")
-        if not pa:
-            return False  # 无 pushed_at 无法证明新鲜度 → 按过期处理
-        try:
-            pa_dt=datetime.fromisoformat(pa.replace("Z","+00:00"))
-        except ValueError:
-            return False
-        return pa_dt.date() >= cutoff_date
     for s in cached:
         if s.get("url") in seen:
             continue
-        if not _cache_fresh(s):
+        if not cache_fresh(s, min_stars, cutoff_date):
             continue
         seen.add(s["url"]); sources.append(s)
-    # 注：移除原“live 为空则退回全部 cached”逻辑——那会绕过上面失效控制，重新注入过期免费池。
-    #   候选为空时宁可本轮不发布（CI 守卫 min_final_nodes 会拦下），比发布死池安全。
-    # Bound the persistent source pool by source quality rather than merely
-    # live-vs-cached ordering. High-star, node-rich, recently-pushed sources win.
+    # Bound the persistent source pool by quality, not live-vs-cached ordering.
     max_sources=int(rules["sources"].get("max_sources",120))
     if len(sources)>max_sources:
         def source_quality(row):
@@ -921,7 +1022,34 @@ def run():
                 str(row.get("url") or ""),
             )
         sources=sorted(sources,key=source_quality,reverse=True)[:max_sources]
-    source_path.parent.mkdir(parents=True,exist_ok=True); source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
+    # Persistent historical source record (audit trail). Never overwritten to empty
+    # by a failed/empty run — only merged. Expired entries stay recorded but do NOT
+    # grant usage; only cache_fresh() decides what enters the candidate pool.
+    history_sources=load_source_history(source_history_path)
+    for s in sources:
+        url=s.get("url")
+        if not url: continue
+        prev=history_sources.get(url,{})
+        history_sources[url]={
+            "url":url,"repo":s.get("repo"),"stars":s.get("stars"),"nodes":s.get("nodes"),
+            "pushed_at":s.get("pushed_at"),
+            "last_seen":datetime.now(timezone.utc).isoformat(),
+            "last_error":prev.get("last_error"),
+        }
+    # Mark discovery failures in the historical record without destroying prior data.
+    if not discovery_meta.get("search_succeeded"):
+        err=discovery_meta.get("search_error") or discovery_meta.get("failure_type")
+        for s in history_sources.values():
+            s["last_error"]=err
+    write_source_history(source_history_path, history_sources)
+    source_path.parent.mkdir(parents=True,exist_ok=True)
+    if discovery_meta.get("search_succeeded"):
+        # Definitive fresh result (may legitimately be empty); refresh the fresh cache.
+        source_path.write_text(json.dumps(sources,ensure_ascii=False,indent=2),encoding="utf-8")
+    else:
+        # A failed search must NOT blank the only usable source list. The audit
+        # trail is safe in source_history.json; keep the previous fresh cache.
+        print("source_discovery: search failed (%s); preserving previous %s" % (discovery_meta.get("failure_type"), source_path))
     nodes_by_fp={}; session=requests.Session()
     for source in sources:
         try:
@@ -996,10 +1124,9 @@ def run():
     if not nodes: raise RuntimeError("No valid nodes discovered; published outputs were preserved.")
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
-    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"previous_profile_candidates":len(previous_profile_nodes),"results":[]}
+    report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"previous_profile_candidates":len(previous_profile_nodes),"results":[],"source_discovery":discovery_meta,"source_history_total":len(history_sources),"max_proxy_latency_ms":int(rules["nodes"].get("max_proxy_latency_ms",0) or 0)}
     report_lookup={}
     candidate_records=[]
-    all_candidate_fps=[]
 
     for item in test_nodes_parallel(binary,nodes,tester_cfg,checks):
         node,fp=item["node"],fingerprint(item["node"])
@@ -1014,40 +1141,30 @@ def run():
         #     导致 selected=0 永远不发布。改「通外网即候选」才能保证池子真正长大。
         #   - gemini_or_play：gemini 或 play 任一通过（仍卡 70 分，留作保守档）。
         #   - gemini_and_play：原双过严格档（保留向后兼容）。
-        gate=str(rules["nodes"].get("candidate_gate","gemini_or_play")).lower()
-        min_clean=float(rules["nodes"].get("min_clean_score",0))
-        # score_threshold is used for history/pass-day statistics, not as a hard
-        # candidate gate. The candidate gate itself is explicit and testable.
-        candidate=candidate_gate_passes(item,gate,clean,min_clean)
-
         asn_obj=ipinfo_data.get("asn"); asn_value=asn_obj.get("asn") if isinstance(asn_obj,dict) else asn_obj
-        # ★ L2 (2026-10-18): 真实代理转发判定。节点必须经 mihomo 实际向前转发流量
-        #   （gemini/google_play/google204 任一通过）才算“活”。Globalping TCP ping 只能证
-        #   server 端口可达，证不了 vless/vmess/trojan 能真正握手转发——后者恰恰是用户侧
-        #   “节点看着在、其实死”的根因。proxy_latency_ms 取 google204 实测握手延迟，
-        #   比深圳探针的 TCP ping 更贴近用户实际体验，用于排序/拒门槛。
+        # ★ L2 (2026-10-18) + 延迟硬门槛 (2026-10-20):
+        #   最终入选 = 候选门槛 AND 真实代理转发(real_proxy_ok) AND 延迟上限(max_proxy_latency_ms)
+        #   AND 网络兼容。四者独立，缺一不可。Shenzhen TCP ping 仅作展示/粘性参考，
+        #   不再是入选路径（它只证明探针主机到端口通，证不了用户侧真实转发）。
+        #   延迟缺失/无效按失败处理，不得当 0ms 自动通过（见 admission_reason）。
         real_proxy_ok=bool(item["gemini"] or item["google_play"] or (item.get("google") or {}).get("ok"))
         proxy_latency_ms=(item.get("google") or {}).get("latency_ms")
-        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","real_proxy_ok":real_proxy_ok,"proxy_latency_ms":proxy_latency_ms,"org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
+        admitted, reject_reason = admission_reason(item, rules, clean)
+        entry={"fingerprint":fp,"name":node["name"],"score":score,"gemini":item["gemini"],"google_play":item["google_play"],"clean":clean,"lifespan_days":lifespan_days(row),"shenzhen_ping_ms":None,"shenzhen_loss_pct":None,"shenzhen_status":"not-tested","real_proxy_ok":real_proxy_ok,"proxy_latency_ms":proxy_latency_ms,"admitted":admitted,"reject_reason":(None if admitted else reject_reason),"org":ipinfo_data.get("org"),"asn":asn_value,"country":ipinfo_data.get("country")}
         report["results"].append(entry); report_lookup[fp]=entry
 
         shenzhen_cfg=rules.get("shenzhen_probe",{})
-        if candidate:
-            all_candidate_fps.append(fp)
-            if shenzhen_cfg.get("enabled",False):
-                cached=cached_shenzhen_result(row,shenzhen_cfg)
-                candidate_records.append({"fp":fp,"node":node,"result":cached})
-            else:
-                selected.append(node)
+        cached=cached_shenzhen_result(row,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else None
+        candidate_records.append({"fp":fp,"node":node,"result":cached})
+        if admitted:
+            selected.append(node)
 
     shenzhen_cfg=rules.get("shenzhen_probe",{})
     pending=[(rec["fp"],rec["node"]) for rec in candidate_records if rec["result"] is None]
     measured=probe_shenzhen_parallel(pending,shenzhen_cfg) if shenzhen_cfg.get("enabled",False) else {}
-    fp_node={}
     for rec in candidate_records:
         fp,node,cached=rec["fp"],rec["node"],rec["result"]
-        fp_node[fp]=node
-        row=history[fp]
+        row=history.get(fp,{})
         result=cached if cached is not None else measured.get(fp,{"ok":False,"status":"not-measured"})
         if cached is None:
             save_shenzhen_history(row,result)
@@ -1055,28 +1172,27 @@ def run():
         entry["shenzhen_ping_ms"]=result.get("avg_ms") if result.get("ok") else None
         entry["shenzhen_loss_pct"]=result.get("loss_pct") if result.get("ok") else None
         entry["shenzhen_status"]=result.get("status","unknown")
-        # ★ L2 (2026-10-18): 真实代理转发为权威判活门槛。
-        #   - real_proxy_ok=True → 节点本轮已实测能经 mihomo 真正转发流量 → 入选。
-        #   - 否则即便 Globalping TCP ping 显示端口可达，也视为“协议死”不发布
-        #     （TCP ping 从探针主机发，与用户实际路径无关，会误判活）。
-        #   - shenzhen TCP ping 仅作延迟/评分参考，不再单独决定入选。
-        if entry.get("real_proxy_ok", False):
-            selected.append(node)
-        elif (not shenzhen_cfg.get("fail_closed", False)) and shenzhen_passes(result, shenzhen_cfg):
-            selected.append(node)
 
     # Shenzhen is a hard quality gate. Never backfill rejected/unmeasured nodes into the final pool.
     history_path.write_text(json.dumps(history,ensure_ascii=False,indent=2,sort_keys=True),encoding="utf-8")
     before=len(selected); selected=[node for node in selected if node.get("network","tcp") in COMPATIBLE_NETWORKS]; report["incompatible_filtered"]=before-len(selected)
-    if len(selected)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(selected)} nodes passed final threshold; published outputs were preserved."); return
+    if not decide_publish(len(selected), rules["nodes"]):
+        report["published"]=False; report["selected"]=len(selected); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"publish_guard: only {len(selected)} qualified nodes (< min_final_nodes {rules['nodes'].get('min_final_nodes')}); last published config preserved."); return
     ranking_meta={}
     for node in selected:
         fp=fingerprint(node); entry=report_lookup.get(fp,{}); row=history.get(fp,{})
-        # 排序延迟优先用真实代理握手延迟（proxy_latency_ms），它更贴近用户实际体验；
-        # 仅在缺真实延迟时回退到深圳 TCP ping。
-        eff_ping = entry.get("proxy_latency_ms") if entry.get("proxy_latency_ms") is not None else entry.get("shenzhen_ping_ms")
-        ranking_meta[fp]={"score":entry.get("score",0),"shenzhen_ping_ms":eff_ping,"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),"lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country")}
+        # Keep real-proxy latency and Shenzhen latency as distinct fields so the
+        # report never conflates the two (previously eff_ping was mislabelled as
+        # shenzhen_ping_ms in this dict).
+        ranking_meta[fp]={
+            "score":entry.get("score",0),
+            "shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),
+            "proxy_latency_ms":entry.get("proxy_latency_ms"),
+            "real_proxy_ok":entry.get("real_proxy_ok",False),
+            "shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),
+            "stability":min(1.0,row.get("pass_count",0)/max(1,row.get("seen_count",1))),
+            "lifespan":lifespan_days(row),"org":entry.get("org"),"asn":entry.get("asn"),"country":entry.get("country"),
+        }
     max_final=int(rules["nodes"].get("max_final_nodes",20))
     # Reserve slots for previously published nodes that still pass all current gates.
     selected_fps={fingerprint(x) for x in selected}
@@ -1105,13 +1221,22 @@ def run():
     report["ranking"]=[]
     for i,node in enumerate(ranked,1):
         entry=report_lookup.get(fingerprint(node),{})
-        report["ranking"].append({"rank":i,"score":entry.get("score"),"shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),"shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),"server":node.get("server"),"type":node.get("type")})
-    print("Top20 Ranking:"); print("Rank | Score | Ping | Loss | Server | Type")
+        report["ranking"].append({
+            "rank":i,"score":entry.get("score"),
+            "shenzhen_ping_ms":entry.get("shenzhen_ping_ms"),
+            "proxy_latency_ms":entry.get("proxy_latency_ms"),
+            "real_proxy_ok":entry.get("real_proxy_ok",False),
+            "reject_reason":entry.get("reject_reason"),
+            "shenzhen_loss_pct":entry.get("shenzhen_loss_pct"),
+            "server":node.get("server"),"type":node.get("type"),
+        })
+    print("Top20 Ranking:"); print("Rank | Score | ShenzhenPing | ProxyLatency | RealProxy | RejectReason | Server | Type")
     for r in report["ranking"]:
-        ping=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"; loss=r["shenzhen_loss_pct"] if r["shenzhen_loss_pct"] is not None else "-"
-        print(f"{r['rank']:>4} | {r['score']:>5} | {str(ping):>5} | {str(loss):>5} | {r['server']} | {r['type']}")
-    if len(ranked)<int(rules["nodes"]["min_final_nodes"]):
-        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"Only {len(ranked)} nodes remained after diversity ranking; published outputs were preserved."); return
+        sp=r["shenzhen_ping_ms"] if r["shenzhen_ping_ms"] is not None else "-"
+        pl=r["proxy_latency_ms"] if r["proxy_latency_ms"] is not None else "-"
+        print(f"{r['rank']:>4} | {r['score']:>5} | {str(sp):>12} | {str(pl):>13} | {str(r['real_proxy_ok']):>9} | {str(r['reject_reason']):>14} | {r['server']} | {r['type']}")
+    if not decide_publish(len(ranked), rules["nodes"]):
+        report["published"]=False; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8"); print(f"publish_guard: only {len(ranked)} nodes after diversity ranking (< min_final_nodes {rules['nodes'].get('min_final_nodes')}); last published config preserved."); return
     build_outputs(ranked,rules); report["published"]=True; report["selected"]=len(ranked); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 
 if __name__=="__main__": run()

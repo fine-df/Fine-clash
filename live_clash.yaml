@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070026 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070027 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,120 +10,64 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- alterId: 0
+- uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
+  udp: true
+  network: ws
+  tls: true
   cipher: auto
   port: 8443
-  udp: true
-  tls: true
-  server: 206.238.239.109
-  ws-opts:
-    headers:
-      Host: uk.frnhk.xyz
-    path: /London31
-  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
-  network: ws
-  type: vmess
+  alterId: 0
   name: 🇬🇧 United Kingdom, London | [BL] [19fd95de]
-- alterId: 0
-  cipher: auto
-  port: 8443
-  udp: true
-  tls: true
-  server: 206.238.238.222
+  server: 206.238.239.109
+  type: vmess
   ws-opts:
     headers:
       Host: uk.frnhk.xyz
     path: /London31
-  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
+- uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
+  udp: true
   network: ws
-  type: vmess
+  tls: true
+  cipher: auto
+  port: 8443
+  alterId: 0
   name: 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
-- client-fingerprint: edge
-  port: 443
-  reality-opts:
-    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
-    short-id: 257420d9d430152a
-  tls: true
-  encryption: none
-  server: a0688bt.us4.h1clayd.click
-  type: vless
-  servername: a0688bt.us4.h1clayd.click
-  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
-  network: tcp
-  udp: true
-  name: 🇺🇸 United States, Secaucus | [BL] [39a215ac]
-- client-fingerprint: ios
-  port: 443
-  reality-opts:
-    public-key: 5-9YzvyXcZ4J5Z4OaVTUbxUU2InvnwT17m0XY-Jse1E
-    short-id: 257420d9d430152a
-  tls: true
-  encryption: none
-  server: a0688bt.us4.h1clayd.click
-  type: vless
-  servername: a0688bt.us4.h1clayd.click
-  uuid: 056405e8-de9f-4d0d-8145-956f13cc34da
-  network: tcp
-  udp: true
-  name: 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
-- type: vless
-  name: 🇺🇸 United States, Dallas | [BL] [afc26eca]
-  server: 27.50.48.211
-  port: 8443
-  udp: true
-  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
-  encryption: none
-  tls: true
-  client-fingerprint: qq
-  network: ws
+  server: 206.238.238.222
+  type: vmess
   ws-opts:
-    path: /usa1019
     headers:
-      Host: usa.frnhk.xyz
-- type: vless
-  name: 🇺🇸 United States, Dallas | [BL] [05f50417]
-  server: 27.50.48.211
-  port: 8443
+      Host: uk.frnhk.xyz
+    path: /London31
+- uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
   udp: true
-  uuid: f5f0babe-aea2-4f07-a1fc-3c9820253f49
-  encryption: none
+  reality-opts:
+    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
+    short-id: c46d735d6444850f
+  network: tcp
   tls: true
-  client-fingerprint: edge
-  network: ws
-  ws-opts:
-    path: /usa1019
-    headers:
-      Host: usa.frnhk.xyz
-- type: vless
-  name: 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
-  server: 9.247.34.118
   port: 2053
-  udp: true
-  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
   encryption: none
-  tls: true
-  servername: www.rutube.ru
+  name: 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
   flow: xtls-rprx-vision
   client-fingerprint: safari
+  server: 9.247.34.118
+  servername: www.rutube.ru
+  type: vless
+- uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
+  udp: true
   reality-opts:
     public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
     short-id: c46d735d6444850f
   network: tcp
-- type: vless
-  name: 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
-  server: 9.247.34.118
-  port: 2053
-  udp: true
-  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
-  encryption: none
   tls: true
-  servername: www.rutube.ru
+  port: 2053
+  encryption: none
+  name: 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
   flow: xtls-rprx-vision
   client-fingerprint: firefox
-  reality-opts:
-    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
-    short-id: c46d735d6444850f
-  network: tcp
+  server: 9.247.34.118
+  servername: www.rutube.ru
+  type: vless
 proxy-groups:
 - name: Fine
   type: select
@@ -132,10 +76,6 @@ proxy-groups:
   - DIRECT
   - 🇬🇧 United Kingdom, London | [BL] [19fd95de]
   - 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
-  - 🇺🇸 United States, Secaucus | [BL] [39a215ac]
-  - 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
-  - 🇺🇸 United States, Dallas | [BL] [afc26eca]
-  - 🇺🇸 United States, Dallas | [BL] [05f50417]
   - 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
   - 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
   default-selected: 🇬🇧 United Kingdom, London | [BL] [19fd95de]
@@ -144,10 +84,6 @@ proxy-groups:
   proxies:
   - 🇬🇧 United Kingdom, London | [BL] [19fd95de]
   - 🇬🇧 United Kingdom, London | [BL] [ba89ffe3]
-  - 🇺🇸 United States, Secaucus | [BL] [39a215ac]
-  - 🇺🇸 United States, Secaucus | [BL] [0a134e8e]
-  - 🇺🇸 United States, Dallas | [BL] [afc26eca]
-  - 🇺🇸 United States, Dallas | [BL] [05f50417]
   - 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
   - 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
   url: https://play.google.com/store
@@ -157,10 +93,10 @@ proxy-groups:
   lazy: false
   hidden: true
 tun:
-  enable: true
+  enable: false
   stack: system
-  auto-route: true
-  auto-detect-interface: true
+  auto-route: false
+  auto-detect-interface: false
 dns:
   enable: true
   ipv6: false

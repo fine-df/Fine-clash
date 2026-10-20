@@ -16,8 +16,72 @@ ALLOWED_FIELDS = {
 }
 URI_RE = re.compile(r"(?:(?:vmess|vless|trojan|ss)://[^\s\"'<>]+)")
 UA="Fine-Clash/1.0"
-CANDIDATE_NAMES=("sub","subscribe","subscription","clash","v2ray","proxy","nodes","free")
-EXTENSIONS=(".yaml",".yml",".txt",".conf",".base64")
+# Candidate file selection (2026-10-20 fix).
+#
+# Root cause of the 28/28 wrong files (audit Fine-clash-diagnosis-2026-10-20):
+# the old rule selected a file when a keyword (sub/subscribe/clash/v2ray/proxy/
+# nodes/free/...) appeared ANYWHERE in the full path as a substring. Client-
+# software repos (clash-verge, v2rayN, FlClash, Shadowrocket, mitmproxy, sub2api,
+# ...) and unrelated projects contain those tokens in directory/package names, so
+# their source-tree files (i18n translations, docker-compose, k8s configmap,
+# github workflows, LICENSE, test fixtures, adblock .conf rules, fonts, cmake/
+# pubspec) were pulled in as if they were subscriptions.
+#
+# Fix: decide on the FILE BASENAME only, matching a keyword as a *whole word*
+# (not a substring), then reject paths that belong to a CONFIRMED non-subscription
+# category. Whole-word basename matching alone excludes 25 of the 28 audited
+# files; the remaining 3 (proxy-configmap, sandbox-network-proxy-image,
+# sr_proxy_banad) are caught by the targeted blacklist below.
+
+# Keyword candidates, matched as whole words against the basename only.
+CANDIDATE_TOKENS = ("sub", "subscribe", "subscription", "clash", "v2ray",
+                    "proxy", "nodes", "node", "free")
+CANDIDATE_TOKENS_SET = set(CANDIDATE_TOKENS)
+
+# Extension allow-list -- unchanged from the pre-fix EXTENSIONS.
+SUBSCRIPTION_EXT = (".yaml", ".yml", ".txt", ".conf", ".base64")
+
+# Confirmed non-subscription path/basename signals, each traced to >=1 of the 28
+# audited mis-matches. They are never legitimate subscription locations, so
+# rejecting them cannot hide a real node source. Subscription keywords
+# (sub/subscribe/subscription/clash/v2ray/proxy/nodes/node/free) are deliberately
+# absent so a real `nodes/...` or `clash/...` source is never dropped.
+_PATH_BLACKLIST = re.compile(
+    r"(?<![a-z0-9])("
+    r"i18n|locale|locales|lang|languages|"
+    r"docker|compose|configmap|"
+    r"\.github|workflows|issue[_-]?template|"
+    r"submission|submodule|submodules|subset|freeze|"
+    r"test|tests|example|examples|sample|samples|fixture|fixtures|spec|benchmarks|"
+    r"cmake|pubspec|flutter|"
+    r"license|licence|readme|"
+    r"adblock|fonts|font|assets|renderers|"
+    r"mitm|mitmproxy|reverse[_-]?proxy|banad"
+    r")(?![a-z0-9])",
+    re.IGNORECASE,
+)
+
+
+def _basename_tokens(path):
+    base = path.rsplit("/", 1)[-1].lower()
+    name, _ext = os.path.splitext(base)
+    return {t for t in re.split(r"[^a-z0-9]+", name) if t}
+
+
+def _is_subscription_path(path):
+    """True only for file paths that plausibly hold a real subscription.
+
+    Selection is based on the file BASENAME (whole-word keyword match) plus a
+    targeted blacklist of confirmed non-subscription categories. This stops
+    client-software repos from being selected merely because a directory in
+    their tree contains a keyword.
+    """
+    low = path.lower()
+    if not low.endswith(SUBSCRIPTION_EXT):
+        return False
+    if _PATH_BLACKLIST.search(low):
+        return False
+    return bool(CANDIDATE_TOKENS_SET & _basename_tokens(path))
 ROOT=Path(__file__).resolve().parent
 
 # High-priority direct routes for WeChat/Tencent infrastructure. These sit above
@@ -442,7 +506,7 @@ class GitHubDiscovery:
         # temporary GitHub outage is never misreported as a clean empty run.
         self.meta={
             "search_succeeded":False,"search_error":None,"rate_limited":False,
-            "queries":0,"repos_found":0,"repos_filtered":0,"candidate_files":0,
+            "queries":0,"repos_found":0,"repos_filtered":0,"repos_excluded":0,"candidate_files":0,
             "candidate_files_failed":0,"fetched":0,"fetched_failed":0,
             "parsed":0,"parse_failed":0,"failure_type":None,
         }
@@ -457,6 +521,7 @@ class GitHubDiscovery:
         cutoff=(datetime.now(timezone.utc)-timedelta(days=int(self.cfg["recent_days"]))).date().isoformat(); repos={}
         push_suffix=f" pushed:>={cutoff}" if self.cfg.get("require_recent_push",False) else ""
         self.meta["queries"]=len(self.cfg["queries"])
+        exclude=set(self.cfg.get("exclude_repos", []) or [])
         for base_query in self.cfg["queries"]:
             try:
                 data=self._get_json("https://api.github.com/search/repositories",{"q":f"{base_query}{push_suffix}","sort":"stars","order":"desc","per_page":self.cfg["repositories_per_query"]})
@@ -466,8 +531,14 @@ class GitHubDiscovery:
                 continue
             for item in data.get("items",[]):
                 self.meta["repos_found"]+=1
+                fn=item["full_name"]
+                if fn in exclude:
+                    # Confirmed client-software / panel repos (audit §1.2) — never
+                    # subscription sources; drop post-search to cut dilution without
+                    # bloating the 256-char query with inline `-repo:` qualifiers.
+                    self.meta["repos_excluded"]+=1; continue
                 if int(item.get("stargazers_count", 0)) >= int(self.cfg.get("min_stars", 30)):
-                    repos[item["full_name"]]=item
+                    repos[fn]=item
                 else:
                     self.meta["repos_filtered"]+=1
         return sorted(repos.values(),key=lambda x:(x.get("stargazers_count",0),x.get("pushed_at","")),reverse=True)[:int(self.cfg["max_repositories"])]
@@ -483,8 +554,8 @@ class GitHubDiscovery:
         paths=[]
         for item in tree.get("tree",[]):
             if item.get("type")!="blob": continue
-            path=item.get("path",""); low=path.lower()
-            if low.endswith(EXTENSIONS) and any(key in low for key in CANDIDATE_NAMES): paths.append(path)
+            path=item.get("path","")
+            if _is_subscription_path(path): paths.append(path)
         paths.sort(key=lambda p: source_path_sort_key(p), reverse=True)
         return paths[:int(self.cfg["max_candidate_files_per_repo"])]
     def fetch_and_validate(self,repo,path):

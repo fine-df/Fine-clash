@@ -774,3 +774,183 @@ def test_sync_vercmp_handles_14_digit_without_overflow():
     # Far-future timestamps (overflow 32-bit) still compare correctly.
     assert _vercmp("20991231235959", "19990101000000") == 0
     assert _vercmp("19990101000000", "20991231235959") == 1
+
+
+# --- candidate_files() selection: basename whole-word match, not path substring ---
+
+# The 28 files audited (Fine-clash-diagnosis-2026-10-20) that the OLD full-path
+# substring rule wrongly pulled in from client-software / unrelated repos. Every
+# one must be excluded by the fixed selection logic.
+_CONFIRMED_MISMATCH_PATHS = [
+    "crates/clash-verge-i18n/locales/zh.yml",
+    "crates/clash-verge-i18n/locales/tt.yml",
+    "crates/clash-verge-i18n/locales/tr.yml",
+    "crates/clash-verge-i18n/locales/ru.yml",
+    "crates/clash-verge-i18n/locales/pt.yml",
+    "crates/clash-verge-i18n/locales/ko.yml",
+    "v2rayN/v2rayN.WebAPI/compose.yaml",
+    ".github/ISSUE_TEMPLATE/tutorial-submission.yml",
+    "charts/open-design/templates/proxy-configmap.yaml",
+    ".github/workflows/update-submodules.yml",
+    ".github/workflows/sandbox-network-proxy-image.yaml",
+    "scripts/data/colab_pip_freeze.gpu.txt",
+    "src/free_claude_code/api/admin_static/providers/LICENSE-llamacpp.txt",
+    "src/free_claude_code/api/admin_static/providers/LICENSE-lobe-icons.txt",
+    "tests/examples/sub_directory/dummy.txt",
+    "plugins/proxy/pubspec.yaml",
+    "plugins/proxy/analysis_options.yaml",
+    "plugins/proxy/windows/CMakeLists.txt",
+    "tests/cmake_add_subdirectory/CMakeLists.txt",
+    "tests/cmake_add_subdirectory/project/CMakeLists.txt",
+    "test/mitmproxy/data/test_config.yml",
+    "skills/sub2api-admin/agents/openai.yaml",
+    "ReportEngine/renderers/assets/fonts/subset_chars.txt",
+    "application/src/test/resources/plugin/plugin-for-reverseproxy/static/test.txt",
+    "application/src/test/resources/plugin/plugin-0.0.1/extensions/reverseProxy.yaml",
+    "cli-tool/components/skills/ai-research/loki-mode/benchmarks/submission-template/metadata.yaml",
+    "tests/nodes/inputs/plain_html_example.txt",
+    "sr_proxy_banad.conf",
+]
+
+_LEGIT_SUBSCRIPTION_PATHS = [
+    "clash.yaml", "clash.yml", "v2ray.yaml", "subscribe.yaml", "subscription.yml",
+    "nodes.txt", "node.txt", "free.yaml", "proxy.yaml", "proxy.yml",
+    "sub/sub.yaml", "nodes/free.yaml", "my-clash-config.yaml",
+    "free-v2ray-list.txt", "airport-nodes.yaml",
+]
+
+
+def test_candidate_excludes_all_28_confirmed_mismatches():
+    selected = [p for p in _CONFIRMED_MISMATCH_PATHS if fc._is_subscription_path(p)]
+    assert selected == [], f"these confirmed mis-matches were still selected: {selected}"
+
+
+def test_candidate_includes_legitimate_subscription_paths():
+    rejected = [p for p in _LEGIT_SUBSCRIPTION_PATHS if not fc._is_subscription_path(p)]
+    assert rejected == [], f"these legit subscription paths were wrongly excluded: {rejected}"
+
+
+def test_candidate_extension_allowlist_matches_original_config():
+    # Allowed extensions (unchanged from pre-fix EXTENSIONS) with a keyword basename.
+    for p in ["clash.yaml", "clash.yml", "free.txt", "proxy.conf", "sub.base64", "clash.base64"]:
+        assert fc._is_subscription_path(p), f"allowed extension wrongly rejected: {p}"
+    # Disallowed extensions must be rejected even when a keyword is present.
+    for p in ["clash.json", "proxy.md", "list.yml", "readme.md", "main.py", "lib.rs", "image.png"]:
+        assert not fc._is_subscription_path(p), f"disallowed extension wrongly accepted: {p}"
+
+
+def test_candidate_files_basename_not_path_and_respects_count_limit(monkeypatch):
+    cfg = {"max_candidate_files_per_repo": 4}
+    disc = fc.GitHubDiscovery("tok", cfg)
+    tree = {"tree": [
+        # legit subscription files (basename keyword) -> must be selected
+        {"path": "clash.yaml", "type": "blob"},
+        {"path": "subscribe.yaml", "type": "blob"},
+        {"path": "free.txt", "type": "blob"},
+        {"path": "nodes.yml", "type": "blob"},
+        {"path": "proxy.conf", "type": "blob"},
+        {"path": "extra-sub.yaml", "type": "blob"},  # 6th legit -> beyond limit
+        # client-software / unrelated collateral -> must be excluded
+        {"path": "crates/clash-verge-i18n/locales/zh.yml", "type": "blob"},
+        {"path": ".github/workflows/sandbox-network-proxy-image.yaml", "type": "blob"},
+        {"path": "sr_proxy_banad.conf", "type": "blob"},
+        {"path": "tests/nodes/inputs/plain_html_example.txt", "type": "blob"},
+        # non-blob / wrong extension
+        {"path": "README.md", "type": "blob"},
+        {"path": "lib/clash.rs", "type": "blob"},
+        {"path": "notes.json", "type": "blob"},
+        {"path": "dir", "type": "tree"},
+    ]}
+    monkeypatch.setattr(disc, "_get_json", lambda *a, **k: tree)
+    repo = {"full_name": "owner/repo", "default_branch": "main"}
+    out = disc.candidate_files(repo)
+    # count limit respected (only 4 of the 6 legit kept)
+    assert len(out) == 4, f"expected <=4 candidates, got {out}"
+    # no mis-match / non-subscription file slipped through
+    assert all(fc._is_subscription_path(p) for p in out), f"unexpected candidate: {out}"
+    assert "crates/clash-verge-i18n/locales/zh.yml" not in out
+    assert "sr_proxy_banad.conf" not in out
+    assert "README.md" not in out
+
+
+# The 4 real free-subscription files confirmed by the 2026-10-21 12-query
+# execution audit (Fine-clash-search-audit-12queries-2026-10-21.md §2). They
+# must be selected by the candidate logic so the discovery pipeline can parse
+# them into usable nodes.
+_AUDIT_VALID_SOURCE_PATHS = [
+    "update/2210/v2ray.txt",                                  # mahdibland/V2RayAggregator
+    "subscribe/v2ray.txt",                                    # ermaozi/get_subscribe
+    "Export/Clash/GLOBAL/BLACK_VLESS_RUS_clash_global.yaml",  # igareck/vpn-configs-for-russia
+    "combine/v2ray.config.txt",                               # VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy
+]
+
+
+def test_candidate_includes_audit_valid_source_paths():
+    rejected = [p for p in _AUDIT_VALID_SOURCE_PATHS if not fc._is_subscription_path(p)]
+    assert rejected == [], f"audit-valid source files wrongly excluded: {rejected}"
+
+
+def test_search_queries_keep_only_q3_q7_q8_with_exclusions():
+    import yaml
+    cfg_path = Path(__file__).resolve().parent.parent / "config.yaml"
+    cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+    queries = cfg["sources"]["queries"]
+    # Only the 3 queries that produced all 4 valid sources survive.
+    assert len(queries) == 3, f"expected 3 queries, got {len(queries)}: {queries}"
+    kept = ["clash订阅", "v2ray free", "v2ray subscription"]
+    deleted = ["免费节点", "免费订阅", "机场订阅", "节点订阅",
+               "free proxy", "proxy pool", "sub link", "US proxy nodes",
+               "residential proxy"]
+    for q in queries:
+        assert sum(q.count(k) for k in kept) >= 1, f"query missing a kept signal: {q}"
+        for d in deleted:
+            assert d not in q, f"deleted query signal still present: {q}"
+        # Exclusions are config-driven (exclude_repos), never inlined, to stay
+        # within GitHub's 256-char search-query limit.
+        assert "-repo:" not in q, f"inline -repo: would exceed 256-char limit: {q}"
+    # The 11 confirmed client-software / panel repos are excluded post-search.
+    excluded = cfg["sources"]["exclude_repos"]
+    expected = [
+        "clash-verge-rev/clash-verge-rev", "hiddify/Hiddify-Manager",
+        "hiddify/hiddify-app", "KaringX/clashmi", "mihomo-party-org/clash-party",
+        "nelvko/clashctl", "sub-store-org/Sub-Store",
+        "Johnshall/Shadowrocket-ADBlock-Rules-Forever", "githubvpn007/v2rayNvpn",
+        "dongyubin/Free-AppleId-Serve", "DiningFactory/panda-vpn-pro",
+    ]
+    assert sorted(excluded) == sorted(expected), f"exclude_repos mismatch: {excluded}"
+
+
+def test_search_repositories_excludes_configured_repos(monkeypatch):
+    cfg = {"recent_days": 14, "require_recent_push": False, "queries": ["x"],
+           "repositories_per_query": 20, "max_repositories": 80, "min_stars": 0,
+           "max_candidate_files_per_repo": 6, "max_source_bytes": 8000000,
+           "min_nodes_per_source": 2, "exclude_repos": ["bad/client"]}
+    disc = fc.GitHubDiscovery("tok", cfg)
+    def fake_json(*a, **k):
+        return {"items": [
+            {"full_name": "bad/client", "stargazers_count": 9999, "default_branch": "main"},
+            {"full_name": "good/source", "stargazers_count": 50, "default_branch": "main"},
+        ]}
+    monkeypatch.setattr(disc, "_get_json", fake_json)
+    out = disc.search_repositories()
+    names = [r["full_name"] for r in out]
+    assert "bad/client" not in names, "excluded repo leaked into results"
+    assert "good/source" in names, "legit repo wrongly dropped"
+    assert disc.meta["repos_found"] == 2
+    assert disc.meta["repos_excluded"] == 1
+
+
+def test_empty_successful_discovery_preserves_published_config(monkeypatch, tmp_path):
+    # Simulate a definitive search that matched nothing valid: search_succeeded
+    # True but zero sources. The discovery cache may legitimately refresh to [],
+    # but the in-use published profile (live_clash.yaml) MUST NOT be overwritten.
+    source_path = _patch_run(monkeypatch, tmp_path,
+                             ([], {"search_succeeded": True, "failure_type": None}))
+    published = tmp_path / "live_clash.yaml"
+    published.write_text("proxies: []\n", encoding="utf-8")  # existing published config
+    with pytest.raises(RuntimeError):
+        fc.run()
+    # Discovery cache refreshed (known, by-design behaviour).
+    assert json.loads(source_path.read_text(encoding="utf-8")) == []
+    # Published config untouched — zero valid sources does not blank it.
+    assert published.read_text(encoding="utf-8") == "proxies: []\n"

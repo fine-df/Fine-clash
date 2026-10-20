@@ -1,6 +1,6 @@
 sources:
   recent_days: 14
-  min_stars: 100
+  min_stars: 30
   require_recent_push: true
   repositories_per_query: 20
   max_repositories: 80
@@ -8,27 +8,42 @@ sources:
   max_candidate_files_per_repo: 6
   max_source_bytes: 8000000
   min_nodes_per_source: 2
-  # 源头约束（2026-10-06）：
-  #  - 主源 = GitHub 高星高质量仓库搜索（stars>=100 兜底质量，require_recent_push 保活跃）。
-  #  - 专项加强美国非机房（residential/ISP）节点：下方 US/American/USA/residential 类查询。
+  # 源头约束（2026-10-06 / 2026-10-20 / 2026-10-21 重聚焦）：
+  #  - 主源 = GitHub 仓库搜索。原 query 用 clash/v2ray 等「客户端软件名」命中 284 个
+  #    仓库全部是客户端软件（clash-verge/v2rayN/FlClash/Shadowrocket…），零真实订阅。
+  #  - 2026-10-20 改为「节点提供方信号」(免费节点/机场订阅/clash订阅/proxy pool…)，
+  #    并下调 min_stars 到 30——免费节点仓库星级普遍偏低，100 会把它们全过滤掉。
+  #  - 2026-10-21 只读执行审计（Fine-clash-search-audit-12queries-2026-10-21.md）：
+  #    12 条新查询共找到 4 个真实免费订阅源，但 **9 条（Q0/Q1/Q2/Q4/Q5/Q6/Q9/Q10/Q11）
+  #    有效源数=0**，整体 precision≈3%。故删除该 9 条，仅保留产出全部 4 源的
+  #    Q3(clash订阅)/Q7(v2ray free)/Q8(v2ray subscription)。
+  #  - 高星客户端仓库稀释：审计 §1.2 确认 11 个客户端/面板仓库（clash-verge-rev、
+  #    Hiddify、clashmi、clash-party、clashctl、Sub-Store、Shadowrocket 规则、
+  #    v2rayNvpn、Free-AppleId-Serve、panda-vpn-pro 等）被星标排序全文搜索带回。
+  #    这些非订阅源，由下方 exclude_repos（代码侧 post-search 过滤）剔除——不以内联
+  #    `-repo:` 写进查询（GitHub 搜索 q 限长 256 字符，11 个排除会超限），也不靠猜测
+  #    添加关键词或扩大搜索范围。
+  #  - 候选文件再经 fine_clash._is_subscription_path 内容形态过滤（见模块常量）。
   #  - 排除付费订阅：direct_urls / curated_nodes_file 禁止填入任何付费机场。
   #  - 非 GIT 免费高质量订阅源可扩展进 direct_urls（须先验证稳定性，不填付费）。
   queries:
-    - 'clash subscription in:name,description,readme archived:false stars:>=100'
-    - 'clash config in:name,description,readme archived:false stars:>=100'
-    - 'v2ray subscription in:name,description,readme archived:false stars:>=100'
-    - 'v2ray config in:name,description,readme archived:false stars:>=100'
-    - 'proxy subscription in:name,description,readme archived:false stars:>=100'
-    - '节点订阅 in:name,description,readme archived:false stars:>=100'
-    - '机场 in:name,description,readme archived:false stars:>=100'
-    - 'topic:clash archived:false stars:>=100'
-    - 'topic:v2ray archived:false stars:>=100'
-    - 'topic:proxy archived:false stars:>=100'
-    - 'US proxy in:name,description,readme archived:false stars:>=50'
-    - 'USA v2ray nodes in:name,description,readme archived:false stars:>=50'
-    - 'American residential proxy in:name,description,readme archived:false stars:>=50'
-    - 'United States proxy nodes in:name,description,readme archived:false stars:>=50'
-    - 'residential proxy in:name,description,readme archived:false stars:>=50'
+    - 'clash订阅 in:name,description,readme archived:false stars:>=20'
+    - 'v2ray free in:name,description,readme archived:false stars:>=20'
+    - 'v2ray subscription in:name,description,readme archived:false stars:>=20'
+  # 审计 §1.2 确认的高星客户端/面板仓库（full_name），post-search 剔除，减少稀释。
+  # 证据来源：Fine-clash-search-audit-12queries-2026-10-21.md §1.2。
+  exclude_repos:
+    - 'clash-verge-rev/clash-verge-rev'
+    - 'hiddify/Hiddify-Manager'
+    - 'hiddify/hiddify-app'
+    - 'KaringX/clashmi'
+    - 'mihomo-party-org/clash-party'
+    - 'nelvko/clashctl'
+    - 'sub-store-org/Sub-Store'
+    - 'Johnshall/Shadowrocket-ADBlock-Rules-Forever'
+    - 'githubvpn007/v2rayNvpn'
+    - 'dongyubin/Free-AppleId-Serve'
+    - 'DiningFactory/panda-vpn-pro'
 # 非 GIT 免费高质量订阅源可在此扩展（验证稳定性后补充）；禁止付费机场。
 direct_urls: []
 # 手工筛选的稳定节点文件（免费源）；禁止付费。

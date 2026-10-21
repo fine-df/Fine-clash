@@ -5,10 +5,20 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 import yaml
-from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names
+from fine_clash import fingerprint, mihomo_node_is_testable, resolved_server_is_safe, unique_node_names, detect_network_context
 
 OUT = Path("live_clash.yaml")
 SRC = Path("data/fine_pool.yaml")
+CFG = Path("config.yaml")
+
+def load_publish_cfg():
+    """Read publish.require_china_verified (default True) from config.yaml."""
+    try:
+        cfg = yaml.safe_load(CFG.read_text(encoding="utf-8")) or {}
+    except Exception:
+        cfg = {}
+    pub = cfg.get("publish") or {}
+    return bool(pub.get("require_china_verified", True))
 
 VIDEO_DOMAINS=["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
 STORE_DOMAINS=["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
@@ -80,6 +90,21 @@ def build_config(fine_nodes):
     }
 
 def main():
+    # China-verified publish gate (2026-10-21): the published profile is consumed
+    # by four clients inside China. It may only be regenerated from a China-network
+    # run, where the pipeline tunnels live traffic THROUGH each node (so a passing
+    # node genuinely bypasses the GFW). A foreign run (e.g. the US CI runner) only
+    # proves the node is reachable from abroad and must NOT overwrite the
+    # China-verified profile. detect_network_context() probes Google 204 directly
+    # (bypassing any local proxy) to decide which side of the GFW we are on.
+    require_cn = load_publish_cfg()
+    ctx = detect_network_context()
+    is_china = bool(ctx.get("is_china_network"))
+    if require_cn and not is_china:
+        print("china_gate: SKIP — this run is NOT behind the GFW (foreign network). "
+              "Refusing to overwrite the China-verified live_clash.yaml.")
+        print(f"china_gate: direct_google_ok={ctx.get('direct_google_ok')} error={ctx.get('error')}")
+        return
     config=build_config(load_fine_nodes())
     dumped=yaml.safe_dump(config,allow_unicode=True,sort_keys=False,default_flow_style=False)
     previous_version=0
@@ -89,8 +114,9 @@ def main():
             if m: previous_version=int(m.group(1))
         except OSError: pass
     version=str(previous_version+1) if previous_version else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    header=f"# fine-clash-unified-v3 | fine-clash-version:{version} | Fine=validated-pool | CN->DIRECT | MATCH->Fine\n"
+    china_tag = " | china-verified:true" if is_china else ""
+    header=f"# fine-clash-unified-v3 | fine-clash-version:{version} | Fine=validated-pool | CN->DIRECT | MATCH->Fine{china_tag}\n"
     OUT.write_text(header+dumped,encoding="utf-8")
-    print(f"written {OUT}: Fine={len(config['proxies'])} validated nodes; rules={len(config['rules'])}")
+    print(f"written {OUT}: Fine={len(config['proxies'])} validated nodes; rules={len(config['rules'])}; china_verified={is_china}")
 
 if __name__=="__main__": main()

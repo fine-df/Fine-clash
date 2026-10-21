@@ -1,12 +1,20 @@
 name: Fine-Clash update
 # Push-triggered CI is intentional: production code changes must self-validate before publication.
+#
+# IMPORTANT (2026-10-21): the published `live_clash.yaml` is consumed by four clients
+# INSIDE China, so it must only be (re)generated from a China-network run. The pipeline
+# tunnels live traffic through each node, so a passing node genuinely bypasses the GFW
+# only when run from China. The US CI runner cannot verify China reachability, so the
+# code gate in build_final.py refuses to overwrite the China-verified profile from any
+# foreign network. Therefore periodic auto-refresh from the US runner was removed:
+# updates MUST run from a China-network machine (e.g. the local PC running the pipeline
+# + `git push`, or a China self-hosted runner). CI still runs on push/dispatch to
+# validate code and the committed profile (`mihomo -t`).
 
 on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:
 
 permissions:

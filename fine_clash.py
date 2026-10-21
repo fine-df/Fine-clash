@@ -1058,6 +1058,34 @@ def decide_publish(selected_len, nodes_rules):
     pool, a sub-floor pool, or a failed build result."""
     return selected_len >= int(nodes_rules.get("min_final_nodes", 1))
 
+def detect_network_context(timeout=6):
+    """Detect whether this run executes behind the GFW (i.e. on a China network).
+
+    The published `live_clash.yaml` is consumed by four clients inside China, so it
+    must only be regenerated from a China-network run. From behind the GFW, the
+    pipeline tunnels live traffic (Google/Gemini) THROUGH each candidate node, so a
+    node that passes `real_proxy_ok` genuinely bypasses the GFW. A foreign run (e.g.
+    the US CI runner) only proves the node is reachable FROM abroad and must NOT
+    overwrite the China-verified profile.
+
+    Heuristic: a GFW-blocked destination (Google 204) is UNreachable directly from
+    China but normally reachable from foreign networks. We probe with the proxy
+    EXPLICITLY disabled so we measure the raw egress, not any local proxy that may
+    be set in the environment.
+
+    Returns a dict:
+        {"is_china_network": bool, "direct_google_ok": bool, "error": str|None}
+    """
+    url = "https://www.google.com/generate_204"
+    direct = {"http": None, "https": None}
+    try:
+        r = requests.get(url, timeout=timeout, proxies=direct, headers={"User-Agent": UA})
+        # Any 2xx/3xx means Google is directly reachable -> not behind the GFW.
+        return {"is_china_network": False, "direct_google_ok": True, "error": None}
+    except Exception as e:
+        # DNS failure / connection reset / timeout -> very likely behind the GFW.
+        return {"is_china_network": True, "direct_google_ok": False, "error": f"{type(e).__name__}: {e}"}
+
 def run():
     rules=load_rules()
     source_path=ROOT/rules["output"]["source_file"]
@@ -1202,6 +1230,14 @@ def run():
     if not binary: raise RuntimeError("mihomo binary not found")
     checks=rules["checks"]; tester_cfg={**rules["nodes"],"challenge_markers":checks["challenge_markers"],"success_statuses":checks["success_statuses"]}; history=load_history(history_path); selected=[]
     report={"generated_at":datetime.now(timezone.utc).isoformat(),"sources":len(sources),"nodes_discovered":len(nodes),"previous_profile_candidates":len(previous_profile_nodes),"results":[],"source_discovery":discovery_meta,"source_history_total":len(history_sources),"max_proxy_latency_ms":int(rules["nodes"].get("max_proxy_latency_ms",0) or 0)}
+    # China-network context (2026-10-21): record where this run executed so every
+    # run leaves an auditable trail of whether it was qualified to publish the
+    # China-facing profile. The gate itself lives in build_final.py (artifact
+    # writer); here we only observe and record.
+    _require_cn = bool((rules.get("publish") or {}).get("require_china_verified", True))
+    _ctx = detect_network_context()
+    report["network_context"] = _ctx
+    report["china_verified"] = (not _require_cn) or bool(_ctx.get("is_china_network"))
     report_lookup={}
     candidate_records=[]
 

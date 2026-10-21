@@ -50,7 +50,7 @@ direct_urls: []
 curated_nodes_file: ''
 nodes:
   allowed_types: [vmess, vless, trojan, ss]
-  max_test_nodes: 200
+  max_test_nodes: 1500
   min_final_nodes: 3  # ★ F4 (2026-10-20): 抬高地板，杜绝“仅剩 1 节点仍覆盖发布”（原值 1 = 无质量保护）
   max_final_nodes: 20
   max_per_server: 2
@@ -60,7 +60,12 @@ nodes:
   test_timeout_seconds: 8
   controller_startup_seconds: 1.5
   switch_wait_seconds: 0.5
-  candidate_gate: 'gemini_or_play'
+  # 2026-10-21 调整为 'reachable'（纯免费路线下更务实）：免费节点本就稀少，
+  # 要求 gemini/play 双达过于苛刻（即便节点能通外网也常被 Google 服务限流判死）。
+  # 'reachable' = 能通 google204 即算候选，配合 real_proxy_ok + 延迟门槛即可保证
+  # 发布的是「真能出网」的节点；路由层仍把 youtube/play/google 走 Fine 组。
+  # 若想更保守可改回 'gemini_or_play'（需显式授权）。
+  candidate_gate: 'reachable'
   score_threshold: 70
   min_clean_score: 65
   # 真实代理延迟硬门槛（2026-10-20）：real_proxy_ok 只证“能转发”，但 3.3s 的节点实质
@@ -115,3 +120,11 @@ output:
   source_file: 'data/sources.json'
   source_history_file: 'data/source_history.json'
   report_file: 'data/last_run.json'
+# 发布闸门（2026-10-21）：live_clash.yaml 是四端共用的对外订阅（经 jsDelivr 分发），
+# 必须只在「从中国网络执行」时重写/发布。原因：管线把流量经节点隧道通往 Google/Gemini，
+# 仅当运行在中国网络时，real_proxy_ok 通过才真正代表「节点能翻墙、国内可达」。
+# 美国 runner 跑时即便节点测试通过也只是「美国可达」，发布出去国内连不上。
+# 故设为 true 时，非中国网络的运行（含美国 CI）一律拒绝改写已验证的中国配置。
+# 设为 false 退回旧行为（任何网络都发布，不推荐）。
+publish:
+  require_china_verified: true

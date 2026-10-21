@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261015070028 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261015070029 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,207 +10,215 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- port: 2053
+- flow: xtls-rprx-vision
   servername: www.rutube.ru
-  tls: true
   uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
-  client-fingerprint: safari
-  type: vless
-  network: tcp
-  udp: true
-  encryption: none
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
-    short-id: c46d735d6444850f
   name: 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
-  server: 9.247.34.118
-- port: 2053
-  servername: www.rutube.ru
-  tls: true
-  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
-  client-fingerprint: firefox
-  type: vless
-  network: tcp
-  udp: true
-  encryption: none
-  flow: xtls-rprx-vision
   reality-opts:
     public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
     short-id: c46d735d6444850f
-  name: 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
+  network: tcp
   server: 9.247.34.118
-- type: vless
-  name: برای
-  server: 139.162.27.96
-  port: 2096
-  udp: true
-  uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
-  encryption: none
+  type: vless
   tls: true
-  servername: free-server.techsonic.dev
-  network: ws
+  udp: true
+  encryption: none
+  client-fingerprint: safari
+  port: 2053
+- flow: xtls-rprx-vision
+  servername: www.rutube.ru
+  uuid: fbbfebf3-dfc9-49cb-b5e5-06c99ef3d504
+  name: 🇳🇱 The Netherlands | [SNI-RU] www.rutube.ru
+  reality-opts:
+    public-key: 1kaGIHz5N3-UTemrcJIP6vGD6aEbTcAmxedDv2VTcSA
+    short-id: c46d735d6444850f
+  network: tcp
+  server: 9.247.34.118
+  type: vless
+  tls: true
+  udp: true
+  encryption: none
+  client-fingerprint: firefox
+  port: 2053
+- servername: free-server.techsonic.dev
+  uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
+  name: برای
   ws-opts:
     path: /free-server.techsonic.dev
     headers:
       Host: free-server.techsonic.dev
-- port: 443
-  servername: server13.9966338.xyz
-  tls: true
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-  type: vless
   network: ws
+  server: 139.162.27.96
+  type: vless
+  tls: true
+  udp: true
+  encryption: none
+  port: 2096
+- servername: server13.9966338.xyz
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  name: 🇳🇱[www.v2nodes.com] vless-NL-1... [c73b0a9843571782]
   ws-opts:
     headers:
       Host: server13.9966338.xyz
     path: /resiouhgggggggggg?ed=2560fp=chrome
-  name: 🇳🇱[www.v2nodes.com] vless-NL-1... [c73b0a9843571782]
-  server: uk1-2.998998.best
-- port: 80
-  servername: platform102.golnamakcert.top
-  tls: false
-  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
-  type: vless
   network: ws
+  server: uk1-2.998998.best
+  type: vless
+  tls: true
+  port: 443
+- servername: platform102.golnamakcert.top
+  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
+  name: '🇵🇭[www.v2nodes.com] vless-PH-1... #3 [b2d8daabbe495843]'
   ws-opts:
     headers:
       Host: platform102.halalkhor.info
     path: /platform102
-  name: '🇵🇭[www.v2nodes.com] vless-PH-1... #3 [b2d8daabbe495843]'
-  server: platform102.golnamakcert.top
-- port: 80
-  servername: platform113.halalkhor.info
-  tls: false
-  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
-  type: vless
   network: ws
+  server: platform102.golnamakcert.top
+  type: vless
+  tls: false
+  port: 80
+- servername: platform113.halalkhor.info
+  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
+  name: '🇯🇵[www.v2nodes.com] vless-JP-1... #5 [151889d1be08d35b]'
   ws-opts:
     headers:
       Host: platform113.halalkhor.info
     path: /platform113
-  name: '🇯🇵[www.v2nodes.com] vless-JP-1... #5 [151889d1be08d35b]'
+  network: ws
   server: platform113.golnamakcert.top
-- port: 445
+  type: vless
+  tls: false
+  port: 80
+- server: 51.222.141.125
+  port: 445
+  name: 🇨🇦CA-51.222.141.125-0196
+  cipher: aes-256-gcm
   password: zDNVedRFPQexG9v
   type: ss
+- server: 139.180.220.175
+  port: 8388
+  name: 🇸🇬SG-139.180.220.175-0418
   cipher: aes-256-gcm
-  name: 🇨🇦CA-51.222.141.125-0196
-  server: 51.222.141.125
-- port: 8388
   password: qpSevKaUXYQKvSjp
   type: ss
-  cipher: aes-256-gcm
-  name: 🇸🇬SG-139.180.220.175-0418
-  server: 139.180.220.175
-- port: 14430
-  servername: 193.188.21.253
-  tls: false
+- servername: 193.188.21.253
   uuid: 57f7772d-f5d6-4d8f-992d-5fa5e0d6da55
-  type: vless
-  network: ws
+  name: '🇸🇪[www.v2nodes.com] vless-SE-1... #2 [4e3579d8ae395bb5]'
   ws-opts:
     headers:
       Host: 193.188.21.253
     path: /vless
-  name: '🇸🇪[www.v2nodes.com] vless-SE-1... #2 [4e3579d8ae395bb5]'
+  network: ws
   server: 193.188.21.253
-- port: 5000
+  type: vless
+  tls: false
+  port: 14430
+- server: 51.222.200.165
+  port: 5000
+  name: 🇨🇦CA-51.222.200.165-0154
+  cipher: aes-256-gcm
   password: Y6R9pAtvxxzmGC
   type: ss
-  cipher: aes-256-gcm
-  name: 🇨🇦CA-51.222.200.165-0154
-  server: 51.222.200.165
-- port: 80
-  servername: platform109.halalkhor.info
-  tls: false
+- servername: platform109.halalkhor.info
   uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
-  type: vless
-  network: ws
-  udp: true
+  name: US_speednode_0022 [671f16e91048fccc]
   ws-opts:
     headers:
       Host: platform109.halalkhor.info
     path: /platform109
-  name: US_speednode_0022 [671f16e91048fccc]
-  server: platform109.golnamakcert.top
-- port: 14430
-  servername: 5.178.109.174
-  tls: false
-  uuid: 80de563a-cac8-40ea-8cb0-4cb082dd92f9
-  type: vless
   network: ws
+  server: platform109.golnamakcert.top
+  type: vless
+  tls: false
+  udp: true
+  port: 80
+- servername: 5.178.109.174
+  uuid: 80de563a-cac8-40ea-8cb0-4cb082dd92f9
+  name: '🏳[www.v2nodes.com] vless- #24 [a4dca0d7b54752e6]'
   ws-opts:
     headers:
       Host: 5.178.109.174
     path: /vless
-  name: '🏳[www.v2nodes.com] vless- #24 [a4dca0d7b54752e6]'
+  network: ws
   server: 5.178.109.174
-- port: 443
-  password: shadowsocks
-  type: ss
-  cipher: aes-128-gcm
-  name: 🇬🇧GB-158.173.24.73-0103
-  server: 158.173.24.73
-- type: vless
+  type: vless
+  tls: false
+  port: 14430
+- uuid: c08f0056-7a6d-4931-813b-aaa3cdd00aed
   name: 🇬🇧
-  server: node-uk.connectsuite.org
-  port: 8443
-  udp: true
-  uuid: c08f0056-7a6d-4931-813b-aaa3cdd00aed
-  encryption: none
-  tls: true
-  client-fingerprint: chrome
   network: tcp
-- port: 19999
+  server: node-uk.connectsuite.org
+  type: vless
+  tls: true
+  udp: true
+  encryption: none
+  client-fingerprint: chrome
+  port: 8443
+- server: 185.164.175.81
+  port: 19999
+  name: 🇺🇦UA-185.164.175.81-0063
+  cipher: aes-256-gcm
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   type: ss
+- server: 191.223.221.53
+  port: 8388
+  name: 🇯🇵JP-191.223.221.53-0143
   cipher: aes-256-gcm
-  name: 🇺🇦UA-185.164.175.81-0063
-  server: 185.164.175.81
-- port: 11907
-  tls: true
-  uuid: 07cb07b9-0c4d-46c1-a15a-b147511b6b07
-  client-fingerprint: chrome
-  type: vless
-  network: tcp
-  encryption: none
-  name: '🏳[www.v2nodes.com] vless- #13 [1d5618c5e4640700]'
-  server: 195.58.144.56
-- port: 8388
   password: JuD6MNgtX3nVpCzFzXYVYjDTZ7nsmaTv
   type: ss
-  cipher: aes-256-gcm
-  name: 🇯🇵JP-191.223.221.53-0143
-  server: 191.223.221.53
-- port: 80
-  tls: false
-  uuid: 3c52e091-6714-4915-949f-2149fe69951b
-  type: vless
-  network: ws
-  encryption: none
+- uuid: 3c52e091-6714-4915-949f-2149fe69951b
+  name: '🇹🇭[www.v2nodes.com] vless-TH-1... #1 [fc7dae6c9acb0e5d]'
   ws-opts:
     headers:
       Host: aIs.SpEeDtEsT.nEt
     path: /ws
-  name: '🇹🇭[www.v2nodes.com] vless-TH-1... #1 [fc7dae6c9acb0e5d]'
+  network: ws
   server: 103.86.49.57
-- port: 17001
+  type: vless
+  tls: false
+  encryption: none
+  port: 80
+- server: 67.159.18.34
+  port: 17001
+  name: 🇨🇿CZ-67.159.18.34-0139
+  cipher: aes-256-gcm
   password: I6o9NnialYLMEjVt28RF4dpjmr9wMvNL
   type: ss
-  cipher: aes-256-gcm
-  name: 🇨🇿CZ-67.159.18.34-0139
-  server: 67.159.18.34
-- port: 14430
-  tls: false
-  uuid: 59b0d30e-9b29-4fda-a35c-b2901ec32db7
-  type: vless
-  network: ws
+- uuid: 59b0d30e-9b29-4fda-a35c-b2901ec32db7
+  name: '🇫🇮[www.v2nodes.com] vless-FI-1... #3 [0279c1cf0e63067e]'
   ws-opts:
     headers:
       Host: 45.144.234.157
     path: /vless
-  name: '🇫🇮[www.v2nodes.com] vless-FI-1... #3 [0279c1cf0e63067e]'
+  network: ws
   server: 45.144.234.157
+  type: vless
+  tls: false
+  port: 14430
+- uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
+  name: '🇵🇭[www.v2nodes.com] vless-PH-1... #4 [f7eab9ee9637e067]'
+  ws-opts:
+    headers:
+      Host: platform106.halalkhor.info
+    path: /platform106
+  network: ws
+  server: platform106.golnamakcert.top
+  type: vless
+  tls: false
+  port: 80
+- servername: platform103.halalkhor.info
+  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
+  name: '🇿🇦[www.v2nodes.com] vless-ZA-1... #2 [99b95c1947db82e6]'
+  ws-opts:
+    headers:
+      Host: platform103.halalkhor.info
+    path: /platform103
+  network: ws
+  server: platform103.golnamakcert.top
+  type: vless
+  tls: false
+  port: 80
 proxy-groups:
 - name: Fine
   type: select
@@ -229,14 +237,14 @@ proxy-groups:
   - 🇨🇦CA-51.222.200.165-0154
   - US_speednode_0022 [671f16e91048fccc]
   - '🏳[www.v2nodes.com] vless- #24 [a4dca0d7b54752e6]'
-  - 🇬🇧GB-158.173.24.73-0103
   - 🇬🇧
   - 🇺🇦UA-185.164.175.81-0063
-  - '🏳[www.v2nodes.com] vless- #13 [1d5618c5e4640700]'
   - 🇯🇵JP-191.223.221.53-0143
   - '🇹🇭[www.v2nodes.com] vless-TH-1... #1 [fc7dae6c9acb0e5d]'
   - 🇨🇿CZ-67.159.18.34-0139
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #3 [0279c1cf0e63067e]'
+  - '🇵🇭[www.v2nodes.com] vless-PH-1... #4 [f7eab9ee9637e067]'
+  - '🇿🇦[www.v2nodes.com] vless-ZA-1... #2 [99b95c1947db82e6]'
   default-selected: 🇳🇱 The Netherlands [SNI-RU] www.rutube.ru
 - name: AUTO
   type: url-test
@@ -253,14 +261,14 @@ proxy-groups:
   - 🇨🇦CA-51.222.200.165-0154
   - US_speednode_0022 [671f16e91048fccc]
   - '🏳[www.v2nodes.com] vless- #24 [a4dca0d7b54752e6]'
-  - 🇬🇧GB-158.173.24.73-0103
   - 🇬🇧
   - 🇺🇦UA-185.164.175.81-0063
-  - '🏳[www.v2nodes.com] vless- #13 [1d5618c5e4640700]'
   - 🇯🇵JP-191.223.221.53-0143
   - '🇹🇭[www.v2nodes.com] vless-TH-1... #1 [fc7dae6c9acb0e5d]'
   - 🇨🇿CZ-67.159.18.34-0139
   - '🇫🇮[www.v2nodes.com] vless-FI-1... #3 [0279c1cf0e63067e]'
+  - '🇵🇭[www.v2nodes.com] vless-PH-1... #4 [f7eab9ee9637e067]'
+  - '🇿🇦[www.v2nodes.com] vless-ZA-1... #2 [99b95c1947db82e6]'
   url: https://play.google.com/store
   interval: 900
   timeout: 8000

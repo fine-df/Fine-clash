@@ -28,6 +28,11 @@ WPS_DIRECT=["DOMAIN-SUFFIX,wps.cn,DIRECT","DOMAIN-SUFFIX,wps.com,DIRECT","DOMAIN
 XIAOMI_DIRECT=["DOMAIN-SUFFIX,mi.com,DIRECT","DOMAIN-SUFFIX,xiaomi.com,DIRECT","DOMAIN-SUFFIX,miwifi.com,DIRECT","DOMAIN-SUFFIX,miui.com,DIRECT","DOMAIN-SUFFIX,mijia.com,DIRECT","DOMAIN-SUFFIX,xiaomi.cn,DIRECT"]
 LOCAL_IOT_DIRECT=["IP-CIDR,224.0.0.0/4,DIRECT,no-resolve","IP-CIDR,169.254.0.0/16,DIRECT,no-resolve"]
 PRIVATE_DIRECT=["DOMAIN-SUFFIX,lan,DIRECT","DOMAIN-SUFFIX,local,DIRECT","DOMAIN-SUFFIX,localhost,DIRECT","DOMAIN-SUFFIX,cn,DIRECT","DOMAIN-SUFFIX,com.cn,DIRECT","DOMAIN-SUFFIX,net.cn,DIRECT","DOMAIN-SUFFIX,gov.cn,DIRECT","DOMAIN-SUFFIX,edu.cn,DIRECT","IP-CIDR,10.0.0.0/8,DIRECT,no-resolve","IP-CIDR,172.16.0.0/12,DIRECT,no-resolve","IP-CIDR,192.168.0.0/16,DIRECT,no-resolve","IP-CIDR,127.0.0.0/8,DIRECT,no-resolve"]
+# 订阅分发/刷新相关域名强制直连：客户端刷新订阅（如 cdn.jsdelivr.net 上的
+# live_clash.yaml）时，若走自身弱节点代理，会因节点慢/死而卡在"更新中"或报 TLS
+# 错误。把 jsDelivr / GitHub 域直连，刷新流量走国内可达链路，订阅更新即恢复稳定。
+# 必须位于 MATCH,Fine 之前才生效。
+SUBSCRIPTION_CDN_DIRECT=["DOMAIN-SUFFIX,jsdelivr.net,DIRECT","DOMAIN-SUFFIX,github.com,DIRECT","DOMAIN-SUFFIX,raw.githubusercontent.com,DIRECT"]
 
 def _dedupe_nodes(nodes,prefix):
     out=[]; seen=set()
@@ -74,7 +79,7 @@ def build_config(fine_nodes):
     if not fine_nodes: raise ValueError("Fine pool must be non-empty")
     fine_nodes=unique_node_names(fine_nodes)
     fine_names=[n["name"] for n in fine_nodes]
-    rules=LOCAL_IOT_DIRECT+WPS_DIRECT+PRIVATE_DIRECT+OZON_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT","MATCH,Fine"]
+    rules=LOCAL_IOT_DIRECT+WPS_DIRECT+PRIVATE_DIRECT+OZON_DIRECT+WECHAT_DIRECT+XIAOMI_DIRECT+suffix_rules(VIDEO_DOMAINS,"Fine")+suffix_rules(STORE_DOMAINS,"Fine")+["GEOIP,CN,DIRECT"]+SUBSCRIPTION_CDN_DIRECT+["MATCH,Fine"]
     return {
         "mixed-port":7890,"allow-lan":True,"bind-address":"*","mode":"rule","log-level":"warning","ipv6":False,"unified-delay":False,"tcp-concurrent":True,
         "profile":{"store-selected":True},

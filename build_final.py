@@ -72,7 +72,7 @@ def build_proxy_groups(fine_names):
     primary=fine_names[0]
     return [
         {"name":"Fine","type":"select","proxies":["AUTO","DIRECT"]+fine_names,"default-selected":primary},
-        {"name":"AUTO","type":"url-test","proxies":fine_names,"url":"https://play.google.com/store","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
+        {"name":"AUTO","type":"url-test","proxies":fine_names,"url":"https://gemini.google.com/","interval":900,"timeout":8000,"tolerance":250,"lazy":False,"hidden":True},
     ]
 
 def build_config(fine_nodes):

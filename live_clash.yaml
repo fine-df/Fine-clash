@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261021135657 | Fine=validated-pool | CN->DIRECT | MATCH->Fine | china-verified:true
+# fine-clash-unified-v3 | fine-clash-version:20261021141319 | Fine=validated-pool | CN->DIRECT | MATCH->Fine | china-verified:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -80,7 +80,7 @@ proxy-groups:
   - 🇩🇪 德国 | DEU 6 [48b8ab93781f592e]
   - 🇫🇮FI_2|3.8MB/s [4ba80ebea216eb92]
   - 🇮🇹IT-202.50.253.27-0390
-  url: https://play.google.com/store
+  url: https://gemini.google.com/
   interval: 900
   timeout: 8000
   tolerance: 250

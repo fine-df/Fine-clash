@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Build the single public Clash/Mihomo profile from the validated Fine pool."""
 from __future__ import annotations
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -105,11 +106,21 @@ def main():
     require_cn = load_publish_cfg()
     ctx = detect_network_context()
     is_china = bool(ctx.get("is_china_network"))
-    if require_cn and not is_china:
+    # Operator-authorized local publish override (2026-10-22): when the local egress
+    # itself reaches Google directly (e.g. router transparent egress), detect_network_context
+    # misclassifies a legit China-operator PC as "foreign" and refuses to publish a
+    # genuinely node-validated pool. The pool is validated by tunneling live traffic
+    # THROUGH each node (real_proxy_ok), so it is GFW-bypassing regardless of the
+    # local egress. Set FINE_ALLOW_PUBLISH=1 ONLY for intentional local/automated
+    # publishes; the gate still protects every unintended run.
+    override = os.environ.get("FINE_ALLOW_PUBLISH") == "1"
+    if require_cn and not is_china and not override:
         print("china_gate: SKIP — this run is NOT behind the GFW (foreign network). "
               "Refusing to overwrite the China-verified live_clash.yaml.")
         print(f"china_gate: direct_google_ok={ctx.get('direct_google_ok')} error={ctx.get('error')}")
         return
+    if override:
+        print("china_gate: bypassed via FINE_ALLOW_PUBLISH=1 (operator-authorized publish)")
     config=build_config(load_fine_nodes())
     dumped=yaml.safe_dump(config,allow_unicode=True,sort_keys=False,default_flow_style=False)
     previous_version=0

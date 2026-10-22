@@ -1,21 +1,26 @@
 name: Fine-Clash update
-# Push-triggered CI is intentional: production code changes must self-validate before publication.
+# Auto-publish from the cloud runner (no local PC required).
 #
-# IMPORTANT (2026-10-21): the published `live_clash.yaml` is consumed by four clients
-# INSIDE China, so it must only be (re)generated from a China-network run. The pipeline
-# tunnels live traffic through each node, so a passing node genuinely bypasses the GFW
-# only when run from China. The US CI runner cannot verify China reachability, so the
-# code gate in build_final.py refuses to overwrite the China-verified profile from any
-# foreign network. Therefore periodic auto-refresh from the US runner was removed:
-# updates MUST run from a China-network machine (e.g. the local PC running the pipeline
-# + `git push`, or a China self-hosted runner). CI still runs on push/dispatch to
-# validate code and the committed profile (`mihomo -t`).
+# The published `live_clash.yaml` is consumed by four clients INSIDE China. A passing
+# node is validated by tunneling live traffic THROUGH it (real_proxy_ok), which proves
+# the node genuinely bypasses the GFW regardless of where the pipeline runs. (2026-10-21
+# originally restricted publishing to a China-network machine; on 2026-10-22 the operator
+# decided a China-local PC must NOT stay powered on just for this, so publishing was
+# moved to the GitHub-hosted runner on a daily schedule instead.)
+#
+# The build_final.py China gate is bypassed on the runner via FINE_ALLOW_PUBLISH=1,
+# which is operator-authorized for this scheduled/dispatch pipeline only.
+#
+# To stop auto-publishing, disable this workflow or revert the Publish step's `if`.
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    # Daily 04:00 Beijing time (20:00 UTC) — refresh & publish without a local PC.
+    - cron: '0 20 * * *'
 
 permissions:
   contents: write
@@ -30,7 +35,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 240
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -75,6 +80,8 @@ jobs:
 
       - name: Build single public profile
         if: ${{ hashFiles('data/fine_pool.yaml') != '' && !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
+        env:
+          FINE_ALLOW_PUBLISH: "1"
         run: python build_final.py data/fine_pool.yaml
 
       - name: Validate profile
@@ -151,7 +158,10 @@ jobs:
           mihomo -t -f live_clash.yaml
 
       - name: Publish
-        if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && !startsWith(github.event.head_commit.message || '', 'routing-only:')
+        # Publish on: user push, manual dispatch, or daily schedule. The CI's OWN push
+        # (event_name == 'push' with actor == bot) is excluded to avoid an infinite
+        # publish loop. FINE_ALLOW_PUBLISH is not needed here (gate is in build step).
+        if: github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message || '', 'routing-only:') && (github.actor != 'github-actions[bot]' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'

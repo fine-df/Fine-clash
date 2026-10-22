@@ -39,10 +39,172 @@
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/BLACK_VLESS_RUS_clash_global.yaml",
     "repo": "igareck/vpn-configs-for-russia",
     "path": "Export/Clash/GLOBAL/BLACK_VLESS_RUS_clash_global.yaml",
-    "stars": 9294,
-    "forks": 457,
-    "pushed_at": "2026-10-22T03:08:05Z",
-    "nodes": 95
+    "stars": 9295,
+    "forks": 458,
+    "pushed_at": "2026-10-22T07:07:18Z",
+    "nodes": 112
+  },
+  {
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/BLACK_SS%2BAll_RUS_clash_global.yaml",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/Clash/GLOBAL/BLACK_SS+All_RUS_clash_global.yaml",
+    "stars": 9295,
+    "forks": 458,
+    "pushed_at": "2026-10-22T07:07:18Z",
+    "nodes": 62
+  },
+  {
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/WHITE-CIDR-RU-all-clash-global.yaml",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/Clash/GLOBAL/WHITE-CIDR-RU-all-clash-global.yaml",
+    "stars": 9295,
+    "forks": 458,
+    "pushed_at": "2026-10-22T07:07:18Z",
+    "nodes": 152
+  },
+  {
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/RU_DIRECT/BLACK_VLESS_RUS_clash_rudirect.yaml",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/Clash/RU_DIRECT/BLACK_VLESS_RUS_clash_rudirect.yaml",
+    "stars": 9295,
+    "forks": 458,
+    "pushed_at": "2026-10-22T07:07:18Z",
+    "nodes": 112
+  },
+  {
+    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/RU_DIRECT/BLACK_SS%2BAll_RUS_clash_rudirect.yaml",
+    "repo": "igareck/vpn-configs-for-russia",
+    "path": "Export/Clash/RU_DIRECT/BLACK_SS+All_RUS_clash_rudirect.yaml",
+    "stars": 9295,
+    "forks": 458,
+    "pushed_at": "2026-10-22T07:07:18Z",
+    "nodes": 62
+  },
+  {
+    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes.yml",
+    "repo": "chengaopan/AutoMergePublicNodes",
+    "path": "snippets/nodes.yml",
+    "stars": 8258,
+    "forks": 1261,
+    "pushed_at": "2026-10-22T05:00:06Z",
+    "nodes": 123
+  },
+  {
+    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_US.yml",
+    "repo": "chengaopan/AutoMergePublicNodes",
+    "path": "snippets/nodes_US.yml",
+    "stars": 8258,
+    "forks": 1261,
+    "pushed_at": "2026-10-22T05:00:06Z",
+    "nodes": 18
+  },
+  {
+    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_SG.yml",
+    "repo": "chengaopan/AutoMergePublicNodes",
+    "path": "snippets/nodes_SG.yml",
+    "stars": 8258,
+    "forks": 1261,
+    "pushed_at": "2026-10-22T05:00:06Z",
+    "nodes": 4
+  },
+  {
+    "url": "https://raw.githubusercontent.com/VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy/main/combine/v2ray.config.txt",
+    "repo": "VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy",
+    "path": "combine/v2ray.config.txt",
+    "stars": 5648,
+    "forks": 426,
+    "pushed_at": "2026-10-22T04:15:27Z",
+    "nodes": 858
+  },
+  {
+    "url": "https://raw.githubusercontent.com/VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy/main/combine/clash.config.yaml",
+    "repo": "VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy",
+    "path": "combine/clash.config.yaml",
+    "stars": 5648,
+    "forks": 426,
+    "pushed_at": "2026-10-22T04:15:27Z",
+    "nodes": 2471
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/update/2210/v2ray.txt",
+    "repo": "mahdibland/V2RayAggregator",
+    "path": "update/2210/v2ray.txt",
+    "stars": 4025,
+    "forks": 664,
+    "pushed_at": "2026-10-22T04:56:40Z",
+    "nodes": 73
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt",
+    "repo": "mahdibland/V2RayAggregator",
+    "path": "sub/sub_merge.txt",
+    "stars": 4025,
+    "forks": 664,
+    "pushed_at": "2026-10-22T04:56:40Z",
+    "nodes": 2184
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge_yaml.yml",
+    "repo": "mahdibland/V2RayAggregator",
+    "path": "sub/sub_merge_yaml.yml",
+    "stars": 4025,
+    "forks": 664,
+    "pushed_at": "2026-10-22T04:56:40Z",
+    "nodes": 4065
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge_base64.txt",
+    "repo": "mahdibland/V2RayAggregator",
+    "path": "sub/sub_merge_base64.txt",
+    "stars": 4025,
+    "forks": 664,
+    "pushed_at": "2026-10-22T04:56:40Z",
+    "nodes": 2184
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/airport_sub_merge.txt",
+    "repo": "mahdibland/V2RayAggregator",
+    "path": "sub/airport_sub_merge.txt",
+    "stars": 4025,
+    "forks": 664,
+    "pushed_at": "2026-10-22T04:56:40Z",
+    "nodes": 61
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
+    "repo": "Epodonios/v2ray-configs",
+    "path": "All_Configs_Sub.txt",
+    "stars": 3303,
+    "forks": 451,
+    "pushed_at": "2026-10-22T06:19:29Z",
+    "nodes": 6518
+  },
+  {
+    "url": "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_base64_Sub.txt",
+    "repo": "Epodonios/v2ray-configs",
+    "path": "All_Configs_base64_Sub.txt",
+    "stars": 3303,
+    "forks": 451,
+    "pushed_at": "2026-10-22T06:19:29Z",
+    "nodes": 6518
+  },
+  {
+    "url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_Sub.txt",
+    "repo": "barry-far/V2ray-Config",
+    "path": "All_Configs_Sub.txt",
+    "stars": 2563,
+    "forks": 417,
+    "pushed_at": "2026-10-22T07:29:17Z",
+    "nodes": 6518
+  },
+  {
+    "url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_base64_Sub.txt",
+    "repo": "barry-far/V2ray-Config",
+    "path": "All_Configs_base64_Sub.txt",
+    "stars": 2563,
+    "forks": 417,
+    "pushed_at": "2026-10-22T07:29:17Z",
+    "nodes": 6518
   },
   {
     "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/WHITE-SNI-RU-all-clash-global.yaml",
@@ -54,60 +216,6 @@
     "nodes": 4
   },
   {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/BLACK_SS%2BAll_RUS_clash_global.yaml",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/Clash/GLOBAL/BLACK_SS+All_RUS_clash_global.yaml",
-    "stars": 9294,
-    "forks": 457,
-    "pushed_at": "2026-10-22T03:08:05Z",
-    "nodes": 89
-  },
-  {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/GLOBAL/WHITE-CIDR-RU-all-clash-global.yaml",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/Clash/GLOBAL/WHITE-CIDR-RU-all-clash-global.yaml",
-    "stars": 9294,
-    "forks": 457,
-    "pushed_at": "2026-10-22T03:08:05Z",
-    "nodes": 144
-  },
-  {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/RU_DIRECT/BLACK_VLESS_RUS_clash_rudirect.yaml",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/Clash/RU_DIRECT/BLACK_VLESS_RUS_clash_rudirect.yaml",
-    "stars": 9294,
-    "forks": 457,
-    "pushed_at": "2026-10-22T03:08:05Z",
-    "nodes": 95
-  },
-  {
-    "url": "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/main/Export/Clash/RU_DIRECT/BLACK_SS%2BAll_RUS_clash_rudirect.yaml",
-    "repo": "igareck/vpn-configs-for-russia",
-    "path": "Export/Clash/RU_DIRECT/BLACK_SS+All_RUS_clash_rudirect.yaml",
-    "stars": 9294,
-    "forks": 457,
-    "pushed_at": "2026-10-22T03:08:05Z",
-    "nodes": 89
-  },
-  {
-    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes.yml",
-    "repo": "chengaopan/AutoMergePublicNodes",
-    "path": "snippets/nodes.yml",
-    "stars": 8254,
-    "forks": 1260,
-    "pushed_at": "2026-10-21T21:48:44Z",
-    "nodes": 125
-  },
-  {
-    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_US.yml",
-    "repo": "chengaopan/AutoMergePublicNodes",
-    "path": "snippets/nodes_US.yml",
-    "stars": 8254,
-    "forks": 1260,
-    "pushed_at": "2026-10-21T21:48:44Z",
-    "nodes": 13
-  },
-  {
     "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_TW.yml",
     "repo": "chengaopan/AutoMergePublicNodes",
     "path": "snippets/nodes_TW.yml",
@@ -115,113 +223,5 @@
     "forks": 1260,
     "pushed_at": "2026-10-21T21:48:44Z",
     "nodes": 2
-  },
-  {
-    "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_SG.yml",
-    "repo": "chengaopan/AutoMergePublicNodes",
-    "path": "snippets/nodes_SG.yml",
-    "stars": 8254,
-    "forks": 1260,
-    "pushed_at": "2026-10-21T21:48:44Z",
-    "nodes": 4
-  },
-  {
-    "url": "https://raw.githubusercontent.com/VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy/main/combine/v2ray.config.txt",
-    "repo": "VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy",
-    "path": "combine/v2ray.config.txt",
-    "stars": 5648,
-    "forks": 426,
-    "pushed_at": "2026-10-21T20:00:04Z",
-    "nodes": 1091
-  },
-  {
-    "url": "https://raw.githubusercontent.com/VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy/main/combine/clash.config.yaml",
-    "repo": "VPN-Subcription-Links/ClashX-V2Ray-TopFreeProxy",
-    "path": "combine/clash.config.yaml",
-    "stars": 5648,
-    "forks": 426,
-    "pushed_at": "2026-10-21T20:00:04Z",
-    "nodes": 2598
-  },
-  {
-    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/update/2210/v2ray.txt",
-    "repo": "mahdibland/V2RayAggregator",
-    "path": "update/2210/v2ray.txt",
-    "stars": 4025,
-    "forks": 664,
-    "pushed_at": "2026-10-21T17:34:44Z",
-    "nodes": 73
-  },
-  {
-    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge.txt",
-    "repo": "mahdibland/V2RayAggregator",
-    "path": "sub/sub_merge.txt",
-    "stars": 4025,
-    "forks": 664,
-    "pushed_at": "2026-10-21T17:34:44Z",
-    "nodes": 2184
-  },
-  {
-    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge_yaml.yml",
-    "repo": "mahdibland/V2RayAggregator",
-    "path": "sub/sub_merge_yaml.yml",
-    "stars": 4025,
-    "forks": 664,
-    "pushed_at": "2026-10-21T17:34:44Z",
-    "nodes": 4069
-  },
-  {
-    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge_base64.txt",
-    "repo": "mahdibland/V2RayAggregator",
-    "path": "sub/sub_merge_base64.txt",
-    "stars": 4025,
-    "forks": 664,
-    "pushed_at": "2026-10-21T17:34:44Z",
-    "nodes": 2184
-  },
-  {
-    "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/airport_sub_merge.txt",
-    "repo": "mahdibland/V2RayAggregator",
-    "path": "sub/airport_sub_merge.txt",
-    "stars": 4025,
-    "forks": 664,
-    "pushed_at": "2026-10-21T17:34:44Z",
-    "nodes": 61
-  },
-  {
-    "url": "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_Sub.txt",
-    "repo": "Epodonios/v2ray-configs",
-    "path": "All_Configs_Sub.txt",
-    "stars": 3303,
-    "forks": 451,
-    "pushed_at": "2026-10-22T01:15:22Z",
-    "nodes": 6624
-  },
-  {
-    "url": "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/All_Configs_base64_Sub.txt",
-    "repo": "Epodonios/v2ray-configs",
-    "path": "All_Configs_base64_Sub.txt",
-    "stars": 3303,
-    "forks": 451,
-    "pushed_at": "2026-10-22T01:15:22Z",
-    "nodes": 6624
-  },
-  {
-    "url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_Sub.txt",
-    "repo": "barry-far/V2ray-Config",
-    "path": "All_Configs_Sub.txt",
-    "stars": 2562,
-    "forks": 417,
-    "pushed_at": "2026-10-22T01:37:38Z",
-    "nodes": 6624
-  },
-  {
-    "url": "https://raw.githubusercontent.com/barry-far/V2ray-Config/main/All_Configs_base64_Sub.txt",
-    "repo": "barry-far/V2ray-Config",
-    "path": "All_Configs_base64_Sub.txt",
-    "stars": 2562,
-    "forks": 417,
-    "pushed_at": "2026-10-22T01:37:38Z",
-    "nodes": 6624
   }
 ]

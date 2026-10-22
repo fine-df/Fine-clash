@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261021141320 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261021141321 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,274 +10,286 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- servername: fi1.merky.one
-  tls: true
-  port: 2096
-  name: 🇩🇪 德国 | DEU
-  network: ws
-  client-fingerprint: firefox
-  uuid: 6e05822a-e9da-4135-a9db-71aa07a944af
-  udp: true
-  ws-opts:
-    path: /mky-ws-4f19c8a7
-    headers:
-      Host: fi1.merky.one
-  type: vless
-  encryption: none
-  server: 144.31.34.146
-- servername: fi1.merky.one
-  tls: true
-  port: 2096
-  name: 🇫🇮FI_2|3.8MB/s [4ba80ebea216eb92]
-  network: ws
-  client-fingerprint: chrome
-  uuid: 6e05822a-e9da-4135-a9db-71aa07a944af
-  udp: true
-  ws-opts:
-    headers:
-      Host: fi1.merky.one
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/65.0.3325.181 Safari/537.36
-    path: /mky-ws-4f19c8a7
-  type: vless
-  encryption: none
-  server: 144.31.34.146
-- password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
+- cipher: aes-256-gcm
   port: 19999
-  cipher: aes-256-gcm
-  name: 🇮🇹IT-202.50.253.27-0390
+  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   type: ss
-  server: 202.50.253.27
-- type: trojan
-  name: 🇵🇱_波兰_90
-  server: pl1.dedushka.top
-  port: 443
-  udp: true
-  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
-  tls: true
-  servername: pl1.dedushka.top
-  network: tcp
-- type: trojan
-  name: 🇵🇱_波兰_91
-  server: pl2.dedushka.top
-  port: 443
-  udp: true
-  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
-  tls: true
-  servername: pl2.dedushka.top
-  network: tcp
-- password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  port: 19999
-  cipher: aes-256-gcm
   name: 🇮🇹IT-202.50.253.90-0394
-  type: ss
   server: 202.50.253.90
-- password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  port: 19999
-  cipher: aes-256-gcm
-  name: 🇮🇹IT-202.50.253.81-0393
-  type: ss
-  server: 202.50.253.81
-- password: shadowsocks
-  port: 443
-  cipher: aes-128-gcm
-  name: 🇬🇧GB-158.173.24.73-0164
-  type: ss
-  server: 158.173.24.73
-- password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  port: 19999
-  cipher: aes-256-gcm
-  name: 🇮🇹IT-202.50.253.18-0389
-  type: ss
-  server: 202.50.253.18
-- servername: fi1.merky.one
-  tls: true
-  port: 443
-  name: Igareck Node 086 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
-  network: ws
-  client-fingerprint: safari
-  uuid: 6e05822a-e9da-4135-a9db-71aa07a944af
-  udp: true
-  ws-opts:
-    path: /mky-ws-4f19c8a7
-    headers:
-      Host: fi1.merky.one
-  type: vless
-  server: 8.6.112.0
-- servername: ozon.ru
-  tls: true
-  port: 443
-  name: Igareck Node 001 | 🇩🇪 Germany [SNI-RU] ozon.ru
+- servername: pl2.dedushka.top
   network: tcp
-  client-fingerprint: chrome
-  uuid: 261160d5-0343-4b85-8c28-3d40dd681559
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
-  server: 45.128.78.171
-- servername: peskov.russiavibory.online
-  tls: true
-  port: 443
-  name: Igareck Node 027 | 🇫🇮 Finland [*CIDR]
-  network: tcp
-  client-fingerprint: firefox
-  uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
-  reality-opts:
-    public-key: Buy9pirx5Ih_LHwc6R3BCmvRL4g4Ljx6B3MEsZfIZhU
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
-  server: 45.9.12.7
-- servername: fi1.merky.one
-  tls: true
-  port: 443
-  name: Igareck Node 084 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
-  network: ws
-  client-fingerprint: edge
-  uuid: 6e05822a-e9da-4135-a9db-71aa07a944af
-  udp: true
-  ws-opts:
-    path: /mky-ws-4f19c8a7
-    headers:
-      Host: fi1.merky.one
-  type: vless
-  server: 8.6.112.0
-- servername: allo.eosvpn.com
-  tls: true
-  port: 443
-  name: Igareck Node 072 | 🇺🇸 United States | 🌐 [*CIDR]
-  network: tcp
-  client-fingerprint: firefox
-  uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
-  reality-opts:
-    public-key: Buy9pirx5Ih_LHwc6R3BCmvRL4g4Ljx6B3MEsZfIZhU
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
-  server: 141.98.190.152
-- servername: wow.eos-shop.online
-  tls: true
-  port: 443
-  name: Igareck Node 041 | 🇩🇪 Germany [*CIDR]
-  network: tcp
-  client-fingerprint: firefox
-  uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
-  reality-opts:
-    public-key: Buy9pirx5Ih_LHwc6R3BCmvRL4g4Ljx6B3MEsZfIZhU
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
-  server: 45.12.114.90
-- servername: ozon.ru
-  tls: true
-  port: 443
-  name: 🇷🇺 俄罗斯 | RUS 2
-  network: tcp
-  client-fingerprint: ios
-  uuid: 261160d5-0343-4b85-8c28-3d40dd681559
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
-  server: 45.128.78.178
-- port: 443
-  name: '🇩🇪[www.v2nodes.com] trojan-DE-... #5'
-  network: tcp
-  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
   type: trojan
-  server: de10.dedushka.top
-- servername: ozon.ru
+  server: pl2.dedushka.top
+  udp: true
+  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
   tls: true
+  name: 🇵🇱_波兰_91
   port: 443
-  name: Igareck Node 073 | 🇷🇺 Russia [*CIDR]
+- flow: xtls-rprx-vision
+  servername: ozon.ru
   network: tcp
-  client-fingerprint: firefox
+  type: vless
   uuid: 261160d5-0343-4b85-8c28-3d40dd681559
   reality-opts:
     public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  flow: xtls-rprx-vision
+  server: 45.128.78.171
+  client-fingerprint: chrome
   udp: true
-  type: vless
-  server: 45.9.118.187
-- servername: a3.eosapp.net
   tls: true
-  port: 30065
-  name: Igareck Node 074 | 🇷🇺 Russia [*CIDR]
+  name: Igareck Node 001 | 🇩🇪 Germany [SNI-RU] ozon.ru
+  port: 443
+- flow: xtls-rprx-vision
+  servername: ozon.ru
   network: tcp
+  type: vless
+  uuid: 261160d5-0343-4b85-8c28-3d40dd681559
+  reality-opts:
+    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
+  server: 45.128.78.178
+  client-fingerprint: ios
+  udp: true
+  tls: true
+  name: 🇷🇺 俄罗斯 | RUS 2
+  port: 443
+- flow: xtls-rprx-vision
+  servername: ozon.ru
+  network: tcp
+  type: vless
+  uuid: 261160d5-0343-4b85-8c28-3d40dd681559
+  reality-opts:
+    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
+  server: 45.9.118.187
   client-fingerprint: firefox
+  udp: true
+  tls: true
+  name: Igareck Node 073 | 🇷🇺 Russia [*CIDR]
+  port: 443
+- flow: xtls-rprx-vision
+  servername: a3.eosapp.net
+  network: tcp
+  type: vless
   uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
   reality-opts:
     public-key: Buy9pirx5Ih_LHwc6R3BCmvRL4g4Ljx6B3MEsZfIZhU
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
   server: 46.254.17.88
-- servername: in1.vkusnews.com
+  client-fingerprint: firefox
+  udp: true
   tls: true
-  port: 443
-  name: Igareck Node 069 | 🇮🇳 India， Thane | [BL]
+  name: Igareck Node 074 | 🇷🇺 Russia [*CIDR]
+  port: 30065
+- flow: xtls-rprx-vision
+  servername: in1.vkusnews.com
   network: tcp
-  client-fingerprint: ios
+  type: vless
   uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
   reality-opts:
     public-key: SC6AnZ_BlvDruiGFpDRno9b1V3wMmq9gjB-KEHHUlE4
-  flow: xtls-rprx-vision
-  udp: true
-  type: vless
   server: 165.99.222.161
+  client-fingerprint: ios
+  udp: true
+  tls: true
+  name: Igareck Node 069 | 🇮🇳 India， Thane | [BL]
+  port: 443
+- type: trojan
+  server: blog.findlocaljobnetworkandbuildcommunityconnections.com
+  password: dba20dcb635e430fa4d3bfc303a149d2
+  name: 🇺🇸US-216.106.186.32-0141
+  port: 443
+- type: trojan
+  name: Channel
+  server: resources.findlocaljobnetworkandbuildcommunityconnections.com
+  port: 443
+  udp: true
+  password: f0eb8c92ce8946aaba856569cff1a16b
+  tls: true
+  servername: resources.findlocaljobnetworkandbuildcommunityconnections.com
+  network: tcp
+- type: trojan
+  name: 🇺🇸_美国_31
+  server: blog.findlocaljobnetworkandbuildcommunityconnections.com
+  port: 443
+  udp: true
+  password: dba20dcb635e430fa4d3bfc303a149d2
+  tls: true
+  servername: blog.findlocaljobnetworkandbuildcommunityconnections.com
+  network: tcp
+- network: ws
+  type: vmess
+  uuid: 47050e4e-965d-41ca-976d-73c1f11e6905
+  server: node8.liudonghoe.com
+  alterId: 0
+  cipher: auto
+  ws-opts:
+    headers:
+      Host: node8.liudonghoe.com
+    path: /hoe8
+  udp: true
+  tls: true
+  name: 🏳️_未知_394 [0d6c10d6625410ae]
+  port: 443
+- type: vless
+  name: '@FarazV2ray'
+  server: 188.114.98.0
+  port: 443
+  udp: true
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  encryption: none
+  tls: true
+  servername: server5.9966338.xyz
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /drsukitgreiusweqa9otrh983
+    headers:
+      Host: server5.9966338.xyz
+- type: vmess
+  name: 🏁RELAY-104.18.0.22-1331
+  server: us16-4.998998.best
+  port: 443
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  tls: true
+  ws-opts:
+    headers:
+      Host: server1.9966338.xyz
+    path: /efrsdioy98wert
+- network: ws
+  type: vmess
+  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  server: us5-1.998998.best
+  alterId: 0
+  cipher: auto
+  ws-opts:
+    headers:
+      Host: server4.9966338.xyz
+    path: /androirfdsreoightrjh?ed=2560
+  udp: true
+  tls: true
+  name: 🏳️_未知_407 [964359af6d813bc2]
+  port: 443
+- type: vless
+  name: 🇺🇸_美国_409
+  server: 45.138.100.248
+  port: 14430
+  udp: true
+  uuid: ae908ff5-f749-402c-af25-e6e9aef4d6bb
+  encryption: none
+  servername: 45.138.100.248
+  network: ws
+  ws-opts:
+    path: /vless
+- type: vless
+  name: '@V2ray_confiig'
+  server: 45.138.100.248
+  port: 10443
+  udp: true
+  uuid: ae908ff5-f749-402c-af25-e6e9aef4d6bb
+  encryption: none
+  network: tcp
+- type: trojan
+  name: 🏁RELAY-104.18.9.83-0429
+  server: www.calmlunch.com
+  port: 443
+  udp: true
+  password: humanity
+  tls: true
+  servername: www.calmlunch.com
+  network: ws
+  ws-opts:
+    path: /assignment
+- type: vless
+  name: برای
+  server: 139.162.27.96
+  port: 2096
+  udp: true
+  uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
+  encryption: none
+  tls: true
+  servername: free-server.techsonic.dev
+  client-fingerprint: chrome
+  network: ws
+  ws-opts:
+    path: /free-server.techsonic.dev
+    headers:
+      Host: free-server.techsonic.dev
+- type: vless
+  name: 🇳🇱_荷兰_82
+  server: sw.golangwikito.cfd
+  port: 443
+  udp: true
+  uuid: f8d52ece-fad4-478d-875d-df6eed3befa7
+  encryption: none
+  tls: true
+  servername: sw.golangwikito.cfd
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: Kb8SsVPprs46BJSUNp5JvWLI-TFEiHmlBOXLQd37Glg
+    short-id: a1037b25dcef6aa7
+  network: tcp
+- type: vless
+  name: 🇵🇭
+  server: platform107.golnamakcert.top
+  port: 80
+  udp: true
+  uuid: e13cf851-b4fd-413b-8d49-146e6eb8e5d4
+  encryption: none
+  network: ws
+  ws-opts:
+    path: /platform107
 proxy-groups:
 - name: Fine
   type: select
   proxies:
   - AUTO
   - DIRECT
-  - 🇩🇪 德国 | DEU
-  - 🇫🇮FI_2|3.8MB/s [4ba80ebea216eb92]
-  - 🇮🇹IT-202.50.253.27-0390
-  - 🇵🇱_波兰_90
-  - 🇵🇱_波兰_91
   - 🇮🇹IT-202.50.253.90-0394
-  - 🇮🇹IT-202.50.253.81-0393
-  - 🇬🇧GB-158.173.24.73-0164
-  - 🇮🇹IT-202.50.253.18-0389
-  - Igareck Node 086 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
+  - 🇵🇱_波兰_91
   - Igareck Node 001 | 🇩🇪 Germany [SNI-RU] ozon.ru
-  - Igareck Node 027 | 🇫🇮 Finland [*CIDR]
-  - Igareck Node 084 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
-  - Igareck Node 072 | 🇺🇸 United States | 🌐 [*CIDR]
-  - Igareck Node 041 | 🇩🇪 Germany [*CIDR]
   - 🇷🇺 俄罗斯 | RUS 2
-  - '🇩🇪[www.v2nodes.com] trojan-DE-... #5'
   - Igareck Node 073 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 074 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 069 | 🇮🇳 India， Thane | [BL]
-  default-selected: 🇩🇪 德国 | DEU
+  - 🇺🇸US-216.106.186.32-0141
+  - Channel
+  - 🇺🇸_美国_31
+  - 🏳️_未知_394 [0d6c10d6625410ae]
+  - '@FarazV2ray'
+  - 🏁RELAY-104.18.0.22-1331
+  - 🏳️_未知_407 [964359af6d813bc2]
+  - 🇺🇸_美国_409
+  - '@V2ray_confiig'
+  - 🏁RELAY-104.18.9.83-0429
+  - برای
+  - 🇳🇱_荷兰_82
+  - 🇵🇭
+  default-selected: 🇮🇹IT-202.50.253.90-0394
 - name: AUTO
   type: url-test
   proxies:
-  - 🇩🇪 德国 | DEU
-  - 🇫🇮FI_2|3.8MB/s [4ba80ebea216eb92]
-  - 🇮🇹IT-202.50.253.27-0390
-  - 🇵🇱_波兰_90
-  - 🇵🇱_波兰_91
   - 🇮🇹IT-202.50.253.90-0394
-  - 🇮🇹IT-202.50.253.81-0393
-  - 🇬🇧GB-158.173.24.73-0164
-  - 🇮🇹IT-202.50.253.18-0389
-  - Igareck Node 086 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
+  - 🇵🇱_波兰_91
   - Igareck Node 001 | 🇩🇪 Germany [SNI-RU] ozon.ru
-  - Igareck Node 027 | 🇫🇮 Finland [*CIDR]
-  - Igareck Node 084 | 🌐 Anycast-IP | 🇫🇮 🇬🇧 | [BL]
-  - Igareck Node 072 | 🇺🇸 United States | 🌐 [*CIDR]
-  - Igareck Node 041 | 🇩🇪 Germany [*CIDR]
   - 🇷🇺 俄罗斯 | RUS 2
-  - '🇩🇪[www.v2nodes.com] trojan-DE-... #5'
   - Igareck Node 073 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 074 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 069 | 🇮🇳 India， Thane | [BL]
+  - 🇺🇸US-216.106.186.32-0141
+  - Channel
+  - 🇺🇸_美国_31
+  - 🏳️_未知_394 [0d6c10d6625410ae]
+  - '@FarazV2ray'
+  - 🏁RELAY-104.18.0.22-1331
+  - 🏳️_未知_407 [964359af6d813bc2]
+  - 🇺🇸_美国_409
+  - '@V2ray_confiig'
+  - 🏁RELAY-104.18.9.83-0429
+  - برای
+  - 🇳🇱_荷兰_82
+  - 🇵🇭
   url: https://gemini.google.com/
   interval: 900
   timeout: 8000

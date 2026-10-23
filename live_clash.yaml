@@ -1,4 +1,4 @@
-# fine-clash-unified-v3 | fine-clash-version:20261021141322 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
+# fine-clash-unified-v3 | fine-clash-version:20261021141323 | Fine=validated-pool | CN->DIRECT | MATCH->Fine
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,117 +10,222 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- udp: true
-  port: 443
-  servername: www.calmlunch.com
-  ws-opts:
-    path: /assignment
-  password: humanity
-  network: ws
-  server: www.calmlunch.com
-  type: trojan
-  tls: true
-  name: 🏁RELAY-104.18.9.83-0429
-- reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  udp: true
-  client-fingerprint: ios
-  port: 443
-  servername: ozon.ru
-  network: tcp
-  server: 45.128.78.178
-  type: vless
-  tls: true
+- uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
   flow: xtls-rprx-vision
-  name: 🇷🇺 俄罗斯 | RUS 2
-  uuid: 261160d5-0343-4b85-8c28-3d40dd681559
-- reality-opts:
-    public-key: Buy9pirx5Ih_LHwc6R3BCmvRL4g4Ljx6B3MEsZfIZhU
-  udp: true
-  client-fingerprint: firefox
-  port: 30065
-  servername: a3.eosapp.net
-  network: tcp
-  server: 46.254.17.88
-  type: vless
-  tls: true
-  flow: xtls-rprx-vision
-  name: Igareck Node 074 | 🇷🇺 Russia [*CIDR]
-  uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
-- reality-opts:
-    public-key: SC6AnZ_BlvDruiGFpDRno9b1V3wMmq9gjB-KEHHUlE4
-  udp: true
-  client-fingerprint: ios
   port: 443
-  servername: in1.vkusnews.com
   network: tcp
+  type: vless
+  udp: true
   server: 165.99.222.161
-  type: vless
+  client-fingerprint: ios
   tls: true
-  flow: xtls-rprx-vision
+  servername: in1.vkusnews.com
+  reality-opts:
+    public-key: SC6AnZ_BlvDruiGFpDRno9b1V3wMmq9gjB-KEHHUlE4
   name: Igareck Node 069 | 🇮🇳 India， Thane | [BL]
-  uuid: 30572b57-f5ab-4eb8-82d4-a24d399b99f6
-- port: 443
-  password: dba20dcb635e430fa4d3bfc303a149d2
-  server: blog.findlocaljobnetworkandbuildcommunityconnections.com
-  type: trojan
-  name: 🇺🇸US-216.106.186.32-0141 [70e40769]
-- udp: true
-  port: 443
-  servername: resources.findlocaljobnetworkandbuildcommunityconnections.com
-  password: f0eb8c92ce8946aaba856569cff1a16b
-  network: tcp
-  server: resources.findlocaljobnetworkandbuildcommunityconnections.com
-  type: trojan
-  tls: true
-  name: Channel
-- udp: true
-  port: 443
-  ws-opts:
-    headers:
-      Host: server1.9966338.xyz
-    path: /efrsdioy98wert
+- uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
   network: ws
-  server: us16-4.998998.best
-  cipher: auto
-  type: vmess
-  tls: true
-  alterId: 0
-  name: 🏁RELAY-104.18.0.22-1331
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-- udp: true
   port: 443
+  type: vmess
+  udp: true
+  server: us5-1.998998.best
+  cipher: auto
   ws-opts:
     headers:
       Host: server4.9966338.xyz
     path: /androirfdsreoightrjh?ed=2560
-  network: ws
-  server: us5-1.998998.best
-  cipher: auto
-  type: vmess
-  tls: true
   alterId: 0
+  tls: true
   name: 🏳️_未知_407 [964359af6d813bc2]
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-- udp: true
-  client-fingerprint: chrome
+- uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
   port: 2096
-  servername: free-server.techsonic.dev
+  network: ws
+  type: vless
+  encryption: none
+  udp: true
+  server: 139.162.27.96
+  client-fingerprint: chrome
   ws-opts:
     path: /free-server.techsonic.dev
     headers:
       Host: free-server.techsonic.dev
-  network: ws
-  server: 139.162.27.96
-  encryption: none
-  type: vless
   tls: true
+  servername: free-server.techsonic.dev
   name: برای
-  uuid: 6e59d5c5-7aa3-4c36-a4c4-e3b899525ed2
+- uuid: 965ffbbe-c6b6-4d5f-8dea-6d8abc55d9c0
+  port: 14430
+  network: ws
+  type: vless
+  server: 95.174.68.188
+  ws-opts:
+    headers:
+      Host: 95.174.68.188
+    path: /vless
+  tls: false
+  servername: 95.174.68.188
+  name: 荷兰 001 [43469393b83888a0]
+- uuid: a16a3336-c9ab-489f-9b85-c973f5e2cfa4
+  port: 443
+  type: vless
+  server: 137.220.221.179
+  tls: false
+  name: '🇯🇵[www.v2nodes.com] vless-JP-1... #10 [67c914a7513eae03]'
+- uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  network: ws
+  port: 443
+  type: vmess
+  udp: true
+  server: eu3.998998.best
+  cipher: auto
+  ws-opts:
+    headers:
+      Host: server40.9966338.xyz
+    path: /aiaiai
+  alterId: 0
+  tls: true
+  name: 🏳️_未知_251 [ef398a873340fe28]
+- port: 443
+  type: trojan
+  server: resources.findlocaljobnetworkandbuildcommunityconnections.com
+  password: f0eb8c92ce8946aaba856569cff1a16b
+  name: 🇺🇸US-216.106.186.33-0084
 - type: vless
-  name: '@filembad'
+  name: 🇺🇸 美国 | USA
+  server: 173.249.210.179
+  port: 61000
+  udp: true
+  uuid: 12f4c3f6-ecce-4586-b39d-987757ea9b3b
+  encryption: none
+  tls: true
+  servername: www.amd.com
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: c7XtbOUOg19bgo2N-ufXbZHaGHuSB7jAdvmj1zchRn4
+    short-id: ecf5
+  network: tcp
+- uuid: 82eb8419-59f4-4d3e-9106-d05d22af615c
+  flow: xtls-rprx-vision
+  port: 9443
+  network: tcp
+  type: vless
+  udp: true
+  server: 38.180.243.134
+  client-fingerprint: chrome
+  tls: true
+  servername: www.amazon.com
+  reality-opts:
+    public-key: 0hIFPaEn4RdFib8_eP8HYxMywR5izEwM3JA2W1Zo8U4
+    short-id: b390142456517acc
+  name: 🇺🇸 美国 | USA 3 [dc7cef2a1c04e3d0]
+- type: vless
+  name: 🇺🇸_美国_13
+  server: 156.229.164.149
+  port: 9443
+  udp: true
+  uuid: 82eb8419-59f4-4d3e-9106-d05d22af615c
+  encryption: none
+  tls: true
+  servername: www.amazon.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 0hIFPaEn4RdFib8_eP8HYxMywR5izEwM3JA2W1Zo8U4
+    short-id: b390142456517acc
+  network: tcp
+- type: vless
+  name: 🇺🇸_美国_148
+  server: 45.138.100.248
+  port: 14430
+  udp: true
+  uuid: ae908ff5-f749-402c-af25-e6e9aef4d6bb
+  encryption: none
+  servername: 45.138.100.248
+  network: ws
+  ws-opts:
+    path: /vless
+    headers:
+      Host: 45.138.100.248
+- uuid: 12f4c3f6-ecce-4586-b39d-987757ea9b3b
+  port: 61000
+  network: tcp
+  type: vless
+  udp: true
+  server: 173.249.210.179
+  client-fingerprint: chrome
+  tls: true
+  servername: www.amd.com
+  reality-opts:
+    public-key: c7XtbOUOg19bgo2N-ufXbZHaGHuSB7jAdvmj1zchRn4
+    short-id: ecf5
+  name: 🇺🇸 美国 | USA 2 [d5518e8e4b2f29a8]
+- type: vless
+  name: 🇺🇸_美国_21
+  server: 38.180.243.134
+  port: 9443
+  udp: true
+  uuid: 82eb8419-59f4-4d3e-9106-d05d22af615c
+  encryption: none
+  tls: true
+  servername: www.amazon.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 0hIFPaEn4RdFib8_eP8HYxMywR5izEwM3JA2W1Zo8U4
+    short-id: b390142456517acc
+  network: tcp
+- cipher: aes-256-gcm
+  port: 19999
+  name: 🇺🇸US-193.151.160.18-0043
+  type: ss
+  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
+  server: 193.151.160.18
+- type: vmess
+  name: 🇰🇷 Join+Telegram:@Farah_VPN 🇰🇷
+  server: 183.109.131.75
+  port: 20086
+  uuid: b26c4803-0bca-467c-a245-c9a80bdd72ec
+  alterId: 0
+  cipher: auto
+  udp: true
+  network: ws
+  ws-opts:
+    path: /
+- type: trojan
+  name: 🇱🇻LV-94.140.112.22-0159
+  server: lv1.dedushka.top
+  port: 443
+  udp: true
+  password: 4_VfP9fKaM-3LpSVvoZuc_WUzLoCdHaA
+  tls: true
+  servername: lv1.dedushka.top
+- uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
+  port: 443
+  network: ws
+  type: vless
+  server: uk1-2.998998.best
+  ws-opts:
+    headers:
+      Host: server13.9966338.xyz
+    path: /resiouhgggggggggg?ed=2560fp=chrome
+  tls: true
+  servername: server13.9966338.xyz
+  name: 美国 018 [c73b0a9843571782]
+- uuid: c7c27192-60a5-4ce1-b613-95270d82309d
+  port: 14430
+  network: ws
+  type: vless
+  server: 5.253.29.254
+  ws-opts:
+    headers:
+      Host: 5.253.29.254
+    path: /vless
+  tls: false
+  servername: 5.253.29.254
+  name: '🇮🇳[www.v2nodes.com] vless-IN-1... #1 [e2d752c273210619]'
+- type: vless
+  name: 🩵⇝
   server: funagfrdfs.alixxplay.com
-  port: 30892
+  port: 34379
   udp: true
   uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
   encryption: none
@@ -129,148 +234,73 @@ proxies:
   flow: xtls-rprx-vision
   client-fingerprint: chrome
   reality-opts:
-    public-key: YinI5MijeZpRatg6QNDvP0qXEif-6VHC6gV5yoji4i4
-    short-id: 3d31326f95
+    public-key: KfOrtENkHAXDFlsCluw6fv62Q-WuJXCKI98XZihtemA
+    short-id: e51285e3
   network: tcp
-- type: trojan
-  name: 🇺🇸US-216.106.186.33-0144
-  server: resources.findlocaljobnetworkandbuildcommunityconnections.com
-  port: 443
+- type: vless
+  name: UN【机场推荐：https://a9a.xyz】124
+  server: 212.87.222.10
+  port: 8443
   udp: true
-  password: f0eb8c92ce8946aaba856569cff1a16b
+  uuid: 8afeb33c-b686-43e9-a629-0d98f991ec28
+  encryption: none
   tls: true
-  servername: resources.findlocaljobnetworkandbuildcommunityconnections.com
-- name: 🇺🇸US-64.42.181.102-2468
-  server: 64.42.181.102
-  port: 12996
-  password: a7be96a98392ef40dab7693317a81cc0
-  cipher: aes-128-gcm
-  type: ss
-- type: trojan
-  name: 🇺🇸US-216.106.186.32-0141 [f5d4383b]
-  server: blog.findlocaljobnetworkandbuildcommunityconnections.com
-  port: 443
-  udp: true
-  password: dba20dcb635e430fa4d3bfc303a149d2
-  tls: true
-  servername: blog.findlocaljobnetworkandbuildcommunityconnections.com
-- type: trojan
-  name: '🇫🇷[www.v2nodes.com] trojan-FR-... #4'
-  server: www.calmlunch.com
-  port: 443
-  udp: true
-  password: humanity
-  tls: true
-  servername: www.calmlunch.com
-  network: ws
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.calmlunch.com
-- port: 443
-  ws-opts:
-    path: /assignment
-    headers:
-      Host: www.calmlunch.com
-  password: humanity
-  network: ws
-  server: www.calmlunch.com
-  type: trojan
-  name: 🏁RELAY-104.18.8.83-0495
-- port: 14430
-  servername: 95.174.68.188
-  ws-opts:
-    headers:
-      Host: 95.174.68.188
-    path: /vless
-  network: ws
-  server: 95.174.68.188
-  type: vless
-  tls: false
-  name: 荷兰 001 [43469393b83888a0]
-  uuid: 965ffbbe-c6b6-4d5f-8dea-6d8abc55d9c0
-- port: 443
-  server: 137.220.221.179
-  type: vless
-  tls: false
-  name: '🇯🇵[www.v2nodes.com] vless-JP-1... #10 [67c914a7513eae03]'
-  uuid: a16a3336-c9ab-489f-9b85-c973f5e2cfa4
-- name: 🇹🇭TH-103.107.52.106-0215
-  server: 103.107.52.106
-  port: 52351
-  password: sxajCTwrlK0zl+zmHpX0p0jXIfatnzlLzWlSQ950L1c=
-  cipher: aes-256-gcm
-  type: ss
-- udp: true
-  port: 443
-  ws-opts:
-    headers:
-      Host: server40.9966338.xyz
-    path: /aiaiai
-  network: ws
-  server: eu3.998998.best
-  cipher: auto
-  type: vmess
-  tls: true
-  alterId: 0
-  name: 🏳️_未知_251 [ef398a873340fe28]
-  uuid: 5504eaa8-1395-402f-8e0e-75ecd762e627
-- name: 🇹🇭TH-103.107.52.106-0224
-  server: pphfree2.mvpnpvpn.de5.net
-  port: 52351
-  password: sxajCTwrlK0zl+zmHpX0p0jXIfatnzlLzWlSQ950L1c=
-  cipher: aes-256-gcm
-  type: ss
+  servername: www.nokia.com
+  flow: xtls-rprx-vision
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: f25sygANXTpzdc9YPCwkggwSmm3piA3BluSeHdfG-hg
+  network: tcp
 proxy-groups:
 - name: Fine
   type: select
   proxies:
   - AUTO
   - DIRECT
-  - 🏁RELAY-104.18.9.83-0429
-  - 🇷🇺 俄罗斯 | RUS 2
-  - Igareck Node 074 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 069 | 🇮🇳 India， Thane | [BL]
-  - 🇺🇸US-216.106.186.32-0141 [70e40769]
-  - Channel
-  - 🏁RELAY-104.18.0.22-1331
   - 🏳️_未知_407 [964359af6d813bc2]
   - برای
-  - '@filembad'
-  - 🇺🇸US-216.106.186.33-0144
-  - 🇺🇸US-64.42.181.102-2468
-  - 🇺🇸US-216.106.186.32-0141 [f5d4383b]
-  - '🇫🇷[www.v2nodes.com] trojan-FR-... #4'
-  - 🏁RELAY-104.18.8.83-0495
   - 荷兰 001 [43469393b83888a0]
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #10 [67c914a7513eae03]'
-  - 🇹🇭TH-103.107.52.106-0215
   - 🏳️_未知_251 [ef398a873340fe28]
-  - 🇹🇭TH-103.107.52.106-0224
-  default-selected: 🏁RELAY-104.18.9.83-0429
+  - 🇺🇸US-216.106.186.33-0084
+  - 🇺🇸 美国 | USA
+  - 🇺🇸 美国 | USA 3 [dc7cef2a1c04e3d0]
+  - 🇺🇸_美国_13
+  - 🇺🇸_美国_148
+  - 🇺🇸 美国 | USA 2 [d5518e8e4b2f29a8]
+  - 🇺🇸_美国_21
+  - 🇺🇸US-193.151.160.18-0043
+  - 🇰🇷 Join+Telegram:@Farah_VPN 🇰🇷
+  - 🇱🇻LV-94.140.112.22-0159
+  - 美国 018 [c73b0a9843571782]
+  - '🇮🇳[www.v2nodes.com] vless-IN-1... #1 [e2d752c273210619]'
+  - 🩵⇝
+  - UN【机场推荐：https://a9a.xyz】124
+  default-selected: Igareck Node 069 | 🇮🇳 India， Thane | [BL]
 - name: AUTO
   type: url-test
   proxies:
-  - 🏁RELAY-104.18.9.83-0429
-  - 🇷🇺 俄罗斯 | RUS 2
-  - Igareck Node 074 | 🇷🇺 Russia [*CIDR]
   - Igareck Node 069 | 🇮🇳 India， Thane | [BL]
-  - 🇺🇸US-216.106.186.32-0141 [70e40769]
-  - Channel
-  - 🏁RELAY-104.18.0.22-1331
   - 🏳️_未知_407 [964359af6d813bc2]
   - برای
-  - '@filembad'
-  - 🇺🇸US-216.106.186.33-0144
-  - 🇺🇸US-64.42.181.102-2468
-  - 🇺🇸US-216.106.186.32-0141 [f5d4383b]
-  - '🇫🇷[www.v2nodes.com] trojan-FR-... #4'
-  - 🏁RELAY-104.18.8.83-0495
   - 荷兰 001 [43469393b83888a0]
   - '🇯🇵[www.v2nodes.com] vless-JP-1... #10 [67c914a7513eae03]'
-  - 🇹🇭TH-103.107.52.106-0215
   - 🏳️_未知_251 [ef398a873340fe28]
-  - 🇹🇭TH-103.107.52.106-0224
+  - 🇺🇸US-216.106.186.33-0084
+  - 🇺🇸 美国 | USA
+  - 🇺🇸 美国 | USA 3 [dc7cef2a1c04e3d0]
+  - 🇺🇸_美国_13
+  - 🇺🇸_美国_148
+  - 🇺🇸 美国 | USA 2 [d5518e8e4b2f29a8]
+  - 🇺🇸_美国_21
+  - 🇺🇸US-193.151.160.18-0043
+  - 🇰🇷 Join+Telegram:@Farah_VPN 🇰🇷
+  - 🇱🇻LV-94.140.112.22-0159
+  - 美国 018 [c73b0a9843571782]
+  - '🇮🇳[www.v2nodes.com] vless-IN-1... #1 [e2d752c273210619]'
+  - 🩵⇝
+  - UN【机场推荐：https://a9a.xyz】124
   url: https://gemini.google.com/
   interval: 900
   timeout: 8000

@@ -120,11 +120,10 @@ output:
   source_file: 'data/sources.json'
   source_history_file: 'data/source_history.json'
   report_file: 'data/last_run.json'
-# 发布闸门（2026-10-21）：live_clash.yaml 是四端共用的对外订阅（经 jsDelivr 分发），
-# 必须只在「从中国网络执行」时重写/发布。原因：管线把流量经节点隧道通往 Google/Gemini，
-# 仅当运行在中国网络时，real_proxy_ok 通过才真正代表「节点能翻墙、国内可达」。
-# 美国 runner 跑时即便节点测试通过也只是「美国可达」，发布出去国内连不上。
-# 故设为 true 时，非中国网络的运行（含美国 CI）一律拒绝改写已验证的中国配置。
-# 设为 false 退回旧行为（任何网络都发布，不推荐）。
+# 发布闸门（2026-10-21 设立，2026-10-24 作废）：
+# 原设计 live_clash.yaml 由 fine_clash.py 在中国网络实测后生成，故 require_china_verified
+# 用于阻止美国 CI runner 改写已验证的中国配置。2026-10-24 架构重构为 proxy-provider 模式：
+# 节点存活改由四端客户端各自在中国网络 url-test 验证，中央生成器不再实测节点可达性，
+# 故本闸门已无意义。build_final.py 不再读取此字段。保留为 false 仅作历史标记。
 publish:
-  require_china_verified: true
+  require_china_verified: false

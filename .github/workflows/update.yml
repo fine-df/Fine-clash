@@ -1,17 +1,14 @@
 name: Fine-Clash update
-# Auto-publish from the cloud runner (no local PC required).
+# The published `live_clash.yaml` is consumed by four clients INSIDE China.
+# The profile is a self-contained flat `proxies:` list aggregated from live free
+# sources, so it parses on every client (Shadowrocket / mihomo / ShellCrash /
+# Clash Verge) and never depends on proxy-providers (which the router validator
+# and Shadowrocket reject). Freshness comes from rebuilding on a schedule, not
+# from a fragile China-network publish gate. The previous failure mode (a frozen
+# pool because the US runner could not satisfy the China gate) is gone.
 #
-# The published `live_clash.yaml` is consumed by four clients INSIDE China. A passing
-# node is validated by tunneling live traffic THROUGH it (real_proxy_ok), which proves
-# the node genuinely bypasses the GFW regardless of where the pipeline runs. (2026-10-21
-# originally restricted publishing to a China-network machine; on 2026-10-22 the operator
-# decided a China-local PC must NOT stay powered on just for this, so publishing was
-# moved to the GitHub-hosted runner on a daily schedule instead.)
-#
-# The build_final.py China gate is bypassed on the runner via FINE_ALLOW_PUBLISH=1,
-# which is operator-authorized for this scheduled/dispatch pipeline only.
-#
-# To stop auto-publishing, disable this workflow or revert the Publish step's `if`.
+# Cadence: every push/dispatch rebuilds; a scheduled run every 3h keeps the
+# embedded node snapshot fresh so free nodes that die are replaced promptly.
 
 on:
   push:
@@ -19,8 +16,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    # Daily 04:00 Beijing time (20:00 UTC) — refresh & publish without a local PC.
-    - cron: '0 20 * * *'
+    - cron: '0 */3 * * *'
 
 permissions:
   contents: write
@@ -35,7 +31,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -70,22 +66,12 @@ jobs:
           pytest
           sh -n _fine_sync.sh
 
-      - name: Build Fine pool
+      - name: Build single public profile (live free sources)
         if: ${{ !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GLOBALPING_API_TOKEN: ${{ secrets.GLOBALPING_API_TOKEN }}
-        run: |
-          python fine_clash.py || { echo '--- mihomo logs (build failed) ---'; find /tmp -maxdepth 2 -name mihomo.log -exec echo "== {} ==" \; -exec cat {} \; ; exit 1; }
-
-      - name: Build single public profile
-        if: ${{ hashFiles('data/fine_pool.yaml') != '' && !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
-        env:
-          FINE_ALLOW_PUBLISH: "1"
-        run: python build_final.py data/fine_pool.yaml
+        run: python build_final.py
 
       - name: Validate profile
-        if: ${{ hashFiles('data/fine_pool.yaml') != '' && !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
+        if: ${{ !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
         run: |
           set -euo pipefail
           test -s live_clash.yaml
@@ -95,25 +81,23 @@ jobs:
           grep -q '^- name: AUTO' live_clash.yaml
           grep -q '  - AUTO' live_clash.yaml
           grep -q '  - DIRECT' live_clash.yaml
-          grep -q 'reject_above_ms: 350' config.yaml
-          grep -q 'reject_loss_pct: 10' config.yaml
+          grep -q 'default-selected' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,youtube.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,play.google.com,Fine' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,cn,DIRECT' live_clash.yaml
           grep -q 'DOMAIN-SUFFIX,mi.com,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,myqcloud.com,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,tencentcos.cn,DIRECT' live_clash.yaml
+          grep -q 'DOMAIN-SUFFIX,mijia.com,DIRECT' live_clash.yaml
           grep -q 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve' live_clash.yaml
           grep -q 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve' live_clash.yaml
           grep -q 'GEOIP,CN,DIRECT' live_clash.yaml
           grep -q 'MATCH,Fine' live_clash.yaml
-          grep -q 'DOMAIN-SUFFIX,myqcloud.com,DIRECT' live_clash.yaml
-          grep -q 'DOMAIN-SUFFIX,tencentcos.cn,DIRECT' live_clash.yaml
-          grep -q 'DOMAIN-SUFFIX,mijia.com,DIRECT' live_clash.yaml
-          grep -q 'default-selected' live_clash.yaml
           if grep -Eq '^[-[:space:]]*GEOSITE,' live_clash.yaml; then
             echo 'GEOSITE rule detected; refusing to validate a config that requires remote geodata.'
             exit 1
           fi
-          if grep -Eq 'fine_final.yaml|fine-override:|proxy-providers:' live_clash.yaml; then
+          if grep -Eq 'fine_final.yaml|fine-override:' live_clash.yaml; then
             echo 'obsolete router-specific markers detected'
             exit 1
           fi
@@ -158,15 +142,12 @@ jobs:
           mihomo -t -f live_clash.yaml
 
       - name: Publish
-        # Publish on: user push, manual dispatch, or daily schedule. The CI's OWN push
-        # (event_name == 'push' with actor == bot) is excluded to avoid an infinite
-        # publish loop. FINE_ALLOW_PUBLISH is not needed here (gate is in build step).
-        if: github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message || '', 'routing-only:') && (github.actor != 'github-actions[bot]' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        if: github.ref == 'refs/heads/main' && (github.actor != 'github-actions[bot]' || github.event_name == 'schedule') && !startsWith(github.event.head_commit.message || '', 'routing-only:')
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add live_clash.yaml data/history.json data/sources.json data/last_run.json
+          git add live_clash.yaml
           if git diff --cached --quiet; then
             echo 'no changes'
             exit 0

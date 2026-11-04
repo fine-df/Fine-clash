@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141369 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141370 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -11,31 +11,13 @@ profile:
   store-selected: true
 proxies:
 - type: vless
-  name: E-🇩🇪_DE_德国_IPV4
-  server: 875f9760-be1a-4dfe-8c2b-3f080b5ab158.node1.runet.network
-  port: 20065
-  uuid: 2446e2e2-1ce3-4502-9050-1dd32bacc68c
-  flow: xtls-rprx-vision
-  tls: true
-  servername: 875f9760-be1a-4dfe-8c2b-3f080b5ab158.node1.runet.network
-  sni: 875f9760-be1a-4dfe-8c2b-3f080b5ab158.node1.runet.network
-  skip-cert-verify: false
-- type: ss
-  name: E-🇬🇧_GB_英国->🇲🇾_MY_马来西亚_IPV4
-  server: xunlinknode.csdjhajkshdjkas.com
-  port: 40006
-  password: 28789988-887e-4e41-83cd-27bbfb7999ad
-  cipher: chacha20-ietf-poly1305
-  tls: false
-  skip-cert-verify: false
-- type: vless
-  name: E-🇰🇷_KR_韩国_IPV4
-  server: 43.128.130.45
+  name: E-🇸🇬_SG_新加坡_IPV4 (2)
+  server: 85.137.51.53
   port: 443
   uuid: 26524cce-d514-4014-a426-365fb266a14d
   tls: true
-  servername: xy1ej.stream-node-us.danfeng.qzz.io
-  sni: xy1ej.stream-node-us.danfeng.qzz.io
+  servername: t5pmr.mail-node.gfw.kdns.fr
+  sni: t5pmr.mail-node.gfw.kdns.fr
   skip-cert-verify: true
   alpn:
   - http/1.1
@@ -44,15 +26,15 @@ proxies:
   ws-opts:
     path: /danfeng?ed=2560
     headers:
-      Host: xy1ej.stream-node-us.danfeng.qzz.io
+      Host: t5pmr.mail-node.gfw.kdns.fr
 - type: vless
-  name: E-🇩🇪_DE_德国_IPV4 (2)
-  server: 47.245.134.84
+  name: E-🇺🇸_US_美国_IPV4 (3)
+  server: 69.8.129.152
   port: 443
   uuid: 26524cce-d514-4014-a426-365fb266a14d
   tls: true
-  servername: xy1ej.stream-node-us.danfeng.qzz.io
-  sni: xy1ej.stream-node-us.danfeng.qzz.io
+  servername: t5pmr.mail-node.gfw.kdns.fr
+  sni: t5pmr.mail-node.gfw.kdns.fr
   skip-cert-verify: true
   alpn:
   - http/1.1
@@ -61,170 +43,308 @@ proxies:
   ws-opts:
     path: /danfeng?ed=2560
     headers:
-      Host: xy1ej.stream-node-us.danfeng.qzz.io
+      Host: t5pmr.mail-node.gfw.kdns.fr
 - type: vless
-  name: E-🇺🇸_US_美国->🇩🇪_DE_德国_IPV4
-  server: 13.143.180.142
+  name: E-🇺🇸_US_美国_IPV4 (4)
+  server: 38.207.182.119
   port: 443
-  uuid: 2614a96d-e39f-02f0-a9c7-467a178c2c0a
-  flow: xtls-rprx-vision
+  uuid: 26524cce-d514-4014-a426-365fb266a14d
   tls: true
-  servername: sw.lenvex.cc
-  sni: sw.lenvex.cc
-  skip-cert-verify: false
+  servername: t5pmr.mail-node.gfw.kdns.fr
+  sni: t5pmr.mail-node.gfw.kdns.fr
+  skip-cert-verify: true
+  alpn:
+  - http/1.1
   client-fingerprint: firefox
-  reality-opts:
-    public-key: OFmJtVi6OB9E6KIc5QV5YmoouimRFc-Se9hICjtV8hQ
-- type: vless
-  name: E-🇺🇸_US_美国->🇯🇵_JP_日本_IPV4
-  server: 103.11.78.211
-  port: 8443
-  uuid: 3305c285-8d55-4f52-a3b0-2a582f5ffd59
-  tls: true
-  servername: sdwf-amq.pages.dev
-  sni: sdwf-amq.pages.dev
-  skip-cert-verify: true
-  client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /?ed=2048
+    path: /danfeng?ed=2560
     headers:
-      Host: sdwf-amq.pages.dev
-- type: vless
-  name: E-🇱🇻_LV_拉脱维亚->🇯🇵_JP_日本_IPV4
-  server: 188.253.21.238
-  port: 8443
-  uuid: 3305c285-8d55-4f52-a3b0-2a582f5ffd59
+      Host: t5pmr.mail-node.gfw.kdns.fr
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (5)
+  server: 179.253.238.240
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: sdwf-amq.pages.dev
-  sni: sdwf-amq.pages.dev
+  servername: api.85s.me
+  sni: api.85s.me
   skip-cert-verify: true
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /?ed=2048
-    headers:
-      Host: sdwf-amq.pages.dev
-- type: vless
-  name: E-🇫🇷_FR_法国->🇯🇵_JP_日本_IPV4
-  server: 89.208.97.224
-  port: 8443
-  uuid: 3305c285-8d55-4f52-a3b0-2a582f5ffd59
-  tls: true
-  servername: sdwf-amq.pages.dev
-  sni: sdwf-amq.pages.dev
-  skip-cert-verify: true
-  client-fingerprint: chrome
-  network: ws
-  ws-opts:
-    path: /?ed=2048
-    headers:
-      Host: sdwf-amq.pages.dev
-- type: vless
-  name: E-🇷🇺_RU_俄罗斯_IPV4
-  server: 185.148.104.30
-  port: 8880
-  uuid: 6202b230-417c-4d8e-b624-0f71afa9c75d
-  tls: false
-  servername: 185.148.104.30
-  sni: 185.148.104.30
-  skip-cert-verify: false
-  client-fingerprint: chrome
   network: ws
   ws-opts:
     path: /
     headers:
-      Host: vms.lifetime51.workers.dev
-- type: vless
-  name: E-🇪🇪_EE_爱沙尼亚_IPV4
-  server: 5.101.180.125
-  port: 8443
-  uuid: 3305c285-8d55-4f52-a3b0-2a582f5ffd59
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (6)
+  server: 179.255.103.84
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: sdwf-amq.pages.dev
-  sni: sdwf-amq.pages.dev
+  servername: api.85s.me
+  sni: api.85s.me
   skip-cert-verify: true
-  client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /?ed=2048
+    path: /
     headers:
-      Host: sdwf-amq.pages.dev
-- type: vless
-  name: E-🇸🇪_SE_瑞典->🇯🇵_JP_日本_IPV4
-  server: 62.182.196.194
-  port: 8443
-  uuid: 3305c285-8d55-4f52-a3b0-2a582f5ffd59
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (7)
+  server: 179.253.231.141
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: sdwf-amq.pages.dev
-  sni: sdwf-amq.pages.dev
+  servername: api.85s.me
+  sni: api.85s.me
   skip-cert-verify: true
-  client-fingerprint: chrome
   network: ws
   ws-opts:
-    path: /?ed=2048
+    path: /
     headers:
-      Host: sdwf-amq.pages.dev
-- type: vless
-  name: E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4
-  server: 163.245.42.132
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (8)
+  server: 104.17.0.3
   port: 443
-  uuid: b9bfa54d-bc44-4592-a6d6-89a9665d286f
-  flow: xtls-rprx-vision
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: mother-earth.fyi
-  sni: mother-earth.fyi
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-- type: vless
-  name: E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (2)
-  server: 163.245.42.157
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇭🇰_HK_香港->🇺🇸_US_美国_IPV4
+  server: 47.75.104.211
   port: 443
-  uuid: b9bfa54d-bc44-4592-a6d6-89a9665d286f
-  flow: xtls-rprx-vision
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: mother-earth.fyi
-  sni: mother-earth.fyi
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-- type: vless
-  name: E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (3)
-  server: 9.247.23.209
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (9)
+  server: 104.19.0.5
   port: 443
-  uuid: b9bfa54d-bc44-4592-a6d6-89a9665d286f
-  flow: xtls-rprx-vision
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
   tls: true
-  servername: mother-earth.fyi
-  sni: mother-earth.fyi
-  skip-cert-verify: false
-  client-fingerprint: chrome
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4
-  server: 202.50.253.27
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
-  skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (2)
-  server: 202.50.253.36
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
-  skip-cert-verify: false
-- name: E-🇦🇪[www.v2nodes.com] vless-AE-1...
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (10)
+  server: 179.255.141.59
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (11)
+  server: 64.186.224.154
+  port: 10962
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (12)
+  server: 179.255.99.7
+  port: 8443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (13)
+  server: 179.253.239.20
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇺🇸_US_美国_IPV4 (14)
+  server: 179.253.231.22
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇸🇬_SG_新加坡_IPV4 (3)
+  server: 45.127.34.109
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇳🇱_NL_荷兰_IPV4
+  server: 104.26.0.6
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇳🇱_NL_荷兰_IPV4 (2)
+  server: 104.21.0.7
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇳🇱_NL_荷兰_IPV4 (3)
+  server: 104.25.0.2
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇯🇵_JP_日本_IPV4
+  server: 172.238.22.178
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇯🇵_JP_日本_IPV4 (2)
+  server: 172.237.1.32
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇯🇵_JP_日本_IPV4 (3)
+  server: 172.233.91.12
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇯🇵_JP_日本_IPV4 (4)
+  server: 172.238.29.97
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- type: trojan
+  name: E-🇸🇬_SG_新加坡_IPV4 (4)
+  server: 69.8.133.223
+  port: 443
+  password: 8deb189a-3aed-4865-843b-b72dae954c46
+  tls: true
+  servername: api.85s.me
+  sni: api.85s.me
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: api.85s.me
+- name: E-🏳[www.v2nodes.com] vless-
   network: ws
   port: 14430
   server: 95.174.68.188
-  servername: 95.174.68.188
   tls: false
   type: vless
   uuid: 965ffbbe-c6b6-4d5f-8dea-6d8abc55d9c0
@@ -233,7 +353,7 @@ proxies:
       Host: 95.174.68.188
     path: /vless
 - encryption: none
-  name: 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #1'
+  name: E-🇦🇪[www.v2nodes.com] vless-AE-1...
   network: ws
   port: 22573
   server: uae.unixzone.us
@@ -244,7 +364,7 @@ proxies:
     headers:
       Host: uae.unixzone.us
     path: /
-- name: 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #2'
+- name: 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #1'
   network: ws
   port: 2053
   server: 147.78.0.186
@@ -270,7 +390,7 @@ proxies:
     path: pyip=bpb.yousef.isegaro.comfp=chromesecurity=tls
 - client-fingerprint: unsafe
   encryption: none
-  name: 'E-🇵🇱[www.v2nodes.com] vless-PL-1... #11'
+  name: 'E-🏳[www.v2nodes.com] vless- #1'
   network: ws
   port: 443
   server: 104.21.221.158
@@ -308,7 +428,7 @@ proxies:
     headers:
       Host: vlso5.1d.mom
     path: /socks5=888:888@hkip.1d.mom:1080fp=chrome
-- name: 'E-🏳[www.v2nodes.com] vless- #2'
+- name: 'E-🏳[www.v2nodes.com] vless- #3'
   port: 8443
   server: 177.7.51.29
   tls: false
@@ -316,7 +436,7 @@ proxies:
   uuid: c6b1b2d0-ed5e-48ce-99e6-112ff330030d
 - client-fingerprint: chrome
   encryption: none
-  name: 'E-🏳[www.v2nodes.com] vless- #3'
+  name: 'E-🏳[www.v2nodes.com] vless- #4'
   network: ws
   port: 443
   server: 104.21.94.161
@@ -328,7 +448,7 @@ proxies:
     headers:
       Host: ccc.010304.xyz
     path: /
-- name: 'E-🏳[www.v2nodes.com] vless- #4'
+- name: 'E-🏳[www.v2nodes.com] vless- #5'
   network: ws
   port: 8080
   server: 188.114.97.6
@@ -341,7 +461,7 @@ proxies:
       Host: hhlfy.twiladaphne.ndjp.net
     path: /sg-melbi
 - client-fingerprint: chrome
-  name: 'E-🏳[www.v2nodes.com] vless- #14'
+  name: 'E-🏳[www.v2nodes.com] vless- #38'
   network: ws
   port: 443
   server: cf.090227.xyz
@@ -353,13 +473,30 @@ proxies:
     headers:
       Host: ccc.010304.xyz
     path: /fp=chrome
-- name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
-  network: tcp
-  port: 10443
+- name: E-🇧🇾[www.v2nodes.com] vless-BY-1...
+  network: ws
+  port: 14430
+  server: 178.172.227.228
+  servername: 178.172.227.228
+  tls: false
+  type: vless
+  uuid: b6e5dc56-836f-48c1-9163-b0b0b43b647d
+  ws-opts:
+    headers:
+      Host: 178.172.227.228
+    path: /vless
+- encryption: none
+  name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
+  network: ws
+  port: 14430
   server: 178.172.227.124
   tls: false
   type: vless
   uuid: 1af36694-b548-4b18-89a0-bc076eab4ed7
+  ws-opts:
+    headers:
+      Host: 178.172.227.124
+    path: /vless
 - encryption: none
   name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
   network: ws
@@ -387,10 +524,11 @@ proxies:
       Host: ccc.010304.xyz
     path: /fp=unsafe
 - client-fingerprint: chrome
+  encryption: none
   name: E-🇸🇬[www.v2nodes.com] vless-SG
   network: ws
   port: 443
-  server: 172.64.155.209
+  server: 104.18.37.127
   servername: ccc.010304.xyz
   tls: true
   type: vless
@@ -399,11 +537,12 @@ proxies:
     headers:
       Host: ccc.010304.xyz
     path: /
-- client-fingerprint: chrome
+- client-fingerprint: unsafe
+  encryption: none
   name: 'E-🇸🇬[www.v2nodes.com] vless-SG #1'
   network: ws
   port: 443
-  server: 172.64.153.66
+  server: 104.18.45.38
   servername: ccc.010304.xyz
   tls: true
   type: vless
@@ -411,31 +550,7 @@ proxies:
   ws-opts:
     headers:
       Host: ccc.010304.xyz
-    path: /
-- name: E-🇨🇾[www.v2nodes.com] vless-CY-1...
-  network: ws
-  port: 2087
-  server: 194.55.166.65
-  servername: free.cndyw.ggff.net
-  tls: false
-  type: vless
-  uuid: 04c808e2-0b59-47b0-a54b-32fc7ef1c902
-  ws-opts:
-    headers:
-      Host: free.cndyw.ggff.net
-    path: pyip=bpb.yousef.isegaro.comfp=randomsecurity=tls
-- name: 'E-🇨🇾[www.v2nodes.com] vless-CY-1... #1'
-  network: ws
-  port: 443
-  server: 213.111.177.107
-  servername: vlso5.1d.mom
-  tls: true
-  type: vless
-  uuid: a1de0630-5786-48a0-84f6-dc6f2de10d6d
-  ws-opts:
-    headers:
-      Host: vlso5.1d.mom
-    path: /socks5=888:888@hkip.1d.mom:1080fp=chrome
+    path: /?TELEGRAM--MARAMBASHI--MARAMBASHI--MARAMBASHI--MARAMBASHI?ed=2560
 - name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #3'
   port: 465
   server: hw6.divarkhaghazi.com
@@ -446,7 +561,7 @@ proxies:
     path: /
 - client-fingerprint: unsafe
   encryption: none
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #4'
+  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
   network: ws
   port: 443
   server: 31.12.75.64
@@ -459,7 +574,7 @@ proxies:
       Host: oizs5zecux0s.pouriayy1.workers.dev
     path: /stream/PANEL_ZEUS/15038a30cbef/loc-0
 - encryption: none
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #7'
+  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #6'
   network: ws
   port: 80
   server: 104.27.88.172
@@ -486,82 +601,12 @@ proxies:
     headers:
       Host: hw14.roghanmo.com
     path: /
-- client-fingerprint: chrome
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #12'
-  network: ws
-  port: 2083
-  server: 140.225.208.140
-  servername: speedtestmark.com
-  tls: true
-  type: vless
-  uuid: e3c3b722-1264-4cdc-a97c-b0a1bb73cd67
-  ws-opts:
-    headers:
-      Host: speedtestmark.com
-    path: /vless-ws
 - name: 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #1'
   port: 443
   server: 185.225.205.53
   tls: false
   type: vless
   uuid: 3d526c7f-059c-4e2b-b09a-8569b268935b
-- alpn:
-  - http/1.1
-  client-fingerprint: firefox
-  name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #1'
-  network: ws
-  port: 2083
-  server: 92.242.165.11
-  servername: speedtestmark.com
-  tls: true
-  type: vless
-  uuid: 75b517db-1f97-4bda-a479-863d988c31a0
-  ws-opts:
-    path: /vless-ws
-- alpn:
-  - http/1.1
-  client-fingerprint: chrome
-  name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #2'
-  network: ws
-  port: 465
-  server: hw5.roghanmo.com
-  servername: hw5.roghanmo.com.
-  tls: true
-  type: vless
-  uuid: a356fa77-7199-417a-80dd-0c0925789161
-  ws-opts:
-    headers:
-      Host: hw5.roghanmo.com
-    path: /
-- name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  port: 465
-  server: hw3.divarkhaghazi.com
-  tls: false
-  type: vless
-  uuid: 924e20da-fcad-4e7e-8113-c62d27a0d01e
-  ws-opts:
-    path: /
-- name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #8'
-  network: ws
-  port: 14430
-  server: 45.144.234.157
-  servername: 45.144.234.157
-  tls: false
-  type: vless
-  uuid: 59b0d30e-9b29-4fda-a35c-b2901ec32db7
-  ws-opts:
-    headers:
-      Host: 45.144.234.157
-    path: /vless
-- name: E-🇫🇷[www.v2nodes.com] vless-FR-1...
-  network: ws
-  port: 20155
-  server: 51.68.34.78
-  tls: false
-  type: vless
-  uuid: 5365cb12-83e2-4e12-8098-c9673ed7f540
-  ws-opts:
-    path: /bp-vless
 - cipher: chacha20-ietf-poly1305
   name: C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   password: lsu1v/3iNERwDDVwxCu5033KCUqQOoElYQul63kmqJ8=
@@ -709,6 +754,12 @@ proxies:
   server: 202.50.253.45
   type: ss
 - cipher: aes-256-gcm
+  name: 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #5'
+  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
+  port: 19999
+  server: 202.50.253.36
+  type: ss
+- cipher: aes-256-gcm
   name: 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #6'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
@@ -721,6 +772,12 @@ proxies:
   server: 202.50.253.90
   type: ss
   udp: true
+- cipher: aes-256-gcm
+  name: 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
+  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
+  port: 19999
+  server: 202.50.253.27
+  type: ss
 - cipher: aes-256-gcm
   name: C-🇮🇹[www.v2nodes.com] ss-IT-1597...
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
@@ -752,28 +809,16 @@ proxies:
   server: 141.164.45.187
   type: ss
 - cipher: chacha20-ietf-poly1305
+  name: C-🇲🇾[www.v2nodes.com] ss-MY-1525...
+  password: 28789988-887e-4e41-83cd-27bbfb7999ad
+  port: 40006
+  server: xunlinknode.csdjhajkshdjkas.com
+  type: ss
+- cipher: chacha20-ietf-poly1305
   name: C-🇳🇱[www.v2nodes.com] ss-NL-1610...
   password: hNfeLCN3XzYgLFSAWo_fxOl4HC1gNw0V
   port: 8044
   server: dns22.m3hrzd.ir
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: C-🇳🇱[www.v2nodes.com] ss-NL-1604...
-  password: AwW1fV6oDDQKh8r2znmptv59tPgt4eHVTgFaTqgKS2jiSdikJ7GyGCBYehDaK38S8yMgHFdbJqcTmRJSfYS5CFw345bNhFZa
-  port: 43385
-  server: sql.popmintxo.cc
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: C-🇳🇴[www.v2nodes.com] ss-NO-1220...
-  password: ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44=
-  port: 990
-  server: 185.213.23.63
-  type: ss
-- cipher: aes-256-gcm
-  name: C-🇵🇭[www.v2nodes.com] ss-PH-1540...
-  password: kDWvXYZoTBcGkC4
-  port: 8882
-  server: 149.104.109.252
   type: ss
 proxy-groups:
 - name: Fine
@@ -781,51 +826,51 @@ proxy-groups:
   proxies:
   - AUTO
   - DIRECT
-  - E-🇩🇪_DE_德国_IPV4
-  - E-🇬🇧_GB_英国->🇲🇾_MY_马来西亚_IPV4
-  - E-🇰🇷_KR_韩国_IPV4
-  - E-🇩🇪_DE_德国_IPV4 (2)
-  - E-🇺🇸_US_美国->🇩🇪_DE_德国_IPV4
-  - E-🇺🇸_US_美国->🇯🇵_JP_日本_IPV4
-  - E-🇱🇻_LV_拉脱维亚->🇯🇵_JP_日本_IPV4
-  - E-🇫🇷_FR_法国->🇯🇵_JP_日本_IPV4
-  - E-🇷🇺_RU_俄罗斯_IPV4
-  - E-🇪🇪_EE_爱沙尼亚_IPV4
-  - E-🇸🇪_SE_瑞典->🇯🇵_JP_日本_IPV4
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (2)
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (3)
-  - E-🇮🇹_IT_意大利_IPV4
-  - E-🇮🇹_IT_意大利_IPV4 (2)
+  - E-🇸🇬_SG_新加坡_IPV4 (2)
+  - E-🇺🇸_US_美国_IPV4 (3)
+  - E-🇺🇸_US_美国_IPV4 (4)
+  - E-🇺🇸_US_美国_IPV4 (5)
+  - E-🇺🇸_US_美国_IPV4 (6)
+  - E-🇺🇸_US_美国_IPV4 (7)
+  - E-🇺🇸_US_美国_IPV4 (8)
+  - E-🇭🇰_HK_香港->🇺🇸_US_美国_IPV4
+  - E-🇺🇸_US_美国_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (10)
+  - E-🇺🇸_US_美国_IPV4 (11)
+  - E-🇺🇸_US_美国_IPV4 (12)
+  - E-🇺🇸_US_美国_IPV4 (13)
+  - E-🇺🇸_US_美国_IPV4 (14)
+  - E-🇸🇬_SG_新加坡_IPV4 (3)
+  - E-🇳🇱_NL_荷兰_IPV4
+  - E-🇳🇱_NL_荷兰_IPV4 (2)
+  - E-🇳🇱_NL_荷兰_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4
+  - E-🇯🇵_JP_日本_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4 (4)
+  - E-🇸🇬_SG_新加坡_IPV4 (4)
+  - E-🏳[www.v2nodes.com] vless-
   - E-🇦🇪[www.v2nodes.com] vless-AE-1...
   - 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #1'
-  - 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #2'
   - E-🇦🇱[www.v2nodes.com] vless-AL-1...
-  - 'E-🇵🇱[www.v2nodes.com] vless-PL-1... #11'
+  - 'E-🏳[www.v2nodes.com] vless- #1'
   - 'E-🇧🇬[www.v2nodes.com] vless-BG-3... #3'
   - 'E-🇧🇬[www.v2nodes.com] vless-BG-3... #4'
-  - 'E-🏳[www.v2nodes.com] vless- #2'
   - 'E-🏳[www.v2nodes.com] vless- #3'
   - 'E-🏳[www.v2nodes.com] vless- #4'
-  - 'E-🏳[www.v2nodes.com] vless- #14'
+  - 'E-🏳[www.v2nodes.com] vless- #5'
+  - 'E-🏳[www.v2nodes.com] vless- #38'
+  - E-🇧🇾[www.v2nodes.com] vless-BY-1...
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
   - E-🇳🇱[www.v2nodes.com] vless-NL
   - E-🇸🇬[www.v2nodes.com] vless-SG
   - 'E-🇸🇬[www.v2nodes.com] vless-SG #1'
-  - E-🇨🇾[www.v2nodes.com] vless-CY-1...
-  - 'E-🇨🇾[www.v2nodes.com] vless-CY-1... #1'
   - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #3'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #4'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #7'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #6'
   - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #8'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #12'
   - 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #1'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #1'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #2'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #8'
-  - E-🇫🇷[www.v2nodes.com] vless-FR-1...
   - C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...
   - C-🏳[www.v2nodes.com] ss-
@@ -850,66 +895,66 @@ proxy-groups:
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #2'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #3'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #4'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #5'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #6'
   - 'C-🇮🇹 意大利 | ITA #2'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
   - C-🇮🇹[www.v2nodes.com] ss-IT-1597...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1599...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1544...
   - C-🇯🇵[www.v2nodes.com] ss-JP-5141...
   - C-🇰🇷[www.v2nodes.com] ss-KR-1185...
+  - C-🇲🇾[www.v2nodes.com] ss-MY-1525...
   - C-🇳🇱[www.v2nodes.com] ss-NL-1610...
-  - C-🇳🇱[www.v2nodes.com] ss-NL-1604...
-  - C-🇳🇴[www.v2nodes.com] ss-NO-1220...
-  - C-🇵🇭[www.v2nodes.com] ss-PH-1540...
-  default-selected: E-🇩🇪_DE_德国_IPV4
+  default-selected: E-🇸🇬_SG_新加坡_IPV4 (2)
 - name: AUTO
   type: url-test
   proxies:
-  - E-🇩🇪_DE_德国_IPV4
-  - E-🇬🇧_GB_英国->🇲🇾_MY_马来西亚_IPV4
-  - E-🇰🇷_KR_韩国_IPV4
-  - E-🇩🇪_DE_德国_IPV4 (2)
-  - E-🇺🇸_US_美国->🇩🇪_DE_德国_IPV4
-  - E-🇺🇸_US_美国->🇯🇵_JP_日本_IPV4
-  - E-🇱🇻_LV_拉脱维亚->🇯🇵_JP_日本_IPV4
-  - E-🇫🇷_FR_法国->🇯🇵_JP_日本_IPV4
-  - E-🇷🇺_RU_俄罗斯_IPV4
-  - E-🇪🇪_EE_爱沙尼亚_IPV4
-  - E-🇸🇪_SE_瑞典->🇯🇵_JP_日本_IPV4
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (2)
-  - E-🇩🇪_DE_德国->🇫🇷_FR_法国_IPV4 (3)
-  - E-🇮🇹_IT_意大利_IPV4
-  - E-🇮🇹_IT_意大利_IPV4 (2)
+  - E-🇸🇬_SG_新加坡_IPV4 (2)
+  - E-🇺🇸_US_美国_IPV4 (3)
+  - E-🇺🇸_US_美国_IPV4 (4)
+  - E-🇺🇸_US_美国_IPV4 (5)
+  - E-🇺🇸_US_美国_IPV4 (6)
+  - E-🇺🇸_US_美国_IPV4 (7)
+  - E-🇺🇸_US_美国_IPV4 (8)
+  - E-🇭🇰_HK_香港->🇺🇸_US_美国_IPV4
+  - E-🇺🇸_US_美国_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (10)
+  - E-🇺🇸_US_美国_IPV4 (11)
+  - E-🇺🇸_US_美国_IPV4 (12)
+  - E-🇺🇸_US_美国_IPV4 (13)
+  - E-🇺🇸_US_美国_IPV4 (14)
+  - E-🇸🇬_SG_新加坡_IPV4 (3)
+  - E-🇳🇱_NL_荷兰_IPV4
+  - E-🇳🇱_NL_荷兰_IPV4 (2)
+  - E-🇳🇱_NL_荷兰_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4
+  - E-🇯🇵_JP_日本_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4 (4)
+  - E-🇸🇬_SG_新加坡_IPV4 (4)
+  - E-🏳[www.v2nodes.com] vless-
   - E-🇦🇪[www.v2nodes.com] vless-AE-1...
   - 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #1'
-  - 'E-🇦🇪[www.v2nodes.com] vless-AE-1... #2'
   - E-🇦🇱[www.v2nodes.com] vless-AL-1...
-  - 'E-🇵🇱[www.v2nodes.com] vless-PL-1... #11'
+  - 'E-🏳[www.v2nodes.com] vless- #1'
   - 'E-🇧🇬[www.v2nodes.com] vless-BG-3... #3'
   - 'E-🇧🇬[www.v2nodes.com] vless-BG-3... #4'
-  - 'E-🏳[www.v2nodes.com] vless- #2'
   - 'E-🏳[www.v2nodes.com] vless- #3'
   - 'E-🏳[www.v2nodes.com] vless- #4'
-  - 'E-🏳[www.v2nodes.com] vless- #14'
+  - 'E-🏳[www.v2nodes.com] vless- #5'
+  - 'E-🏳[www.v2nodes.com] vless- #38'
+  - E-🇧🇾[www.v2nodes.com] vless-BY-1...
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
   - E-🇳🇱[www.v2nodes.com] vless-NL
   - E-🇸🇬[www.v2nodes.com] vless-SG
   - 'E-🇸🇬[www.v2nodes.com] vless-SG #1'
-  - E-🇨🇾[www.v2nodes.com] vless-CY-1...
-  - 'E-🇨🇾[www.v2nodes.com] vless-CY-1... #1'
   - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #3'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #4'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #7'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #6'
   - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #8'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #12'
   - 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #1'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #1'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #2'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #8'
-  - E-🇫🇷[www.v2nodes.com] vless-FR-1...
   - C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...
   - C-🏳[www.v2nodes.com] ss-
@@ -934,17 +979,17 @@ proxy-groups:
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #2'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #3'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #4'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #5'
   - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #6'
   - 'C-🇮🇹 意大利 | ITA #2'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #8'
   - C-🇮🇹[www.v2nodes.com] ss-IT-1597...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1599...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1544...
   - C-🇯🇵[www.v2nodes.com] ss-JP-5141...
   - C-🇰🇷[www.v2nodes.com] ss-KR-1185...
+  - C-🇲🇾[www.v2nodes.com] ss-MY-1525...
   - C-🇳🇱[www.v2nodes.com] ss-NL-1610...
-  - C-🇳🇱[www.v2nodes.com] ss-NL-1604...
-  - C-🇳🇴[www.v2nodes.com] ss-NO-1220...
-  - C-🇵🇭[www.v2nodes.com] ss-PH-1540...
   url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000

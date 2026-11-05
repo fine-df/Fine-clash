@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141373 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141374 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -522,7 +522,7 @@ proxies:
   server: 51.79.85.185
   type: ss
 - cipher: aes-256-gcm
-  name: C-🏳[www.v2nodes.com] ss-
+  name: C-🇨🇦[www.v2nodes.com] ss-CA-1558...
   password: Y6R9pAtvxxzmGC
   port: 5000
   server: 51.222.200.165
@@ -576,12 +576,6 @@ proxies:
   server: dns22.m3hrzd.ir
   type: ss
 - cipher: aes-256-gcm
-  name: C-🇫🇷[www.v2nodes.com] ss-FR-1609...
-  password: lF3nRjH58koKTe-_VtABbg
-  port: 20222
-  server: 51.75.118.5
-  type: ss
-- cipher: aes-256-gcm
   name: C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
@@ -600,25 +594,23 @@ proxies:
   server: 94.156.250.148
   type: ss
 - cipher: aes-256-gcm
-  name: C-🇮🇳[www.v2nodes.com] ss-IN-1561...
+  name: C-🏳[www.v2nodes.com] ss-
   password: GEdoeeqLZtkJRgSa
   port: 8388
   server: 139.84.166.47
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🇮🇹 意大利 | ITA #5'
+  name: 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #2'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 202.50.253.72
   type: ss
-  udp: true
 - cipher: aes-256-gcm
-  name: 'C-🇮🇹 意大利 | ITA #2'
+  name: 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #4'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 202.50.253.36
   type: ss
-  udp: true
 - cipher: aes-256-gcm
   name: C-🇮🇹[www.v2nodes.com] ss-IT-1597...
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
@@ -626,13 +618,7 @@ proxies:
   server: 185.164.175.81
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🏳[www.v2nodes.com] ss- #2'
-  password: qMvJmCbMduKUoeHq
-  port: 8388
-  server: 66.245.207.70
-  type: ss
-- cipher: aes-256-gcm
-  name: 'C-🏳[www.v2nodes.com] ss- #4'
+  name: C-🇯🇵[www.v2nodes.com] ss-JP-1544...
   password: 3eOFeNssde7PYYMv
   port: 80
   server: 84.247.155.196
@@ -649,17 +635,17 @@ proxies:
   port: 443
   server: 149.22.87.240
   type: ss
+- cipher: aes-128-gcm
+  name: 'C-🏳[www.v2nodes.com] ss- #4'
+  password: shadowsocks
+  port: 443
+  server: 149.22.87.241
+  type: ss
 - cipher: aes-256-gcm
   name: C-🇰🇷[www.v2nodes.com] ss-KR-1185...
   password: KixLvKzwjekG00rm
   port: 8000
   server: 141.164.45.187
-  type: ss
-- cipher: aes-256-gcm
-  name: 'C-🏳[www.v2nodes.com] ss- #5'
-  password: BWyPPTusFKhGgzKh
-  port: 8388
-  server: 64.177.90.30
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: C-🇲🇾[www.v2nodes.com] ss-MY-1525...
@@ -668,28 +654,22 @@ proxies:
   server: xunlinknode.csdjhajkshdjkas.com
   type: ss
 - cipher: aes-256-gcm
-  name: C-🇳🇱[www.v2nodes.com] ss-NL-1614...
+  name: 'C-🏳[www.v2nodes.com] ss- #5'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 151.241.19.36
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
+  name: C-🇳🇱[www.v2nodes.com] ss-NL-1614...
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 151.241.19.29
   type: ss
 - cipher: chacha20-ietf-poly1305
-  name: 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #2'
+  name: 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
   password: v1c-i5SSFXP8n4g1Wbc0L9gX82x5O2Qa
   port: 8044
   server: 185.4.115.146
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #3'
-  password: v1c-i5SSFXP8n4g1Wbc0L9gX82x5O2Qa
-  port: 8044
-  server: dns24.m3hrzd.ir
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: C-🇳🇴[www.v2nodes.com] ss-NO-1220...
@@ -698,16 +678,34 @@ proxies:
   server: 185.213.23.63
   type: ss
 - cipher: aes-256-gcm
-  name: C-🇵🇭[www.v2nodes.com] ss-PH-1540...
-  password: kDWvXYZoTBcGkC4
-  port: 8882
-  server: 149.104.109.252
-  type: ss
-- cipher: aes-256-gcm
   name: C-🇵🇱[www.v2nodes.com] ss-PL-1548...
   password: itzvpn@321
   port: 8388
   server: 51.83.192.80
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: C-🇵🇱[www.v2nodes.com] ss-PL-1273...
+  password: 6heexyz
+  port: 443
+  server: 54.36.174.140
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: 'C-🇵🇱[www.v2nodes.com] ss-PL-1273... #1'
+  password: 6heexyz
+  port: 443
+  server: 54.36.174.134
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: C-🇷🇴[www.v2nodes.com] ss-RO-1595...
+  password: U83u9OGpvSatIUW7LsWffr
+  port: 64546
+  server: 194.68.44.42
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: C-🇷🇴[www.v2nodes.com] ss-RO-1298...
+  password: QFWzCw2uX9B9i6qAYeFBIE
+  port: 443
+  server: 154.46.31.106
   type: ss
 proxy-groups:
 - name: Fine
@@ -764,7 +762,7 @@ proxy-groups:
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1559...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
-  - C-🏳[www.v2nodes.com] ss-
+  - C-🇨🇦[www.v2nodes.com] ss-CA-1558...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1557...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1546...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1546... #1'
@@ -773,28 +771,28 @@ proxy-groups:
   - C-🇨🇦[www.v2nodes.com] ss-CA-1538...
   - C-🇪🇸[www.v2nodes.com] ss-ES-1614...
   - C-🇫🇮[www.v2nodes.com] ss-FI-1614...
-  - C-🇫🇷[www.v2nodes.com] ss-FR-1609...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
-  - C-🇮🇳[www.v2nodes.com] ss-IN-1561...
-  - 'C-🇮🇹 意大利 | ITA #5'
-  - 'C-🇮🇹 意大利 | ITA #2'
+  - C-🏳[www.v2nodes.com] ss-
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #2'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #4'
   - C-🇮🇹[www.v2nodes.com] ss-IT-1597...
-  - 'C-🏳[www.v2nodes.com] ss- #2'
-  - 'C-🏳[www.v2nodes.com] ss- #4'
+  - C-🇯🇵[www.v2nodes.com] ss-JP-1544...
   - C-🇯🇵[www.v2nodes.com] ss-JP-5141...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1291...
+  - 'C-🏳[www.v2nodes.com] ss- #4'
   - C-🇰🇷[www.v2nodes.com] ss-KR-1185...
-  - 'C-🏳[www.v2nodes.com] ss- #5'
   - C-🇲🇾[www.v2nodes.com] ss-MY-1525...
+  - 'C-🏳[www.v2nodes.com] ss- #5'
   - C-🇳🇱[www.v2nodes.com] ss-NL-1614...
   - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
-  - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #2'
-  - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #3'
   - C-🇳🇴[www.v2nodes.com] ss-NO-1220...
-  - C-🇵🇭[www.v2nodes.com] ss-PH-1540...
   - C-🇵🇱[www.v2nodes.com] ss-PL-1548...
+  - C-🇵🇱[www.v2nodes.com] ss-PL-1273...
+  - 'C-🇵🇱[www.v2nodes.com] ss-PL-1273... #1'
+  - C-🇷🇴[www.v2nodes.com] ss-RO-1595...
+  - C-🇷🇴[www.v2nodes.com] ss-RO-1298...
   default-selected: E-🇳🇱_NL_荷兰->🇺🇸_US_美国_IPV4
 - name: AUTO
   type: url-test
@@ -848,7 +846,7 @@ proxy-groups:
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1559...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1559... #1'
-  - C-🏳[www.v2nodes.com] ss-
+  - C-🇨🇦[www.v2nodes.com] ss-CA-1558...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1557...
   - C-🇨🇦[www.v2nodes.com] ss-CA-1546...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1546... #1'
@@ -857,28 +855,28 @@ proxy-groups:
   - C-🇨🇦[www.v2nodes.com] ss-CA-1538...
   - C-🇪🇸[www.v2nodes.com] ss-ES-1614...
   - C-🇫🇮[www.v2nodes.com] ss-FI-1614...
-  - C-🇫🇷[www.v2nodes.com] ss-FR-1609...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
-  - C-🇮🇳[www.v2nodes.com] ss-IN-1561...
-  - 'C-🇮🇹 意大利 | ITA #5'
-  - 'C-🇮🇹 意大利 | ITA #2'
+  - C-🏳[www.v2nodes.com] ss-
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #2'
+  - 'C-🇮🇹[www.v2nodes.com] ss-IT-1602... #4'
   - C-🇮🇹[www.v2nodes.com] ss-IT-1597...
-  - 'C-🏳[www.v2nodes.com] ss- #2'
-  - 'C-🏳[www.v2nodes.com] ss- #4'
+  - C-🇯🇵[www.v2nodes.com] ss-JP-1544...
   - C-🇯🇵[www.v2nodes.com] ss-JP-5141...
   - C-🇯🇵[www.v2nodes.com] ss-JP-1291...
+  - 'C-🏳[www.v2nodes.com] ss- #4'
   - C-🇰🇷[www.v2nodes.com] ss-KR-1185...
-  - 'C-🏳[www.v2nodes.com] ss- #5'
   - C-🇲🇾[www.v2nodes.com] ss-MY-1525...
+  - 'C-🏳[www.v2nodes.com] ss- #5'
   - C-🇳🇱[www.v2nodes.com] ss-NL-1614...
   - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #1'
-  - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #2'
-  - 'C-🇳🇱[www.v2nodes.com] ss-NL-1614... #3'
   - C-🇳🇴[www.v2nodes.com] ss-NO-1220...
-  - C-🇵🇭[www.v2nodes.com] ss-PH-1540...
   - C-🇵🇱[www.v2nodes.com] ss-PL-1548...
+  - C-🇵🇱[www.v2nodes.com] ss-PL-1273...
+  - 'C-🇵🇱[www.v2nodes.com] ss-PL-1273... #1'
+  - C-🇷🇴[www.v2nodes.com] ss-RO-1595...
+  - C-🇷🇴[www.v2nodes.com] ss-RO-1298...
   url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000

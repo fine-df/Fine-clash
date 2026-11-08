@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141383 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141384 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -692,11 +692,11 @@ proxies:
   port: 443
   server: 141.98.101.181
   type: ss
-- cipher: aes-256-gcm
-  name: C-🇮🇹[www.v2nodes.com] ss-IT-1616...
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  port: 19999
-  server: 149.50.215.234
+- cipher: chacha20-ietf-poly1305
+  name: C-🇮🇪[www.v2nodes.com] ss-IE-1618...
+  password: WkKqrNHRxQXA-bkL2ztAylXw8mE_BYYs
+  port: 1080
+  server: 83.141.92.138
   type: ss
 proxy-groups:
 - name: Fine
@@ -783,7 +783,7 @@ proxy-groups:
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
   - C-🇬🇧[www.v2nodes.com] ss-GB-9184...
-  - C-🇮🇹[www.v2nodes.com] ss-IT-1616...
+  - C-🇮🇪[www.v2nodes.com] ss-IE-1618...
   default-selected: E-🇯🇵_JP_日本_IPV4
 - name: AUTO
   type: url-test
@@ -867,7 +867,7 @@ proxy-groups:
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
   - C-🇬🇧[www.v2nodes.com] ss-GB-9184...
-  - C-🇮🇹[www.v2nodes.com] ss-IT-1616...
+  - C-🇮🇪[www.v2nodes.com] ss-IE-1618...
   url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000

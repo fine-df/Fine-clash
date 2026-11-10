@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141387 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141388 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -631,25 +631,25 @@ proxies:
   server: 38.109.228.110
   type: ss
 - cipher: aes-256-gcm
-  name: C-🏳[www.v2nodes.com] ss-
+  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #1'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 167.17.64.27
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #1'
+  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #2'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 172.99.189.142
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #2'
+  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #3'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 167.17.64.175
   type: ss
 - cipher: aes-256-gcm
-  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #3'
+  name: 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #4'
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
   server: 167.17.64.22
@@ -766,10 +766,10 @@ proxy-groups:
   - C-🇪🇸[www.v2nodes.com] ss-ES-1495...
   - C-🇫🇷[www.v2nodes.com] ss-FR-1616...
   - C-🇫🇷[www.v2nodes.com] ss-FR-1615...
-  - C-🏳[www.v2nodes.com] ss-
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #1'
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #2'
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #3'
+  - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #4'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1616...
   - 'C-🇬🇧[www.v2nodes.com] ss-GB-1616... #1'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1615...
@@ -850,10 +850,10 @@ proxy-groups:
   - C-🇪🇸[www.v2nodes.com] ss-ES-1495...
   - C-🇫🇷[www.v2nodes.com] ss-FR-1616...
   - C-🇫🇷[www.v2nodes.com] ss-FR-1615...
-  - C-🏳[www.v2nodes.com] ss-
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #1'
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #2'
   - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #3'
+  - 'C-🇫🇷[www.v2nodes.com] ss-FR-1615... #4'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1616...
   - 'C-🇬🇧[www.v2nodes.com] ss-GB-1616... #1'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1615...

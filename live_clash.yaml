@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141393 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141394 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -574,12 +574,6 @@ proxies:
   server: 51.79.49.116
   type: ss
 - cipher: aes-256-gcm
-  name: C-🇨🇦[www.v2nodes.com] ss-CA-1538...
-  password: zDNVedRFPQexG9v
-  port: 445
-  server: 51.222.12.127
-  type: ss
-- cipher: aes-256-gcm
   name: C-🇨🇭[www.v2nodes.com] ss-CH-1616...
   password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
   port: 19999
@@ -717,6 +711,12 @@ proxies:
   port: 443
   server: 158.173.24.73
   type: ss
+- cipher: aes-256-gcm
+  name: C-🇬🇧[www.v2nodes.com] ss-GB-1247...
+  password: RexnBgU7EV5ADxG
+  port: 7001
+  server: 94.156.250.148
+  type: ss
 proxy-groups:
 - name: Fine
   type: select
@@ -779,7 +779,6 @@ proxy-groups:
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1546... #1'
   - C-🇨🇦[www.v2nodes.com] ss-CA-1545...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1545... #1'
-  - C-🇨🇦[www.v2nodes.com] ss-CA-1538...
   - C-🇨🇭[www.v2nodes.com] ss-CH-1616...
   - C-🇨🇭[www.v2nodes.com] ss-CH-1615...
   - 'C-🇨🇭[www.v2nodes.com] ss-CH-1615... #1'
@@ -803,6 +802,7 @@ proxy-groups:
   - 'C-🇬🇧[www.v2nodes.com] ss-GB-1615... #1'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
+  - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
   default-selected: E-🇺🇸_US_美国_IPV4
 - name: AUTO
   type: url-test
@@ -863,7 +863,6 @@ proxy-groups:
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1546... #1'
   - C-🇨🇦[www.v2nodes.com] ss-CA-1545...
   - 'C-🇨🇦[www.v2nodes.com] ss-CA-1545... #1'
-  - C-🇨🇦[www.v2nodes.com] ss-CA-1538...
   - C-🇨🇭[www.v2nodes.com] ss-CH-1616...
   - C-🇨🇭[www.v2nodes.com] ss-CH-1615...
   - 'C-🇨🇭[www.v2nodes.com] ss-CH-1615... #1'
@@ -887,6 +886,7 @@ proxy-groups:
   - 'C-🇬🇧[www.v2nodes.com] ss-GB-1615... #1'
   - C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
+  - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
   url: https://www.google.com/generate_204
   interval: 900
   timeout: 8000

@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261021141408 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261021141409 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -10,172 +10,547 @@ tcp-concurrent: true
 profile:
   store-selected: true
 proxies:
-- type: ss
-  name: E-🇩🇪_DE_德国_IPV4
-  server: 47.254.175.2
-  port: 443
-  password: 8yO3ANWefuuGs1lRKXECQA1FEhxlWFV2ppQMcBaZo5Y=
-  cipher: 2022-blake3-chacha20-poly1305
-  tls: false
-  skip-cert-verify: false
 - type: vless
-  name: E-🇳🇱_NL_荷兰_IPV4
-  server: 79.182.39.131
+  name: E-🇺🇸_US_美国_IPV4
+  server: 172.233.129.179
   port: 443
-  uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
+  uuid: 8d602a84-d258-4953-8ef7-d64afff2e879
   tls: true
-  servername: 717252g.nl8.h1clayd.click
-  sni: 717252g.nl8.h1clayd.click
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
   client-fingerprint: chrome
   reality-opts:
-    public-key: PD8Jdlg3xB9QY--jwQjp8PFPzCS8-Oryw6-HWBcHMFU
-    short-id: d3bd772514c87d28
-  network: grpc
-  grpc-opts:
-    grpc-service-name: 204adda7e3da
+    public-key: 5UVOUoMBYxyWuF-FCbXoEt8LHFkj7iZqZOABlvyvXV8
+    short-id: 955c702b
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (2)
+  server: 172.233.139.98
+  port: 443
+  uuid: 62b5a30a-89de-4da7-b1c0-08abfad0cd1d
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ZtWVf2gAix3etGziWVZ9apsWfWb5UOepCWQqVyIGxHI
+    short-id: 4d3f31a1
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (3)
+  server: 172.233.157.18
+  port: 443
+  uuid: 9a10a216-c8db-48d5-bb91-cf1ef245bd1d
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 4DL3ZveBq9TIQbtIp2ZtIPI6zRFHGdcVAW-poC0UqDA
+    short-id: 30aa62c5
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (4)
+  server: 172.235.63.167
+  port: 443
+  uuid: d95f222c-3a63-47f8-8e61-af83e1f143f5
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: oxf_WPNwjjrO2uknpE9vbM9uwiQ4vbasL-Bgy3lwCHg
+    short-id: dd78b5c3
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (5)
+  server: 45.32.70.42
+  port: 443
+  uuid: 8c392beb-524d-4d0a-a3a6-4d542d54a1ff
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: cQZ-dTY4QSQteDYpngP2PavOsn9yY9lIP-OscwzwAio
+    short-id: 4dda4608
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇸🇬_SG_新加坡_IPV4
+  server: 172.104.48.194
+  port: 443
+  uuid: a28d0884-193d-4591-aa64-8638ba1481ce
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: u_4r8NRmRsN5Ndbt0koyC73DLC7mCcK4wAA0YiIR4ko
+    short-id: b0af872e
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
 - type: vless
   name: E-🇯🇵_JP_日本_IPV4
-  server: zfapi.zalolink.com
-  port: 43149
-  uuid: 57beeeb0-03fc-4fc9-94da-7604488a7134
-  flow: xtls-rprx-vision
-  tls: true
-  servername: psstatic.cdn.bcebos.com
-  sni: psstatic.cdn.bcebos.com
-  skip-cert-verify: false
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: cvong7paE8XIzzbKWgV5iUruP1pBqI2IhMuBHc8c0UE
-    short-id: 15aa0ad4
-- type: vless
-  name: E-🇸🇨_SC_塞舌尔->🇳🇱_NL_荷兰_IPV4
-  server: 196.196.148.63
+  server: 139.162.91.224
   port: 443
-  uuid: cda0862a-0f87-4be9-8ed8-1d0c9e382839
+  uuid: ff3038b1-a2f5-428f-89cd-5d5e4efba8e7
   tls: true
-  servername: 717252g.nl8.h1clayd.click
-  sni: 717252g.nl8.h1clayd.click
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-  client-fingerprint: firefox
-  reality-opts:
-    public-key: PD8Jdlg3xB9QY--jwQjp8PFPzCS8-Oryw6-HWBcHMFU
-    short-id: d3bd772514c87d28
-  network: grpc
-  grpc-opts:
-    grpc-service-name: 204adda7e3da
-- type: vmess
-  name: E-🇺🇸_US_美国_IPV4
-  server: 104.18.42.163
-  port: 443
-  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
-  cipher: auto
-  alterId: 0
-  tls: true
-  servername: guanwang.awsno.com
-  sni: guanwang.awsno.com
   client-fingerprint: chrome
+  reality-opts:
+    public-key: wmbc3kcjbG9-A9Fi7zaHuRVPH7A7UQkKNNvqyqJtMEk
+    short-id: e5b03494
   network: ws
   ws-opts:
-    path: /hls/cctv5phd.m3u8
+    path: /ws
     headers:
-      Host: guanwang.awsno.com
-- type: vmess
-  name: E-@DeltaKroneckerGithub_3021_IPV4
-  server: 172.64.145.93
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (2)
+  server: 172.104.86.181
   port: 443
-  uuid: 6a89a215-22bf-4bd7-9642-b95b2e09583a
-  cipher: auto
-  alterId: 0
+  uuid: 010431f3-04f6-4404-a801-b93bf2e3c2b2
   tls: true
-  servername: guanwang.awsno.com
-  sni: guanwang.awsno.com
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ujYDprigWFLxcj4BtitDNa-hoPjIbpSzrnEcqp3cgjk
+    short-id: c8559ca1
   network: ws
   ws-opts:
-    path: /hls/cctv5phd.m3u8
+    path: /ws
     headers:
-      Host: guanwang.awsno.com
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4
-  server: 202.50.253.27
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (3)
+  server: 172.105.197.24
+  port: 443
+  uuid: 81f4e114-5a60-41b5-9038-8d742380c84f
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (2)
-  server: 202.50.253.36
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: EfNOl6-YAuW-WSg7Op-1YOqKZV9emIuLwH8YPhzc7ms
+    short-id: 772bef67
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (4)
+  server: 139.162.91.137
+  port: 443
+  uuid: 5e6575a1-459c-4077-ac3d-92dea966ad7c
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (3)
-  server: 202.50.253.90
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 4LfX16VwHkHQzoZ04o2VnO85N1o_Y8OcoJwfYdfaIGw
+    short-id: 0c0c806b
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (5)
+  server: 139.162.101.74
+  port: 443
+  uuid: 1e709d98-d4c3-45c1-bdcc-4268cf83eff8
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (4)
-  server: 202.50.253.63
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: jd8UNLpim43LVV-iEzIXlUgTVuvi9Pf7E0kgQb3o0CI
+    short-id: 7e1e09f4
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (6)
+  server: 172.105.203.15
+  port: 443
+  uuid: c8c9b995-b4b9-4915-9c7d-dee94aa733ba
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (5)
-  server: 202.50.253.18
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: HyAx05nhCz5mXxVxWXU1TrWRKdpYE0MHF4-V-LtyhTA
+    short-id: 0784b134
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (7)
+  server: 172.105.212.91
+  port: 443
+  uuid: 1f08d52f-126e-46e3-929a-4b6a58e21168
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (6)
-  server: 202.50.253.54
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: jb8kqeM_3z0NW3huxWLD0ma2eUCFRsiwapF9I_O3Ei8
+    short-id: '17676229'
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇸🇬_SG_新加坡_IPV4 (2)
+  server: 172.104.186.205
+  port: 443
+  uuid: eafa7d0d-db1c-4c91-8fd8-587cd218008e
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (7)
-  server: 202.50.253.45
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: dT50iKOzQz2utAi1tcwsU86hbaS78JeDY_xST0nP5D4
+    short-id: aea01663
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (8)
+  server: 139.162.91.200
+  port: 443
+  uuid: 847bdd83-9e2f-4708-81ed-729a2ca6eeec
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (8)
-  server: 202.50.253.99
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: -g20lzrrmgQb5wbq0vJ2OkZo_-j4KcFq_JDGVp5n_TQ
+    short-id: 7bae4b22
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (9)
+  server: 139.162.89.151
+  port: 443
+  uuid: dbca719d-2cfb-48a2-8bc6-8c658a24b142
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (9)
-  server: 202.50.253.81
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: Q_HUTa9IpIBeTmm71KVwJrzdgBag_PpMtTKoH2fY3Qo
+    short-id: 07febec7
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (6)
+  server: 172.233.129.46
+  port: 443
+  uuid: 325a2d32-286c-44d8-8bf7-d6dc85ecfd53
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- type: ss
-  name: E-🇮🇹_IT_意大利_IPV4 (10)
-  server: 202.50.253.72
-  port: 19999
-  password: ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4=
-  cipher: aes-256-gcm
-  tls: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: Z0yUixOaVZhwnYyI9XtSSqgxBCerCWqticoYPmwPzzA
+    short-id: dd282cb2
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (7)
+  server: 172.236.227.60
+  port: 443
+  uuid: 3c8a110d-f04d-4f0e-9579-fd00631b8830
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
   skip-cert-verify: false
-- name: E-🏳[www.v2nodes.com] vless-
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: BHBzo_I0M-sChoOqTyOczYBP8l1L_dkmB6u3ijAOaGo
+    short-id: 664c1530
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (8)
+  server: 172.233.142.149
+  port: 443
+  uuid: 61e3954d-0d66-4b69-b6cd-9b4fc2352303
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: f9D1ZzG6vP1HgjCaCIutbykWkab8VEDuitwuwaeuBgY
+    short-id: 4206512a
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (9)
+  server: 172.233.156.229
+  port: 443
+  uuid: b9bc6f6c-09b7-43ce-b9c7-312d37f1a312
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: jTnoGvXzAIa2lsfioHHRJ1lAj1xqjowhcCwGcfme8QY
+    short-id: 826efd30
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (10)
+  server: 172.233.139.212
+  port: 443
+  uuid: b21a60ef-9042-42c8-bb13-160528ea19c6
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: bRB-Z_UOQ_sk8UFczAjrpkgKIg6cVdTNGnsyC7vAoyg
+    short-id: 7a87386b
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇸🇬_SG_新加坡_IPV4 (3)
+  server: 149.28.152.20
+  port: 443
+  uuid: e17ca473-bd02-4fe6-873f-5866d729b0a3
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: sli7AT0WEhYMVMARhHh-ZQMK7zHHn0cGsxw2gPhoBis
+    short-id: 107ff148
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇸🇬_SG_新加坡_IPV4 (4)
+  server: 139.180.215.25
+  port: 443
+  uuid: bbc20d3e-0391-48f1-ad72-90a6802f728e
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ybu5pFdSV23WsnMNhbpa8TwV6TJd6NLZ6HX-ggww61A
+    short-id: 83f673ba
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇸🇬_SG_新加坡_IPV4 (5)
+  server: 45.76.191.30
+  port: 443
+  uuid: d8aaaf9a-cea4-4c5a-975b-68ddc26f9891
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: -KlJUCwLvYy2pz5jR2RgmYMEhacPNPhwvlbdiKkAh1Y
+    short-id: 6cc51755
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (11)
+  server: 172.235.51.71
+  port: 443
+  uuid: 3c17ead6-201a-4fba-8246-6327b911a1be
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: rzeXNEmuocvPVMnmettRsJbHQGjQGaZoH7jNw_3GUD8
+    short-id: 4bf84b30
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (12)
+  server: 172.236.241.130
+  port: 443
+  uuid: 21117a67-21c2-4e2a-ba8f-bc49e23b0ae8
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ibi0jOH5SfYhh7ycxdBrqq5oN4ajN3-dNiHKWC2VYWs
+    short-id: 51ecfe9e
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇯🇵_JP_日本_IPV4 (10)
+  server: 172.237.14.205
+  port: 443
+  uuid: 4796e022-f377-4a97-bc03-fbf525d7913c
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: dllB1KTn7oiEqa6OlmZl-j2kF5GN9bAQeoBinYV2cUQ
+    short-id: da26e5a2
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (13)
+  server: 172.235.37.168
+  port: 443
+  uuid: dbac71f3-ab05-4194-985b-f07088bf1a4a
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: 1iwAzh_XzSCYWZEVZ0lfczKFd--jXx3coCt5le58gEM
+    short-id: c52e85fe
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (14)
+  server: 172.233.140.139
+  port: 443
+  uuid: 82b258c9-f4ae-46f6-8c1a-322b316a2e0d
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: l1Tts2VQAnD1We9lPKqw9GqnMAHiIlYhsaw5ASVrTGM
+    short-id: 5c298270
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- type: vless
+  name: E-🇺🇸_US_美国_IPV4 (15)
+  server: 107.191.58.86
+  port: 443
+  uuid: 4444e77e-3d2a-4dc9-bf31-936f038f5570
+  tls: true
+  servername: itunes.apple.com
+  sni: itunes.apple.com
+  skip-cert-verify: false
+  client-fingerprint: chrome
+  reality-opts:
+    public-key: ZZwZGoX0Us8t6nLvckDWskC1c25F9rL0_nUXmd8BFxQ
+    short-id: 8dd324c1
+  network: ws
+  ws-opts:
+    path: /ws
+    headers:
+      Host: itunes.apple.com
+- name: E-🇦🇪[www.v2nodes.com] vless-AE-1...
   network: ws
   port: 14430
   server: 95.174.68.188
@@ -233,20 +608,14 @@ proxies:
     headers:
       Host: 178.172.227.228
     path: /vless
-- name: 'E-🏳[www.v2nodes.com] vless- #2'
-  network: ws
-  port: 14430
+- name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
+  port: 10443
   server: 178.172.227.124
-  servername: 178.172.227.124
   tls: false
   type: vless
   uuid: 1af36694-b548-4b18-89a0-bc076eab4ed7
-  ws-opts:
-    headers:
-      Host: 178.172.227.124
-    path: /vless
 - encryption: none
-  name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
+  name: 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #3'
   network: ws
   port: 14430
   server: 95.128.71.79
@@ -304,7 +673,7 @@ proxies:
     path: /
 - client-fingerprint: chrome
   encryption: none
-  name: 'E-🏳[www.v2nodes.com] vless- #3'
+  name: 'E-🏳[www.v2nodes.com] vless- #1'
   network: ws
   port: 443
   server: cf.008500.xyz
@@ -317,7 +686,7 @@ proxies:
       Host: powered-by-surena.configfarsi695fd01a94fe7.workers.dev
     path: /?ed=2560
 - encryption: none
-  name: 'E-🏳[www.v2nodes.com] vless- #22'
+  name: 'E-🏳[www.v2nodes.com] vless- #20'
   network: ws
   port: 8080
   server: 104.26.13.31
@@ -343,7 +712,7 @@ proxies:
       Host: tn1r.eu.cc
     path: /id-pusat
 - client-fingerprint: chrome
-  name: E-🇩🇪[www.v2nodes.com] vless-DE-1...
+  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #1'
   network: ws
   port: 443
   server: ir2.cryptojakiro.com
@@ -357,7 +726,7 @@ proxies:
     path: /
 - client-fingerprint: chrome
   encryption: none
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
+  name: 'E-🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   network: ws
   port: 443
   server: decdn-28.nome-rkp.net
@@ -369,166 +738,6 @@ proxies:
     headers:
       Host: decdn-28.nome-rkp.net
     path: /media/ws/
-- alpn:
-  - h2
-  - http/1.1
-  client-fingerprint: chrome
-  encryption: none
-  name: 'E-🏳[www.v2nodes.com] vless- #4'
-  network: tcp
-  port: 39653
-  server: online.shop.ir.eeso.cc
-  servername: online.shop.ir.eeso.cc
-  tls: true
-  type: vless
-  uuid: baded307-189c-4ffc-a271-9acdab51a324
-- client-fingerprint: firefox
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #8'
-  network: ws
-  port: 443
-  server: 188.225.37.43
-  servername: torvani.cyou
-  tls: true
-  type: vless
-  uuid: 4cabcd59-a405-4c00-96f5-03507e1e28fa
-  ws-opts:
-    headers:
-      Host: torvani.cyou
-    path: /api/boards/live
-- encryption: none
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #9'
-  network: tcp
-  port: 49313
-  server: 159.195.207.238
-  tls: false
-  type: vless
-  uuid: 855c7aaa-e7d6-463e-971e-d36032744428
-- client-fingerprint: firefox
-  encryption: none
-  name: 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #10'
-  network: ws
-  port: 8443
-  server: 103.31.4.160
-  servername: moz.ar-marz.fun
-  tls: true
-  type: vless
-  uuid: 9443badf-414f-4b12-b19a-7cc2c7431163
-  ws-opts:
-    headers:
-      Host: moz.ar-marz.fun
-    path: /man
-- client-fingerprint: chrome
-  encryption: none
-  grpc-opts:
-    grpc-service-name: a9w9wmko0k2od14hv8v
-  name: 'E-🏳[www.v2nodes.com] vless- #5'
-  network: grpc
-  port: 443
-  server: 5.83.129.236
-  servername: host-de-upscale.cdn.cachefleet.com
-  tls: true
-  type: vless
-  uuid: d86e6fda-e519-46ab-98eb-9ff9a9da5984
-- encryption: none
-  name: 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #4'
-  network: tcp
-  port: 16443
-  server: 45.86.60.174
-  tls: false
-  type: vless
-  uuid: 13e541f3-d09d-4633-89df-8513db0ced20
-- name: E-🇨🇦[www.v2nodes.com] vless-CA
-  network: ws
-  port: 443
-  server: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
-  servername: stf839dvvyog9d2qa4-b8z6ahgn7b7qi.pages.dev
-  tls: true
-  type: vless
-  uuid: b2f2f9f2-1864-48ea-839b-22815faff1f1
-  ws-opts:
-    path: /fp=chrome
-- name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  port: 443
-  server: 146.103.118.189
-  tls: false
-  type: vless
-  uuid: ce698f0c-a8ec-474a-b5d8-3be8032deeb8
-  ws-opts:
-    path: /574ck-finland
-- name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #5'
-  network: ws
-  port: 14430
-  server: 45.144.234.157
-  tls: false
-  type: vless
-  uuid: 59b0d30e-9b29-4fda-a35c-b2901ec32db7
-  ws-opts:
-    headers:
-      Host: 45.144.234.157
-    path: /vless
-- client-fingerprint: chrome
-  name: E-🇫🇮[www.v2nodes.com] vless-FI
-  network: ws
-  port: 8443
-  server: 138.124.49.108
-  servername: fs.qicai99.com
-  tls: true
-  type: vless
-  uuid: 99c5b713-dedf-4a10-8070-916ff3f49b0e
-  ws-opts:
-    headers:
-      Host: fs.qicai99.com
-    path: /fp=chrome
-- client-fingerprint: chrome
-  name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #10'
-  network: ws
-  port: 443
-  server: 138.124.124.157
-  servername: fs.qicai99.com
-  tls: true
-  type: vless
-  uuid: 99c5b713-dedf-4a10-8070-916ff3f49b0e
-  ws-opts:
-    headers:
-      Host: fs.qicai99.com
-    path: /
-- name: 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #11'
-  port: 8443
-  server: 138.124.49.108
-  tls: false
-  type: vless
-  uuid: 99c5b713-dedf-4a10-8070-916ff3f49b0e
-  ws-opts:
-    path: /fp
-- alpn:
-  - http/1.1
-  client-fingerprint: chrome
-  encryption: none
-  name: 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #1'
-  network: ws
-  port: 443
-  server: 3.169.9.125
-  servername: d4afoyczh5tek.cloudfront.net
-  tls: true
-  type: vless
-  uuid: 67cd3349-f789-4cbb-8b91-4b6b1654ce7c
-  ws-opts:
-    headers:
-      Host: d4afoyczh5tek.cloudfront.net
-    path: /
-- client-fingerprint: chrome
-  name: 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #2'
-  network: ws
-  port: 443
-  server: 199.232.78.120
-  servername: cdn.akamai.steamstatic.com
-  tls: true
-  type: vless
-  uuid: 8d2cbffd-43d0-458d-906b-7c54b7b51f38
-  ws-opts:
-    headers:
-      Host: fraboijji.global.ssl.fastly.net.
-    path: /
 - cipher: chacha20-ietf-poly1305
   name: C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   password: LNc9h/4NA9Q6ZHNeYHoT5X/fR9aoE9KQR1SWhVDHBog=
@@ -745,51 +954,51 @@ proxy-groups:
   proxies:
   - AUTO
   - DIRECT
-  - E-🇩🇪_DE_德国_IPV4
-  - E-🇳🇱_NL_荷兰_IPV4
-  - E-🇯🇵_JP_日本_IPV4
-  - E-🇸🇨_SC_塞舌尔->🇳🇱_NL_荷兰_IPV4
   - E-🇺🇸_US_美国_IPV4
-  - E-@DeltaKroneckerGithub_3021_IPV4
-  - E-🇮🇹_IT_意大利_IPV4
-  - E-🇮🇹_IT_意大利_IPV4 (2)
-  - E-🇮🇹_IT_意大利_IPV4 (3)
-  - E-🇮🇹_IT_意大利_IPV4 (4)
-  - E-🇮🇹_IT_意大利_IPV4 (5)
-  - E-🇮🇹_IT_意大利_IPV4 (6)
-  - E-🇮🇹_IT_意大利_IPV4 (7)
-  - E-🇮🇹_IT_意大利_IPV4 (8)
-  - E-🇮🇹_IT_意大利_IPV4 (9)
-  - E-🇮🇹_IT_意大利_IPV4 (10)
-  - E-🏳[www.v2nodes.com] vless-
+  - E-🇺🇸_US_美国_IPV4 (2)
+  - E-🇺🇸_US_美国_IPV4 (3)
+  - E-🇺🇸_US_美国_IPV4 (4)
+  - E-🇺🇸_US_美国_IPV4 (5)
+  - E-🇸🇬_SG_新加坡_IPV4
+  - E-🇯🇵_JP_日本_IPV4
+  - E-🇯🇵_JP_日本_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4 (4)
+  - E-🇯🇵_JP_日本_IPV4 (5)
+  - E-🇯🇵_JP_日本_IPV4 (6)
+  - E-🇯🇵_JP_日本_IPV4 (7)
+  - E-🇸🇬_SG_新加坡_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (8)
+  - E-🇯🇵_JP_日本_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (6)
+  - E-🇺🇸_US_美国_IPV4 (7)
+  - E-🇺🇸_US_美国_IPV4 (8)
+  - E-🇺🇸_US_美国_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (10)
+  - E-🇸🇬_SG_新加坡_IPV4 (3)
+  - E-🇸🇬_SG_新加坡_IPV4 (4)
+  - E-🇸🇬_SG_新加坡_IPV4 (5)
+  - E-🇺🇸_US_美国_IPV4 (11)
+  - E-🇺🇸_US_美国_IPV4 (12)
+  - E-🇯🇵_JP_日本_IPV4 (10)
+  - E-🇺🇸_US_美国_IPV4 (13)
+  - E-🇺🇸_US_美国_IPV4 (14)
+  - E-🇺🇸_US_美国_IPV4 (15)
+  - E-🇦🇪[www.v2nodes.com] vless-AE-1...
   - E-🇦🇹[www.v2nodes.com] vless-AT-1...
   - E-🇦🇹[www.v2nodes.com] vless-AT-3...
   - 'E-🇦🇺[www.v2nodes.com] vless-AU-1... #2'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
-  - 'E-🏳[www.v2nodes.com] vless- #2'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
+  - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #3'
   - E-🇨🇦[www.v2nodes.com] vless-CA-1...
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #1'
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #2'
-  - 'E-🏳[www.v2nodes.com] vless- #3'
-  - 'E-🏳[www.v2nodes.com] vless- #22'
+  - 'E-🏳[www.v2nodes.com] vless- #1'
+  - 'E-🏳[www.v2nodes.com] vless- #20'
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #4'
-  - E-🇩🇪[www.v2nodes.com] vless-DE-1...
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
-  - 'E-🏳[www.v2nodes.com] vless- #4'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #8'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #9'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #10'
-  - 'E-🏳[www.v2nodes.com] vless- #5'
-  - 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #4'
-  - E-🇨🇦[www.v2nodes.com] vless-CA
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #5'
-  - E-🇫🇮[www.v2nodes.com] vless-FI
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #10'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #11'
-  - 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #1'
-  - 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #2'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #1'
+  - 'E-🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1614...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...
@@ -825,55 +1034,55 @@ proxy-groups:
   - C-🇬🇧[www.v2nodes.com] ss-GB-1602...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1451...
   - C-🇬🇧[www.v2nodes.com] ss-GB-1247...
-  default-selected: E-🇩🇪_DE_德国_IPV4
+  default-selected: E-🇺🇸_US_美国_IPV4
 - name: AUTO
   type: url-test
   proxies:
-  - E-🇩🇪_DE_德国_IPV4
-  - E-🇳🇱_NL_荷兰_IPV4
-  - E-🇯🇵_JP_日本_IPV4
-  - E-🇸🇨_SC_塞舌尔->🇳🇱_NL_荷兰_IPV4
   - E-🇺🇸_US_美国_IPV4
-  - E-@DeltaKroneckerGithub_3021_IPV4
-  - E-🇮🇹_IT_意大利_IPV4
-  - E-🇮🇹_IT_意大利_IPV4 (2)
-  - E-🇮🇹_IT_意大利_IPV4 (3)
-  - E-🇮🇹_IT_意大利_IPV4 (4)
-  - E-🇮🇹_IT_意大利_IPV4 (5)
-  - E-🇮🇹_IT_意大利_IPV4 (6)
-  - E-🇮🇹_IT_意大利_IPV4 (7)
-  - E-🇮🇹_IT_意大利_IPV4 (8)
-  - E-🇮🇹_IT_意大利_IPV4 (9)
-  - E-🇮🇹_IT_意大利_IPV4 (10)
-  - E-🏳[www.v2nodes.com] vless-
+  - E-🇺🇸_US_美国_IPV4 (2)
+  - E-🇺🇸_US_美国_IPV4 (3)
+  - E-🇺🇸_US_美国_IPV4 (4)
+  - E-🇺🇸_US_美国_IPV4 (5)
+  - E-🇸🇬_SG_新加坡_IPV4
+  - E-🇯🇵_JP_日本_IPV4
+  - E-🇯🇵_JP_日本_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (3)
+  - E-🇯🇵_JP_日本_IPV4 (4)
+  - E-🇯🇵_JP_日本_IPV4 (5)
+  - E-🇯🇵_JP_日本_IPV4 (6)
+  - E-🇯🇵_JP_日本_IPV4 (7)
+  - E-🇸🇬_SG_新加坡_IPV4 (2)
+  - E-🇯🇵_JP_日本_IPV4 (8)
+  - E-🇯🇵_JP_日本_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (6)
+  - E-🇺🇸_US_美国_IPV4 (7)
+  - E-🇺🇸_US_美国_IPV4 (8)
+  - E-🇺🇸_US_美国_IPV4 (9)
+  - E-🇺🇸_US_美国_IPV4 (10)
+  - E-🇸🇬_SG_新加坡_IPV4 (3)
+  - E-🇸🇬_SG_新加坡_IPV4 (4)
+  - E-🇸🇬_SG_新加坡_IPV4 (5)
+  - E-🇺🇸_US_美国_IPV4 (11)
+  - E-🇺🇸_US_美国_IPV4 (12)
+  - E-🇯🇵_JP_日本_IPV4 (10)
+  - E-🇺🇸_US_美国_IPV4 (13)
+  - E-🇺🇸_US_美国_IPV4 (14)
+  - E-🇺🇸_US_美国_IPV4 (15)
+  - E-🇦🇪[www.v2nodes.com] vless-AE-1...
   - E-🇦🇹[www.v2nodes.com] vless-AT-1...
   - E-🇦🇹[www.v2nodes.com] vless-AT-3...
   - 'E-🇦🇺[www.v2nodes.com] vless-AU-1... #2'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #1'
-  - 'E-🏳[www.v2nodes.com] vless- #2'
   - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #2'
+  - 'E-🇧🇾[www.v2nodes.com] vless-BY-1... #3'
   - E-🇨🇦[www.v2nodes.com] vless-CA-1...
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #1'
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #2'
-  - 'E-🏳[www.v2nodes.com] vless- #3'
-  - 'E-🏳[www.v2nodes.com] vless- #22'
+  - 'E-🏳[www.v2nodes.com] vless- #1'
+  - 'E-🏳[www.v2nodes.com] vless- #20'
   - 'E-🇨🇦[www.v2nodes.com] vless-CA-1... #4'
-  - E-🇩🇪[www.v2nodes.com] vless-DE-1...
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #3'
-  - 'E-🏳[www.v2nodes.com] vless- #4'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #8'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #9'
-  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #10'
-  - 'E-🏳[www.v2nodes.com] vless- #5'
-  - 'E-🇪🇪[www.v2nodes.com] vless-EE-1... #4'
-  - E-🇨🇦[www.v2nodes.com] vless-CA
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #4'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #5'
-  - E-🇫🇮[www.v2nodes.com] vless-FI
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #10'
-  - 'E-🇫🇮[www.v2nodes.com] vless-FI-1... #11'
-  - 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #1'
-  - 'E-🇫🇷[www.v2nodes.com] vless-FR-1... #2'
+  - 'E-🇩🇪[www.v2nodes.com] vless-DE-1... #1'
+  - 'E-🇮🇳[www.v2nodes.com] vless-IN-1... #1'
   - C-🇦🇱[www.v2nodes.com] ss-AL-1490...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1614...
   - C-🇦🇹[www.v2nodes.com] ss-AT-1595...

@@ -34,34 +34,27 @@ OUT = Path("live_clash.yaml")
 CFG = Path("config.yaml")
 
 # ---- Free source catalog -----
-# 2026-11-21 SOURCE SWAP (round 2): all previously listed sources were proven
-# dead/near-dead on a clock-correct host with a strict per-node delay test
-# (TCP-open != proxy-usable):
-#   mahdibland Eternity/sub_merge -> 0.2% alive, chengao JP/SG/all -> ~0.
-# They are removed. Replaced with Au1rxx/free-vpn-subscriptions, which is the
-# only source that verifies nodes by ACTUALLY pushing HTTP traffic through
-# sing-box (not just TCP handshake) before publishing, and refreshes hourly.
-# Measured alive density of Au1rxx verified shards was by far the highest.
-# NOTE: Au1rxx nodes are short-lived (~20-30 min); freshness comes from the
-# hourly upstream refresh + CI rebuild, NOT from node longevity. Because the
-# live nodes are scattered arbitrarily inside each shard, we take ALL valid
-# nodes from every shard (large `take`) and let the client-side url-test pick
-# the survivors. Do not tune `take` to a specific observed snapshot.
+# 2026-11-21 SOURCE SWAP (round 3): strict per-node delay tests showed Au1rxx
+# verified shards decayed to ~10/2553 live, and an earlier 89-alive snapshot
+# fell to 18 after 25 minutes. Replaced with live-tested public free sources:
+#   - yy1588133/proxy-pool: 1183 nodes; 252 alive at probe, 182 still alive
+#     22 minutes later (72% retention) -- by far the best pool tested.
+#   - OgdenThomas/freesub and kooker/FreeSubsCheck: small actively-refreshed
+#     YAML pools kept as diversity backup.
+# http and socks5 are allowed: all four clients parse them, and they account
+# for most of the surviving yypool nodes. hysteria/wireguard/anytls remain
+# excluded to avoid breaking Shadowrocket's partial Clash parser.
 # The builder runs on a US GitHub Actions runner where raw.githubusercontent.com
 # is directly reachable; jsDelivr is only for CLIENT-side pull of the final file.
 # Each entry: id, url, prefix (avoid name collisions), take (max per source).
-_AU1 = "https://raw.githubusercontent.com/Au1rxx/free-vpn-subscriptions/main/"
 SOURCES = [
-    {"id": "au1-v1", "url": _AU1 + "output/all-verified/clash-0001.yaml", "prefix": "A1-", "take": 2000},
-    {"id": "au1-v2", "url": _AU1 + "output/all-verified/clash-0002.yaml", "prefix": "A2-", "take": 2000},
-    {"id": "au1-v3", "url": _AU1 + "output/all-verified/clash-0003.yaml", "prefix": "A3-", "take": 2000},
-    {"id": "au1-v4", "url": _AU1 + "output/all-verified/clash-0004.yaml", "prefix": "A4-", "take": 2000},
-    {"id": "au1-v5", "url": _AU1 + "output/all-verified/clash-0005.yaml", "prefix": "A5-", "take": 2000},
-    {"id": "au1-v6", "url": _AU1 + "output/all-verified/clash-0006.yaml", "prefix": "A6-", "take": 2000},
-    {"id": "au1-trojan", "url": _AU1 + "output/protocol/trojan/clash-0001.yaml", "prefix": "AT-", "take": 2000},
+    {"id": "yypool-main", "url": "https://raw.githubusercontent.com/yy1588133/proxy-pool/main/clash.yaml", "prefix": "YP-", "take": 2000},
+    {"id": "freesub-all", "url": "https://raw.githubusercontent.com/OgdenThomas/freesub/main/output/clash.yaml", "prefix": "FS-", "take": 1000},
+    {"id": "kooker-all", "url": "https://raw.githubusercontent.com/kooker/FreeSubsCheck/main/all.yaml", "prefix": "KA-", "take": 200},
+    {"id": "kooker-mihomo", "url": "https://raw.githubusercontent.com/kooker/FreeSubsCheck/main/mihomo.yaml", "prefix": "KM-", "take": 200},
 ]
 
-ALLOWED_TYPES = {"vmess", "vless", "trojan", "ss"}
+ALLOWED_TYPES = {"vmess", "vless", "trojan", "ss", "http", "socks5"}
 HEALTH_URL = "https://www.google.com/generate_204"
 
 # Junk / decoy / placeholder node names from free aggregators (not real proxies).

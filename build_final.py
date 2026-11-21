@@ -34,43 +34,31 @@ OUT = Path("live_clash.yaml")
 CFG = Path("config.yaml")
 
 # ---- Free source catalog -----
-# 2026-11-21 SOURCE SWAP: the previous sources (ermaozi/get_subscribe + the
-# chengaopan all-region nodes.yml) degraded to 0 LIVE nodes — verified on a
-# clock-correct host with a real per-node delay test: those pools were full of
-# dead v2nodes/fugui/lucity endpoints whose TCP port is open but whose proxy
-# protocol handshake/relay fails. Replaced with sources that PASSED the same
-# live test (2026-11-21):
-#   mahdibland/V2RayAggregator Eternity.yml -> 12/40 alive (best, refreshed daily)
-#   chengaopan JP/SG region files          -> near-China, some alive
-# The builder runs on a US GitHub Actions runner, so raw.githubusercontent.com
-# is directly reachable there; jsDelivr is only needed for CLIENT-side pull of
-# the final profile (fine-df/Fine-clash), not for these upstream sources.
+# 2026-11-21 SOURCE SWAP (round 2): all previously listed sources were proven
+# dead/near-dead on a clock-correct host with a strict per-node delay test
+# (TCP-open != proxy-usable):
+#   mahdibland Eternity/sub_merge -> 0.2% alive, chengao JP/SG/all -> ~0.
+# They are removed. Replaced with Au1rxx/free-vpn-subscriptions, which is the
+# only source that verifies nodes by ACTUALLY pushing HTTP traffic through
+# sing-box (not just TCP handshake) before publishing, and refreshes hourly.
+# Measured alive density of Au1rxx verified shards was by far the highest.
+# NOTE: Au1rxx nodes are short-lived (~20-30 min); freshness comes from the
+# hourly upstream refresh + CI rebuild, NOT from node longevity. Because the
+# live nodes are scattered arbitrarily inside each shard, we take ALL valid
+# nodes from every shard (large `take`) and let the client-side url-test pick
+# the survivors. Do not tune `take` to a specific observed snapshot.
+# The builder runs on a US GitHub Actions runner where raw.githubusercontent.com
+# is directly reachable; jsDelivr is only for CLIENT-side pull of the final file.
 # Each entry: id, url, prefix (avoid name collisions), take (max per source).
+_AU1 = "https://raw.githubusercontent.com/Au1rxx/free-vpn-subscriptions/main/"
 SOURCES = [
-    {
-        "id": "mahdibland",
-        "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml",
-        "prefix": "M-",
-        "take": 80,
-    },
-    {
-        "id": "chengao-jp",
-        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_JP.yml",
-        "prefix": "J-",
-        "take": 12,
-    },
-    {
-        "id": "chengao-sg",
-        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_SG.yml",
-        "prefix": "G-",
-        "take": 12,
-    },
-    {
-        "id": "chengao-all",
-        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes.yml",
-        "prefix": "C-",
-        "take": 20,
-    },
+    {"id": "au1-v1", "url": _AU1 + "output/all-verified/clash-0001.yaml", "prefix": "A1-", "take": 2000},
+    {"id": "au1-v2", "url": _AU1 + "output/all-verified/clash-0002.yaml", "prefix": "A2-", "take": 2000},
+    {"id": "au1-v3", "url": _AU1 + "output/all-verified/clash-0003.yaml", "prefix": "A3-", "take": 2000},
+    {"id": "au1-v4", "url": _AU1 + "output/all-verified/clash-0004.yaml", "prefix": "A4-", "take": 2000},
+    {"id": "au1-v5", "url": _AU1 + "output/all-verified/clash-0005.yaml", "prefix": "A5-", "take": 2000},
+    {"id": "au1-v6", "url": _AU1 + "output/all-verified/clash-0006.yaml", "prefix": "A6-", "take": 2000},
+    {"id": "au1-trojan", "url": _AU1 + "output/protocol/trojan/clash-0001.yaml", "prefix": "AT-", "take": 2000},
 ]
 
 ALLOWED_TYPES = {"vmess", "vless", "trojan", "ss"}

@@ -143,6 +143,19 @@ def valid_node(n):
     return True
 
 
+def clean_name(prefix, node):
+    """Build a short ASCII-only proxy name. Au1rxx names (36332, pure ASCII)
+    worked on Shadowrocket for a month; yypool names carry emoji/CJK/#/[] and
+    Shadowrocket fails to update. Name = prefix + type + server + md5(original)
+    so it is unique, stable and contains no non-ASCII characters."""
+    import hashlib
+    raw = str(node.get("name", ""))
+    srv = re.sub(r"[^A-Za-z0-9]", "", str(node.get("server", "")))[:24]
+    tag = str(node.get("type", "p"))[:6]
+    h = hashlib.md5(raw.encode("utf-8", "replace")).hexdigest()[:8]
+    return f"{prefix}{tag}-{srv}-{h}"
+
+
 def sanitize_node(node):
     """Strip fields/modes Shadowrocket cannot parse. Return None if unusable."""
     t = str(node.get("type"))
@@ -187,7 +200,7 @@ def collect_flat():
             if not valid_node(n):
                 continue
             node = dict(n)
-            node["name"] = f"{src['prefix']}{str(node['name']).strip()}"
+            node["name"] = clean_name(src["prefix"], node)
             node = sanitize_node(node)
             if not node:
                 continue

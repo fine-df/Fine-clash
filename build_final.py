@@ -41,9 +41,13 @@ CFG = Path("config.yaml")
 #     22 minutes later (72% retention) -- by far the best pool tested.
 #   - OgdenThomas/freesub and kooker/FreeSubsCheck: small actively-refreshed
 #     YAML pools kept as diversity backup.
-# http and socks5 are allowed: all four clients parse them, and they account
-# for most of the surviving yypool nodes. hysteria/wireguard/anytls remain
-# excluded to avoid breaking Shadowrocket's partial Clash parser.
+# 2026-11-21 ROLLBACK (round 4): round 3 added http/socks5 and let yypool's
+# mihomo-private fields (x-toolall-mihomo, xhttp-opts, packet-encoding, ...)
+# and non-standard networks (xhttp/httpupgrade/http) into the flat proxies.
+# Shadowrocket (iOS) has a partial Clash parser and stopped being able to
+# update/parse the profile. Roll back to the exact shape that worked for a
+# month: 4 standard types + a strict per-type field whitelist + standard
+# networks only. hysteria/wireguard/anytls/xhttp/httpupgrade stay excluded.
 # The builder runs on a US GitHub Actions runner where raw.githubusercontent.com
 # is directly reachable; jsDelivr is only for CLIENT-side pull of the final file.
 # Each entry: id, url, prefix (avoid name collisions), take (max per source).
@@ -54,7 +58,24 @@ SOURCES = [
     {"id": "kooker-mihomo", "url": "https://raw.githubusercontent.com/kooker/FreeSubsCheck/main/mihomo.yaml", "prefix": "KM-", "take": 200},
 ]
 
-ALLOWED_TYPES = {"vmess", "vless", "trojan", "ss", "http", "socks5"}
+ALLOWED_TYPES = {"vmess", "vless", "trojan", "ss"}
+
+# Strict field whitelist per type: only fields present in the config that
+# worked on all four ends for a month. Drops mihomo-private junk fields that
+# Shadowrocket's parser rejects (x-toolall-mihomo, sub_tag, xudp,
+# packet-encoding, delay, xhttp-opts, httpupgrade-opts, client-fingerprint...).
+_COMMON_FIELDS = {"name", "server", "port", "type", "udp"}
+ALLOWED_FIELDS = {
+    "ss":     _COMMON_FIELDS | {"cipher", "password", "plugin", "plugin-opts"},
+    "vmess":  _COMMON_FIELDS | {"uuid", "alterId", "cipher", "tls", "servername", "skip-cert-verify", "network", "ws-opts", "grpc-opts", "sni", "alpn"},
+    "vless":  _COMMON_FIELDS | {"uuid", "flow", "tls", "servername", "skip-cert-verify", "network", "ws-opts", "grpc-opts", "reality-opts", "sni", "alpn"},
+    "trojan": _COMMON_FIELDS | {"password", "sni", "alpn", "tls", "skip-cert-verify", "network", "ws-opts", "grpc-opts"},
+}
+# Shadowrocket cannot handle these Clash.Meta network modes.
+ALLOWED_NETWORKS = {"ws", "grpc", "tcp", "h2"}
+ALLOWED_WS_FIELDS = {"path", "headers"}
+ALLOWED_REALITY_FIELDS = {"public-key", "short-id"}
+ALLOWED_GRPC_FIELDS = {"grpc-service-name", "grpc-mode"}
 HEALTH_URL = "https://www.google.com/generate_204"
 
 # Junk / decoy / placeholder node names from free aggregators (not real proxies).
@@ -122,6 +143,31 @@ def valid_node(n):
     return True
 
 
+def sanitize_node(node):
+    """Strip fields/modes Shadowrocket cannot parse. Return None if unusable."""
+    t = str(node.get("type"))
+    allowed = ALLOWED_FIELDS.get(t)
+    if not allowed:
+        return None
+    net = str(node.get("network", "tcp"))
+    if net not in ALLOWED_NETWORKS:
+        return None
+    clean = {k: v for k, v in node.items() if k in allowed}
+    # tcp is the implicit default in Clash; emitting network:tcp is harmless but
+    # keep only if present to avoid altering behavior.
+    if net != "tcp":
+        clean["network"] = net
+    else:
+        clean.pop("network", None)
+    for parent, subfields in (("ws-opts", ALLOWED_WS_FIELDS),
+                              ("reality-opts", ALLOWED_REALITY_FIELDS),
+                              ("grpc-opts", ALLOWED_GRPC_FIELDS)):
+        sub = clean.get(parent)
+        if isinstance(sub, dict):
+            clean[parent] = {k: v for k, v in sub.items() if k in subfields}
+    return clean
+
+
 def collect_flat():
     """Aggregate a fresh, prefixed, de-duplicated flat node list for all clients."""
     flat = []
@@ -142,6 +188,9 @@ def collect_flat():
                 continue
             node = dict(n)
             node["name"] = f"{src['prefix']}{str(node['name']).strip()}"
+            node = sanitize_node(node)
+            if not node:
+                continue
             fp = fingerprint(node)
             if fp in seen:
                 continue

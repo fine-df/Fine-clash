@@ -33,21 +33,43 @@ import yaml
 OUT = Path("live_clash.yaml")
 CFG = Path("config.yaml")
 
-# ---- Free source catalog (jsDelivr-wrapped GitHub raw = China-reachable) -----
-# Each entry: id, url, prefix(for embedded flat list to avoid name collisions
-# across sources), take(max embedded from this source).
+# ---- Free source catalog -----
+# 2026-11-21 SOURCE SWAP: the previous sources (ermaozi/get_subscribe + the
+# chengaopan all-region nodes.yml) degraded to 0 LIVE nodes — verified on a
+# clock-correct host with a real per-node delay test: those pools were full of
+# dead v2nodes/fugui/lucity endpoints whose TCP port is open but whose proxy
+# protocol handshake/relay fails. Replaced with sources that PASSED the same
+# live test (2026-11-21):
+#   mahdibland/V2RayAggregator Eternity.yml -> 12/40 alive (best, refreshed daily)
+#   chengaopan JP/SG region files          -> near-China, some alive
+# The builder runs on a US GitHub Actions runner, so raw.githubusercontent.com
+# is directly reachable there; jsDelivr is only needed for CLIENT-side pull of
+# the final profile (fine-df/Fine-clash), not for these upstream sources.
+# Each entry: id, url, prefix (avoid name collisions), take (max per source).
 SOURCES = [
     {
-        "id": "ermaozi",
-        "url": "https://cdn.jsdelivr.net/gh/ermaozi/get_subscribe@main/subscribe/clash.yml",
-        "prefix": "E-",
-        "take": 45,
+        "id": "mahdibland",
+        "url": "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/Eternity.yml",
+        "prefix": "M-",
+        "take": 80,
     },
     {
-        "id": "chengaopan",
-        "url": "https://cdn.jsdelivr.net/gh/chengaopan/AutoMergePublicNodes@main/snippets/nodes.yml",
+        "id": "chengao-jp",
+        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_JP.yml",
+        "prefix": "J-",
+        "take": 12,
+    },
+    {
+        "id": "chengao-sg",
+        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes_SG.yml",
+        "prefix": "G-",
+        "take": 12,
+    },
+    {
+        "id": "chengao-all",
+        "url": "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/snippets/nodes.yml",
         "prefix": "C-",
-        "take": 35,
+        "take": 20,
     },
 ]
 

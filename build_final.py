@@ -95,9 +95,6 @@ WPS_DIRECT = ["DOMAIN-SUFFIX,wps.cn,DIRECT","DOMAIN-SUFFIX,wps.com,DIRECT","DOMA
 XIAOMI_DIRECT = ["DOMAIN-SUFFIX,mi.com,DIRECT","DOMAIN-SUFFIX,xiaomi.com,DIRECT","DOMAIN-SUFFIX,miwifi.com,DIRECT","DOMAIN-SUFFIX,miui.com,DIRECT","DOMAIN-SUFFIX,mijia.com,DIRECT","DOMAIN-SUFFIX,xiaomi.cn,DIRECT"]
 LOCAL_IOT_DIRECT = ["IP-CIDR,224.0.0.0/4,DIRECT,no-resolve","IP-CIDR,169.254.0.0/16,DIRECT,no-resolve"]
 PRIVATE_DIRECT = ["DOMAIN-SUFFIX,lan,DIRECT","DOMAIN-SUFFIX,local,DIRECT","DOMAIN-SUFFIX,localhost,DIRECT","DOMAIN-SUFFIX,cn,DIRECT","DOMAIN-SUFFIX,com.cn,DIRECT","DOMAIN-SUFFIX,net.cn,DIRECT","DOMAIN-SUFFIX,gov.cn,DIRECT","DOMAIN-SUFFIX,edu.cn,DIRECT","IP-CIDR,10.0.0.0/8,DIRECT,no-resolve","IP-CIDR,172.16.0.0/12,DIRECT,no-resolve","IP-CIDR,192.168.0.0/16,DIRECT,no-resolve","IP-CIDR,127.0.0.0/8,DIRECT,no-resolve"]
-# Keep subscription-refresh traffic on domestic-reachable links so the client can
-# re-pull this very file even when its current nodes are slow/dead.
-SUBSCRIPTION_CDN_DIRECT = ["DOMAIN-SUFFIX,jsdelivr.net,DIRECT","DOMAIN-SUFFIX,github.com,DIRECT","DOMAIN-SUFFIX,raw.githubusercontent.com,DIRECT"]
 
 UA = "Fine-clash-builder/1.0 (+https://github.com/fine-df/Fine-clash)"
 
@@ -244,7 +241,6 @@ def build_config(flat_nodes):
              + [f"DOMAIN-SUFFIX,{d},Fine" for d in VIDEO_DOMAINS]
              + [f"DOMAIN-SUFFIX,{d},Fine" for d in STORE_DOMAINS]
              + ["GEOIP,CN,DIRECT"]
-             + SUBSCRIPTION_CDN_DIRECT
              + ["MATCH,Fine"])
     return {
         "mixed-port": 7890,

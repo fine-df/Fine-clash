@@ -10963,7 +10963,4 @@ rules:
 - DOMAIN-SUFFIX,steampowered.com,Fine
 - DOMAIN-SUFFIX,steamcommunity.com,Fine
 - GEOIP,CN,DIRECT
-- DOMAIN-SUFFIX,jsdelivr.net,DIRECT
-- DOMAIN-SUFFIX,github.com,DIRECT
-- DOMAIN-SUFFIX,raw.githubusercontent.com,DIRECT
 - MATCH,Fine

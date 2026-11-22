@@ -6,7 +6,7 @@
 PATH=$PATH:/tmp/ShellCrash:/tmp/ctest:/data/clash/bin
 export PATH
 
-URL="https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml"
+URL="https://gcore.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml"
 DST="/tmp/ShellCrash/live_clash.yaml"
 TPL="/data/clash/yamls/config.yaml"
 TMP="/tmp/live_clash.sync"

@@ -2,7 +2,7 @@
 
 唯一对外订阅地址：
 
-https://cdn.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
+https://gcore.jsdelivr.net/gh/fine-df/Fine-clash@main/live_clash.yaml
 
 备用原始地址：
 

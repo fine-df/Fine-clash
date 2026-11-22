@@ -23,11 +23,18 @@ Architecture (2026-10-24, fail-safe flat aggregation):
 """
 from __future__ import annotations
 import re
+import shutil
+import socket
 import ssl
+import subprocess
 import sys
+import tempfile
+import time
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
+import requests
 import yaml
 
 OUT = Path("live_clash.yaml")
@@ -77,6 +84,34 @@ ALLOWED_WS_FIELDS = {"path", "headers"}
 ALLOWED_REALITY_FIELDS = {"public-key", "short-id"}
 ALLOWED_GRPC_FIELDS = {"grpc-service-name", "grpc-mode"}
 HEALTH_URL = "https://www.google.com/generate_204"
+
+# ---- Live proxy probe (restores Gemini / Google-Play preference + node
+# retention that were lost in the 2026-10-24 flat-aggregation rewrite) ----
+# A real mihomo tunnel pushes traffic THROUGH each candidate node to probe which
+# nodes can actually open Gemini / Google Play / google-204. Nodes that pass are
+# ranked FIRST so the client-side url-test (AUTO group) and the default-selected
+# pick prefer them; the previous profile's still-alive nodes stay pinned on top
+# (continuity). This only REORDERS nodes -- fields are untouched, so the four
+# clients' parse compatibility is unchanged.
+PROBE_URLS = {
+    "gemini": "https://gemini.google.com/",
+    "google_play": "https://play.google.com/store",
+    "google": "https://www.google.com/generate_204",
+}
+# How many fresh nodes to probe (plus the previous profile's nodes). Kept small
+# so CI stays well under the timeout; unprobed nodes are still published, just
+# ranked after the probed ones.
+PROBE_TEST_COUNT = 100
+PROBE_WORKERS = 6
+PROBE_TIMEOUT_SECONDS = 8
+PROBE_SWITCH_WAIT_SECONDS = 0.4
+PROBE_SUCCESS_STATUSES = (200, 204, 301, 302)
+# Continuity reserve: keep up to this many previous-profile nodes pinned on top.
+MAX_PREVIOUS_NODES = 20
+# Score weights: Gemini and Google Play are the user's hard requirements.
+SCORE_GEMINI = 25
+SCORE_PLAY = 20
+SCORE_GOOGLE = 20
 
 # Junk / decoy / placeholder node names from free aggregators (not real proxies).
 JUNK_RE = re.compile(
@@ -214,6 +249,269 @@ def collect_flat():
     return flat
 
 
+def load_previous_nodes(path, max_nodes=MAX_PREVIOUS_NODES):
+    """Load up to max_nodes nodes from the previous published profile.
+
+    The previous profile's proxies are already clean_name'd ASCII nodes, so the
+    first one is exactly the node that was default-selected last run -- keeping
+    it pinned (when still alive) is what makes the user's active connection
+    survive a subscription refresh.
+    """
+    if not path.is_file():
+        return []
+    try:
+        doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return []
+    out = []
+    seen = set()
+    for n in (doc or {}).get("proxies") or []:
+        if not isinstance(n, dict):
+            continue
+        fp = fingerprint(n)
+        if fp in seen:
+            continue
+        seen.add(fp)
+        out.append(n)
+        if len(out) >= max_nodes:
+            break
+    return out
+
+
+class NodeTester:
+    """Probe gemini / google_play / google through a real mihomo tunnel.
+
+    A fresh mihomo instance loads the candidate nodes as a TEST select group;
+    each node is selected in turn and the three endpoints are fetched through
+    the local mixed-port (i.e. traffic genuinely transits the node). No geodata
+    is needed because the probe config uses a single MATCH,TEST rule.
+    """
+
+    def __init__(self, binary):
+        self.binary = binary
+        self.proc = None
+        self.tmp = None
+        self.proxy_port = None
+        self.controller_port = None
+        self._log = None
+        self.session = requests.Session()
+
+    @staticmethod
+    def _alloc_port():
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.bind(("127.0.0.1", 0))
+            return s.getsockname()[1]
+        finally:
+            s.close()
+
+    def start(self, nodes):
+        names = []
+        proxies = []
+        for i, node in enumerate(nodes):
+            name = f"P{i:03d}"
+            names.append(name)
+            p = dict(node)
+            p["name"] = name
+            proxies.append(p)
+        self.controller_port = self._alloc_port()
+        self.proxy_port = self._alloc_port()
+        config = {
+            "mixed-port": self.proxy_port,
+            "allow-lan": False,
+            "mode": "rule",
+            "log-level": "error",
+            "external-controller": f"127.0.0.1:{self.controller_port}",
+            "proxies": proxies,
+            "proxy-groups": [{"name": "TEST", "type": "select", "proxies": names}],
+            "rules": ["MATCH,TEST"],
+        }
+        self.tmp = Path(tempfile.mkdtemp(prefix="fc-probe-"))
+        (self.tmp / "config.yaml").write_text(
+            yaml.safe_dump(config, allow_unicode=True, sort_keys=False),
+            encoding="utf-8",
+        )
+        self._log = open(self.tmp / "mihomo.log", "w", encoding="utf-8")
+        self.proc = subprocess.Popen(
+            [self.binary, "-d", str(self.tmp)],
+            stdout=self._log, stderr=subprocess.STDOUT,
+        )
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            if self.proc.poll() is not None:
+                self._log.flush()
+                detail = (self.tmp / "mihomo.log").read_text(
+                    encoding="utf-8", errors="replace")[-2000:]
+                raise RuntimeError(f"mihomo exited during probe startup: {detail}")
+            try:
+                self.session.get(
+                    f"http://127.0.0.1:{self.controller_port}/proxies", timeout=1
+                ).raise_for_status()
+                break
+            except requests.RequestException:
+                time.sleep(0.2)
+        else:
+            raise RuntimeError("mihomo controller not ready")
+        return names
+
+    def choose(self, name):
+        self.session.put(
+            f"http://127.0.0.1:{self.controller_port}/proxies/TEST",
+            json={"name": name}, timeout=5,
+        ).raise_for_status()
+        time.sleep(PROBE_SWITCH_WAIT_SECONDS)
+
+    def request(self, url):
+        proxy = {
+            "http": f"http://127.0.0.1:{self.proxy_port}",
+            "https": f"http://127.0.0.1:{self.proxy_port}",
+        }
+        try:
+            r = self.session.get(
+                url, proxies=proxy, timeout=PROBE_TIMEOUT_SECONDS,
+                headers={"User-Agent": UA}, allow_redirects=True,
+            )
+            return r.status_code in PROBE_SUCCESS_STATUSES
+        except requests.RequestException:
+            return False
+
+    def test_nodes(self, nodes):
+        """Return {fingerprint: {"gemini":bool,"google_play":bool,"google":bool}}."""
+        if not nodes:
+            return {}
+        try:
+            names = self.start(nodes)
+        except RuntimeError as exc:
+            print(f"NodeTester: probe batch skipped ({exc})")
+            self.stop()
+            return {}
+        out = {}
+        try:
+            for node, name in zip(nodes, names):
+                self.choose(name)
+                with ThreadPoolExecutor(max_workers=3) as ex:
+                    futures = [ex.submit(self.request, url) for url in PROBE_URLS.values()]
+                    gemini, play, google = (f.result() for f in futures)
+                out[fingerprint(node)] = {
+                    "gemini": gemini, "google_play": play, "google": google,
+                }
+            return out
+        finally:
+            self.stop()
+
+    def stop(self):
+        if self.proc is not None:
+            self.proc.terminate()
+            try:
+                self.proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.proc.kill()
+            self.proc = None
+        if self._log is not None:
+            try:
+                self._log.close()
+            except Exception:
+                pass
+            self._log = None
+        if self.tmp is not None:
+            shutil.rmtree(self.tmp, ignore_errors=True)
+            self.tmp = None
+
+
+def probe_nodes(nodes, binary):
+    """Probe nodes in parallel worker batches; return {fp: result}."""
+    nodes = list(nodes)
+    if not nodes:
+        return {}
+    workers = max(1, min(PROBE_WORKERS, len(nodes)))
+    batches = [nodes[i::workers] for i in range(workers) if nodes[i::workers]]
+    results = {}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = [ex.submit(NodeTester(binary).test_nodes, batch) for batch in batches]
+        for fut in futures:
+            try:
+                results.update(fut.result())
+            except Exception as exc:
+                print(f"probe_nodes: batch failed ({exc})")
+    return results
+
+
+def _probe_score(result):
+    s = 0
+    if result.get("gemini"):
+        s += SCORE_GEMINI
+    if result.get("google_play"):
+        s += SCORE_PLAY
+    if result.get("google"):
+        s += SCORE_GOOGLE
+    return s
+
+
+def _probe_alive(result):
+    return bool(result) and bool(
+        result.get("gemini") or result.get("google_play") or result.get("google")
+    )
+
+
+def rank_nodes(flat):
+    """Reorder the flat pool: continuity + Gemini/Play reachability first.
+
+    Order:
+      1. previous-profile nodes still alive (retention; the first one is the
+         old default-selected -> sticky continuity).
+      2. newly probed alive nodes, highest Gemini/Play score first.
+      3. everything else (unprobed or dead) in original order.
+
+    This only REORDERS nodes; fields are untouched, so four-client parse
+    compatibility is unchanged. If mihomo is unavailable the original order is
+    kept (best-effort, never blocks publishing).
+    """
+    if not flat:
+        return flat
+    previous = load_previous_nodes(OUT, MAX_PREVIOUS_NODES)
+    prev_fps = {fingerprint(n) for n in previous}
+    fresh = [n for n in flat if fingerprint(n) not in prev_fps]
+    test_set = previous + fresh[:PROBE_TEST_COUNT]
+
+    binary = shutil.which("mihomo") or shutil.which("clash")
+    if binary:
+        try:
+            results = probe_nodes(test_set, binary)
+        except Exception as exc:
+            print(f"rank_nodes: probe failed, keeping original order ({exc})")
+            results = {}
+    else:
+        print("rank_nodes: mihomo binary not found, keeping original order")
+        results = {}
+
+    flat_by_fp = {fingerprint(n): n for n in flat}
+    # All probed-and-alive nodes (previous + fresh) share one ranking:
+    #   (score, is_previous) descending. Score weights Gemini (25) and Google
+    #   Play (20) above plain google (20), so Gemini/Play-capable nodes win;
+    #   is_previous is the tiebreak so an equal-score previous node stays pinned
+    #   (continuity), while a stale previous node that lost Gemini/Play yields
+    #   to a fresh one.
+    alive = []
+    for node in test_set:
+        fp = fingerprint(node)
+        result = results.get(fp)
+        if not _probe_alive(result):
+            continue
+        alive.append((node, fp in prev_fps, result))
+    alive.sort(key=lambda t: (
+        -_probe_score(t[2]),
+        -t[1],
+    ))
+    ranked_alive = [flat_by_fp[fingerprint(t[0])] for t in alive]
+    picked_fps = {fingerprint(n) for n in ranked_alive}
+    rest = [n for n in flat if fingerprint(n) not in picked_fps]
+    ranked = ranked_alive + rest
+    print(f"rank_nodes: alive_ranked={len(ranked_alive)} "
+          f"(previous={sum(1 for t in alive if t[1])}) "
+          f"rest={len(rest)} total={len(ranked)}")
+    return ranked
+
+
 def build_proxy_groups(flat_names):
     fine_proxies = ["AUTO", "DIRECT"] + flat_names
     return [
@@ -293,6 +591,7 @@ def main():
         print("FATAL: no usable free nodes aggregated from any source; "
               "refusing to overwrite live_clash.yaml.")
         raise SystemExit(1)
+    flat = rank_nodes(flat)
     config = build_config(flat)
     dumped = yaml.safe_dump(config, allow_unicode=True, sort_keys=False,
                             default_flow_style=False)

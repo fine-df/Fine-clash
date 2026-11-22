@@ -345,7 +345,8 @@ class NodeTester:
                 raise RuntimeError(f"mihomo exited during probe startup: {detail}")
             try:
                 self.session.get(
-                    f"http://127.0.0.1:{self.controller_port}/proxies", timeout=1
+                    f"http://127.0.0.1:{self.controller_port}/proxies/TEST",
+                    timeout=1,
                 ).raise_for_status()
                 break
             except requests.RequestException:
@@ -382,9 +383,17 @@ class NodeTester:
         try:
             names = self.start(nodes)
         except RuntimeError as exc:
-            print(f"NodeTester: probe batch skipped ({exc})")
+            # A malformed proxy can make mihomo fail to load the whole batch's
+            # TEST group. Isolate the bad node(s) by splitting instead of
+            # dropping the entire batch.
             self.stop()
-            return {}
+            if len(nodes) <= 1:
+                print(f"NodeTester: node skipped ({exc})")
+                return {}
+            mid = len(nodes) // 2
+            left = self.test_nodes(nodes[:mid])
+            right = self.test_nodes(nodes[mid:])
+            return {**left, **right}
         out = {}
         try:
             for node, name in zip(nodes, names):

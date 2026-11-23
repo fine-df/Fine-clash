@@ -164,7 +164,6 @@ CN_RE = re.compile(r"(🇨🇳|中国|cn[-_])", re.IGNORECASE)
 
 VIDEO_DOMAINS = ["youtube.com","youtu.be","ytimg.com","googlevideo.com","netflix.com","nflxvideo.net","nflximg.net","twitch.tv","ttvnw.net","vimeo.com"]
 STORE_DOMAINS = ["play.google.com","googleplay.com","dl.google.com","gvt1.com","gvt2.com","microsoft.com","microsoftstore.com","apps.microsoft.com","steampowered.com","steamcommunity.com"]
-OZON_DIRECT = ["DOMAIN-SUFFIX,ozon.ru,DIRECT","DOMAIN-SUFFIX,ozon.com,DIRECT","DOMAIN-SUFFIX,ozonusercontent.com,DIRECT","DOMAIN-SUFFIX,ozoncdn.ru,DIRECT","DOMAIN-SUFFIX,ozoncdn.com,DIRECT","DOMAIN-SUFFIX,o3.ru,DIRECT","DOMAIN-SUFFIX,ozone.ru,DIRECT","DOMAIN-SUFFIX,ozonpartners.ru,DIRECT","DOMAIN-SUFFIX,ozon.tech,DIRECT","DOMAIN-SUFFIX,ozon.by,DIRECT","DOMAIN-SUFFIX,ozon.kz,DIRECT"]
 WECHAT_DIRECT = ["DOMAIN-SUFFIX,weixin.qq.com,DIRECT","DOMAIN-SUFFIX,wx.qq.com,DIRECT","DOMAIN-SUFFIX,wechat.com,DIRECT","DOMAIN-SUFFIX,qpic.cn,DIRECT","DOMAIN-SUFFIX,qlogo.cn,DIRECT","DOMAIN-SUFFIX,gtimg.cn,DIRECT","DOMAIN-SUFFIX,gtimg.com,DIRECT","DOMAIN-SUFFIX,qq.com,DIRECT","DOMAIN-SUFFIX,tenpay.com,DIRECT","DOMAIN-SUFFIX,wechatpay.cn,DIRECT","DOMAIN-SUFFIX,tencent.com,DIRECT","DOMAIN-SUFFIX,tencent-cloud.com,DIRECT","DOMAIN-SUFFIX,myqcloud.com,DIRECT","DOMAIN-SUFFIX,tencentcos.cn,DIRECT"]
 WPS_DIRECT = ["DOMAIN-SUFFIX,wps.cn,DIRECT","DOMAIN-SUFFIX,wps.com,DIRECT","DOMAIN-SUFFIX,kdocs.cn,DIRECT","DOMAIN-SUFFIX,kdocs.com,DIRECT","DOMAIN-SUFFIX,kingsoft.com,DIRECT"]
 XIAOMI_DIRECT = ["DOMAIN-SUFFIX,mi.com,DIRECT","DOMAIN-SUFFIX,xiaomi.com,DIRECT","DOMAIN-SUFFIX,miwifi.com,DIRECT","DOMAIN-SUFFIX,miui.com,DIRECT","DOMAIN-SUFFIX,mijia.com,DIRECT","DOMAIN-SUFFIX,xiaomi.cn,DIRECT"]
@@ -708,7 +707,7 @@ def build_proxy_groups(flat_names):
 
 def build_config(flat_nodes):
     flat_names = [n["name"] for n in flat_nodes]
-    rules = (LOCAL_IOT_DIRECT + WPS_DIRECT + PRIVATE_DIRECT + OZON_DIRECT
+    rules = (LOCAL_IOT_DIRECT + WPS_DIRECT + PRIVATE_DIRECT
              + WECHAT_DIRECT + XIAOMI_DIRECT
              + [f"DOMAIN-SUFFIX,{d},Fine" for d in VIDEO_DOMAINS]
              + [f"DOMAIN-SUFFIX,{d},Fine" for d in STORE_DOMAINS]
@@ -745,7 +744,6 @@ def build_config(flat_nodes):
                 "+.qq.com": ["223.5.5.5", "119.29.29.29"],
                 "+.myqcloud.com": ["223.5.5.5", "119.29.29.29"],
                 "+.tencentcos.cn": ["223.5.5.5", "119.29.29.29"],
-                "+.ozon.ru": ["223.5.5.5", "119.29.29.29"],
             },
             "fallback": ["https://1.1.1.1/dns-query", "tls://8.8.8.8"],
             "fallback-filter": {"geoip": True, "geoip-code": "CN"},

@@ -85,11 +85,8 @@ def test_final_config_is_fine_only():
     rules = cfg["rules"]
     groups = {group["name"]: group for group in cfg["proxy-groups"]}
     assert set(groups) == {"Fine", "AUTO"}
-    assert "DOMAIN-SUFFIX,ozon.ru,DIRECT" in rules
     geoip_cn = rules.index("GEOIP,CN,DIRECT")
-    for rule in bf.OZON_DIRECT:
-        assert rule in rules
-        assert rules.index(rule) < geoip_cn  # Ozon must proxy even if its IP geolocates to China
+    assert "DOMAIN-SUFFIX,ozon.ru,DIRECT" not in rules  # Ozon now routes via Fine (MATCH), not DIRECT
     for rule in bf.WPS_DIRECT:
         assert rule in rules
         assert rules.index(rule) < geoip_cn

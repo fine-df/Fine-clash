@@ -22,6 +22,8 @@ Architecture (2026-10-24, fail-safe flat aggregation):
   no收费上游 (permanent red line).
 """
 from __future__ import annotations
+import json
+import os
 import re
 import shutil
 import socket
@@ -32,7 +34,7 @@ import tempfile
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import requests
 import yaml
@@ -116,6 +118,33 @@ MAX_PREVIOUS_NODES = 20
 SCORE_GEMINI = 25
 SCORE_PLAY = 20
 SCORE_GOOGLE = 20
+
+# ---- Automatic source failover ----
+# Keep at least this many sources that are still producing alive nodes. When the
+# count drops below it (sources die / get deleted), auto-discover fresh free
+# sources on GitHub and persist them so the next runs keep a healthy pool.
+# This is the fix for the "all sources dead, nothing usable for days" outage.
+FALLBACK_MIN_GOOD_SOURCES = 3
+FALLBACK_MAX_SOURCES = 5
+FALLBACK_SOURCES_FILE = Path("data/fallback_sources.json")
+FALLBACK_QUERIES = [
+    "clash订阅 in:name,description,readme archived:false stars:>=20",
+    "v2ray free in:name,description,readme archived:false stars:>=20",
+    "v2ray subscription in:name,description,readme archived:false stars:>=20",
+]
+FALLBACK_EXCLUDE_REPOS = {
+    "clash-verge-rev/clash-verge-rev",
+    "hiddify/Hiddify-Manager",
+    "hiddify/hiddify-app",
+    "KaringX/clashmi",
+    "mihomo-party-org/clash-party",
+    "nelvko/clashctl",
+    "sub-store-org/Sub-Store",
+    "Johnshall/Shadowrocket-ADBlock-Rules-Forever",
+    "githubvpn007/v2rayNvpn",
+    "dongyubin/Free-AppleId-Serve",
+    "DiningFactory/panda-vpn-pro",
+}
 
 # Junk / decoy / placeholder node names from free aggregators (not real proxies).
 JUNK_RE = re.compile(
@@ -220,11 +249,13 @@ def sanitize_node(node):
     return clean
 
 
-def collect_flat():
+def collect_flat(srcs=None):
     """Aggregate a fresh, prefixed, de-duplicated flat node list for all clients."""
+    if srcs is None:
+        srcs = SOURCES
     flat = []
     seen = set()
-    for src in SOURCES:
+    for src in srcs:
         doc = fetch_yaml(src["url"])
         if not doc:
             print(f"collect_flat: source {src['id']} unavailable, skipped")
@@ -489,11 +520,22 @@ def rank_nodes(flat):
     kept (best-effort, never blocks publishing).
     """
     if not flat:
-        return flat
+        return flat, {}
     previous = load_previous_nodes(OUT, MAX_PREVIOUS_NODES)
     prev_fps = {fingerprint(n) for n in previous}
     fresh = [n for n in flat if fingerprint(n) not in prev_fps]
-    test_set = previous + fresh[:PROBE_TEST_COUNT]
+    # Sample evenly across sources so every source gets probed (otherwise the
+    # first source's nodes fill the whole probe budget and other sources are
+    # never counted as alive).
+    per_source = {}
+    for n in fresh:
+        sid = str(n.get("name", "")).split("-")[0]
+        per_source.setdefault(sid, []).append(n)
+    per_source_limit = max(1, PROBE_TEST_COUNT // max(1, len(per_source)))
+    test_fresh = []
+    for nodes in per_source.values():
+        test_fresh.extend(nodes[:per_source_limit])
+    test_set = previous + test_fresh[:PROBE_TEST_COUNT]
 
     binary = shutil.which("mihomo") or shutil.which("clash")
     if binary:
@@ -524,14 +566,100 @@ def rank_nodes(flat):
         -_probe_score(t[2]),
         -t[1],
     ))
-    ranked_alive = [flat_by_fp[fingerprint(t[0])] for t in alive]
+    ranked_alive = []
+    for t in alive:
+        cur = flat_by_fp.get(fingerprint(t[0]))
+        if cur is not None:
+            ranked_alive.append(cur)
     picked_fps = {fingerprint(n) for n in ranked_alive}
     rest = [n for n in flat if fingerprint(n) not in picked_fps]
     ranked = ranked_alive + rest
+    alive_by_source = {}
+    for n in ranked_alive:
+        sid = str(n.get("name", "")).split("-")[0]
+        alive_by_source[sid] = alive_by_source.get(sid, 0) + 1
     print(f"rank_nodes: alive_ranked={len(ranked_alive)} "
           f"(previous={sum(1 for t in alive if t[1])}) "
-          f"rest={len(rest)} total={len(ranked)}")
-    return ranked
+          f"rest={len(rest)} total={len(ranked)} "
+          f"alive_by_source={alive_by_source}")
+    return ranked, alive_by_source
+
+
+def load_fallback_sources():
+    """Load persisted fallback sources discovered in previous runs."""
+    if not FALLBACK_SOURCES_FILE.is_file():
+        return []
+    try:
+        data = json.loads(FALLBACK_SOURCES_FILE.read_text(encoding="utf-8"))
+        return data if isinstance(data, list) else []
+    except (OSError, ValueError):
+        return []
+
+
+def save_fallback_sources(sources):
+    FALLBACK_SOURCES_FILE.parent.mkdir(parents=True, exist_ok=True)
+    FALLBACK_SOURCES_FILE.write_text(
+        json.dumps(sources, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _repo_yaml_urls(repo):
+    branch = repo.get("default_branch") or "main"
+    full_name = repo.get("full_name", "")
+    paths = [
+        f"{branch}/clash.yaml", f"{branch}/sub.yaml", f"{branch}/all.yaml",
+        f"{branch}/clash.yml", f"{branch}/output/clash.yaml",
+        f"{branch}/subscribe/clash.yaml",
+    ]
+    return [f"https://raw.githubusercontent.com/{full_name}/{p}" for p in paths]
+
+
+def discover_fallback(token, max_sources=FALLBACK_MAX_SOURCES):
+    """Search GitHub for fresh free YAML subscription sources.
+
+    Only used when the live source count falls below FALLBACK_MIN_GOOD_SOURCES.
+    Returns entries shaped like SOURCES (id/url/prefix/take) so collect_flat can
+    consume them directly.
+    """
+    if not token:
+        print("fallback: no GITHUB_TOKEN, skipping source discovery")
+        return []
+    headers = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
+    headers["Authorization"] = f"Bearer {token}"
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=14)).date().isoformat()
+    found = []
+    seen = set()
+    for q in FALLBACK_QUERIES:
+        try:
+            r = requests.get(
+                "https://api.github.com/search/repositories",
+                params={"q": f"{q} pushed:>={cutoff}", "sort": "stars",
+                        "order": "desc", "per_page": 20},
+                headers=headers, timeout=20,
+            )
+            r.raise_for_status()
+            items = r.json().get("items", [])
+        except requests.RequestException as exc:
+            print(f"fallback: search failed ({exc})")
+            continue
+        for item in items:
+            fn = item.get("full_name", "")
+            if fn in FALLBACK_EXCLUDE_REPOS:
+                continue
+            if int(item.get("stargazers_count", 0)) < 20:
+                continue
+            for url in _repo_yaml_urls(item):
+                if url in seen:
+                    continue
+                seen.add(url)
+                doc = fetch_yaml(url)
+                if doc and len(doc.get("proxies") or []) >= 2:
+                    idx = len(found) + 1
+                    found.append({"id": f"fb{idx}", "url": url,
+                                  "prefix": f"FB{idx}-", "take": 1000})
+                    print(f"fallback: found source {url}")
+                    if len(found) >= max_sources:
+                        return found
+    return found
 
 
 def build_proxy_groups(flat_names):
@@ -608,12 +736,25 @@ def build_config(flat_nodes):
 def main():
     if len(sys.argv) > 1:
         print(f"build_final.py: ignoring legacy arg {sys.argv[1]!r} (no longer used)")
-    flat = collect_flat()
+    srcs = SOURCES + load_fallback_sources()
+    flat = collect_flat(srcs)
     if not flat:
         print("FATAL: no usable free nodes aggregated from any source; "
               "refusing to overwrite live_clash.yaml.")
         raise SystemExit(1)
-    flat = rank_nodes(flat)
+    flat, alive_by_source = rank_nodes(flat)
+    good_sources = sum(1 for v in alive_by_source.values() if v >= 1)
+    if good_sources < FALLBACK_MIN_GOOD_SOURCES:
+        token = os.environ.get("GITHUB_TOKEN", "")
+        print(f"fallback: only {good_sources} good source(s) "
+              f"(< {FALLBACK_MIN_GOOD_SOURCES}), discovering new sources")
+        new_sources = discover_fallback(token)
+        if new_sources:
+            save_fallback_sources(new_sources)
+            srcs = SOURCES + load_fallback_sources()
+            flat = collect_flat(srcs)
+            if flat:
+                flat, alive_by_source = rank_nodes(flat)
     config = build_config(flat)
     dumped = yaml.safe_dump(config, allow_unicode=True, sort_keys=False,
                             default_flow_style=False)

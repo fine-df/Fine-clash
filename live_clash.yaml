@@ -1,4 +1,4 @@
-# fine-clash-unified-v4 | fine-clash-version:20261121063650 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
+# fine-clash-unified-v4 | fine-clash-version:20261121063651 | Fine=free-live-pool | CN->DIRECT | MATCH->Fine | schedule-refresh:true | client-urltest:true
 mixed-port: 7890
 allow-lan: true
 bind-address: '*'
@@ -387,6 +387,78 @@ proxies:
   type: vless
   udp: true
   uuid: 9da605d3-f5f7-4135-f806-450f036f9351
+- flow: xtls-rprx-vision
+  name: YP-vless-freefuguilol-dd87e6e1
+  port: 47396
+  reality-opts:
+    public-key: IjWYbHNrZb3UCQxsTJyekEOA3tHq42L6Jw3O8MmLYVQ
+    short-id: fa514b83
+  server: free.fugui.lol
+  servername: swdist.apple.com
+  tls: true
+  type: vless
+  uuid: ead3595f-4020-4e76-a3ec-c248e1a2f2f7
+- flow: xtls-rprx-vision
+  name: YP-vless-1632454287-4736be83
+  port: 443
+  reality-opts:
+    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
+  server: 163.245.42.87
+  servername: mother-earth.fyi
+  tls: true
+  type: vless
+  uuid: b9bfa54d-bc44-4592-a6d6-89a9665d286f
+- name: YP-vless-9517468188-591d56d7
+  network: ws
+  port: 14430
+  server: 95.174.68.188
+  servername: 95.174.68.188
+  tls: false
+  type: vless
+  uuid: 965ffbbe-c6b6-4d5f-8dea-6d8abc55d9c0
+  ws-opts:
+    headers:
+      Host: 95.174.68.188
+    path: /vless
+- name: YP-vless-84235244108-51e7d19e
+  network: ws
+  port: 22573
+  server: 84.235.244.108
+  servername: uae.unixzone.us
+  tls: false
+  type: vless
+  uuid: 39947382-3212-41c9-bc3a-589574ac8b23
+  ws-opts:
+    headers:
+      Host: uae.unixzone.us
+    path: /
+- name: YP-vless-1321115589-785b2d50
+  network: ws
+  port: 443
+  server: 13.211.155.89
+  servername: www.microsoft.com
+  tls: true
+  type: vless
+  uuid: e3a1c7f2-9b4d-4e8a-a6c5-1f2d3b4a5e6f
+  ws-opts:
+    path: /7b9977b2af9da85fa86adc065c362efe
+- name: YP-vless-178172227228-3445ed0b
+  network: ws
+  port: 14430
+  server: 178.172.227.228
+  tls: false
+  type: vless
+  uuid: b6e5dc56-836f-48c1-9163-b0b0b43b647d
+  ws-opts:
+    headers:
+      Host: 178.172.227.228
+    path: /vless
+- name: YP-vless-178172227124-60985183
+  port: 10443
+  server: 178.172.227.124
+  tls: false
+  type: vless
+  uuid: 1af36694-b548-4b18-89a0-bc076eab4ed7
 - name: FS-ss-49254204133-baebb27f
   server: 49.254.204.133
   port: 1774
@@ -754,6 +826,15 @@ proxies:
   servername: 8nj2r.2k8t.f88.hh.vavava.kdns.fr
   network: ws
   udp: true
+- name: FH-vless-10419140106-91e06a32
+  server: 104.19.140.106
+  port: 443
+  type: vless
+  uuid: d6971cc4-a506-49f6-8ebb-f911317763d8
+  tls: true
+  servername: afrcloud1.c01.kr
+  network: ws
+  udp: true
 - name: FH-vmess-1726716778-caea128b
   server: 172.67.167.78
   port: 8443
@@ -811,6 +892,15 @@ proxies:
   servername: rubifen.adaspoloandco.com
   network: ws
   udp: true
+- name: FH-vless-188114976-816f94c2
+  server: 188.114.97.6
+  port: 443
+  type: vless
+  uuid: 94498f1a-26c1-4d86-a38c-fb33e0eb1ded
+  tls: true
+  servername: amiiiin.yas-nowin.ir
+  network: ws
+  udp: true
 - name: FH-vless-1042189181-be06e4ab
   server: 104.21.89.181
   port: 8880
@@ -860,6 +950,15 @@ proxies:
   uuid: e6df2095-a73c-4043-8693-8d5a03686870
   tls: true
   servername: lucasjow.us.ci
+  network: ws
+  udp: true
+- name: FH-vless-104246698-b4527a1a
+  server: 104.24.66.98
+  port: 80
+  type: vless
+  uuid: 9e81276e-5d48-4238-b725-5ed2feec5f51
+  tls: false
+  servername: muddy-sun-f05e-ppal03.nakojof452.workers.dev
   network: ws
   udp: true
 - name: FH-vless-891162506-126ec705
@@ -1101,105 +1200,6 @@ proxies:
     public-key: Zpe4RNze71UGv-T9y55k31k9BtY7gS7uvRV5aA7eiWQ
     short-id: 367e3031
   servername: www.apple.com
-- name: FH-vless-10419140106-91e06a32
-  server: 104.19.140.106
-  port: 443
-  type: vless
-  uuid: d6971cc4-a506-49f6-8ebb-f911317763d8
-  tls: true
-  servername: afrcloud1.c01.kr
-  network: ws
-  udp: true
-- name: FH-vless-188114976-816f94c2
-  server: 188.114.97.6
-  port: 443
-  type: vless
-  uuid: 94498f1a-26c1-4d86-a38c-fb33e0eb1ded
-  tls: true
-  servername: amiiiin.yas-nowin.ir
-  network: ws
-  udp: true
-- name: FH-vless-104246698-b4527a1a
-  server: 104.24.66.98
-  port: 80
-  type: vless
-  uuid: 9e81276e-5d48-4238-b725-5ed2feec5f51
-  tls: false
-  servername: muddy-sun-f05e-ppal03.nakojof452.workers.dev
-  network: ws
-  udp: true
-- flow: xtls-rprx-vision
-  name: YP-vless-freefuguilol-dd87e6e1
-  port: 47396
-  reality-opts:
-    public-key: IjWYbHNrZb3UCQxsTJyekEOA3tHq42L6Jw3O8MmLYVQ
-    short-id: fa514b83
-  server: free.fugui.lol
-  servername: swdist.apple.com
-  tls: true
-  type: vless
-  uuid: ead3595f-4020-4e76-a3ec-c248e1a2f2f7
-- flow: xtls-rprx-vision
-  name: YP-vless-1632454287-4736be83
-  port: 443
-  reality-opts:
-    public-key: SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc
-  server: 163.245.42.87
-  servername: mother-earth.fyi
-  tls: true
-  type: vless
-  uuid: b9bfa54d-bc44-4592-a6d6-89a9665d286f
-- name: YP-vless-9517468188-591d56d7
-  network: ws
-  port: 14430
-  server: 95.174.68.188
-  servername: 95.174.68.188
-  tls: false
-  type: vless
-  uuid: 965ffbbe-c6b6-4d5f-8dea-6d8abc55d9c0
-  ws-opts:
-    headers:
-      Host: 95.174.68.188
-    path: /vless
-- name: YP-vless-84235244108-51e7d19e
-  network: ws
-  port: 22573
-  server: 84.235.244.108
-  servername: uae.unixzone.us
-  tls: false
-  type: vless
-  uuid: 39947382-3212-41c9-bc3a-589574ac8b23
-  ws-opts:
-    headers:
-      Host: uae.unixzone.us
-    path: /
-- name: YP-vless-1321115589-785b2d50
-  network: ws
-  port: 443
-  server: 13.211.155.89
-  servername: www.microsoft.com
-  tls: true
-  type: vless
-  uuid: e3a1c7f2-9b4d-4e8a-a6c5-1f2d3b4a5e6f
-  ws-opts:
-    path: /7b9977b2af9da85fa86adc065c362efe
-- name: YP-vless-178172227228-3445ed0b
-  network: ws
-  port: 14430
-  server: 178.172.227.228
-  tls: false
-  type: vless
-  uuid: b6e5dc56-836f-48c1-9163-b0b0b43b647d
-  ws-opts:
-    headers:
-      Host: 178.172.227.228
-    path: /vless
-- name: YP-vless-178172227124-60985183
-  port: 10443
-  server: 178.172.227.124
-  tls: false
-  type: vless
-  uuid: 1af36694-b548-4b18-89a0-bc076eab4ed7
 - name: YP-vless-10418109147-d6440722
   network: ws
   port: 2052
@@ -8787,6 +8787,13 @@ proxy-groups:
   - YP-vless-4935e4tde25h1claydclick-95f23fa0
   - YP-vless-155248175201-f5ea2f6d
   - YP-vless-djjzjlotop-4c8f463d
+  - YP-vless-freefuguilol-dd87e6e1
+  - YP-vless-1632454287-4736be83
+  - YP-vless-9517468188-591d56d7
+  - YP-vless-84235244108-51e7d19e
+  - YP-vless-1321115589-785b2d50
+  - YP-vless-178172227228-3445ed0b
+  - YP-vless-178172227124-60985183
   - FS-ss-49254204133-baebb27f
   - FS-ss-200102179179-9cc65950
   - FS-ss-13819789234-032e16c4
@@ -8820,16 +8827,19 @@ proxy-groups:
   - FH-vless-510247142-993f6b3a
   - FH-vless-10816219558-7a3b43de
   - FH-vless-1041846234-948ab81a
+  - FH-vless-10419140106-91e06a32
   - FH-vmess-1726716778-caea128b
   - FH-vmess-1042123472-5f335758
   - FH-vless-1726488168-1051e712
   - FH-vless-1042118141-e11c5e63
   - FH-vless-1042171238-8a74d488
+  - FH-vless-188114976-816f94c2
   - FH-vless-1042189181-be06e4ab
   - FH-vless-104216328-cab3117d
   - FH-vmess-1042101-45cfdb0b
   - FH-vless-1041710869-7ae873af
   - FH-vless-188114980-ce8d7f0b
+  - FH-vless-104246698-b4527a1a
   - FH-vless-891162506-126ec705
   - FH-vless-15419764252-055caf2d
   - FH-vmess-1042151208-b9b26d95
@@ -8850,16 +8860,6 @@ proxy-groups:
   - SN-vmess-afzuvxiaoyanio-043619cd
   - SN-vless-1041837127-a2d9c6c1
   - SN-vless-hsaiaconnainholol-04f15e9c
-  - FH-vless-10419140106-91e06a32
-  - FH-vless-188114976-816f94c2
-  - FH-vless-104246698-b4527a1a
-  - YP-vless-freefuguilol-dd87e6e1
-  - YP-vless-1632454287-4736be83
-  - YP-vless-9517468188-591d56d7
-  - YP-vless-84235244108-51e7d19e
-  - YP-vless-1321115589-785b2d50
-  - YP-vless-178172227228-3445ed0b
-  - YP-vless-178172227124-60985183
   - YP-vless-10418109147-d6440722
   - YP-vless-4513373167-12ec7a73
   - YP-vless-wwwgovse-3f89a88d
@@ -9687,6 +9687,13 @@ proxy-groups:
   - YP-vless-4935e4tde25h1claydclick-95f23fa0
   - YP-vless-155248175201-f5ea2f6d
   - YP-vless-djjzjlotop-4c8f463d
+  - YP-vless-freefuguilol-dd87e6e1
+  - YP-vless-1632454287-4736be83
+  - YP-vless-9517468188-591d56d7
+  - YP-vless-84235244108-51e7d19e
+  - YP-vless-1321115589-785b2d50
+  - YP-vless-178172227228-3445ed0b
+  - YP-vless-178172227124-60985183
   - FS-ss-49254204133-baebb27f
   - FS-ss-200102179179-9cc65950
   - FS-ss-13819789234-032e16c4
@@ -9720,16 +9727,19 @@ proxy-groups:
   - FH-vless-510247142-993f6b3a
   - FH-vless-10816219558-7a3b43de
   - FH-vless-1041846234-948ab81a
+  - FH-vless-10419140106-91e06a32
   - FH-vmess-1726716778-caea128b
   - FH-vmess-1042123472-5f335758
   - FH-vless-1726488168-1051e712
   - FH-vless-1042118141-e11c5e63
   - FH-vless-1042171238-8a74d488
+  - FH-vless-188114976-816f94c2
   - FH-vless-1042189181-be06e4ab
   - FH-vless-104216328-cab3117d
   - FH-vmess-1042101-45cfdb0b
   - FH-vless-1041710869-7ae873af
   - FH-vless-188114980-ce8d7f0b
+  - FH-vless-104246698-b4527a1a
   - FH-vless-891162506-126ec705
   - FH-vless-15419764252-055caf2d
   - FH-vmess-1042151208-b9b26d95
@@ -9750,16 +9760,6 @@ proxy-groups:
   - SN-vmess-afzuvxiaoyanio-043619cd
   - SN-vless-1041837127-a2d9c6c1
   - SN-vless-hsaiaconnainholol-04f15e9c
-  - FH-vless-10419140106-91e06a32
-  - FH-vless-188114976-816f94c2
-  - FH-vless-104246698-b4527a1a
-  - YP-vless-freefuguilol-dd87e6e1
-  - YP-vless-1632454287-4736be83
-  - YP-vless-9517468188-591d56d7
-  - YP-vless-84235244108-51e7d19e
-  - YP-vless-1321115589-785b2d50
-  - YP-vless-178172227228-3445ed0b
-  - YP-vless-178172227124-60985183
   - YP-vless-10418109147-d6440722
   - YP-vless-4513373167-12ec7a73
   - YP-vless-wwwgovse-3f89a88d
@@ -10596,9 +10596,6 @@ dns:
     +.tencentcos.cn:
     - 223.5.5.5
     - 119.29.29.29
-    +.ozon.ru:
-    - 223.5.5.5
-    - 119.29.29.29
   fallback:
   - https://1.1.1.1/dns-query
   - tls://8.8.8.8
@@ -10625,17 +10622,6 @@ rules:
 - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
 - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
 - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
-- DOMAIN-SUFFIX,ozon.ru,DIRECT
-- DOMAIN-SUFFIX,ozon.com,DIRECT
-- DOMAIN-SUFFIX,ozonusercontent.com,DIRECT
-- DOMAIN-SUFFIX,ozoncdn.ru,DIRECT
-- DOMAIN-SUFFIX,ozoncdn.com,DIRECT
-- DOMAIN-SUFFIX,o3.ru,DIRECT
-- DOMAIN-SUFFIX,ozone.ru,DIRECT
-- DOMAIN-SUFFIX,ozonpartners.ru,DIRECT
-- DOMAIN-SUFFIX,ozon.tech,DIRECT
-- DOMAIN-SUFFIX,ozon.by,DIRECT
-- DOMAIN-SUFFIX,ozon.kz,DIRECT
 - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
 - DOMAIN-SUFFIX,wx.qq.com,DIRECT
 - DOMAIN-SUFFIX,wechat.com,DIRECT

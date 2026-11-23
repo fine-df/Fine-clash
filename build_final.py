@@ -33,7 +33,7 @@ import sys
 import tempfile
 import time
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import requests
@@ -118,6 +118,25 @@ MAX_PREVIOUS_NODES = 20
 SCORE_GEMINI = 25
 SCORE_PLAY = 20
 SCORE_GOOGLE = 20
+
+# ---- Shenzhen (China) reachability probe ----
+# The CI runner is in the US; a node that is reachable from the US is often NOT
+# reachable from China behind the GFW. The 2026-10-24 refactor dropped the old
+# fine_clash.py Shenzhen probe (Globalping), leaving "alive" ranked purely by
+# US-side HTTP reachability -- which produced nodes that Chinese clients could
+# not even TCP-connect to (measured ~4% China-usable). We restore a lightweight
+# Globalping TCP ping from a Shenzhen probe to filter/rank by real China reach.
+SHENZHEN_ENABLED = True
+SHENZHEN_CITY = "Shenzhen"
+SHENZHEN_TEST_COUNT = 60   # top-alive nodes to re-check from Shenzhen
+SHENZHEN_PACKETS = 3
+SHENZHEN_WORKERS = 8
+SHENZHEN_POLL_SECONDS = 2
+SHENZHEN_TIMEOUT_SECONDS = 18
+# A China-usable node must TCP-connect from Shenzhen. Loss is coarse (0/33/66/100
+# with 3 packets); reject only total loss, and prefer low ping.
+SHENZHEN_REJECT_LOSS_PCT = 100
+SHENZHEN_REJECT_ABOVE_MS = 800
 
 # ---- Automatic source failover ----
 # Keep at least this many sources that are still producing alive nodes. When the
@@ -495,6 +514,83 @@ def probe_nodes(nodes, binary):
     return results
 
 
+class ShenzhenProbe:
+    """TCP-ping a node from a Shenzhen probe (Globalping) to gauge China reach.
+
+    The US CI runner cannot measure GFW-side reachability itself; Globalping's
+    Shenzhen probe gives a China-network perspective. Anonymous (no token) works;
+    setting GLOBALPING_API_TOKEN raises the rate limit.
+    """
+
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({"User-Agent": UA, "Content-Type": "application/json"})
+        token = os.getenv("GLOBALPING_API_TOKEN", "").strip()
+        if token:
+            self.session.headers["Authorization"] = f"Bearer {token}"
+        self.base_url = "https://api.globalping.io/v1/measurements"
+
+    def measure(self, node):
+        server = str(node.get("server") or "").strip()
+        port = node.get("port")
+        if not server or not port:
+            return {"ok": False, "status": "invalid"}
+        payload = {
+            "target": server,
+            "type": "ping",
+            "locations": [{"city": SHENZHEN_CITY, "limit": 1}],
+            "measurementOptions": {
+                "protocol": "TCP", "port": port, "packets": SHENZHEN_PACKETS,
+            },
+        }
+        try:
+            created = self.session.post(self.base_url, json=payload, timeout=15)
+            created.raise_for_status()
+            mid = created.json().get("id")
+            if not mid:
+                return {"ok": False, "status": "no-id"}
+            deadline = time.monotonic() + SHENZHEN_TIMEOUT_SECONDS
+            result = None
+            while time.monotonic() < deadline:
+                time.sleep(SHENZHEN_POLL_SECONDS)
+                polled = self.session.get(f"{self.base_url}/{mid}", timeout=15)
+                polled.raise_for_status()
+                result = polled.json()
+                if result.get("status") != "in-progress":
+                    break
+            if not result or result.get("status") == "in-progress":
+                return {"ok": False, "status": "timeout"}
+            for entry in result.get("results", []):
+                stats = (entry.get("result") or {}).get("stats") or {}
+                avg = stats.get("avg")
+                if avg is None:
+                    avg = stats.get("average")
+                loss = stats.get("loss")
+                if avg is not None:
+                    return {
+                        "ok": True, "status": "ok",
+                        "avg_ms": float(avg),
+                        "loss_pct": float(loss) if loss is not None else None,
+                    }
+            return {"ok": False, "status": "no-stats"}
+        except (requests.RequestException, ValueError, TypeError):
+            return {"ok": False, "status": "error"}
+
+
+def _sz_usable(result):
+    if not result or not result.get("ok"):
+        return False
+    avg = result.get("avg_ms")
+    loss = result.get("loss_pct")
+    if avg is None:
+        return False
+    if avg > SHENZHEN_REJECT_ABOVE_MS:
+        return False
+    if loss is not None and loss >= SHENZHEN_REJECT_LOSS_PCT:
+        return False
+    return True
+
+
 def _probe_score(result):
     s = 0
     if result.get("gemini"):
@@ -568,10 +664,39 @@ def rank_nodes(flat):
         if not _probe_alive(result):
             continue
         alive.append((node, fp in prev_fps, result))
-    alive.sort(key=lambda t: (
-        -_probe_score(t[2]),
-        -t[1],
-    ))
+    # China-reachability re-check: the US-side probe above proves "reachable
+    # from the US", which does NOT imply "reachable from China behind the GFW"
+    # (~4% measured). TCP-ping the top candidates from a Shenzhen probe and rank
+    # China-usable nodes first, ordered by Shenzhen ping then Gemini/Play score.
+    shenzhen = {}
+    if SHENZHEN_ENABLED and alive:
+        top = [t[0] for t in alive[:SHENZHEN_TEST_COUNT]]
+        try:
+            probe = ShenzhenProbe()
+            with ThreadPoolExecutor(max_workers=SHENZHEN_WORKERS) as ex:
+                futs = {ex.submit(probe.measure, n): n for n in top}
+                for fut in as_completed(futs):
+                    shenzhen[fingerprint(futs[fut])] = fut.result()
+        except Exception as exc:
+            print(f"rank_nodes: Shenzhen probe failed ({exc})")
+    sz_usable = sum(1 for v in shenzhen.values() if _sz_usable(v))
+
+    def _key(t):
+        node, is_prev, result = t
+        sz = shenzhen.get(fingerprint(node))
+        usable = _sz_usable(sz)
+        ping = (sz or {}).get("avg_ms", float("inf"))
+        if not isinstance(ping, (int, float)):
+            ping = float("inf")
+        # usable first; then lower ping; then Gemini/Play score; then previous.
+        return (
+            0 if usable else 1,
+            ping if usable else float("inf"),
+            -_probe_score(result),
+            not is_prev,
+        )
+
+    alive.sort(key=_key)
     ranked_alive = []
     for t in alive:
         cur = flat_by_fp.get(fingerprint(t[0]))
@@ -586,6 +711,7 @@ def rank_nodes(flat):
         alive_by_source[sid] = alive_by_source.get(sid, 0) + 1
     print(f"rank_nodes: alive_ranked={len(ranked_alive)} "
           f"(previous={sum(1 for t in alive if t[1])}) "
+          f"shenzhen_usable={sz_usable}/{len(shenzhen)} "
           f"rest={len(rest)} total={len(ranked)} "
           f"alive_by_source={alive_by_source}")
     return ranked, alive_by_source

@@ -685,15 +685,16 @@ def rank_nodes(flat):
         node, is_prev, result = t
         sz = shenzhen.get(fingerprint(node))
         usable = _sz_usable(sz)
-        ping = (sz or {}).get("avg_ms", float("inf"))
-        if not isinstance(ping, (int, float)):
-            ping = float("inf")
-        # usable first; then lower ping; then Gemini/Play score; then previous.
+        # Primary: Gemini/Play score (proves the node actually proxies traffic
+        # through a real mihomo tunnel -- protocol-level, not just TCP). The
+        # Shenzhen TCP ping only proves a handshake, NOT that the protocol
+        # works, so it must NOT dominate: TCP-reachable-but-dead-protocol nodes
+        # were ranked first and produced "no usable nodes". Keep Shenzhen as a
+        # last tiebreak only.
         return (
-            0 if usable else 1,
-            ping if usable else float("inf"),
             -_probe_score(result),
             not is_prev,
+            0 if usable else 1,
         )
 
     alive.sort(key=_key)
@@ -822,7 +823,7 @@ def build_proxy_groups(flat_names):
             "type": "url-test",
             "proxies": flat_names,
             "url": HEALTH_URL,
-            "interval": 900,
+            "interval": 300,
             "timeout": 8000,
             "tolerance": 250,
             "lazy": True,

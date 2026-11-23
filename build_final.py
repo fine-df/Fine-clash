@@ -106,6 +106,10 @@ PROBE_WORKERS = 6
 PROBE_TIMEOUT_SECONDS = 8
 PROBE_SWITCH_WAIT_SECONDS = 0.4
 PROBE_SUCCESS_STATUSES = (200, 204, 301, 302)
+# Google serves a 302 to google.com/sorry when it flags the node IP as abusive
+# (shared free-node IP). That means the endpoint is NOT actually reachable for a
+# real user -- treat it as failed.
+PROBE_CHALLENGE_MARKERS = ("sorry", "unusual traffic", "captcha", "access denied")
 # Continuity reserve: keep up to this many previous-profile nodes pinned on top.
 MAX_PREVIOUS_NODES = 20
 # Score weights: Gemini and Google Play are the user's hard requirements.
@@ -372,7 +376,16 @@ class NodeTester:
                 url, proxies=proxy, timeout=PROBE_TIMEOUT_SECONDS,
                 headers={"User-Agent": UA}, allow_redirects=True,
             )
-            return r.status_code in PROBE_SUCCESS_STATUSES
+            if r.status_code not in PROBE_SUCCESS_STATUSES:
+                return False
+            final_url = (r.url or "").lower()
+            if "sorry" in final_url or "/sorry" in final_url:
+                return False
+            text = r.text[:5000].lower()
+            for marker in PROBE_CHALLENGE_MARKERS:
+                if marker in text:
+                    return False
+            return True
         except requests.RequestException:
             return False
 

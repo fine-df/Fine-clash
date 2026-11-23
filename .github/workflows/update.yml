@@ -68,6 +68,8 @@ jobs:
 
       - name: Build single public profile (live free sources)
         if: ${{ !startsWith(github.event.head_commit.message || '', 'routing-only:') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python build_final.py
 
       - name: Validate profile

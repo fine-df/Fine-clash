@@ -145,6 +145,13 @@ FALLBACK_EXCLUDE_REPOS = {
     "dongyubin/Free-AppleId-Serve",
     "DiningFactory/panda-vpn-pro",
 }
+# Previously discovered and verified free YAML sources. Checked FIRST on
+# failover (more reliable than a blind GitHub search), then GitHub search
+# tops up if these are also dead.
+FALLBACK_CANDIDATE_SOURCES = [
+    {"id": "freeharbor", "url": "https://raw.githubusercontent.com/Leechuihui/FreeHarbor/main/clients/clash.yaml", "prefix": "FH-", "take": 1000},
+    {"id": "snakem982", "url": "https://raw.githubusercontent.com/snakem982/proxypool/main/source/clash-meta-2.yaml", "prefix": "SN-", "take": 1000},
+]
 
 # Junk / decoy / placeholder node names from free aggregators (not real proxies).
 JUNK_RE = re.compile(
@@ -614,20 +621,34 @@ def _repo_yaml_urls(repo):
 
 
 def discover_fallback(token, max_sources=FALLBACK_MAX_SOURCES):
-    """Search GitHub for fresh free YAML subscription sources.
+    """Find replacement sources when the live source count is too low.
 
-    Only used when the live source count falls below FALLBACK_MIN_GOOD_SOURCES.
-    Returns entries shaped like SOURCES (id/url/prefix/take) so collect_flat can
-    consume them directly.
+    Order: (1) previously verified candidate sources (no token needed),
+    (2) GitHub search. Returns entries shaped like SOURCES (id/url/prefix/take)
+    so collect_flat can consume them directly.
     """
+    found = []
+    seen = set()
+
+    # 1. Previously verified candidate sources first (more reliable).
+    for src in FALLBACK_CANDIDATE_SOURCES:
+        doc = fetch_yaml(src["url"])
+        if doc and len(doc.get("proxies") or []) >= 2:
+            found.append(dict(src))
+            seen.add(src["url"])
+            print(f"fallback: candidate source alive {src['url']}")
+            if len(found) >= max_sources:
+                return found
+        else:
+            print(f"fallback: candidate source dead {src['url']}")
+
+    # 2. GitHub search tops up.
     if not token:
-        print("fallback: no GITHUB_TOKEN, skipping source discovery")
-        return []
+        print("fallback: no GITHUB_TOKEN, skipping GitHub search")
+        return found
     headers = {"User-Agent": UA, "Accept": "application/vnd.github+json"}
     headers["Authorization"] = f"Bearer {token}"
     cutoff = (datetime.now(timezone.utc) - timedelta(days=14)).date().isoformat()
-    found = []
-    seen = set()
     for q in FALLBACK_QUERIES:
         try:
             r = requests.get(

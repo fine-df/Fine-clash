@@ -26,6 +26,17 @@ def test_final_proxy_groups_single_fine_with_direct():
     assert by_name["AUTO"]["hidden"] is True
     assert by_name["AUTO"]["proxies"] == fine_names
 
+
+def test_auto_group_is_capped_for_shadowrocket_cellular():
+    # Shadowrocket ignores mihomo's `lazy` flag: a 681-node url-test group
+    # triggers a full test on import and stalls the iOS "updating" spinner.
+    names = [f"n{i}" for i in range(bf.MAX_AUTOTEST_NODES * 3)]
+    groups = {g["name"]: g for g in bf.build_proxy_groups(names)}
+    assert groups["AUTO"]["proxies"] == names[:bf.MAX_AUTOTEST_NODES]
+    # Fine still exposes every node for manual selection.
+    assert groups["Fine"]["proxies"] == ["AUTO", "DIRECT"] + names
+
+
 def test_sticky_primary_is_pinned_as_default_selected():
     # The pool is intentionally ordered quality-first by fine_clash.py's sticky
     # ordering (previous connected node if still Shenzhen-quality, else freshest

@@ -114,6 +114,10 @@ PROBE_SUCCESS_STATUSES = (200, 204, 301, 302)
 PROBE_CHALLENGE_MARKERS = ("sorry", "unusual traffic", "captcha", "access denied")
 # Continuity reserve: keep up to this many previous-profile nodes pinned on top.
 MAX_PREVIOUS_NODES = 20
+# Client-side url-test budget. Shadowrocket (Surge core) does not honour mihomo's
+# `lazy` flag and, on cellular, testing hundreds of nodes at once hangs the
+# "updating" spinner. Cap the url-test group so every 4 clients stay responsive.
+MAX_AUTOTEST_NODES = 96
 # Score weights: Gemini and Google Play are the user's hard requirements.
 SCORE_GEMINI = 25
 SCORE_PLAY = 20
@@ -811,6 +815,10 @@ def discover_fallback(token, max_sources=FALLBACK_MAX_SOURCES):
 
 def build_proxy_groups(flat_names):
     fine_proxies = ["AUTO", "DIRECT"] + flat_names
+    # All nodes remain selectable in Fine; only the ranked head is put into the
+    # url-test group. Shadowrocket ignores `lazy`, so a 681-node AUTO group
+    # triggers a full-speed test on import and stalls the update on cellular.
+    auto_proxies = flat_names[:MAX_AUTOTEST_NODES]
     return [
         {
             "name": "Fine",
@@ -821,7 +829,7 @@ def build_proxy_groups(flat_names):
         {
             "name": "AUTO",
             "type": "url-test",
-            "proxies": flat_names,
+            "proxies": auto_proxies,
             "url": HEALTH_URL,
             "interval": 300,
             "timeout": 8000,
@@ -904,6 +912,7 @@ def main():
     config = build_config(flat)
     dumped = yaml.safe_dump(config, allow_unicode=True, sort_keys=False,
                             default_flow_style=False)
+    now_version = int(datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S"))
     previous_version = 0
     if OUT.is_file():
         try:
@@ -913,8 +922,10 @@ def main():
                 previous_version = int(m.group(1))
         except OSError:
             pass
-    version = (str(previous_version + 1) if previous_version
-               else datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S"))
+    # Stamp with real UTC wall-clock time so clients/routers see freshness.
+    # Guard against clock skew / equal-second reruns: never go backwards, and
+    # advance by >=1 when the previous stamp is ahead or in the same second.
+    version = str(max(now_version, previous_version + 1))
     header = (f"# fine-clash-unified-v4 | fine-clash-version:{version} | "
               f"Fine=free-live-pool | CN->DIRECT | MATCH->Fine | "
               f"schedule-refresh:true | client-urltest:true\n")
